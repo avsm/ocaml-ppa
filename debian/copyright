@@ -41,11 +41,20 @@ Public License.
 
 ----------------------------------------------------------------------
 
-       THE MODIFIED Q PUBLIC LICENSE version 1.0 (ocaml version)
+           THE OCAML MODIFIED Q PUBLIC LICENSE version 1.0
 
               Copyright (C) 1999 Troll Tech AS, Norway.
                   Everyone is permitted to copy and
                   distribute this license document.
+
+Modification from the QPL 1.0 are : 
+
+  a) Modified clause 3a to allow for adding authors to and translation of
+     copyright notices.
+
+  b) Removed clause 6c.
+
+  c) Removed choise of venue mention in the Choice of Law.
 
 The intent of this license is to establish freedom to share and change
 the software regulated by this license under the open source model.
