@@ -11,18 +11,23 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: interp.h,v 1.8 2001/12/07 13:39:30 xleroy Exp $ */
+/* $Id: interp.h,v 1.13 2004/04/26 14:08:22 basile Exp $ */
 
 /* The bytecode interpreter */
 
-#ifndef _interp_
-#define _interp_
-
+#ifndef CAML_INTERP_H
+#define CAML_INTERP_H
 
 #include "misc.h"
 #include "mlvalues.h"
 
-value interprete (code_t prog, asize_t prog_size);
+/* interpret a bytecode */
+value caml_interprete (code_t prog, asize_t prog_size);
 
+/* tell the runtime that a bytecode program might be needed */
+void caml_prepare_bytecode(code_t prog, asize_t prog_size);
 
-#endif
+/* tell the runtime that a bytecode program is no more needed */
+void caml_release_bytecode(code_t prog, asize_t prog_size);
+
+#endif /* CAML_INTERP_H */

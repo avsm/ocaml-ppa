@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_comments.ml,v 1.4 2003/11/24 10:39:29 starynke Exp $ *)
 
 (** Analysis of comments. *)
 
@@ -310,3 +311,5 @@ module Info_retriever =
   end
 
 module Basic_info_retriever = Info_retriever (Odoc_text.Texter)
+
+(* eof $Id: odoc_comments.ml,v 1.4 2003/11/24 10:39:29 starynke Exp $ *)

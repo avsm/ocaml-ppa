@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: startup.c,v 1.24 2003/06/16 12:31:12 xleroy Exp $ */
+/* $Id: startup.c,v 1.30 2004/01/02 19:22:19 doligez Exp $ */
 
 /* Start-up code */
 
@@ -31,10 +31,10 @@
 #include "ui.h"
 #endif
 
-extern int parser_trace;
-header_t atom_table[256];
-char * static_data_start, * static_data_end;
-char * code_area_start, * code_area_end;
+extern int caml_parser_trace;
+header_t caml_atom_table[256];
+char * caml_static_data_start, * caml_static_data_end;
+char * caml_code_area_start, * caml_code_area_end;
 
 /* Initialize the atom table and the static data and code area limits. */
 
@@ -56,9 +56,10 @@ static void init_atoms(void)
   int i;
   extern struct segment caml_data_segments[], caml_code_segments[];
 
-  for (i = 0; i < 256; i++) atom_table[i] = Make_header(0, i, Caml_white);
-  minmax_table(caml_data_segments, &static_data_start, &static_data_end);
-  minmax_table(caml_code_segments, &code_area_start, &code_area_end);
+  for (i = 0; i < 256; i++) caml_atom_table[i] = Make_header(0, i, Caml_white);
+  minmax_table(caml_data_segments,
+               &caml_static_data_start, &caml_static_data_end);
+  minmax_table(caml_code_segments, &caml_code_area_start, &caml_code_area_end);
 }
 
 /* Configuration parameters and flags */
@@ -104,8 +105,8 @@ static void parse_camlrunparam(void)
       case 'l': scanmult (opt, &max_stack_init); break;
       case 'o': scanmult (opt, &percent_free_init); break;
       case 'O': scanmult (opt, &max_percent_free_init); break;
-      case 'v': scanmult (opt, &verb_gc); break;
-      case 'p': parser_trace = 1; break;
+      case 'v': scanmult (opt, &caml_verb_gc); break;
+      case 'p': caml_parser_trace = 1; break;
       }
     }
   }
@@ -116,8 +117,8 @@ struct longjmp_buffer caml_termination_jmpbuf;
 void (*caml_termination_hook)(void *) = NULL;
 
 extern value caml_start_program (void);
-extern void init_ieee_floats (void);
-extern void init_signals (void);
+extern void caml_init_ieee_floats (void);
+extern void caml_init_signals (void);
 
 void caml_main(char **argv)
 {
@@ -127,29 +128,29 @@ void caml_main(char **argv)
 #endif
   value res;
 
-  init_ieee_floats();
-  init_custom_operations();
+  caml_init_ieee_floats();
+  caml_init_custom_operations();
 #ifdef DEBUG
-  verb_gc = 63;
+  caml_verb_gc = 63;
 #endif
   parse_camlrunparam();
-  init_gc (minor_heap_init, heap_size_init, heap_chunk_init,
-           percent_free_init, max_percent_free_init);
+  caml_init_gc (minor_heap_init, heap_size_init, heap_chunk_init,
+                percent_free_init, max_percent_free_init);
   init_atoms();
-  init_signals();
+  caml_init_signals();
   exe_name = argv[0];
 #ifdef __linux__
-  if (executable_name(proc_self_exe, sizeof(proc_self_exe)) == 0)
+  if (caml_executable_name(proc_self_exe, sizeof(proc_self_exe)) == 0)
     exe_name = proc_self_exe;
 #endif
-  sys_init(exe_name, argv);
+  caml_sys_init(exe_name, argv);
   if (sigsetjmp(caml_termination_jmpbuf.buf, 0)) {
     if (caml_termination_hook != NULL) caml_termination_hook(NULL);
     return;
   }
   res = caml_start_program();
   if (Is_exception_result(res))
-    fatal_uncaught_exception(Extract_exception(res));
+    caml_fatal_uncaught_exception(Extract_exception(res));
 }
 
 void caml_startup(char **argv)

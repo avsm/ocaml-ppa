@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: thread.mli,v 1.27 2001/12/28 23:14:14 guesdon Exp $ *)
+(* $Id: thread.mli,v 1.27.6.1 2004/06/30 09:32:40 doligez Exp $ *)
 
 (** Lightweight threads. *)
 
@@ -70,7 +70,7 @@ val wait_write : Unix.file_descr -> unit
    on the given Unix file descriptor. *)
 
 val wait_timed_read : Unix.file_descr -> float -> bool
-(** See {!Thread.wait_timed_read}.*)
+(** See {!Thread.wait_timed_write}.*)
 
 val wait_timed_write : Unix.file_descr -> float -> bool
 (** Same as {!Thread.wait_read} and {!Thread.wait_write}, but wait for at most

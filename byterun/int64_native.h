@@ -11,13 +11,18 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: int64_native.h,v 1.2 2003/04/01 08:46:38 xleroy Exp $ */
+/* $Id: int64_native.h,v 1.4 2003/12/15 18:10:47 doligez Exp $ */
 
 /* Wrapper macros around native 64-bit integer arithmetic,
    so that it has the same interface as the software emulation
    provided in int64_emul.h */
 
+#ifndef CAML_INT64_NATIVE_H
+#define CAML_INT64_NATIVE_H
+
+#define I64_literal(hi,lo) ((int64)(hi) << 32 | (lo))
 #define I64_compare(x,y) (((x) > (y)) - ((x) < (y)))
+#define I64_ult(x,y) ((uint64)(x) < (uint64)(y))
 #define I64_neg(x) (-(x))
 #define I64_add(x,y) ((x) + (y))
 #define I64_sub(x,y) ((x) - (y))
@@ -42,3 +47,4 @@
 #define I64_to_double(x) ((double)(x))
 #define I64_of_double(x) ((int64)(x))
 
+#endif /* CAML_INT64_NATIVE_H */

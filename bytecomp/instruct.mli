@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: instruct.mli,v 1.19 2002/11/02 22:36:41 doligez Exp $ *)
+(* $Id: instruct.mli,v 1.20 2004/05/26 11:10:50 garrigue Exp $ *)
 
 (* The type of the instructions of the abstract machine *)
 
@@ -116,6 +116,8 @@ type instruction =
   | Kisint
   | Kisout
   | Kgetmethod
+  | Kgetpubmet of int
+  | Kgetdynmet
   | Kevent of debug_event
   | Kstop
 

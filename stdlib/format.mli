@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: format.mli,v 1.63 2003/09/25 10:33:52 weis Exp $ *)
+(* $Id: format.mli,v 1.66.2.1 2004/07/02 22:24:22 weis Exp $ *)
 
 (** Pretty printing.
 
@@ -19,6 +19,9 @@
    within ``pretty-printing boxes''. The pretty-printer breaks lines
    at specified break hints, and indents lines according to the box
    structure.
+
+   For a gentle introduction to the basics of prety-printing using
+   [Format], read the FAQ at [http://caml.inria.fr/FAQ/format-eng.html]. 
 
    Warning: the material output by the following functions is delayed
    in the pretty-printer queue in order to compute the proper line
@@ -161,6 +164,12 @@ val set_margin : int -> unit;;
    overflows that leads to split lines.
    Nothing happens if [d] is smaller than 2 or
    bigger than 999999999. *)
+
+val set_margin_to_max : unit -> unit;;
+
+(** [set_margin_to_max ()] sets the value of the right margin to the
+   maximum possible value compatible with the various invariants of
+   the pretty printer. *)
 
 val get_margin : unit -> int;;
 (** Returns the position of the right margin. *)
@@ -520,6 +529,7 @@ val pp_set_mark_tags : formatter -> bool -> unit;;
 val pp_get_print_tags : formatter -> unit -> bool;;
 val pp_get_mark_tags : formatter -> unit -> bool;;
 val pp_set_margin : formatter -> int -> unit;;
+val pp_set_margin_to_max : formatter -> unit -> unit;;
 val pp_get_margin : formatter -> unit -> int;;
 val pp_set_max_indent : formatter -> int -> unit;;
 val pp_get_max_indent : formatter -> unit -> int;;
@@ -584,9 +594,11 @@ val fprintf : formatter -> ('a, formatter, unit) format -> 'a;;
      [nspaces] and [offset] parameters of the break may be
      optionally specified with the following syntax: 
      the [<] character, followed by an integer [nspaces] value,
-     then an integer offset, and a closing [>] character. 
+     then an integer offset, and a closing [>] character.
+     If no parameters are provided, the good break defaults to a
+     space.
    - [@?]: flush the pretty printer as with [print_flush ()].
-     This is equivalent to the conversion [%$].
+     This is equivalent to the conversion [%!].
    - [@.]: flush the pretty printer and output a new line, as with
      [print_newline ()].
    - [@<n>]: print the following item as if it were of length [n].
@@ -643,6 +655,14 @@ val bprintf : Buffer.t -> ('a, formatter, unit) format -> 'a;;
    pretty-printer queue would result in unexpected and badly formatted
    output. *)
 
-val kprintf : (string -> 'a) -> ('b, unit, string, 'a) format4 -> 'b;;
+val kfprintf : (formatter -> 'a) -> formatter ->
+              ('b, formatter, unit, 'a) format4 -> 'b;;
+(** Same as [fprintf] above, but instead of returning immediately,
+   passes the formatter to its first argument at the end of printing. *)
+
+val ksprintf : (string -> 'a) -> ('b, unit, string, 'a) format4 -> 'b;;
 (** Same as [sprintf] above, but instead of returning the string,
    passes it to the first argument. *)
+
+val kprintf : (string -> 'a) -> ('b, unit, string, 'a) format4 -> 'b;;
+(** A deprecated synonym for ksprintf. *)

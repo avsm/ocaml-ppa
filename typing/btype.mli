@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: btype.mli,v 1.14 2003/05/19 09:21:17 garrigue Exp $ *)
+(* $Id: btype.mli,v 1.16 2004/01/06 13:41:39 garrigue Exp $ *)
 
 (* Basic operations on core types *)
 
@@ -46,6 +46,7 @@ val commu_repr: commutable -> commutable
 val row_repr: row_desc -> row_desc
         (* Return the canonical representative of a row description *)
 val row_field_repr: row_field -> row_field
+val row_field: label -> row_desc -> row_field
         (* Return the canonical representative of a row field *)
 val row_more: row_desc -> type_expr
         (* Return the extension variable of the row *)
@@ -97,6 +98,8 @@ val unmark_class_signature: class_signature -> unit
 
 (**** Memorization of abbreviation expansion ****)
 
+val find_expans: Path.t -> abbrev_memo -> type_expr option
+        (* Look up a memorized abbreviation *)
 val cleanup_abbrev: unit -> unit
         (* Flush the cache of abbreviation expansions.
            When some types are saved (using [output_value]), this

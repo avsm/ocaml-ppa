@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asmlink.ml,v 1.62 2003/06/27 08:49:22 xleroy Exp $ *)
+(* $Id: asmlink.ml,v 1.65 2004/05/26 11:10:27 garrigue Exp $ *)
 
 (* Link a set of .cmx/.o files and produce an executable *)
 
@@ -167,21 +167,24 @@ let make_startup_file ppf filename units_list =
   let compile_phrase p = Asmgen.compile_phrase ppf p in
   let oc = open_out filename in
   Emitaux.output_channel := oc;
-  Location.input_name := "startup"; (* set the name of the "current" input *)
-  Compilenv.reset "startup"; (* set the name of the "current" compunit *)
+  Location.input_name := "caml_startup"; (* set name of "current" input *)
+  Compilenv.reset "_startup"; (* set the name of the "current" compunit *)
   Emit.begin_assembly();
   let name_list =
     List.flatten (List.map (fun (info,_,_) -> info.ui_defines) units_list) in
   compile_phrase (Cmmgen.entry_point name_list);
   let apply_functions = ref (IntSet.add 2 (IntSet.add 3 IntSet.empty)) in
   (* The callback functions always reference caml_apply[23] *)
-  let curry_functions =
-    ref IntSet.empty in
+  let send_functions = ref IntSet.empty in
+  let curry_functions = ref IntSet.empty in
   List.iter
     (fun (info,_,_) ->
       List.iter
         (fun n -> apply_functions := IntSet.add n !apply_functions)
         info.ui_apply_fun;
+      List.iter
+        (fun n -> send_functions := IntSet.add n !send_functions)
+        info.ui_send_fun;
       List.iter
         (fun n -> curry_functions := IntSet.add n !curry_functions)
         info.ui_curry_fun)
@@ -189,6 +192,9 @@ let make_startup_file ppf filename units_list =
   IntSet.iter
     (fun n -> compile_phrase (Cmmgen.apply_function n))
     !apply_functions;
+  IntSet.iter
+    (fun n -> compile_phrase (Cmmgen.send_function n))
+    !send_functions;
   IntSet.iter
     (fun n -> List.iter (compile_phrase) (Cmmgen.curry_function n))
     !curry_functions;
@@ -203,10 +209,10 @@ let make_startup_file ppf filename units_list =
           try (unit.ui_name, List.assoc unit.ui_name unit.ui_imports_cmi)
           with Not_found -> assert false)
         units_list));
-  compile_phrase(Cmmgen.data_segment_table ("startup" :: name_list));
-  compile_phrase(Cmmgen.code_segment_table ("startup" :: name_list));
+  compile_phrase(Cmmgen.data_segment_table ("_startup" :: name_list));
+  compile_phrase(Cmmgen.code_segment_table ("_startup" :: name_list));
   compile_phrase
-    (Cmmgen.frame_table("startup" :: "system" :: name_list));
+    (Cmmgen.frame_table("_startup" :: "_system" :: name_list));
   Emit.end_assembly();
   close_out oc
 

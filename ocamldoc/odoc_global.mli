@@ -9,6 +9,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_global.mli,v 1.2 2003/11/24 10:41:03 starynke Exp $ *)
+
 (** Global variables. *)
 
 (** A counter for errors. *)

@@ -10,6 +10,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_see_lexer.mll,v 1.3 2003/11/24 10:43:12 starynke Exp $ *)
+
 let print_DEBUG2 s = print_string s ; print_newline ()
 
 (** the lexer for special comments. *)

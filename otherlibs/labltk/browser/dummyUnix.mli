@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: dummyUnix.mli,v 1.3 2001/12/07 13:39:55 xleroy Exp $ *)
+(* $Id: dummyUnix.mli,v 1.4 2003/12/29 22:15:01 doligez Exp $ *)
 
 module Mutex : sig
   type t
@@ -23,5 +23,5 @@ end
 
 module Thread : sig
   type t
-  external create : ('a -> 'b) -> 'a -> t = "caml_input"
+  external create : ('a -> 'b) -> 'a -> t = "caml_ml_input"
 end

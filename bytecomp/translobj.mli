@@ -10,11 +10,19 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: translobj.mli,v 1.4 1999/11/17 18:57:03 xleroy Exp $ *)
+(* $Id: translobj.mli,v 1.6 2004/05/26 11:10:51 garrigue Exp $ *)
 
-val oo_prim: string -> Lambda.lambda
+open Lambda
 
-val meth: string -> Ident.t
+val oo_prim: string -> lambda
+
+val share: structured_constant -> lambda
+val meth: lambda -> string -> lambda * lambda list
 
 val reset_labels: unit -> unit
-val transl_label_init: Lambda.lambda -> Lambda.lambda
+val transl_label_init: lambda -> lambda
+val transl_store_label_init:
+    Ident.t -> int -> ('a -> lambda) -> 'a -> int * lambda
+
+val oo_wrap: Env.t -> bool -> ('a -> lambda) -> 'a -> lambda
+val oo_add_class: Ident.t -> Env.t * bool

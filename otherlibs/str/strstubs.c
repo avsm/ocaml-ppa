@@ -11,9 +11,8 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: strstubs.c,v 1.24 2003/01/02 09:14:35 xleroy Exp $ */
+/* $Id: strstubs.c,v 1.26 2004/05/17 17:10:00 doligez Exp $ */
 
-#include <assert.h>
 #include <string.h>
 #include <ctype.h>
 #include <mlvalues.h>
@@ -283,7 +282,7 @@ static int re_match(value re,
       break;
     }
     default:
-      assert(0);
+      caml_fatal_error ("impossible case in re_match");
     }
     /* Continue with next instruction */
     continue;
@@ -402,7 +401,6 @@ CAMLprim value re_search_forward(value re, value str, value startpos)
   unsigned char * txt = &Byte_u(str, Long_val(startpos));
   unsigned char * endtxt = &Byte_u(str, string_length(str));
   unsigned char * startchars;
-  unsigned char c;
 
   if (txt < starttxt || txt > endtxt)
     invalid_argument("Str.search_forward");
@@ -432,7 +430,6 @@ CAMLprim value re_search_backward(value re, value str, value startpos)
   unsigned char * txt = &Byte_u(str, Long_val(startpos));
   unsigned char * endtxt = &Byte_u(str, string_length(str));
   unsigned char * startchars;
-  unsigned char c;
 
   if (txt < starttxt || txt > endtxt)
     invalid_argument("Str.search_backward");

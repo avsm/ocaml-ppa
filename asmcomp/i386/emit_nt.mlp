@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit_nt.mlp,v 1.21 2003/06/30 15:39:38 xleroy Exp $ *)
+(* $Id: emit_nt.mlp,v 1.24 2004/05/03 12:46:50 xleroy Exp $ *)
 
 (* Emission of Intel 386 assembly code, MASM syntax. *)
 
@@ -372,12 +372,16 @@ let emit_instr i =
         end else
           `	mov	{emit_reg i.res.(0)}, {emit_nativeint n}\n`
     | Lop(Iconst_float s) ->
-        let f = float_of_string s in
-        if f = 0.0 then
+        begin match Int64.bits_of_float (float_of_string s) with
+        | 0x0000_0000_0000_0000L ->       (* +0.0 *)
           `	fldz\n`
-        else if f = 1.0 then
+        | 0x8000_0000_0000_0000L ->       (* -0.0 *)
+          `	fldz\n	fchs\n`
+        | 0x3FF0_0000_0000_0000L ->       (*  1.0 *)
           `	fld1\n`
-        else begin
+        | 0xBFF0_0000_0000_0000L ->       (* -1.0 *)
+          `	fld1\n	fchs\n`
+        | _ ->
           let lbl = new_label() in
           float_constants := (lbl, s) :: !float_constants;
           `	fld	{emit_label lbl}\n`
@@ -461,10 +465,10 @@ let emit_instr i =
     | Lop(Ialloc n) ->
         if !fastcode_flag then begin
           let lbl_redo = new_label() in
-          `{emit_label lbl_redo}:	mov	eax, _young_ptr\n`;
+          `{emit_label lbl_redo}:	mov	eax, _caml_young_ptr\n`;
           `	sub	eax, {emit_int n}\n`;
-          `	mov	_young_ptr, eax\n`;
-          `	cmp	eax, _young_limit\n`;
+          `	mov	_caml_young_ptr, eax\n`;
+          `	cmp	eax, _caml_young_limit\n`;
           let lbl_call_gc = new_label() in
           let lbl_frame = record_frame_label i.live in
           `	jb	{emit_label lbl_call_gc}\n`;
@@ -479,7 +483,7 @@ let emit_instr i =
           | 12 -> `	call	_caml_alloc2\n`
           | 16 -> `	call	_caml_alloc3\n`
           | _  -> `	mov	eax, {emit_int n}\n`;
-                  `	call	_caml_alloc\n`
+                  `	call	_caml_allocN\n`
           end;
           `{record_frame i.live}        lea     {emit_reg i.res.(0)}, [eax+4]\n`
         end
@@ -764,7 +768,7 @@ let fundecl fundecl =
   emit_all fundecl.fun_body;
   List.iter emit_call_gc !call_gc_sites;
   if !range_check_trap > 0 then
-    `{emit_label !range_check_trap}:	jmp	_caml_array_bound_error\n`;
+    `{emit_label !range_check_trap}:	jmp	_caml_ml_array_bound_error\n`;
   begin match !float_constants with
     [] -> ()
   | _  ->
@@ -816,39 +820,39 @@ let data l =
 let begin_assembly() =
   `.386\n`;
   `	.MODEL	FLAT\n\n`;
-  `	EXTERN _young_ptr: DWORD\n`;
-  `	EXTERN _young_limit: DWORD\n`;
+  `	EXTERN _caml_young_ptr: DWORD\n`;
+  `	EXTERN _caml_young_limit: DWORD\n`;
   `	EXTERN _caml_exception_pointer: DWORD\n`;
   `	EXTERN _caml_call_gc: PROC\n`;
   `	EXTERN _caml_c_call: PROC\n`;
-  `	EXTERN _caml_alloc: PROC\n`;
+  `	EXTERN _caml_allocN: PROC\n`;
   `	EXTERN _caml_alloc1: PROC\n`;
   `	EXTERN _caml_alloc2: PROC\n`;
   `	EXTERN _caml_alloc3: PROC\n`;
-  `	EXTERN _caml_array_bound_error: PROC\n`;
+  `	EXTERN _caml_ml_array_bound_error: PROC\n`;
   `	.DATA\n`;
-  let lbl_begin = Compilenv.current_unit_name() ^ "__data_begin" in
+  let lbl_begin = Compilenv.make_symbol (Some "data_begin") in
   add_def_symbol lbl_begin;
   `	PUBLIC	{emit_symbol lbl_begin}\n`;
   `{emit_symbol lbl_begin}	LABEL	DWORD\n`;
   `	.CODE\n`;
-  let lbl_begin = Compilenv.current_unit_name() ^ "__code_begin" in
+  let lbl_begin = Compilenv.make_symbol (Some "code_begin") in
   add_def_symbol lbl_begin;
   `	PUBLIC	{emit_symbol lbl_begin}\n`;
   `{emit_symbol lbl_begin}	LABEL	DWORD\n`
 
 let end_assembly() =
   `	.CODE\n`;
-  let lbl_end = Compilenv.current_unit_name() ^ "__code_end" in
+  let lbl_end = Compilenv.make_symbol (Some "code_end") in
   add_def_symbol lbl_end;
   `	PUBLIC	{emit_symbol lbl_end}\n`;
   `{emit_symbol lbl_end}	LABEL	DWORD\n`;
   `	.DATA\n`;
-  let lbl_end = Compilenv.current_unit_name() ^ "__data_end" in
+  let lbl_end = Compilenv.make_symbol (Some "data_end") in
   add_def_symbol lbl_end;
   `	PUBLIC	{emit_symbol lbl_end}\n`;
   `{emit_symbol lbl_end}	LABEL	DWORD\n`;
-  let lbl = Compilenv.current_unit_name() ^ "__frametable" in
+  let lbl = Compilenv.make_symbol (Some "frametable") in
   add_def_symbol lbl;
   `	PUBLIC	{emit_symbol lbl}\n`;
   `{emit_symbol lbl}	DWORD	{emit_int (List.length !frame_descriptors)}\n`;

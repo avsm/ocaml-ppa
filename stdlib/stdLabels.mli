@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stdLabels.mli,v 1.8 2002/01/04 03:39:46 garrigue Exp $ *)
+(* $Id: stdLabels.mli,v 1.11.2.1 2004/06/22 14:23:24 xleroy Exp $ *)
 
 (** Standard labeled libraries.
 
@@ -27,8 +27,8 @@ module Array :
     external length : 'a array -> int = "%array_length"
     external get : 'a array -> int -> 'a = "%array_safe_get"
     external set : 'a array -> int -> 'a -> unit = "%array_safe_set"
-    external make : int -> 'a -> 'a array = "make_vect"
-    external create : int -> 'a -> 'a array = "make_vect"
+    external make : int -> 'a -> 'a array = "caml_make_vect"
+    external create : int -> 'a -> 'a array = "caml_make_vect"
     val init : int -> f:(int -> 'a) -> 'a array
     val make_matrix : dimx:int -> dimy:int -> 'a -> 'a array array
     val create_matrix : dimx:int -> dimy:int -> 'a -> 'a array array
@@ -50,6 +50,7 @@ module Array :
     val fold_right : f:('a -> 'b -> 'b) -> 'a array -> init:'b -> 'b
     val sort : cmp:('a -> 'a -> int) -> 'a array -> unit
     val stable_sort : cmp:('a -> 'a -> int) -> 'a array -> unit
+    val fast_sort : cmp:('a -> 'a -> int) -> 'a array -> unit
     external unsafe_get : 'a array -> int -> 'a = "%array_unsafe_get"
     external unsafe_set : 'a array -> int -> 'a -> unit = "%array_unsafe_set"
   end
@@ -97,6 +98,8 @@ module List :
     val combine : 'a list -> 'b list -> ('a * 'b) list
     val sort : cmp:('a -> 'a -> int) -> 'a list -> 'a list
     val stable_sort : cmp:('a -> 'a -> int) -> 'a list -> 'a list
+    val fast_sort : cmp:('a -> 'a -> int) -> 'a list -> 'a list
+    val merge : cmp:('a -> 'a -> int) -> 'a list -> 'a list -> 'a list
   end
 
 module String :
@@ -104,7 +107,7 @@ module String :
     external length : string -> int = "%string_length"
     external get : string -> int -> char = "%string_safe_get"
     external set : string -> int -> char -> unit = "%string_safe_set"
-    external create : int -> string = "create_string"
+    external create : int -> string = "caml_create_string"
     val make : int -> char -> string
     val copy : string -> string
     val sub : string -> pos:int -> len:int -> string
@@ -126,11 +129,13 @@ module String :
     val lowercase : string -> string
     val capitalize : string -> string
     val uncapitalize : string -> string
+    type t = string
+    val compare: t -> t -> int
     external unsafe_get : string -> int -> char = "%string_unsafe_get"
     external unsafe_set : string -> int -> char -> unit = "%string_unsafe_set"
     external unsafe_blit :
       src:string -> src_pos:int -> dst:string -> dst_pos:int -> len:int ->
-        unit = "blit_string" "noalloc"
-    external unsafe_fill :
-      string -> pos:int -> len:int -> char -> unit = "fill_string" "noalloc"
+        unit = "caml_blit_string" "noalloc"
+    external unsafe_fill : string -> pos:int -> len:int -> char -> unit
+      = "caml_fill_string" "noalloc"
   end

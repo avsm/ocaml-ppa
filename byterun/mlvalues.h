@@ -11,12 +11,14 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: mlvalues.h,v 1.40 2003/03/31 08:41:12 xleroy Exp $ */
+/* $Id: mlvalues.h,v 1.48.6.1 2004/07/07 01:14:43 garrigue Exp $ */
 
-#ifndef _mlvalues_
-#define _mlvalues_
+#ifndef CAML_MLVALUES_H
+#define CAML_MLVALUES_H
 
-
+#ifndef CAML_NAME_SPACE
+#include "compatibility.h"
+#endif
 #include "config.h"
 #include "misc.h"
 
@@ -162,7 +164,7 @@ typedef opcode_t * code_t;
 
 /* NOTE: [Forward_tag] and [Infix_tag] must be just under
    [No_scan_tag], with [Infix_tag] the lower one.
-   See [oldify_one] in minor_gc.c for more details.
+   See [caml_oldify_one] in minor_gc.c for more details.
 
    NOTE: Update stdlib/obj.ml whenever you change the tags.
  */
@@ -185,6 +187,8 @@ typedef opcode_t * code_t;
 #define Object_tag 248
 #define Class_val(val) Field((val), 0)
 #define Oid_val(val) Long_val(Field((val), 1))
+CAMLextern value caml_get_public_method (value obj, value tag);
+/* called as: callback(caml_get_public_method(obj, hash_variant(name)), obj) */
 
 /* Special case of tuples of fields: closures */
 #define Closure_tag 247
@@ -195,7 +199,7 @@ typedef opcode_t * code_t;
 #define Lazy_tag 246
 
 /* Another special case: variants */
-CAMLextern value hash_variant(char * tag);
+CAMLextern value caml_hash_variant(char * tag);
 
 /* 2- If tag >= No_scan_tag : a sequence of bytes. */
 
@@ -214,7 +218,7 @@ CAMLextern value hash_variant(char * tag);
 /* Strings. */
 #define String_tag 252
 #define String_val(x) ((char *) Bp_val(x))
-CAMLextern mlsize_t string_length (value);   /* size in bytes */
+CAMLextern mlsize_t caml_string_length (value);   /* size in bytes */
 
 /* Floating-point numbers. */
 #define Double_tag 253
@@ -223,8 +227,10 @@ CAMLextern mlsize_t string_length (value);   /* size in bytes */
 #define Double_val(v) (* (double *)(v))
 #define Store_double_val(v,d) (* (double *)(v) = (d))
 #else
-CAMLextern double Double_val (value);
-CAMLextern void Store_double_val (value,double);
+CAMLextern double caml_Double_val (value);
+CAMLextern void caml_Store_double_val (value,double);
+#define Double_val(v) caml_Double_val(v)
+#define Store_double_val(v,d) caml_Store_double_val(v,d)
 #endif
 
 /* Arrays of floating-point numbers. */
@@ -252,13 +258,14 @@ struct custom_operations;       /* defined in [custom.h] */
 #ifndef ARCH_ALIGN_INT64
 #define Int64_val(v) (*((int64 *) Data_custom_val(v)))
 #else
-CAMLextern int64 Int64_val(value v);
+CAMLextern int64 caml_Int64_val(value v);
+#define Int64_val(v) caml_Int64_val(v)
 #endif
 
 /* 3- Atoms are 0-tuples.  They are statically allocated once and for all. */
 
-CAMLextern header_t atom_table[];
-#define Atom(tag) (Val_hp (&(atom_table [(tag)])))
+CAMLextern header_t caml_atom_table[];
+#define Atom(tag) (Val_hp (&(caml_atom_table [(tag)])))
 
 /* Is_atom tests whether a well-formed block is statically allocated
    outside the heap. For the bytecode system, only zero-sized block (Atoms)
@@ -269,10 +276,11 @@ CAMLextern header_t atom_table[];
 #ifndef NATIVE_CODE
 #define Is_atom(v) ((v) >= Atom(0) && (v) <= Atom(255))
 #else
-CAMLextern char * static_data_start, * static_data_end;
+CAMLextern char * caml_static_data_start, * caml_static_data_end;
 #define Is_atom(v) \
-  ((((char *)(v) >= static_data_start && (char *)(v) < static_data_end) || \
-   ((v) >= Atom(0) && (v) <= Atom(255))))
+  ((((char *)(v) >= caml_static_data_start \
+     && (char *)(v) < caml_static_data_end) \
+    || ((v) >= Atom(0) && (v) <= Atom(255))))
 #endif
 
 /* Booleans are integers 0 or 1 */
@@ -293,7 +301,7 @@ CAMLextern char * static_data_start, * static_data_end;
 
 /* The table of global identifiers */
 
-extern value global_data;
+extern value caml_global_data;
 
 
-#endif /* _mlvalues_ */
+#endif /* CAML_MLVALUES_H */

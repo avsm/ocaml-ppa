@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stringLabels.mli,v 1.7 2001/12/07 13:41:00 xleroy Exp $ *)
+(* $Id: stringLabels.mli,v 1.8.6.1 2004/06/22 14:23:25 xleroy Exp $ *)
 
 (** String operations. *)
 
@@ -33,7 +33,7 @@ external set : string -> int -> char -> unit = "%string_safe_set"
    0 to [(String.length s - 1)].
    You can also write [s.[n] <- c] instead of [String.set s n c]. *)
 
-external create : int -> string = "create_string"
+external create : int -> string = "caml_create_string"
 (** [String.create n] returns a fresh string of length [n].
    The string initially contains arbitrary characters.
    Raise [Invalid_argument] if [n < 0] or [n > Sys.max_string_length].
@@ -142,6 +142,14 @@ val capitalize : string -> string
 val uncapitalize : string -> string
 (** Return a copy of the argument, with the first letter set to lowercase. *)
 
+type t = string
+(** An alias for the type of strings. *)
+
+val compare: t -> t -> int
+(** The comparison function for strings, with the same specification as
+    {!Pervasives.compare}.  Along with the type [t], this function [compare]
+    allows the module [String] to be passed as argument to the functors
+    {!Set.Make} and {!Map.Make}. *)
 
 (**/**)
 
@@ -149,6 +157,6 @@ external unsafe_get : string -> int -> char = "%string_unsafe_get"
 external unsafe_set : string -> int -> char -> unit = "%string_unsafe_set"
 external unsafe_blit :
   src:string -> src_pos:int -> dst:string -> dst_pos:int -> len:int ->
-    unit = "blit_string" "noalloc"
+    unit = "caml_blit_string" "noalloc"
 external unsafe_fill :
-  string -> pos:int -> len:int -> char -> unit = "fill_string" "noalloc"
+  string -> pos:int -> len:int -> char -> unit = "caml_fill_string" "noalloc"

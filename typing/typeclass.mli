@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typeclass.mli,v 1.16 2003/06/19 15:53:53 xleroy Exp $ *)
+(* $Id: typeclass.mli,v 1.18 2003/12/01 00:32:11 garrigue Exp $ *)
 
 open Asttypes
 open Types
@@ -45,6 +45,8 @@ val approx_class_declarations:
    Ident.t * type_declaration *
    Ident.t * type_declaration) list
 
+val virtual_methods: Types.class_signature -> label list
+
 type error =
     Unconsistent_constraint of (type_expr * type_expr) list
   | Method_type_mismatch of string * (type_expr * type_expr) list
@@ -71,6 +73,7 @@ type error =
   | Cannot_coerce_self of type_expr
   | Non_collapsable_conjunction of
       Ident.t * Types.class_declaration * (type_expr * type_expr) list
+  | Final_self_clash of (type_expr * type_expr) list
 
 exception Error of Location.t * error
 

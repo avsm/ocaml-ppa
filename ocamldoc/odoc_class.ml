@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_class.ml,v 1.5 2004/03/26 15:57:02 guesdon Exp $ *)
 
 (** Representation and manipulation of classes and class types.*)
 
@@ -35,7 +36,7 @@ and class_apply = {
     capp_name : Name.t ; (** The complete name of the applied class *)
     mutable capp_class : t_class option;  (** The associated t_class if we found it *)
     capp_params : Types.type_expr list; (** The type of expressions the class is applied to *)
-    capp_params_code : string list ; (** The code of these exprssions *)
+    capp_params_code : string list ; (** The code of these expressions *)
   } 
 
 and class_constr = {
@@ -249,3 +250,4 @@ let class_type_parameter_text_by_name clt label =
           None
 
         
+(* eof $Id: odoc_class.ml,v 1.5 2004/03/26 15:57:02 guesdon Exp $ *)

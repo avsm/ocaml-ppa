@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: threadUnix.mli,v 1.21 2001/12/28 23:14:14 guesdon Exp $ *)
+(* $Id: threadUnix.mli,v 1.21.6.1 2004/06/22 17:18:49 remy Exp $ *)
 
 (** Thread-compatible system calls.
 
@@ -34,6 +34,7 @@ val system : string -> Unix.process_status
 
 val read : Unix.file_descr -> string -> int -> int -> int
 val write : Unix.file_descr -> string -> int -> int -> int
+val single_write : Unix.file_descr -> string -> int -> int -> int
 
 (** {6 Input/output with timeout} *)
 

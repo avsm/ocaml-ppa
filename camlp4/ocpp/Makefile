@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 2003/07/10 12:28:33 michel Exp $
+# $Id: Makefile,v 1.6 2004/05/12 15:22:48 mauny Exp $
 
 include ../config/Makefile
 
@@ -12,7 +12,7 @@ OBJS=ocpp.cmo
 all: ocpp$(EXE)
 
 ocpp$(EXE): $(OBJS)
-	$(OCAMLC) $(LINKFLAGS) ../boot/stdpp.cmo ../camlp4/quotation.cmo ../odyl/odyl.cma $(OBJS) ../odyl/odyl.cmo -linkall -o ocpp$(EXE)
+	$(OCAMLC) $(LINKFLAGS) ../boot/stdpp.cmo ../camlp4/reloc.cmo ../camlp4/quotation.cmo ../odyl/odyl.cma $(OBJS) ../odyl/odyl.cmo -linkall -o ocpp$(EXE)
 
 clean::
 	rm -f *.cm[ioa] *.pp[io] *.o *.out *.bak .*.bak ocpp$(EXE)

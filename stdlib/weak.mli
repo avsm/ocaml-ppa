@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: weak.mli,v 1.14 2003/03/12 16:41:39 doligez Exp $ *)
+(* $Id: weak.mli,v 1.15 2004/02/02 14:43:12 doligez Exp $ *)
 
 (** Arrays of weak pointers and hash tables of weak pointers. *)
 
@@ -95,7 +95,7 @@ val blit : 'a t -> int -> 'a t -> int -> int -> unit
     is [true].
 
     The [equal] relation must be able to work on a shallow copy of
-    the values and give the same result as with the value itself.
+    the values and give the same result as with the values themselves.
     *)
 
 module type S = sig

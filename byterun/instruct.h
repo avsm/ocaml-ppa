@@ -11,9 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: instruct.h,v 1.18 2001/12/07 13:39:29 xleroy Exp $ */
+/* $Id: instruct.h,v 1.20 2004/05/26 11:10:51 garrigue Exp $ */
 
 /* The instruction set. */
+
+#ifndef CAML_INSTRUCT_H
+#define CAML_INSTRUCT_H
 
 enum instructions {
   ACC0, ACC1, ACC2, ACC3, ACC4, ACC5, ACC6, ACC7,
@@ -50,6 +53,9 @@ enum instructions {
   BEQ, BNEQ,  BLTINT, BLEINT, BGTINT, BGEINT,
   ULTINT, UGEINT,
   BULTINT, BUGEINT,
+  GETPUBMET, GETDYNMET,
   STOP,
   EVENT, BREAK
 };
+
+#endif /* CAML_INSTRUCT_H */

@@ -11,23 +11,26 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: prims.h,v 1.7 2003/05/26 12:41:54 xleroy Exp $ */
+/* $Id: prims.h,v 1.10 2004/02/22 15:07:51 xleroy Exp $ */
 
 /* Interface with C primitives. */
 
-#ifndef _prims_
-#define _prims_
+#ifndef CAML_PRIMS_H
+#define CAML_PRIMS_H
 
 typedef value (*c_primitive)();
 
-extern c_primitive builtin_cprim[];
-extern char * names_of_builtin_cprim[];
+extern c_primitive caml_builtin_cprim[];
+extern char * caml_names_of_builtin_cprim[];
 
-extern struct ext_table prim_table;
+extern struct ext_table caml_prim_table;
 #ifdef DEBUG
-extern struct ext_table prim_name_table;
+extern struct ext_table caml_prim_name_table;
 #endif
 
-#define Primitive(n) ((c_primitive)(prim_table.contents[n]))
+#define Primitive(n) ((c_primitive)(caml_prim_table.contents[n]))
 
-#endif /* _prims_ */
+extern char * caml_section_table;
+extern asize_t caml_section_table_size;
+
+#endif /* CAML_PRIMS_H */

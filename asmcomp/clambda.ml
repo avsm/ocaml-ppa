@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: clambda.ml,v 1.15 2001/02/19 20:15:36 maranget Exp $ *)
+(* $Id: clambda.ml,v 1.16 2004/05/26 11:10:27 garrigue Exp $ *)
 
 (* A variant of the "lambda" code with direct / indirect calls explicit
    and closures explicit too *)
@@ -40,7 +40,7 @@ type ulambda =
   | Uwhile of ulambda * ulambda
   | Ufor of Ident.t * ulambda * ulambda * direction_flag * ulambda
   | Uassign of Ident.t * ulambda
-  | Usend of ulambda * ulambda * ulambda list
+  | Usend of meth_kind * ulambda * ulambda * ulambda list
 
 and ulambda_switch =
   { us_index_consts: int array;

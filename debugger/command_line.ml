@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: command_line.ml,v 1.17 2003/09/09 16:02:19 xleroy Exp $ *)
+(* $Id: command_line.ml,v 1.21 2003/11/21 16:10:56 doligez Exp $ *)
 
 (************************ Reading and executing commands ***************)
 
@@ -208,6 +208,14 @@ let instr_cd ppf lexbuf =
       with
       | Sys_error s ->
           error s
+
+let instr_shell ppf lexbuf =
+  let cmdarg = argument_list_eol argument lexbuf in
+  let cmd = String.concat " " cmdarg in
+  (* perhaps we should use $SHELL -c ? *)
+  let err = Sys.command cmd in
+  if (err != 0) then 
+    eprintf "Shell command %S failed with exit code %d\n%!" cmd err
 
 let instr_pwd ppf lexbuf =
   eol lexbuf;
@@ -804,16 +812,18 @@ let info_checkpoints ppf lexbuf =
                Printf.printf "%19Ld %5d\n" time pid)
           !checkpoints))
 
+let info_one_breakpoint ppf (num, ev) =
+  fprintf ppf "%3d %10d  %s@." num ev.ev_pos (Pos.get_desc ev);
+;;
+
 let info_breakpoints ppf lexbuf =
   eol lexbuf;
-  if !breakpoints = [] then fprintf ppf "No breakpoint.@."
-  else
-    (fprintf ppf "Num    Address  Where@.";
-     List.iter
-       (function (num, {ev_pos = pc; ev_module = md; ev_char = char}) ->
-          fprintf ppf "%3d %10d  in %s, character %d@." num pc md
-                  char.Lexing.pos_cnum)
-       (List.rev !breakpoints))
+  if !breakpoints = [] then fprintf ppf "No breakpoints.@."
+  else begin
+    fprintf ppf "Num    Address  Where@.";
+    List.iter (info_one_breakpoint ppf) (List.rev !breakpoints);
+  end
+;;
 
 let info_events ppf lexbuf =
   ensure_loaded ();
@@ -891,6 +901,9 @@ With no argument, reset the search path." };
      { instr_name = "quit"; instr_prio = false;
        instr_action = instr_quit; instr_repeat = false; instr_help =
 "exit the debugger." };
+     { instr_name = "shell"; instr_prio = false;
+       instr_action = instr_shell; instr_repeat = true; instr_help =
+"Execute a given COMMAND thru the system shell." };
       (* Displacements *)
      { instr_name = "run"; instr_prio = true;
        instr_action = instr_run; instr_repeat = true; instr_help =

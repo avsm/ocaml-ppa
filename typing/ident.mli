@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ident.mli,v 1.15 2003/05/12 09:34:04 xleroy Exp $ *)
+(* $Id: ident.mli,v 1.17 2004/01/04 14:32:34 doligez Exp $ *)
 
 (* Identifiers (unique names) *)
 
@@ -18,6 +18,7 @@ type t
 
 val create: string -> t
 val create_persistent: string -> t
+val create_predef_exn: string -> t
 val rename: t -> t
 val name: t -> string
 val unique_name: t -> string
@@ -39,6 +40,7 @@ val hide: t -> t
 
 val make_global: t -> unit
 val global: t -> bool
+val is_predef_exn: t -> bool
 
 val binding_time: t -> int
 val current_time: unit -> int
@@ -54,3 +56,4 @@ val empty: 'a tbl
 val add: t -> 'a -> 'a tbl -> 'a tbl
 val find_same: t -> 'a tbl -> 'a
 val find_name: string -> 'a tbl -> 'a
+val keys: 'a tbl -> t list

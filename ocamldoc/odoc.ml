@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc.ml,v 1.7.4.1 2004/07/09 10:42:09 guesdon Exp $ *)
 
 (** Main module for bytecode. *)
 
@@ -17,6 +18,8 @@ open Clflags
 open Misc
 open Format
 open Typedtree
+
+module M = Odoc_messages
 
 let print_DEBUG s = print_string s ; print_newline () 
 
@@ -39,6 +42,26 @@ let (cmo_or_cma_opt, paths) =
 
 let _ = print_DEBUG "Fin analyse des arguments pour le dynamic load"
 
+(** Return the real name of the file to load, 
+   searching it in the paths if it is
+   a simple name and not in the current directory. *)
+let get_real_filename name =
+   if Filename.basename name <> name then
+     name
+   else
+     (
+      let paths = Filename.current_dir_name :: paths @ [Odoc_config.custom_generators_path] in
+      try
+	let d = List.find
+	    (fun d -> Sys.file_exists (Filename.concat d name))
+	    paths
+	in
+	Filename.concat d name
+      with
+	Not_found ->
+	  failwith (M.file_not_found_in_paths paths name)
+     )
+
 let _ =
   match cmo_or_cma_opt with
     None ->
@@ -48,9 +71,8 @@ let _ =
       Dynlink.init ();
       Dynlink.allow_unsafe_modules true;
       try
-        Dynlink.add_available_units Odoc_crc.crc_unit_list ;
-        let _ = Dynlink.loadfile file in
-        ()
+        let real_file = get_real_filename file in
+        ignore(Dynlink.loadfile real_file)
       with
         Dynlink.Error e -> 
           prerr_endline (Odoc_messages.load_file_error file (Dynlink.error_message e)) ;
@@ -58,7 +80,8 @@ let _ =
       | Not_found ->
           prerr_endline (Odoc_messages.load_file_error file "Not_found");
           exit 1  
-      | Sys_error s ->
+      | Sys_error s
+      |	Failure s ->
           prerr_endline (Odoc_messages.load_file_error file s);
           exit 1  
 
@@ -124,3 +147,4 @@ let _ =
     exit 0
   
 
+(* eof $Id: odoc.ml,v 1.7.4.1 2004/07/09 10:42:09 guesdon Exp $ *)

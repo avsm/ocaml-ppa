@@ -10,22 +10,22 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stdpp.mli,v 1.4 2003/07/10 12:28:25 michel Exp $ *)
+(* $Id: stdpp.mli,v 1.5 2004/05/12 15:22:42 mauny Exp $ *)
 
 (** Standard definitions. *)
 
-exception Exc_located of (int * int) and exn;
+exception Exc_located of Token.flocation and exn;
    (** [Exc_located loc e] is an encapsulation of the exception [e] with
        the input location [loc]. To be used in quotation expanders
        and in grammars to specify some input location for an error.
        Do not raise this exception directly: rather use the following
        function [raise_with_loc]. *)
 
-value raise_with_loc : (int * int) -> exn -> 'a;
+value raise_with_loc : Token.flocation -> exn -> 'a;
    (** [raise_with_loc loc e], if [e] is already the exception [Exc_located],
        re-raise it, else raise the exception [Exc_located loc e]. *)
 
-value line_of_loc : string -> (int * int) -> (string * int * int * int);
+value line_of_loc : string -> Token.flocation -> (string * int * int * int);
    (** [line_of_loc fname loc] reads the file [fname] up to the
        location [loc] and returns the real input file, the line number
        and the characters location in the line; the real input file

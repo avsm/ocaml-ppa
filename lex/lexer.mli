@@ -10,11 +10,13 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexer.mli,v 1.5 1999/11/17 18:57:33 xleroy Exp $ *)
+(* $Id: lexer.mli,v 1.6 2004/04/21 23:26:05 doligez Exp $ *)
 
 val main: Lexing.lexbuf -> Parser.token
 
-exception Lexical_error of string * int * int
+exception Lexical_error of string * string * int * int
 
+(*n
 val line_num: int ref
 val line_start_pos: int ref
+*)

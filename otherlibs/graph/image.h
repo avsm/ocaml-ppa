@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: image.h,v 1.7 2001/12/07 13:39:54 xleroy Exp $ */
+/* $Id: image.h,v 1.8 2004/03/24 15:02:06 starynke Exp $ */
 
 struct grimage {
   int width, height;            /* Dimensions of the image */
@@ -26,4 +26,4 @@ struct grimage {
 
 #define Transparent (-1)
 
-value gr_new_image(int w, int h);
+value caml_gr_new_image(int w, int h);

@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_merge.mli,v 1.3 2003/11/24 10:41:05 starynke Exp $ *)
 
 (** Merge of information from [.ml] and [.mli] for a module.*)
 

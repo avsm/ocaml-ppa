@@ -10,6 +10,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_text_lexer.mll,v 1.8 2004/05/23 10:41:50 guesdon Exp $ *)
+
 (** The lexer for string to build text structures. *)
 
 open Lexing
@@ -158,8 +160,8 @@ let begin_clt_ref = "{!classtype:"blank_nl | "{!classtype:"
 let begin_att_ref = "{!attribute:"blank_nl | "{!attribute:"
 let begin_met_ref = "{!method:"blank_nl | "{!method:"
 let begin_sec_ref = "{!section:"blank_nl | "{!section:"
-
-
+let begin_mod_list_ref = "{!modules:"blank_nl | "{!modules:"
+let index_list = "{!indexlist}"
 let begin_superscript = "{^"blank_nl | "{^"
 let begin_subscript = "{_"blank_nl | "{_"
 
@@ -416,13 +418,33 @@ rule main = parse
       if !verb_mode or !latex_mode or !ele_ref_mode then
         Char (Lexing.lexeme lexbuf)
       else
-        if !code_pre_mode then 
-          (
-           code_pre_mode := false;
-           END_CODE_PRE 
-          )
-        else
-          Char (Lexing.lexeme lexbuf)
+	if !open_brackets >= 1 then
+	  (
+	   lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_curr_pos - 1;
+           lexbuf.Lexing.lex_curr_p <- 
+	     { lexbuf.Lexing.lex_curr_p with
+	       pos_cnum = lexbuf.Lexing.lex_curr_p.pos_cnum - 1
+	     } ;
+	   decr char_number ;
+	   if !open_brackets > 1 then
+	     (
+	      decr open_brackets;
+              Char "]"
+	     )
+	   else
+	     (
+              open_brackets := 0;
+              END_CODE 
+             )
+	  )
+	else
+          if !code_pre_mode then 
+            (
+             code_pre_mode := false;
+             END_CODE_PRE 
+            )
+          else
+            Char (Lexing.lexeme lexbuf)
     }
 
 | begin_ele_ref end
@@ -619,6 +641,34 @@ rule main = parse
           )
     }
 
+| begin_mod_list_ref
+    {
+      incr_cpts lexbuf ;
+      if !verb_mode or !latex_mode or !code_pre_mode or !open_brackets >= 1 then
+        Char (Lexing.lexeme lexbuf)
+      else
+        if not !ele_ref_mode then
+          (
+           ele_ref_mode := true;
+           MOD_LIST_REF
+          )
+        else
+          (
+           Char (Lexing.lexeme lexbuf)
+          )
+    }
+
+| index_list
+    {
+      incr_cpts lexbuf ;
+      if !verb_mode or !latex_mode or !code_pre_mode or !open_brackets >= 1 then
+        Char (Lexing.lexeme lexbuf)
+      else
+	if not !ele_ref_mode then
+          INDEX_LIST
+	else
+	  Char (Lexing.lexeme lexbuf)
+    } 
 
 | begin_verb    
     {
@@ -686,7 +736,10 @@ rule main = parse
          END_SHORTCUT_LIST
         )
       else
-        BLANK_LINE
+	if !latex_mode or (!open_brackets >= 1) or !code_pre_mode or !ele_ref_mode or !verb_mode then
+	  Char (Lexing.lexeme lexbuf)
+	else
+          BLANK_LINE
     } 
    
 | eof           { EOF }

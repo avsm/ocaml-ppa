@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.mingw,v 1.11 2003/07/08 15:12:58 xleroy Exp $
+# $Id: Makefile.mingw,v 1.12 2004/04/01 13:08:56 xleroy Exp $
 
 # Configuration for Windows, Mingw compiler
 
@@ -108,7 +108,8 @@ BINUTILS_OBJCOPY=objcopy
 OTHERLIBRARIES=win32unix systhreads str num win32graph dynlink bigarray labltk
 
 ### Name of the target architecture for the "num" library
-BIGNUM_ARCH=C
+BNG_ARCH=ia32
+BNG_ASM_LEVEL=1
 
 ### Configuration for LablTk
 # Set TK_ROOT to the directory where you installed TCL/TK 8.3

@@ -11,24 +11,24 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: sound.c,v 1.8 2001/12/07 13:39:55 xleroy Exp $ */
+/* $Id: sound.c,v 1.9 2004/03/24 15:02:05 starynke Exp $ */
 
 #include "libgraph.h"
 
-value gr_sound(value vfreq, value vdur)
+value caml_gr_sound(value vfreq, value vdur)
 {
   XKeyboardControl kbdcontrol;
 
-  gr_check_open();
+  caml_gr_check_open();
   kbdcontrol.bell_pitch = Int_val(vfreq);
   kbdcontrol.bell_duration = Int_val(vdur);
-  XChangeKeyboardControl(grdisplay, KBBellPitch | KBBellDuration,
+  XChangeKeyboardControl(caml_gr_display, KBBellPitch | KBBellDuration,
                          &kbdcontrol);
-  XBell(grdisplay, 0);
+  XBell(caml_gr_display, 0);
   kbdcontrol.bell_pitch = -1;   /* restore default value */
   kbdcontrol.bell_duration = -1; /* restore default value */
-  XChangeKeyboardControl(grdisplay, KBBellPitch | KBBellDuration,
+  XChangeKeyboardControl(caml_gr_display, KBBellPitch | KBBellDuration,
                          &kbdcontrol);
-  XFlush(grdisplay);
+  XFlush(caml_gr_display);
   return Val_unit;
 }

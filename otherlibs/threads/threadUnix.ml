@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: threadUnix.ml,v 1.18 2001/12/07 13:40:23 xleroy Exp $ *)
+(* $Id: threadUnix.ml,v 1.18.6.1 2004/06/22 17:18:49 remy Exp $ *)
 
 (* Module [ThreadUnix]: thread-compatible system calls *)
 
@@ -23,6 +23,7 @@ let waitpid = Unix.waitpid
 let system = Unix.system
 let read = Unix.read
 let write = Unix.write
+let single_write = Unix.single_write
 let select = Unix.select
 let pipe = Unix.pipe
 let open_process_in = Unix.open_process_in

@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_sig.mli,v 1.5 2003/11/24 10:43:12 starynke Exp $ *)
 
 (** The module for analysing a signature and source code and creating modules, classes, ..., elements.*)
 

@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_type.ml,v 1.5 2003/11/24 10:44:07 starynke Exp $ *)
 
 (** Representation and manipulation of a type, but not class nor module type.*)
 

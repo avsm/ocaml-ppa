@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ctype.ml,v 1.170 2003/09/25 08:05:38 xleroy Exp $ *)
+(* $Id: ctype.ml,v 1.179.2.1 2004/07/07 01:45:21 garrigue Exp $ *)
 
 (* Operations on core types *)
 
@@ -177,6 +177,8 @@ module TypePairs =
 
 (**** Object field manipulation. ****)
 
+let dummy_method = "*dummy method*"
+
 let object_fields ty =
   match (repr ty).desc with
     Tobject (fields, _) -> fields
@@ -222,6 +224,7 @@ let rec opened_object ty =
     Tobject (t, _)     -> opened_object t
   | Tfield(_, _, _, t) -> opened_object t
   | Tvar               -> true
+  | Tunivar            -> true
   | _                  -> false
 
 (**** Close an object ****)
@@ -452,7 +455,7 @@ let closed_class params sign =
   List.iter mark_type params;
   mark_type rest;
   List.iter
-    (fun (lab, _, ty) -> if lab = "*dummy method*" then mark_type ty)
+    (fun (lab, _, ty) -> if lab = dummy_method then mark_type ty)
     fields;
   try
     mark_type_node (repr sign.cty_self);
@@ -603,13 +606,8 @@ let rec update_level env level ty =
         end;
         set_level ty level;
         iter_type_expr (update_level env level) ty
-    | Tfield(_, k, _, _) ->
-        begin match field_kind_repr k with
-          Fvar _ (* {contents = None} *) -> raise (Unify [(ty, newvar2 level)])
-        | _                              -> ()
-        end;
-        set_level ty level;
-        iter_type_expr (update_level env level) ty
+    | Tfield(lab, _, _, _) when lab = dummy_method ->
+        raise (Unify [(ty, newvar2 level)])
     | _ ->
         set_level ty level;
         (* XXX what about abbreviations in Tconstr ? *)
@@ -824,7 +822,9 @@ let instance_class params cty =
           {cty_self = copy sign.cty_self;
            cty_vars =
              Vars.map (function (mut, ty) -> (mut, copy ty)) sign.cty_vars;
-           cty_concr = sign.cty_concr}
+           cty_concr = sign.cty_concr;
+           cty_inher =
+             List.map (fun (p,tl) -> (p, List.map copy tl)) sign.cty_inher}
     | Tcty_fun (l, ty, cty) ->
         Tcty_fun (l, copy ty, copy_class_type cty)
   in
@@ -1003,26 +1003,6 @@ let apply env params body args =
                               (****************************)
                               (*  Abbreviation expansion  *)
                               (****************************)
-
-
-(* Search whether the expansion has been memorized. *)
-let rec find_expans p1 =
-  function
-    Mnil ->
-      None
-  | Mcons (p2, ty0, ty, _) when Path.same p1 p2 ->
-      (* assert
-        begin match (repr ty).desc with
-          Tconstr (p3, _, _) when Path.same p2 p3-> false
-        | _ -> true
-        end;
-      assert (repr ty0 != repr ty); *)
-      Some ty
-  | Mcons (_, _, _, rem) ->
-      find_expans p1 rem
-  | Mlink {contents = rem} ->
-      find_expans p1 rem
-
 
 (* 
    If the environnement has changed, memorized expansions might not
@@ -1246,21 +1226,21 @@ let occur env ty0 ty =
    be done at meta-level, using bindings in univar_pairs *)
 let rec unify_univar t1 t2 = function
     (cl1, cl2) :: rem ->
-      let repr_univ = List.map (fun (t,o) -> repr t, o) in
-      let cl1 = repr_univ cl1 and cl2 = repr_univ cl2 in
-      begin try
-        let r1 = List.assq t1 cl1 in
-        match !r1 with
-          Some t -> if t2 != repr t then raise (Unify [])
-        | None ->
-            try
-              let r2 = List.assq t2 cl2 in
-              if !r2 <> None then raise (Unify []);
-              set_univar r1 t2; set_univar r2 t1
-            with Not_found ->
-              raise (Unify [])
-      with Not_found ->
-        unify_univar t1 t2 rem
+      let find_univ t cl =
+        try
+          let (_, r) = List.find (fun (t',_) -> t == repr t') cl in
+          Some r
+        with Not_found -> None
+      in
+      begin match find_univ t1 cl1, find_univ t2 cl2 with
+        Some {contents=Some t'2}, Some _ when t2 == repr t'2 ->
+          ()
+      | Some({contents=None} as r1), Some({contents=None} as r2) ->
+          set_univar r1 t2; set_univar r2 t1
+      | None, None ->
+          unify_univar t1 t2 rem
+      | _ ->
+          raise (Unify [])
       end
   | [] -> raise (Unify [])
 
@@ -1321,6 +1301,13 @@ let expand_trace env trace =
     (fun (t1, t2) rem ->
        (repr t1, full_expand env t1)::(repr t2, full_expand env t2)::rem)
     trace []
+
+(* build a dummy variant type *)
+let mkvariant fields closed =
+  newgenty
+    (Tvariant
+       {row_fields = fields; row_closed = closed; row_more = newvar();
+        row_bound = []; row_fixed = false; row_name = None })
 
 (**** Unification ****)
 
@@ -1404,11 +1391,14 @@ let rec unify env t1 t2 =
 
 and unify2 env t1 t2 =
   (* Second step: expansion of abbreviations *)
-  let t1' = expand_head env t1 in
-  let t2' = expand_head env t2 in
-  (* Expansion may have changed the representative of the types... *)
-  let t1' = expand_head env t1' in
-  let t2' = expand_head env t2' in
+  let rec expand_both t1'' t2'' =
+    let t1' = expand_head env t1 in
+    let t2' = expand_head env t2 in
+    (* Expansion may have changed the representative of the types... *)
+    if t1' == t1'' && t2' == t2'' then (t1',t2') else
+    expand_both t1' t2'
+  in
+  let t1', t2' = expand_both t1 t2 in
   if t1' == t2' then () else
 
   let t1 = repr t1 and t2 = repr t2 in
@@ -1465,7 +1455,7 @@ and unify3 env t1 t1' t2 t2' =
         (* XXX One should do some kind of unification... *)
         begin match (repr t2').desc with
           Tobject (_, {contents = Some (_, va::_)})
-          when let va = repr va in va.desc = Tvar || va.desc = Tunivar ->
+          when let va = repr va in List.mem va.desc [Tvar; Tunivar; Tnil] ->
             ()
         | Tobject (_, nm2) ->
             set_name nm2 !nm1
@@ -1476,6 +1466,11 @@ and unify3 env t1 t1' t2 t2' =
         unify_row env row1 row2
     | (Tfield _, Tfield _) ->           (* Actually unused *)
         unify_fields env t1' t2'
+    | (Tfield(f,kind,_,rem), Tnil) | (Tnil, Tfield(f,kind,_,rem)) ->
+        begin match field_kind_repr kind with
+          Fvar r when f <> dummy_method -> set_kind r Fabsent
+        | _      -> raise (Unify [])
+        end
     | (Tnil, Tnil) ->
         ()
     | (Tpoly (t1, []), Tpoly (t2, [])) ->
@@ -1555,15 +1550,16 @@ and unify_fields env ty1 ty2 =          (* Optimization *)
   let (fields1, rest1) = flatten_fields ty1
   and (fields2, rest2) = flatten_fields ty2 in
   let (pairs, miss1, miss2) = associate_fields fields1 fields2 in
+  let l1 = (repr ty1).level and l2 = (repr ty2).level in
   let va =
     if miss1 = [] then rest2
     else if miss2 = [] then rest1
-    else newvar ()
+    else newty2 (min l1 l2) Tvar
   in
   let d1 = rest1.desc and d2 = rest2.desc in
   try
-    unify env (build_fields (repr ty1).level miss1 va) rest2;
-    unify env rest1 (build_fields (repr ty2).level miss2 va);
+    unify env (build_fields l1 miss1 va) rest2;
+    unify env rest1 (build_fields l2 miss2 va);
     List.iter
       (fun (n, k1, t1, k2, t2) ->
         unify_kind k1 k2;
@@ -1615,11 +1611,6 @@ and unify_row env row1 row2 =
         row_field_repr f1 = Rabsent || row_field_repr f2 <> Rabsent)
       pairs
   in
-  let mkvariant fields closed =
-    newgenty
-      (Tvariant
-         {row_fields = fields; row_closed = closed; row_more = newvar();
-          row_bound = []; row_fixed = false; row_name = None }) in
   let empty fields =
     List.for_all (fun (_,f) -> row_field_repr f = Rabsent) fields in
   (* Check whether we are going to build an empty type *)
@@ -1665,19 +1656,29 @@ and unify_row env row1 row2 =
   begin try
     set_more row1 r2;
     set_more row2 r1;
+    let undo = ref [] in
     List.iter
       (fun (l,f1,f2) ->
-        unify_row_field env row1.row_fixed row2.row_fixed f1 f2)
+        try unify_row_field env row1.row_fixed row2.row_fixed undo l f1 f2
+        with Unify trace ->
+          raise (Unify ((mkvariant [l,f1] true,
+                         mkvariant [l,f2] true) :: trace)))
       pairs;
     (* Special case when there is only one field left *)
     if row0.row_closed then begin
       match filter_row_fields false (row_repr row1).row_fields with [l, fi] ->
         begin match row_field_repr fi with
-          Reither(c, t1::tl, _, e) ->
-            if c then raise (Unify []);
-            set_row_field e (Rpresent (Some t1));
-            (try List.iter (unify env t1) tl
-            with exn -> e := None; raise exn)
+          Reither(c, t1::tl, _, e) as f1 ->
+            let f1' = Rpresent (Some t1) in
+            set_row_field e f1';
+            begin try
+              if c then raise (Unify []);
+              List.iter (unify env t1) tl
+            with exn ->
+              e := None;
+              List.assoc l !undo := Some f1';
+              raise exn
+            end
         | Reither(true, [], _, e) ->
             set_row_field e (Rpresent None);
         | _ -> ()
@@ -1688,7 +1689,7 @@ and unify_row env row1 row2 =
     log_type rm1; rm1.desc <- md1; log_type rm2; rm2.desc <- md2; raise exn
   end
 
-and unify_row_field env fixed1 fixed2 f1 f2 =
+and unify_row_field env fixed1 fixed2 undo l f1 f2 =
   let f1 = row_field_repr f1 and f2 = row_field_repr f2 in
   if f1 == f2 then () else
   match f1, f2 with
@@ -1704,7 +1705,7 @@ and unify_row_field env fixed1 fixed2 f1 f2 =
             List.iter (unify env t1) tl;
             !e1 <> None || !e2 <> None
         end in
-      if redo then unify_row_field env fixed1 fixed2 f1 f2 else
+      if redo then unify_row_field env fixed1 fixed2 undo l f1 f2 else
       let tl1 = List.map repr tl1 and tl2 = List.map repr tl2 in
       let rec remq tl = function [] -> []
         | ty :: tl' ->
@@ -1712,9 +1713,10 @@ and unify_row_field env fixed1 fixed2 f1 f2 =
       in
       let tl2' = remq tl2 tl1 and tl1' = remq tl1 tl2 in
       let e = ref None in
-      let f1 = Reither(c1 || c2, tl1', m1 || m2, e)
-      and f2 = Reither(c1 || c2, tl2', m1 || m2, e) in
-      set_row_field e1 f1; set_row_field e2 f2
+      let f1' = Reither(c1 || c2, tl1', m1 || m2, e)
+      and f2' = Reither(c1 || c2, tl2', m1 || m2, e) in
+      set_row_field e1 f1'; set_row_field e2 f2';
+      undo := (l, e2) :: !undo
   | Reither(_, _, false, e1), Rabsent -> set_row_field e1 f2
   | Rabsent, Reither(_, _, false, e2) -> set_row_field e2 f1
   | Rabsent, Rabsent -> ()
@@ -1731,6 +1733,7 @@ and unify_row_field env fixed1 fixed2 f1 f2 =
   | Rpresent None, Reither(true, [], _, e2) when not fixed2 ->
       set_row_field e2 f1
   | _ -> raise (Unify [])
+    
 
 let unify env ty1 ty2 =
   try
@@ -2578,6 +2581,24 @@ let rec filter_visited = function
 let memq_warn t visited =
   if List.memq t visited then (warn := true; true) else false
 
+let rec lid_of_path sharp = function
+    Path.Pident id ->
+      Longident.Lident (sharp ^ Ident.name id)
+  | Path.Pdot (p1, s, _) ->
+      Longident.Ldot (lid_of_path "" p1, sharp ^ s)
+  | Path.Papply (p1, p2) ->
+      Longident.Lapply (lid_of_path sharp p1, lid_of_path "" p2)
+
+let find_cltype_for_path env p =
+  let path, cl_abbr = Env.lookup_type (lid_of_path "#" p) env in
+  match cl_abbr.type_manifest with
+    Some ty ->
+      begin match (repr ty).desc with
+        Tobject(_,{contents=Some(p',_)}) when Path.same p p' -> cl_abbr, ty
+      | _ -> raise Not_found
+      end
+  | None -> assert false
+
 let rec build_subtype env visited loops posi level t =
   let t = repr t in
   match t.desc with
@@ -2613,22 +2634,7 @@ let rec build_subtype env visited loops posi level t =
       let level' = pred_expand level in
       begin try match t'.desc with
         Tobject _ when posi && not (opened_object t') ->
-          let rec lid_of_path sharp = function
-              Path.Pident id ->
-                Longident.Lident (sharp ^ Ident.name id)
-            | Path.Pdot (p1, s, _) ->
-                Longident.Ldot (lid_of_path "" p1, sharp ^ s)
-            | Path.Papply (p1, p2) ->
-                Longident.Lapply (lid_of_path sharp p1, lid_of_path "" p2)
-          in
-          let path, cl_abbr = Env.lookup_type (lid_of_path "#" p) env in
-          let body =
-            match cl_abbr.type_manifest with Some ty ->
-              begin match (repr ty).desc with
-                Tobject(_,{contents=Some(p',_)}) when Path.same p p' -> ty
-              | _ -> raise Not_found
-              end
-            | None -> assert false in
+          let cl_abbr, body = find_cltype_for_path env p in
           let ty =
             subst env !current_level abbrev None cl_abbr.type_params tl body in
           let ty = repr ty in
@@ -3175,7 +3181,10 @@ let nondep_class_signature env id sign =
     cty_vars =
       Vars.map (function (m, t) -> (m, nondep_type_rec env id t))
         sign.cty_vars;
-    cty_concr = sign.cty_concr }
+    cty_concr = sign.cty_concr;
+    cty_inher =
+      List.map (fun (p,tl) -> (p, List.map (nondep_type_rec env id) tl))
+        sign.cty_inher }
 
 let rec nondep_class_type env id =
   function

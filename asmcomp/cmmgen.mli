@@ -10,13 +10,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: cmmgen.mli,v 1.11 2003/03/06 15:59:54 xleroy Exp $ *)
+(* $Id: cmmgen.mli,v 1.12 2004/05/26 11:10:28 garrigue Exp $ *)
 
 (* Translation from closed lambda to C-- *)
 
 val compunit: int -> Clambda.ulambda -> Cmm.phrase list
 
 val apply_function: int -> Cmm.phrase
+val send_function: int -> Cmm.phrase
 val curry_function: int -> Cmm.phrase list
 val entry_point: string list -> Cmm.phrase
 val global_table: string list -> Cmm.phrase

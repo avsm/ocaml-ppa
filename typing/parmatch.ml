@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parmatch.ml,v 1.61 2003/08/18 08:26:18 garrigue Exp $ *)
+(* $Id: parmatch.ml,v 1.65 2004/01/16 14:09:30 maranget Exp $ *)
 
 (* Detection of partial matches and unused match cases. *)
 
@@ -42,12 +42,11 @@ let zero = make_pat (Tpat_constant (Const_int 0)) Ctype.none Env.empty
 
 (* p and q compatible means, there exists V that matches both *)
 
-let is_absent tag row =
-  let row = Btype.row_repr row in
-  let field =
-    try Btype.row_field_repr (List.assoc tag row.row_fields)
-    with Not_found -> Rabsent
-  in field = Rabsent
+let is_absent tag row = Btype.row_field tag row = Rabsent
+
+let is_absent_pat p = match p.pat_desc with
+| Tpat_variant (tag, _, row) -> is_absent tag row
+| _ -> false
 
 let sort_fields args =
   Sort.list
@@ -84,9 +83,9 @@ let rec compat p q =
   | Tpat_construct (c1,ps1), Tpat_construct (c2,ps2) ->
       c1.cstr_tag = c2.cstr_tag && compats ps1 ps2
   | Tpat_variant(l1,Some p1, r1), Tpat_variant(l2,Some p2,_) ->
-      l1=l2 && not (is_absent l1 r1) && compat p1 p2
+      l1=l2 && compat p1 p2
   | Tpat_variant (l1,None,r1), Tpat_variant(l2,None,_) ->
-      l1 = l2 && not (is_absent l1 r1)
+      l1 = l2 
   | Tpat_variant (_, None, _), Tpat_variant (_,Some _, _) -> false
   | Tpat_variant (_, Some _, _), Tpat_variant (_, None, _) -> false
   | Tpat_record l1,Tpat_record l2 ->
@@ -602,10 +601,11 @@ let full_match closing env =  match env with
         row.row_fields
     else
       row.row_closed &&
-      List.for_all
-        (fun (tag,f) ->
-          Btype.row_field_repr f = Rabsent || List.mem tag fields)
-        row.row_fields
+      let count =
+        List.fold_left
+          (fun n (_,f) -> if Btype.row_field_repr f = Rabsent then n else n+1)
+          0 row.row_fields in
+      List.length fields = count
 | ({pat_desc = Tpat_constant(Const_char _)},_) :: _ ->
     List.length env = 256
 | ({pat_desc = Tpat_constant(_)},_) :: _ -> false
@@ -826,11 +826,6 @@ let build_other env =  match env with
     Does there exists at least one value vector, es such that :
      1- for all ps in pss ps # es (ps and es are not compatible)
      2- qs <= es                  (es matches qs)
-  NOTE:
-   satisfiable assumes that any pattern has at least one
-   matching value (see first case)
-   quid of << absent >> variants ??
-
 *)
 
 let rec has_instance p = match p.pat_desc with
@@ -860,11 +855,14 @@ let rec satisfiable pss qs = match pss with
           (* first column of pss is made of variables only *)
         | [] -> satisfiable (filter_extra pss) qs
         | constrs  ->
-            (not (full_match false constrs) &&
-             satisfiable (filter_extra pss) qs) ||
-             List.exists
-               (fun (p,pss) -> satisfiable pss (simple_match_args p omega @ qs))
-               constrs
+            if full_match false constrs then
+              List.exists
+                (fun (p,pss) ->
+                  not (is_absent_pat p) &&
+                  satisfiable pss (simple_match_args p omega @ qs))
+                constrs
+            else
+              satisfiable (filter_extra pss) qs
         end
     | {pat_desc=Tpat_variant (l,_,r)}::_ when is_absent l r -> false
     | q::qs ->
@@ -960,13 +958,17 @@ let rec exhaust pss n = match pss with
       end
     | constrs ->          
         let try_non_omega (p,pss) =
-          match
-            exhaust pss (List.length (simple_match_args p omega) + n - 1)
-          with
-          | Rsome r -> Rsome (set_args p r)
-          | r       -> r in
+          if is_absent_pat p then
+            Rnone
+          else
+            match
+              exhaust pss (List.length (simple_match_args p omega) + n - 1)
+            with
+            | Rsome r -> Rsome (set_args p r)
+            | r       -> r in
         if full_match false constrs
-        then try_many try_non_omega constrs
+        then
+          try_many try_non_omega constrs
         else
           (*
              D = filter_extra pss is the default matrix
@@ -1308,11 +1310,8 @@ and every_both pss qs q1 q2 =
 let rec le_pat p q =
   match (p.pat_desc, q.pat_desc) with
   | (Tpat_var _|Tpat_any),_ -> true
-(* Absent variants have no instance *)
-  | _, Tpat_variant (l,_,row)  when is_absent l row -> true
   | Tpat_alias(p,_), _ -> le_pat p q
   | _, Tpat_alias(q,_) -> le_pat p q
-  | _, Tpat_or(q1,q2,_) -> le_pat p q1 && le_pat p q2
   | Tpat_constant(c1), Tpat_constant(c2) -> c1 = c2
   | Tpat_construct(c1,ps), Tpat_construct(c2,qs) ->
       c1.cstr_tag = c2.cstr_tag && le_pats ps qs
@@ -1320,6 +1319,7 @@ let rec le_pat p q =
       (l1 = l2 && le_pat p1 p2)
   | Tpat_variant(l1,None,r1), Tpat_variant(l2,None,_) ->
       l1 = l2
+  | Tpat_variant(_,_,_), Tpat_variant(_,_,_) -> false
   | Tpat_tuple(ps), Tpat_tuple(qs) -> le_pats ps qs
   | Tpat_record l1, Tpat_record l2 ->
       let ps,qs = records_args l1 l2 in
@@ -1327,9 +1327,7 @@ let rec le_pat p q =
   | Tpat_array(ps), Tpat_array(qs) ->
       List.length ps = List.length qs && le_pats ps qs
 (* In all other cases, enumeration is performed *)
-  | _,_  ->
-      not (satisfiable [[p]] [q])
-
+  | _,_  -> not (satisfiable [[p]] [q])
         
 and le_pats ps qs =
   match ps,qs with
@@ -1344,7 +1342,6 @@ let get_mins le ps =
         then select_rec r ps
         else select_rec (p::r) ps in
   select_rec [] (select_rec [] ps)
-
 
 (*
   lub p q is a pattern that matches all values matched by p and q
@@ -1367,11 +1364,11 @@ let rec lub p q = match p.pat_desc,q.pat_desc with
         let rs = lubs ps1 ps2 in
         make_pat (Tpat_construct (c1,rs)) p.pat_type p.pat_env
 | Tpat_variant(l1,Some p1,row), Tpat_variant(l2,Some p2,_)
-          when  l1=l2 && not (is_absent l1 row) ->
+          when  l1=l2 ->
             let r=lub p1 p2 in
             make_pat (Tpat_variant (l1,Some r,row)) p.pat_type p.pat_env
 | Tpat_variant (l1,None,row), Tpat_variant(l2,None,_)
-              when l1 = l2 && not (is_absent l1 row) -> p
+              when l1 = l2 -> p
 | Tpat_record l1,Tpat_record l2 ->
     let rs = record_lubs l1 l2 in
     make_pat (Tpat_record rs) p.pat_type p.pat_env
@@ -1507,6 +1504,7 @@ let check_partial_all v casel =
   | NoGuard -> None
 
 let check_partial loc casel =
+  if Warnings.is_active (Warnings.Partial_match "") then begin
   let pss = initial_matrix casel in
   let pss = get_mins le_pats pss in
   match pss with
@@ -1554,6 +1552,8 @@ let check_partial loc casel =
       | _ ->
           fatal_error "Parmatch.check_partial"
       end
+  end else
+    Partial
 
 
 let location_of_clause = function
@@ -1587,7 +1587,8 @@ let check_unused tdefs casel =
       | (q,act as clause)::rem ->
           let qs = [q] in
             begin try
-              let pss = get_mins le_pats (List.filter (compats qs) pref) in
+              let pss =
+                  get_mins le_pats (List.filter (compats qs) pref) in
               let r = every_satisfiables (make_rows pss) (make_row qs) in
               match r with
               | Unused ->

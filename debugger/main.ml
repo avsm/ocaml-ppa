@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml,v 1.13 2002/11/02 22:36:42 doligez Exp $ *)
+(* $Id: main.ml,v 1.15 2003/12/04 12:32:04 starynke Exp $ *)
 
 open Primitives
 open Misc
@@ -125,8 +125,14 @@ let main () =
     toplevel_loop ();                   (* Toplevel. *)
     kill_program ();
     exit 0
-  with Toplevel ->
-    exit 2
+  with 
+    Toplevel ->
+      exit 2
+  | Env.Error e -> 
+      eprintf "Debugger [version %s] environment error:@ @[@;" Config.version;
+      Env.report_error err_formatter e;
+      eprintf "@]@.";
+      exit 2
 
 let _ =
   Printexc.catch (Unix.handle_unix_error main) ()

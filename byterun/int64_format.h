@@ -11,10 +11,13 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: int64_format.h,v 1.1 2002/05/25 08:32:53 xleroy Exp $ */
+/* $Id: int64_format.h,v 1.2 2003/12/15 18:10:47 doligez Exp $ */
 
 /* printf-like formatting of 64-bit integers, in case the C library
    printf() function does not support them. */
+
+#ifndef CAML_INT64_FORMAT_H
+#define CAML_INT64_FORMAT_H
 
 static void I64_format(char * buffer, char * fmt, int64 x)
 {
@@ -100,3 +103,5 @@ static void I64_format(char * buffer, char * fmt, int64 x)
   }
   *p = 0;
 }
+
+#endif /* CAML_INT64_FORMAT_H */

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: random.ml,v 1.21 2003/06/19 18:14:52 doligez Exp $ *)
+(* $Id: random.ml,v 1.22 2003/12/16 18:09:43 doligez Exp $ *)
 
 (* "Linear feedback shift register" pseudo-random number generator. *)
 (* References: Robert Sedgewick, "Algorithms", Addison-Wesley *)
@@ -20,7 +20,7 @@
    It is seeded by a MD5-based PRNG.
 *)
 
-external random_seed: unit -> int = "sys_random_seed";;
+external random_seed: unit -> int = "caml_sys_random_seed";;
 
 module State = struct
 

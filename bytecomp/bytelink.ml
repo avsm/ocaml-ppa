@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bytelink.ml,v 1.80 2002/11/17 16:42:10 xleroy Exp $ *)
+(* $Id: bytelink.ml,v 1.83.4.1 2004/07/02 09:10:50 xleroy Exp $ *)
 
 (* Link a set of .cmo files and produce a bytecode executable. *)
 
@@ -264,13 +264,10 @@ let make_absolute file =
 (* Create a bytecode executable file *)
 
 let link_bytecode tolink exec_name standalone =
-  if Sys.os_type = "MacOS" then begin
-    (* Create it as a text file for bytecode scripts *)
-    let c = open_out_gen [Open_wronly; Open_creat] 0o777 exec_name in
-    close_out c
-  end;
-  let outchan = open_out_gen [Open_wronly; Open_trunc; Open_creat; Open_binary]
-                             0o777 exec_name in
+  Misc.remove_file exec_name; (* avoid permission problems, cf PR#1911 *)
+  let outchan =
+    open_out_gen [Open_wronly; Open_trunc; Open_creat; Open_binary]
+                 0o777 exec_name in
   try
     if standalone then begin
       (* Copy the header *)
@@ -384,6 +381,13 @@ let link_bytecode_as_c tolink outfile =
   let outchan = open_out outfile in
   try
     (* The bytecode *)
+    output_string outchan "#include <caml/mlvalues.h>\n";
+    output_string outchan "\
+CAMLextern void caml_startup_code(
+           code_t code, asize_t code_size,
+           char *data, asize_t data_size,
+           char *section_table, asize_t section_table_size,
+           char **argv);\n";
     output_string outchan "static int caml_code[] = {\n";
     Symtable.init();
     Consistbl.clear crc_interfaces;
@@ -396,15 +400,26 @@ let link_bytecode_as_c tolink outfile =
     output_string outchan "static char caml_data[] = {\n";
     output_data_string outchan
       (Marshal.to_string (Symtable.initial_global_table()) []);
-    Printf.fprintf outchan "\n};\n\n";
+    output_string outchan "\n};\n\n";
+    (* The sections *)
+    let sections =
+      [ "SYMB", Symtable.data_global_map();
+        "PRIM", Obj.repr(Symtable.data_primitive_names());
+        "CRCS", Obj.repr(extract_crc_interfaces()) ] in
+    output_string outchan "static char caml_sections[] = {\n";
+    output_data_string outchan
+      (Marshal.to_string sections []);
+    output_string outchan "\n};\n\n";
     (* The table of primitives *)
     Symtable.output_primitive_table outchan;
     (* The entry point *)
     output_string outchan "\n
-void caml_startup(argv)
-        char ** argv;
+void caml_startup(char ** argv)
 {
-  caml_startup_code(caml_code, sizeof(caml_code), caml_data, argv);
+  caml_startup_code(caml_code, sizeof(caml_code),
+                    caml_data, sizeof(caml_data),
+                    caml_sections, sizeof(caml_sections),
+                    argv);
 }\n";
     close_out outchan
   with x ->
@@ -455,35 +470,6 @@ let build_custom_runtime prim_name exec_name =
       remove_file
         (Filename.chop_suffix (Filename.basename prim_name) ".c" ^ ".obj");
       retcode
-  | "mrc" ->
-      let cppc = "mrc"
-      and libsppc = "\"{sharedlibraries}MathLib\" \
-                     \"{ppclibraries}PPCCRuntime.o\" \
-                     \"{ppclibraries}PPCToolLibs.o\" \
-                     \"{sharedlibraries}StdCLib\" \
-                     \"{ppclibraries}StdCRuntime.o\" \
-                     \"{sharedlibraries}InterfaceLib\""
-      and linkppc = "ppclink -d"
-      and objsppc = extract ".x" (List.rev !Clflags.ccobjs)
-      and q_prim_name = Filename.quote prim_name
-      and q_exec_name = Filename.quote exec_name
-      in
-      Ccomp.run_command (Printf.sprintf "%s %s %s %s -o %s.x"
-        cppc
-        (Clflags.std_include_flag "-i ")
-        (String.concat " " (List.rev_map Filename.quote !Clflags.ccopts))
-        q_prim_name
-        q_prim_name);
-      Ccomp.run_command ("delete -i " ^ q_exec_name);
-      Ccomp.command (Printf.sprintf
-        "%s -t MPST -c 'MPS ' -o %s %s.x %s %s %s"
-        linkppc
-        q_exec_name
-        q_prim_name
-        (String.concat " " (List.map Filename.quote objsppc))
-        (Filename.quote
-            (Filename.concat Config.standard_library "libcamlrun.x"))
-        libsppc)
   | _ -> assert false
 
 let append_bytecode_and_cleanup bytecode_name exec_name prim_name =

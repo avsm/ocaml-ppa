@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unixLabels.mli,v 1.10 2002/05/27 16:06:31 verlyck Exp $ *)
+(* $Id: unixLabels.mli,v 1.12.2.2 2004/07/02 09:37:17 doligez Exp $ *)
 
 (** Interface to the Unix system.
    To use as replacement to default {!Unix} module,
@@ -156,19 +156,22 @@ type wait_flag =
 (** Flags for {!UnixLabels.waitpid}. *)
 
 
-val execv : prog:string -> args:string array -> unit
+val execv : prog:string -> args:string array -> 'a
 (** [execv prog args] execute the program in file [prog], with
-   the arguments [args], and the current process environment. *)
+   the arguments [args], and the current process environment. 
+   These [execv*] functions never return: on success, the current 
+   program is replaced by the new one; 
+   on failure, a {!UnixLabels.Unix_error} exception is raised. *)
 
-val execve : prog:string -> args:string array -> env:string array -> unit
+val execve : prog:string -> args:string array -> env:string array -> 'a
 (** Same as {!UnixLabels.execv}, except that the third argument provides the
    environment to the program executed. *)
 
-val execvp : prog:string -> args:string array -> unit
+val execvp : prog:string -> args:string array -> 'a
 (** Same as {!UnixLabels.execv} respectively, except that
    the program is searched in the path. *)
 
-val execvpe : prog:string -> args:string array -> env:string array -> unit
+val execvpe : prog:string -> args:string array -> env:string array -> 'a
 (** Same as {!UnixLabels.execvp} respectively, except that
    the program is searched in the path. *)
 
@@ -260,7 +263,15 @@ val write : file_descr -> buf:string -> pos:int -> len:int -> int
 (** [write fd buff ofs len] writes [len] characters to descriptor
    [fd], taking them from string [buff], starting at position [ofs]
    in string [buff]. Return the number of characters actually
-   written. *)
+   written.
+
+   When an error is reported some characters might have already been
+   written.  Use [single_write] instead to ensure that this is not the
+   case. *)
+
+val single_write : file_descr -> buf:string -> pos:int -> len:int -> int
+(** Same as [write] but ensures that all errors are reported and
+   that no character has ever been written when an error is reported. *)
 
 
 (** {6 Interfacing with the standard input/output library} *)
@@ -853,16 +864,31 @@ type inet_addr = Unix.inet_addr
 (** The abstract type of Internet addresses. *)
 
 val inet_addr_of_string : string -> inet_addr
-(** Conversions between string with the format [XXX.YYY.ZZZ.TTT]
-   and Internet addresses. [inet_addr_of_string] raises [Failure]
-   when given a string that does not match this format. *)
+(** Conversion from the printable representation of an Internet
+    address to its internal representation.  The argument string
+    consists of 4 numbers separated by periods ([XXX.YYY.ZZZ.TTT])
+    for IPv4 addresses, and up to 8 numbers separated by colons
+    for IPv6 addresses.  Raise [Failure] when given a string that
+    does not match these formats. *)
 
 val string_of_inet_addr : inet_addr -> string
-(** See {!UnixLabels.inet_addr_of_string}. *)
+(** Return the printable representation of the given Internet address.
+    See {!Unix.inet_addr_of_string} for a description of the
+    printable representation. *)
 
 val inet_addr_any : inet_addr
-(** A special Internet address, for use only with [bind], representing
+(** A special IPv4 address, for use only with [bind], representing
    all the Internet addresses that the host machine possesses. *)
+
+val inet_addr_loopback : inet_addr
+(** A special IPv4 address representing the host machine ([127.0.0.1]). *)
+
+val inet6_addr_any : inet_addr
+(** A special IPv6 address, for use only with [bind], representing
+   all the Internet addresses that the host machine possesses. *)
+
+val inet6_addr_loopback : inet_addr
+(** A special IPv6 address representing the host machine ([::1]). *)
 
 
 (** {6 Sockets} *)
@@ -872,6 +898,7 @@ type socket_domain =
   Unix.socket_domain =
       PF_UNIX                             (** Unix domain *)
     | PF_INET                             (** Internet domain *)
+    | PF_INET6                            (** Internet domain (IPv6) *)
 (** The type of socket domains. *)
 
 type socket_type =
@@ -892,6 +919,9 @@ type sockaddr =
    system. [ADDR_INET(addr,port)] is a socket address in the Internet
    domain; [addr] is the Internet address of the machine, and
    [port] is the port number. *)
+
+val domain_of_sockaddr: sockaddr -> socket_domain
+(** Return the socket domain adequate for the given socket address. *)
 
 val socket :
   domain:socket_domain -> kind:socket_type -> protocol:int -> file_descr
@@ -1122,7 +1152,65 @@ val getservbyport : int -> protocol:string -> service_entry
 (** Find an entry in [services] with the given service number,
    or raise [Not_found]. *)
 
+type addr_info =
+  { ai_family : socket_domain;          (** Socket domain *)
+    ai_socktype : socket_type;          (** Socket type *)
+    ai_protocol : int;                  (** Socket protocol number *)
+    ai_addr : sockaddr;                 (** Address *)
+    ai_canonname : string               (** Canonical host name  *)
+  }
+(** Address information returned by {!Unix.getaddrinfo}. *)
 
+type getaddrinfo_option =
+    AI_FAMILY of socket_domain          (** Impose the given socket domain *)
+  | AI_SOCKTYPE of socket_type          (** Impose the given socket type *)
+  | AI_PROTOCOL of int                  (** Impose the given protocol  *)
+  | AI_NUMERICHOST                      (** Do not call name resolver, 
+                                            expect numeric IP address *)
+  | AI_CANONNAME                        (** Fill the [ai_canonname] field
+                                            of the result *)
+  | AI_PASSIVE                          (** Set address to ``any'' address
+                                            for use with {!Unix.bind} *)
+(** Options to {!Unix.getaddrinfo}. *)
+
+val getaddrinfo: 
+  string -> string -> getaddrinfo_option list -> addr_info list
+(** [getaddrinfo host service opts] returns a list of {!Unix.addr_info}
+    records describing socket parameters and addresses suitable for
+    communicating with the given host and service.  The empty list is
+    returned if the host or service names are unknown, or the constraints
+    expressed in [opts] cannot be satisfied.
+
+    [host] is either a host name or the string representation of an IP
+    address.  [host] can be given as the empty string; in this case,
+    the ``any'' address or the ``loopback'' address are used,
+    depending whether [opts] contains [AI_PASSIVE].
+    [service] is either a service name or the string representation of
+    a port number.  [service] can be given as the empty string;
+    in this case, the port field of the returned addresses is set to 0.
+    [opts] is a possibly empty list of options that allows the caller
+    to force a particular socket domain (e.g. IPv6 only, or IPv4 only)
+    or a particular socket type (e.g. TCP only or UDP only). *)
+
+type name_info =
+  { ni_hostname : string;               (** Name or IP address of host *)
+    ni_service : string }               (** Name of service or port number *)
+(** Host and service information returned by {!Unix.getnameinfo}. *)
+
+type getnameinfo_option =
+    NI_NOFQDN            (** Do not qualify local host names *)
+  | NI_NUMERICHOST       (** Always return host as IP address *)
+  | NI_NAMEREQD          (** Fail if host name cannot be determined *)
+  | NI_NUMERICSERV       (** Always return service as port number *)
+  | NI_DGRAM             (** Consider the service as UDP-based
+                             instead of the default TCP *)
+(** Options to {!Unix.getnameinfo}. *)
+
+val getnameinfo : sockaddr -> getnameinfo_option list -> name_info
+(** [getnameinfo addr opts] returns the host name and service name
+    corresponding to the socket address [addr].  [opts] is a possibly
+    empty list of options that governs how these names are obtained.
+    Raise [Not_found] if an error occurs. *)
 
 (** {6 Terminal interface} *)
 

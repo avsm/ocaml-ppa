@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.26 2002/11/17 16:42:11 xleroy Exp $
+# $Id: Makefile,v 1.27 2004/02/22 15:07:51 xleroy Exp $
 
 # Makefile for the dynamic link library
 
@@ -25,7 +25,7 @@ OBJS=dynlink.cmo
 COMPILEROBJS=misc.cmo config.cmo tbl.cmo clflags.cmo consistbl.cmo \
   ident.cmo path.cmo \
   types.cmo btype.cmo predef.cmo runtimedef.cmo \
-  bytesections.cmo dll.cmo symtable.cmo opcodes.cmo meta.cmo
+  bytesections.cmo dll.cmo meta.cmo symtable.cmo opcodes.cmo
 
 all: dynlink.cma extract_crc
 

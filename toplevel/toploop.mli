@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: toploop.mli,v 1.24 2003/06/30 15:31:06 xleroy Exp $ *)
+(* $Id: toploop.mli,v 1.25 2004/05/15 09:59:37 xleroy Exp $ *)
 
 open Format
 
@@ -97,6 +97,10 @@ val print_out_signature :
   (formatter -> Outcometree.out_sig_item list -> unit) ref
 val print_out_phrase :
   (formatter -> Outcometree.out_phrase -> unit) ref
+
+(* Hooks for external line editor *)
+
+val read_interactive_input : (string -> string -> int -> int * bool) ref
 
 (* Hooks for initialization *)
 

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: scheduling.ml,v 1.5 1999/11/17 18:56:46 xleroy Exp $ *)
+(* $Id: scheduling.ml,v 1.6 2004/06/19 16:13:33 xleroy Exp $ *)
 
 (* Instruction scheduling for the Power PC *)
 
@@ -27,7 +27,7 @@ method oper_latency = function
     Ireload -> 2
   | Iload(_, _) -> 2
   | Iconst_float _ -> 2 (* turned into a load *)
-  | Iconst_symbol _ -> if toc then 2 (* turned into a load *) else 1
+  | Iconst_symbol _ -> 1
   | Iintop Imul -> 9
   | Iintop_imm(Imul, _) -> 5
   | Iintop(Idiv | Imod) -> 36
@@ -44,7 +44,7 @@ method reload_retaddr_latency = 12
 (* Issue cycles.  Rough approximations. *)
 
 method oper_issue_cycles = function
-    Iconst_float _ | Iconst_symbol _ -> if toc then 1 else 2
+    Iconst_float _ | Iconst_symbol _ -> 2
   | Iload(_, Ibased(_, _)) -> 2
   | Istore(_, Ibased(_, _)) -> 2
   | Ialloc _ -> 4

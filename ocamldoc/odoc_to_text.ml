@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_to_text.ml,v 1.14.4.1 2004/07/09 10:42:10 guesdon Exp $ *)
 
 (** Text generation.
 
@@ -187,21 +188,42 @@ class virtual to_text =
       in
       s2
 
+    (** Take a string and return the string where fully qualified idents 
+       have been replaced by idents relative to the given module name.
+       Also remove the "hidden modules".*)
+    method relative_module_idents m_name s =
+      let f str_t = 
+        let match_s = Str.matched_string str_t in
+        let rel = Name.get_relative m_name match_s in
+        Odoc_info.apply_if_equal Odoc_info.use_hidden_modules match_s rel
+      in
+      let s2 = Str.global_substitute
+          (Str.regexp "\\([A-Z]\\([a-zA-Z_'0-9]\\)*\\.\\)+\\([A-Z][a-zA-Z_'0-9]*\\)")
+          f
+          s
+      in
+      s2
+
     (** Get a string for a [Types.class_type] where all idents are relative. *)
     method normal_class_type m_name t =
       (self#relative_idents m_name (Odoc_info.string_of_class_type t))
 
     (** Get a string for a [Types.module_type] where all idents are relative. *)
-    method normal_module_type m_name t =
-      (self#relative_idents m_name (Odoc_info.string_of_module_type t))
+    method normal_module_type ?code m_name t =
+      (self#relative_module_idents m_name (Odoc_info.string_of_module_type ?code t))
 
     (** Get a string for a type where all idents are relative. *)
     method normal_type m_name t =
       (self#relative_idents m_name (Odoc_info.string_of_type_expr t))
 
     (** Get a string for a list of types where all idents are relative. *)
-    method normal_type_list m_name sep t =
-      (self#relative_idents m_name (Odoc_info.string_of_type_list sep t))
+    method normal_type_list ?par m_name sep t =
+      (self#relative_idents m_name (Odoc_info.string_of_type_list ?par sep t))
+
+    (** Get a string for a list of class or class type type parameters
+       where all idents are relative. *)
+    method normal_class_type_param_list m_name t =
+      (self#relative_idents m_name (Odoc_info.string_of_class_type_param_list t))
 
     (** @return [text] value to represent a [Types.type_expr].*)
     method text_of_type_expr module_name t =
@@ -223,6 +245,11 @@ class virtual to_text =
     method text_of_type_expr_list module_name sep l =
       [ Code (self#normal_type_list module_name sep l) ]        
 
+    (** Return [text] value or the given list of [Types.type_expr], 
+       as type parameters of a class of class type. *)
+    method text_of_class_type_param_expr_list module_name l =
+      [ Code (self#normal_class_type_param_list module_name l) ]        
+
 
     (** @return [text] value to represent a [Types.module_type]. *)
     method text_of_module_type t =
@@ -233,7 +260,8 @@ class virtual to_text =
     
     (** @return [text] value for a value. *)
     method text_of_value v =
-      let s_name = Name.simple v.val_name in
+      let name = v.val_name in
+      let s_name = Name.simple name in
       let s = 
 	Format.fprintf Format.str_formatter "@[<hov 2>val %s :@ %s"
           s_name
@@ -285,7 +313,9 @@ class virtual to_text =
         | _ -> 
             Format.fprintf Format.str_formatter "@ of "
         );
-      let s = self#normal_type_list (Name.father e.ex_name) " * " e.ex_args in
+      let s = self#normal_type_list 
+	  ~par: false (Name.father e.ex_name) " * " e.ex_args 
+      in
       let s2 = 
         Format.fprintf Format.str_formatter "%s" s ;
         (match e.ex_alias with
@@ -437,7 +467,7 @@ class virtual to_text =
              [] -> []
            | l -> 
                (Code "[") ::
-               (self#text_of_type_expr_list father  ", " l) @
+               (self#text_of_class_type_param_expr_list father l) @
                [Code "] "]
           ) @
           (
@@ -489,25 +519,24 @@ class virtual to_text =
           [Code ((if with_def_syntax then " : " else "")^
                  Odoc_messages.struct_end^" ")]
 
-      | Module_functor (_, k)  ->
+      | Module_functor (p, k)  ->
           (if with_def_syntax then [Code " : "] else []) @
           [Code "functor ... "] @
           [Code " -> "] @
           (self#text_of_module_kind ~with_def_syntax: false k)
 
-    (** Return html code for a [module_type_kind]. *)
+    (** Return html code for a [module_type_kind].*)
     method text_of_module_type_kind ?(with_def_syntax=true) tk =
       match tk with
       | Module_type_struct _ ->
           [Code ((if with_def_syntax then " = " else "")^Odoc_messages.sig_end)]
 
-      | Module_type_functor (params, k) ->
-          let f p = 
-            [Code ("("^p.mp_name^" : ")] @ 
-            (self#text_of_module_type p.mp_type) @
+      | Module_type_functor (p, k) ->
+          let t1 =
+	    [Code ("("^p.mp_name^" : ")] @ 
+            (self#text_of_module_type_kind p.mp_kind) @
             [Code ") -> "]
           in
-          let t1 = List.flatten (List.map f params) in
           let t2 = self#text_of_module_type_kind ~with_def_syntax: false k in
           (if with_def_syntax then [Code " = "] else []) @ t1 @ t2
           
@@ -522,5 +551,6 @@ class virtual to_text =
                    None -> mt_alias.mta_name
                  | Some mt -> mt.mt_name))
           ] 
+
 
   end

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: filename.mli,v 1.29 2002/11/02 21:47:59 doligez Exp $ *)
+(* $Id: filename.mli,v 1.31 2004/05/30 09:41:53 xleroy Exp $ *)
 
 (** Operations on file names. *)
 
@@ -48,10 +48,11 @@ val chop_suffix : string -> string -> string
 
 val chop_extension : string -> string
 (** Return the given file name without its extension. The extension
-   is the shortest suffix starting with a period, [.xyz] for instance.
+   is the shortest suffix starting with a period and not including
+   a directory separator, [.xyz] for instance.
 
    Raise [Invalid_argument] if the given name does not contain
-   a period. *)
+   an extension. *)
 
 val basename : string -> string
 (** Split a file name into directory name / base file name.
@@ -76,10 +77,7 @@ val temp_file : string -> string -> string
    Under Unix, the temporary directory is [/tmp] by default; if set,
    the value of the environment variable [TMPDIR] is used instead.
    Under Windows, the name of the temporary directory is the
-   value of the environment variable [TEMP], or [C:\temp] by default.
-   Under MacOS 9, the name of the temporary directory is given
-   by the environment variable [TempFolder]; if not set,
-   temporary files are created in the current directory. *)
+   value of the environment variable [TEMP], or [C:\temp] by default. *)
 
 val open_temp_file :
       ?mode: open_flag list -> string -> string -> string * out_channel

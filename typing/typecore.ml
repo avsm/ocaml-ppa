@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typecore.ml,v 1.154 2003/08/25 00:41:24 garrigue Exp $ *)
+(* $Id: typecore.ml,v 1.160.2.1 2004/06/21 20:36:20 weis Exp $ *)
 
 (* Typechecking for the core language *)
 
@@ -67,6 +67,11 @@ let type_module =
   ref ((fun env md -> assert false) :
        Env.t -> Parsetree.module_expr -> Typedtree.module_expr)
 
+(* Forward declaration, to be filled in by Typeclass.class_structure *)
+let type_object =
+  ref (fun env s -> assert false :
+       Env.t -> Location.t -> Parsetree.class_structure ->
+	 class_structure * class_signature * string list)
 
 (*
   Saving and outputting type information.
@@ -147,10 +152,7 @@ let finalize_variant pat =
   match pat.pat_desc with
     Tpat_variant(tag, opat, row) ->
       let row = row_repr row in
-      let field =
-        try row_field_repr (List.assoc tag row.row_fields)
-        with Not_found -> Rabsent
-      in
+      let field = row_field tag row in
       begin match field with
       | Rabsent -> assert false
       | Reither (true, [], _, e) when not row.row_closed ->
@@ -252,11 +254,12 @@ let rec build_as_type env p =
   | Tpat_record lpl ->
       let lbl = fst(List.hd lpl) in
       let ty = newvar () in
+      let ppl = List.map (fun (l,p) -> l.lbl_pos, p) lpl in
       let do_label lbl =
         let _, ty_arg, ty_res = instance_label false lbl in
         unify_pat env {p with pat_type = ty} ty_res;
-        if lbl.lbl_mut = Immutable && List.mem_assoc lbl lpl then begin
-          let arg = List.assoc lbl lpl in
+        if lbl.lbl_mut = Immutable && List.mem_assoc lbl.lbl_pos ppl then begin
+          let arg = List.assoc lbl.lbl_pos ppl in
           unify_pat env {arg with pat_type = build_as_type env arg} ty_arg
         end else begin
           let _, ty_arg', ty_res' = instance_label false lbl in
@@ -331,6 +334,22 @@ let build_or_pat env loc lid =
                             pat_loc=gloc; pat_env=env; pat_type=ty})
           pat pats in
       rp { r with pat_loc = loc }
+
+let rec find_record_qual = function
+  | [] -> None
+  | (Longident.Ldot (modname, _), _) :: _ -> Some modname
+  | _ :: rest -> find_record_qual rest
+
+let type_label_a_list type_lid_a lid_a_list =
+  match find_record_qual lid_a_list with
+  | None -> List.map type_lid_a lid_a_list
+  | Some modname ->
+      List.map
+        (function
+         | (Longident.Lident id), sarg ->
+              type_lid_a (Longident.Ldot (modname, id), sarg)
+         | lid_a -> type_lid_a lid_a)
+        lid_a_list
 
 let rec type_pat env sp =
   match sp.ppat_desc with
@@ -439,7 +458,7 @@ let rec type_pat env sp =
         (label, arg)
       in
       rp {
-        pat_desc = Tpat_record(List.map type_label_pat lid_sp_list);
+        pat_desc = Tpat_record(type_label_a_list type_label_pat lid_sp_list);
         pat_loc = sp.ppat_loc;
         pat_type = ty;
         pat_env = env }
@@ -522,7 +541,8 @@ let type_class_arg_pattern cl_num val_env met_env l spat =
   (pat, pv, val_env, met_env)
 
 let mkpat d = { ppat_desc = d; ppat_loc = Location.none }
-let type_self_pattern cl_num val_env met_env par_env spat =
+
+let type_self_pattern cl_num privty val_env met_env par_env spat =
   let spat = 
     mkpat (Ppat_alias (mkpat(Ppat_alias (spat, "selfpat-*")),
                        "selfpat-" ^ cl_num))
@@ -539,7 +559,7 @@ let type_self_pattern cl_num val_env met_env par_env spat =
       (fun (id, ty) (val_env, met_env, par_env) ->
          (Env.add_value id {val_type = ty; val_kind = Val_unbound} val_env,
           Env.add_value id {val_type = ty;
-                            val_kind = Val_self (meths, vars, cl_num)}
+                            val_kind = Val_self (meths, vars, cl_num, privty)}
             met_env,
           Env.add_value id {val_type = ty; val_kind = Val_unbound} par_env))
       pv (val_env, met_env, par_env)
@@ -582,7 +602,20 @@ let rec is_nonexpansive exp =
       is_nonexpansive ifso && is_nonexpansive_opt ifnot
   | Texp_new (_, cl_decl) when Ctype.class_type_arity cl_decl.cty_type > 0 ->
       true
-  | Texp_lazy e -> true
+  (* Note: nonexpansive only means no _observable_ side effects *)
+  | Texp_lazy e -> is_nonexpansive e
+  | Texp_object ({cl_field=fields}, {cty_vars=vars}, _) ->
+      let count = ref 0 in
+      List.for_all
+        (function
+            Cf_meth _ -> true
+          | Cf_val (_,_,e) -> incr count; is_nonexpansive e
+          | Cf_init e -> is_nonexpansive e
+          | Cf_inher _ | Cf_let _ -> false)
+        fields &&
+      Vars.fold (fun _ (mut,_) b -> decr count; b && mut = Immutable)
+        vars true &&
+      !count = 0
   | _ -> false
 
 and is_nonexpansive_opt = function
@@ -594,12 +627,15 @@ and is_nonexpansive_opt = function
 
 let type_format loc fmt =
   let len = String.length fmt in
-  let ty_input = newvar()
-  and ty_result = newvar()
+  let ty_input = newvar ()
+  and ty_result = newvar ()
   and ty_aresult = newvar () in
-  let ty_arrow gty ty = newty (Tarrow("", instance gty, ty, Cok)) in
-  let incomplete i =
-    raise (Error (loc, Bad_format (String.sub fmt i (len - i)))) in
+  let ty_arrow gty ty = newty (Tarrow ("", instance gty, ty, Cok)) in
+
+  let invalid_fmt s = raise (Error (loc, Bad_format s)) in
+  let incomplete i = invalid_fmt (String.sub fmt i (len - i)) in
+  let invalid i j = invalid_fmt (String.sub fmt i (j - i + 1)) in
+
   let rec scan_format i =
     if i >= len then ty_aresult, ty_result else
     match fmt.[i] with
@@ -660,8 +696,7 @@ let type_format loc fmt =
       | '%' | '!' -> scan_format (j + 1)
       | 's' | 'S' | '[' -> conversion j Predef.type_string
       | 'c' | 'C' -> conversion j Predef.type_char
-      | 'd' | 'i' | 'o' | 'x' | 'X' | 'u' | 'N' ->
-          conversion j Predef.type_int
+      | 'd' | 'i' | 'o' | 'x' | 'X' | 'u' | 'N' -> conversion j Predef.type_int
       | 'f' | 'e' | 'E' | 'g' | 'G' | 'F' -> conversion j Predef.type_float
       | 'B' | 'b' -> conversion j Predef.type_bool
       | 'a' ->
@@ -670,24 +705,24 @@ let type_format loc fmt =
           let ty_aresult, ty_result = conversion j ty_arg in
           ty_aresult, ty_arrow ty_a ty_result
       | 't' -> conversion j (ty_arrow ty_input ty_aresult)
-      | 'n' when j + 1 = len -> conversion j Predef.type_int
-      | 'l' | 'n' | 'L' as conv ->
+      | 'n' | 'l' when j + 1 = len -> conversion j Predef.type_int
+      | 'n' | 'l' | 'L' as c ->
           let j = j + 1 in
           if j >= len then incomplete i else begin
-            match fmt.[j] with
-            | 'd' | 'i' | 'o' | 'x' | 'X' | 'u' ->
-                let ty_arg =
-                 match conv with
-                 | 'l' -> Predef.type_int32
-                 | 'n' -> Predef.type_nativeint
-                 | _ -> Predef.type_int64 in
-                conversion j ty_arg
-            | c ->
-               if conv = 'n' then conversion (j - 1) Predef.type_int else
-               raise(Error(loc, Bad_format(String.sub fmt i (j - i))))
+          match fmt.[j] with
+          | 'd' | 'i' | 'o' | 'x' | 'X' | 'u' ->
+             let ty_arg =
+               match c with
+               | 'l' -> Predef.type_int32
+               | 'n' -> Predef.type_nativeint
+               | _ -> Predef.type_int64 in
+              conversion j ty_arg
+          | _ ->
+             if c = 'l' || c = 'n'
+             then conversion (j - 1) Predef.type_int
+             else invalid i (j - 1)
           end
-      | c ->
-          raise(Error(loc, Bad_format(String.sub fmt i (j - i + 1)))) in
+      | c -> invalid i j in
     scan_width i j in
 
   let ty_ares, ty_res = scan_format 0 in
@@ -795,7 +830,7 @@ let rec type_exp env sexp =
                   Env.lookup_value (Longident.Lident ("self-" ^ cl_num)) env
                 in
                 Texp_instvar(self_path, path)
-            | Val_self (_, _, cl_num) ->
+            | Val_self (_, _, cl_num, _) ->
                 let (path, _) =
                   Env.lookup_value (Longident.Lident ("self-" ^ cl_num)) env
                 in
@@ -915,7 +950,7 @@ let rec type_exp env sexp =
         if label.lbl_private = Private then
           raise(Error(sexp.pexp_loc, Private_type ty));
         (label, {arg with exp_type = instance arg.exp_type}) in
-      let lbl_exp_list = List.map type_label_exp lid_sexp_list in
+      let lbl_exp_list = type_label_a_list type_label_exp lid_sexp_list in
       let rec check_duplicates seen_pos lid_sexp lbl_exp =
         match (lid_sexp, lbl_exp) with
           ((lid, _) :: rem1, (lbl, _) :: rem2) ->
@@ -1122,9 +1157,9 @@ let rec type_exp env sexp =
       begin try
         let (exp, typ) =
           match obj.exp_desc with
-            Texp_ident(path, {val_kind = Val_self (meths, _, _)}) ->
+            Texp_ident(path, {val_kind = Val_self (meths, _, _, privty)}) ->
               let (id, typ) =
-                filter_self_method env met Private meths obj.exp_type
+                filter_self_method env met Private meths privty
               in
               (Texp_send(obj, Tmeth_val id), typ)
           | Texp_ident(path, {val_kind = Val_anc (methods, cl_num)}) ->
@@ -1137,10 +1172,10 @@ let rec type_exp env sexp =
                 Env.lookup_value (Longident.Lident ("selfpat-" ^ cl_num)) env,
                 Env.lookup_value (Longident.Lident ("self-" ^cl_num)) env
               with
-                (_, ({val_kind = Val_self (meths, _, _)} as desc)),
+                (_, ({val_kind = Val_self (meths, _, _, privty)} as desc)),
                 (path, _) ->
                   let (_, typ) =
-                    filter_self_method env met Private meths obj.exp_type
+                    filter_self_method env met Private meths privty
                   in
                   let method_type = newvar () in
                   let (obj_ty, res_ty) = filter_arrow env method_type "" in
@@ -1250,7 +1285,7 @@ let rec type_exp env sexp =
         with Not_found ->
           raise(Error(sexp.pexp_loc, Outside_class))
       with
-        (_, {val_type = self_ty; val_kind = Val_self (_, vars, _)}),
+        (_, {val_type = self_ty; val_kind = Val_self (_, vars, _, _)}),
         (path_self, _) ->
           let type_override (lab, snewval) =
             begin try
@@ -1317,6 +1352,14 @@ let rec type_exp env sexp =
          exp_type = instance (Predef.type_lazy_t arg.exp_type);
          exp_env = env;
        }
+  | Pexp_object s ->
+      let desc, sign, meths = !type_object env sexp.pexp_loc s in
+      re {
+        exp_desc = Texp_object (desc, sign, meths);
+        exp_loc = sexp.pexp_loc;
+        exp_type = sign.cty_self;
+        exp_env = env;
+      }
   | Pexp_poly _ ->
       assert false
 

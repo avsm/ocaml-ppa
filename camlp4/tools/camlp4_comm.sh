@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: camlp4_comm.sh,v 1.7 2003/07/10 12:28:35 michel Exp $
+# $Id: camlp4_comm.sh,v 1.9 2004/05/12 15:22:48 mauny Exp $
 
 ARGS1=
 FILE=
@@ -13,9 +13,10 @@ while test "" != "$1"; do
         shift
 done
 
-head -1 $FILE >/dev/null || exit 1
+# FILE must exist and be non empty (at least one line)
+test -s "$FILE" || exit 1
 
-set - `head -1 $FILE`
+set - `awk 'NR == 1' "$FILE"`
 if test "$2" = "camlp4r" -o "$2" = "camlp4"; then
         COMM="ocamlrun$EXE ../boot/$2$EXE -nolib -I ../boot"
         if test "`basename $OTOP`" != "ocaml_stuff"; then
@@ -23,7 +24,7 @@ if test "$2" = "camlp4r" -o "$2" = "camlp4"; then
         fi
         shift; shift
         ARGS2=`echo $* | sed -e "s/[()*]//g"`
-#        ARGS1="$ARGS1 -verbose"
+        ARGS1="$ARGS1 -verbose"
         if test "$QUIET" = "no"; then echo $COMM $ARGS2 $ARGS1 $FILE; fi
         $COMM $ARGS2 $ARGS1 $FILE
 else

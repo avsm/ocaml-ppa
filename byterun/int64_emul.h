@@ -11,12 +11,21 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: int64_emul.h,v 1.1 2002/05/25 08:32:53 xleroy Exp $ */
+/* $Id: int64_emul.h,v 1.3 2003/12/15 18:10:47 doligez Exp $ */
 
 /* Software emulation of 64-bit integer arithmetic, for C compilers
    that do not support it.  */
 
+#ifndef CAML_INT64_EMUL_H
+#define CAML_INT64_EMUL_H
+
 #include <math.h>
+
+#if ARCH_BIG_ENDIAN
+#define I64_literal(hi,lo) { hi, lo }
+#else
+#define I64_literal(hi,lo) { lo, hi }
+#endif
 
 /* Unsigned comparison */
 static int I64_ucompare(uint64 x, uint64 y)
@@ -27,6 +36,8 @@ static int I64_ucompare(uint64 x, uint64 y)
   if (x.l < y.l) return -1;
   return 0;
 }
+
+#define I64_ult(x, y) (I64_ucompare(x, y) < 0)
 
 /* Signed comparison */
 static int I64_compare(int64 x, int64 y)
@@ -257,3 +268,5 @@ static int64 I64_of_double(double f)
   if (neg) res = I64_neg(res);
   return res;
 }
+
+#endif /* CAML_INT64_EMUL_H */

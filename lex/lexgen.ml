@@ -12,7 +12,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexgen.ml,v 1.15 2003/02/24 10:59:19 maranget Exp $ *)
+(* $Id: lexgen.ml,v 1.17 2004/03/23 16:57:24 maranget Exp $ *)
 
 (* Compiling a lexer definition *)
 
@@ -155,7 +155,7 @@ let rec do_find_opt = function
       let opt1,all1 = do_find_opt e1
       and opt2,all2 = do_find_opt e2 in
       StringSet.union
-        (stringset_delta opt1 opt2)
+        (StringSet.union opt1 opt2)
         (stringset_delta all1 all2),
       StringSet.union all1 all2
   | Repetition e  ->
@@ -1002,7 +1002,8 @@ let apply_transitions gen r pri m ts =
 
 (* For a given nfa_state pos, refine char partition *)  
 let rec split_env gen follow pos m s = function
-  | [] -> assert false
+  | [] -> (* Can occur ! because of non-matching regexp ([^'\000'-'\255']) *)
+      []
   | (s1,st1) as p::rem ->
       let here = Cset.inter s s1 in
       if Cset.is_empty here then

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printast.ml,v 1.25 2003/07/02 09:14:31 xleroy Exp $ *)
+(* $Id: printast.ml,v 1.26 2003/11/25 08:46:45 garrigue Exp $ *)
 
 open Asttypes;;
 open Format;;
@@ -292,6 +292,9 @@ and expression i ppf x =
       line i ppf "Pexp_poly\n";
       expression i ppf e;
       option i core_type ppf cto;
+  | Pexp_object s ->
+      line i ppf "Pexp_object";
+      class_structure i ppf s
 
 and value_description i ppf x =
   line i ppf "value_description\n";

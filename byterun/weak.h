@@ -11,10 +11,16 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: weak.h,v 1.4 2001/12/07 13:39:38 xleroy Exp $ */
+/* $Id: weak.h,v 1.7 2004/01/01 16:42:38 doligez Exp $ */
 
 /* Operations on weak arrays */
 
+#ifndef CAML_WEAK_H
+#define CAML_WEAK_H
+
 #include "mlvalues.h"
 
-extern value weak_list_head;
+extern value caml_weak_list_head;
+extern value caml_weak_none;
+
+#endif /* CAML_WEAK_H */

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: str.ml,v 1.18 2002/12/20 10:32:46 xleroy Exp $ *)
+(* $Id: str.ml,v 1.19 2004/02/17 10:13:50 xleroy Exp $ *)
 
 (** String utilities *)
 
@@ -665,6 +665,12 @@ and replace_first expr repl text =
 
 (** Splitting *)
 
+let search_forward_progress expr text start =
+  let pos = search_forward expr text start in
+  if match_end() = start && start < String.length text
+  then search_forward expr text (start + 1)
+  else pos
+
 let bounded_split expr text num =
   let start =
     if string_match expr text 0 then match_end() else 0 in
@@ -672,7 +678,7 @@ let bounded_split expr text num =
     if start >= String.length text then [] else
     if n = 1 then [string_after text start] else
       try
-        let pos = search_forward expr text start in
+        let pos = search_forward_progress expr text start in
         String.sub text start (pos-start) :: split (match_end()) (n-1)
       with Not_found ->
         [string_after text start] in
@@ -685,7 +691,7 @@ let bounded_split_delim expr text num =
     if start > String.length text then [] else
     if n = 1 then [string_after text start] else
       try
-        let pos = search_forward expr text start in
+        let pos = search_forward_progress expr text start in
         String.sub text start (pos-start) :: split (match_end()) (n-1)
       with Not_found ->
         [string_after text start] in
@@ -700,7 +706,7 @@ let bounded_full_split expr text num =
     if start >= String.length text then [] else
     if n = 1 then [Text(string_after text start)] else
       try
-        let pos = search_forward expr text start in
+        let pos = search_forward_progress expr text start in
         let s = matched_string text in
         if pos > start then
           Text(String.sub text start (pos-start)) ::

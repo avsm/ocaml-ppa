@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: rename.c,v 1.2 2002/07/23 14:12:01 doligez Exp $ */
+/* $Id: rename.c,v 1.2.8.1 2004/06/21 16:18:32 xleroy Exp $ */
 
 #include <stdio.h>
 #include <mlvalues.h>
@@ -19,9 +19,23 @@
 
 CAMLprim value unix_rename(value path1, value path2)
 {
-  if (MoveFileEx(String_val(path1), String_val(path2),
-                 MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH |
-                 MOVEFILE_COPY_ALLOWED) == 0) {
+  static int supports_MoveFileEx = -1; /* don't know yet */
+  BOOL ok;
+
+  if (supports_MoveFileEx < 0) {
+    OSVERSIONINFO VersionInfo;
+    VersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    supports_MoveFileEx =
+      (GetVersionEx(&VersionInfo) != 0)
+      && (VersionInfo.dwPlatformId == VER_PLATFORM_WIN32_NT);
+  }
+  if (supports_MoveFileEx > 0)
+    ok = MoveFileEx(String_val(path1), String_val(path2),
+		    MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH |
+		    MOVEFILE_COPY_ALLOWED);
+  else
+    ok = MoveFile(String_val(path1), String_val(path2));
+  if (! ok) {
     win32_maperr(GetLastError());
     uerror("rename", path1);
   }     

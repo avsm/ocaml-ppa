@@ -10,17 +10,16 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: open.c,v 1.7 2003/07/07 13:17:41 xleroy Exp $ */
+/* $Id: open.c,v 1.8.2.2 2004/06/21 15:44:17 xleroy Exp $ */
 
 #include <fcntl.h>
 #include <signal.h>
 #include "mlvalues.h"
+#include "fail.h"
 #include "libgraph.h"
 #include <windows.h>
+
 static value gr_reset(void);
-int MouseLbuttonDown,MouseMbuttonDown,MouseRbuttonDown;
-int MouseLastX, MouseLastY;
-int LastKey = -1;
 static long tid;
 static HANDLE threadHandle;
 HWND grdisplay = NULL;
@@ -36,11 +35,11 @@ int grcolor;
 extern HFONT * grfont;
 MSG msg;
 
-HANDLE EventHandle, EventProcessedHandle;
 static char *szOcamlWindowClass = "OcamlWindowClass";
 static BOOL gr_initialized = 0;
-CAMLprim value gr_clear_graph(void);
+CAMLprim value caml_gr_clear_graph(void);
 HANDLE hInst;
+
 HFONT CreationFont(char *name)
 {
    LOGFONT CurrentFont;
@@ -65,8 +64,11 @@ void SetCoordinates(HWND hwnd)
 
 void ResetForClose(HWND hwnd)
 {
+        DeleteDC(grwindow.tempDC);
+        DeleteDC(grwindow.gcBitmap);
         DeleteObject(grwindow.hBitmap);
         memset(&grwindow,0,sizeof(grwindow));
+        gr_initialized = 0;
 }
 
         
@@ -98,44 +100,9 @@ static LRESULT CALLBACK GraphicsWndProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM 
         case WM_DESTROY:
                 ResetForClose(hwnd);
                 break;
-        case WM_LBUTTONDOWN:
-                MouseLbuttonDown = 1;
-                break;
-        case WM_LBUTTONUP:
-                MouseLbuttonDown = 0;
-                break;
-        case WM_RBUTTONDOWN:
-                MouseRbuttonDown = 1;
-                break;
-        case WM_RBUTTONUP:
-                MouseRbuttonDown = 0;
-                break;
-        case WM_MBUTTONDOWN:
-                MouseMbuttonDown = 1;
-                break;
-        case WM_MBUTTONUP:
-                MouseMbuttonDown = 0;
-                break;
-        case WM_CHAR:
-                LastKey = wParam & 0xFF;
-                break;
-        case WM_KEYUP:
-                LastKey = -1;
-                break;
-        case WM_MOUSEMOVE:
-#if 0
-                pt.x = GET_X_LPARAM(lParam);
-                pt.y = GET_Y_LPARAM(lParam);
-                MapWindowPoints(HWND_DESKTOP,grwindow.hwnd,&pt,1);
-                MouseLastX = pt.x;
-                MouseLastY = grwindow.height - 1 - pt.y;
-#else
-                MouseLastX = GET_X_LPARAM(lParam);
-                MouseLastY = grwindow.height - 1 - GET_Y_LPARAM(lParam);
-#endif
-                break;
         }
-        return DefWindowProc(hwnd,msg,wParam,lParam);
+        caml_gr_handle_event(msg, wParam, lParam);
+        return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 int DoRegisterClass(void)
@@ -186,7 +153,7 @@ static value gr_reset(void)
         grwindow.CurrentBrush = SelectObject(grwindow.gc,GetStockObject(WHITE_BRUSH));
         SelectObject(grwindow.gc,grwindow.CurrentBrush);
         SelectObject(grwindow.gcBitmap,grwindow.CurrentBrush);
-	gr_set_color(Val_long(0));
+	caml_gr_set_color(Val_long(0));
         SelectObject(grwindow.gc,grwindow.CurrentFont);
         SelectObject(grwindow.gcBitmap,grwindow.CurrentFont);
         grdisplay_mode = grremember_mode = 1;
@@ -266,8 +233,7 @@ static DWORD WINAPI gr_open_graph_internal(value arg)
   grwindow.grx = 0;
   grwindow.gry = 0;
   
-  EventHandle = CreateEvent(NULL,0,0,NULL);
-  EventProcessedHandle = CreateEvent(NULL,0,0,NULL);
+  caml_gr_init_event_queue();
 
   /* The global data structures are now correctly initialized.
      Restart the Caml main thread. */
@@ -276,22 +242,15 @@ static DWORD WINAPI gr_open_graph_internal(value arg)
 
   /* Enter the message handling loop */
   while (GetMessage(&msg,NULL,0,0)) {
-    if (InspectMessages != NULL) {
-      *InspectMessages = msg;
-      SetEvent(EventHandle);
-    }
     TranslateMessage(&msg);  // Translates virtual key codes
     DispatchMessage(&msg);   // Dispatches message to window
     if (!IsWindow(grwindow.hwnd))
       break;
-    if (InspectMessages != NULL) {
-      WaitForSingleObject(EventProcessedHandle,INFINITE);
-    }
   }
   return 0;
 }
 
-CAMLprim value gr_open_graph(value arg)
+CAMLprim value caml_gr_open_graph(value arg)
 {
   long tid;
   if (gr_initialized) return Val_unit;
@@ -307,19 +266,16 @@ CAMLprim value gr_open_graph(value arg)
   return Val_unit;
 }
 
-CAMLprim value gr_close_graph(void)
+CAMLprim value caml_gr_close_graph(void)
 {
         if (gr_initialized) {
-                DeleteDC(grwindow.tempDC);
-                DeleteDC(grwindow.gcBitmap);
-                DestroyWindow(grwindow.hwnd);
-                memset(&grwindow,0,sizeof(grwindow));
-                gr_initialized = 0;
+	        PostMessage(grwindow.hwnd, WM_CLOSE, 0, 0);
+                WaitForSingleObject(threadHandle, INFINITE);
         }
         return Val_unit;
 }
 
-CAMLprim value gr_clear_graph(void)
+CAMLprim value caml_gr_clear_graph(void)
 {
         gr_check_open();
         if(grremember_mode) {
@@ -333,19 +289,19 @@ CAMLprim value gr_clear_graph(void)
         return Val_unit;
 }
 
-CAMLprim value gr_size_x(void)
+CAMLprim value caml_gr_size_x(void)
 {
         gr_check_open();
         return Val_int(grwindow.width);
 }
 
-CAMLprim value gr_size_y(void)
+CAMLprim value caml_gr_size_y(void)
 {
         gr_check_open();
         return Val_int(grwindow.height);
 }
 
-CAMLprim value gr_synchronize(void)
+CAMLprim value caml_gr_synchronize(void)
 {
         gr_check_open();
         BitBlt(grwindow.gc,0,0,grwindow.width,grwindow.height,
@@ -353,24 +309,24 @@ CAMLprim value gr_synchronize(void)
         return Val_unit ;
 }
 
-CAMLprim value gr_display_mode(value flag)
+CAMLprim value caml_gr_display_mode(value flag)
 {
         grdisplay_mode =  (Int_val(flag)) ? 1 : 0;
         return Val_unit ;
 }
 
-CAMLprim value gr_remember_mode(value flag)
+CAMLprim value caml_gr_remember_mode(value flag)
 {
         grremember_mode = (Int_val(flag)) ? 1 : 0;
         return Val_unit ;
 }
 
-CAMLprim value gr_sigio_signal(value unit)
+CAMLprim value caml_gr_sigio_signal(value unit)
 {
         return Val_unit;
 }
 
-CAMLprim value gr_sigio_handler(void)
+CAMLprim value caml_gr_sigio_handler(void)
 {
         return Val_unit;
 }

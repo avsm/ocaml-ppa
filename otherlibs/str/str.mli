@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: str.mli,v 1.21 2003/09/23 15:41:44 doligez Exp $ *)
+(* $Id: str.mli,v 1.23 2004/04/13 17:12:46 doligez Exp $ *)
 
 (** Regular expressions and high-level string processing *)
 
@@ -24,26 +24,32 @@ type regexp
 
 
 val regexp : string -> regexp
-(** Compile a regular expression. The syntax for regular expressions
-   is the same as in Gnu Emacs. The special characters are
-   [$^.*+?[]]. The following constructs are recognized:
-   - [.     ] matches any character except newline
-   - [*     ] (postfix) matches the previous expression zero, one or
+(** Compile a regular expression. The following constructs are
+    recognized:
+   - [.     ] Matches any character except newline.
+   - [*     ] (postfix) Matches the preceding expression zero, one or
               several times
-   - [+     ] (postfix) matches the previous expression one or
+   - [+     ] (postfix) Matches the preceding expression one or
               several times
-   - [?     ] (postfix) matches the previous expression once or
+   - [?     ] (postfix) Matches the preceding expression once or
               not at all
-   - [[..]  ] character set; ranges are denoted with [-], as in [[a-z]];
-              an initial [^], as in [[^0-9]], complements the set
-   - [^     ] matches at beginning of line
-   - [$     ] matches at end of line
-   - [\|    ] (infix) alternative between two expressions
-   - [\(..\)] grouping and naming of the enclosed expression
-   - [\1    ] the text matched by the first [\(...\)] expression
-     ([\2] for the second expression, and so on up to [\9])
-   - [\b    ] matches word boundaries
-   - [\     ] quotes special characters. *)
+   - [[..]  ] Character set. Ranges are denoted with [-], as in [[a-z]].
+              An initial [^], as in [[^0-9]], complements the set.
+              To include a [\]] character in a set, make it the first
+              character of the set. To include a [-] character in a set,
+              make it the first or the last character of the set.
+   - [^     ] Matches at beginning of line (either at the beginning of
+              the matched string, or just after a newline character).
+   - [$     ] Matches at end of line (either at the end of the matched
+              string, or just before a newline character).
+   - [\|    ] (infix) Alternative between two expressions.
+   - [\(..\)] Grouping and naming of the enclosed expression.
+   - [\1    ] The text matched by the first [\(...\)] expression
+     ([\2] for the second expression, and so on up to [\9]).
+   - [\b    ] Matches word boundaries.
+   - [\     ] Quotes special characters.  The special characters
+              are [$^.*+?[]].
+*)
 
 val regexp_case_fold : string -> regexp
 (** Same as [regexp], but the compiled expression will match text
@@ -72,15 +78,19 @@ val string_match : regexp -> string -> int -> bool
    The first character of a string has position [0], as usual. *)
 
 val search_forward : regexp -> string -> int -> int
-(** [search_forward r s start] searchs the string [s] for a substring
+(** [search_forward r s start] searches the string [s] for a substring
    matching the regular expression [r]. The search starts at position
    [start] and proceeds towards the end of the string.
    Return the position of the first character of the matched
    substring, or raise [Not_found] if no substring matches. *)
 
 val search_backward : regexp -> string -> int -> int
-(** Same as {!Str.search_forward}, but the search proceeds towards the
-   beginning of the string. *)
+(** [search_backward r s last] searches the string [s] for a
+  substring matching the regular expression [r]. The search first
+  considers substrings that start at position [last] and proceeds
+  towards the beginning of string. Return the position of the first
+  character of the matched substring; raise [Not_found] if no
+  substring matches. *)
 
 val string_partial_match : regexp -> string -> int -> bool
 (** Similar to {!Str.string_match}, but succeeds whenever the argument

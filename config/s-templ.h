@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: s-templ.h,v 1.21 2002/05/06 08:29:52 xleroy Exp $ */
+/* $Id: s-templ.h,v 1.22 2004/05/18 08:50:22 xleroy Exp $ */
 
 /* Operating system and standard library dependencies. */
 
@@ -46,10 +46,6 @@
    terminal database, e.g. tgetent(), tgetstr(), tgetnum(), tputs().
    Also add the required libraries (e.g. -lcurses -ltermcap) to $(CCLIBS)
    in ../Makefile.config */
-
-#define HAS_STRERROR
-
-/* Define HAS_STRERROR if you have strerror(). */
 
 #define SUPPORT_DYNAMIC_LINKING
 

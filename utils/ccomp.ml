@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ccomp.ml,v 1.16 2003/03/24 15:27:27 xleroy Exp $ *)
+(* $Id: ccomp.ml,v 1.17 2004/06/16 16:58:46 doligez Exp $ *)
 
 (* Compiling C files and building C libraries *)
 
@@ -25,7 +25,7 @@ let command cmdline =
 let run_command cmdline = ignore(command cmdline)
 
 (* Build @responsefile to work around Windows limitations on 
-   command-length line *)
+   command-line length *)
 let build_diversion lst =
   let (responsefile, oc) = Filename.open_temp_file "camlresp" "" in
   List.iter

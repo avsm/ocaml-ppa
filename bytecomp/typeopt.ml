@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typeopt.ml,v 1.9 2003/07/02 09:14:29 xleroy Exp $ *)
+(* $Id: typeopt.ml,v 1.10 2004/04/16 00:50:23 garrigue Exp $ *)
 
 (* Auxiliaries for type-based optimizations, e.g. array kinds *)
 
@@ -87,7 +87,8 @@ let array_element_kind env ty =
 let array_kind_gen ty env =
   let array_ty = Ctype.expand_head env (Ctype.correct_levels ty) in
   match (Ctype.repr array_ty).desc with
-    Tconstr(p, [elt_ty], _) when Path.same p Predef.path_array ->
+    Tconstr(p, [elt_ty], _) | Tpoly({desc = Tconstr(p, [elt_ty], _)}, _)
+    when Path.same p Predef.path_array ->
       array_element_kind env elt_ty
   | _ ->
       (* This can happen with e.g. Obj.field *)

@@ -11,11 +11,12 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: callback.ml,v 1.4 2001/12/07 13:40:50 xleroy Exp $ *)
+(* $Id: callback.ml,v 1.5 2003/12/31 14:20:39 doligez Exp $ *)
 
 (* Registering Caml values with the C runtime for later callbacks *)
 
-external register_named_value: string -> Obj.t -> unit = "register_named_value"
+external register_named_value : string -> Obj.t -> unit
+                              = "caml_register_named_value"
 
 let register name v =
   register_named_value name (Obj.repr v)

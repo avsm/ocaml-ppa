@@ -11,9 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: extern.c,v 1.45 2003/06/19 13:05:17 xleroy Exp $ */
+/* $Id: extern.c,v 1.56 2004/06/19 16:02:07 xleroy Exp $ */
 
 /* Structured output */
+
+/* The interface of this file is "intext.h" */
 
 #include <string.h>
 #include "alloc.h"
@@ -60,7 +62,7 @@ static void alloc_extern_table(void)
 {
   asize_t i;
   extern_table = (struct extern_obj *)
-                 stat_alloc(extern_table_size * sizeof(struct extern_obj));
+                 caml_stat_alloc(extern_table_size * sizeof(struct extern_obj));
   for (i = 0; i < extern_table_size; i++) extern_table[i].ofs = 0;
 }
 
@@ -89,7 +91,7 @@ static void resize_extern_table(void)
       extern_table[h].obj = obj;
     }
   }
-  stat_free(oldtable);
+  caml_stat_free(oldtable);
 }
 
 /* Free the extern table. We keep it around for next call if
@@ -99,7 +101,7 @@ static void free_extern_table(void)
 {
   if (extern_table_size > INITIAL_EXTERN_TABLE_SIZE ||
       initial_ofs >= INITIAL_OFFSET_MAX) {
-    stat_free(extern_table);
+    caml_stat_free(extern_table);
     extern_table = NULL;
   }
 }
@@ -111,7 +113,7 @@ static int extern_block_malloced;
 
 static void alloc_extern_block(void)
 {
-  extern_block = stat_alloc(INITIAL_EXTERN_BLOCK_SIZE);
+  extern_block = caml_stat_alloc(INITIAL_EXTERN_BLOCK_SIZE);
   extern_limit = extern_block + INITIAL_EXTERN_BLOCK_SIZE;
   extern_ptr = extern_block;
   extern_block_malloced = 1;
@@ -124,13 +126,13 @@ static void resize_extern_block(int required)
   if (! extern_block_malloced) {
     initial_ofs += obj_counter;
     free_extern_table();
-    failwith("Marshal.to_buffer: buffer overflow");
+    caml_failwith("Marshal.to_buffer: buffer overflow");
   }
   curr_pos = extern_ptr - extern_block;
   size = extern_limit - extern_block;
   reqd_size = curr_pos + required;
   while (size <= reqd_size) size *= 2;
-  extern_block = stat_resize(extern_block, size);
+  extern_block = caml_stat_resize(extern_block, size);
   extern_limit = extern_block + size;
   extern_ptr = extern_block + curr_pos;
 }
@@ -153,7 +155,7 @@ static void writeblock(char *data, long int len)
   writeblock((char *)(data), (ndoubles) * 8)
 #else
 #define writeblock_float8(data,ndoubles) \
-  serialize_block_float_8((data), (ndoubles))
+  caml_serialize_block_float_8((data), (ndoubles))
 #endif
 
 static void writecode8(int code, long int val)
@@ -214,10 +216,10 @@ static int extern_closures;     /* Flag to allow externing code pointers */
 
 static void extern_invalid_argument(char *msg)
 {
-  if (extern_block_malloced) stat_free(extern_block);
+  if (extern_block_malloced) caml_stat_free(extern_block);
   initial_ofs += obj_counter;
   free_extern_table();
-  invalid_argument(msg);
+  caml_invalid_argument(msg);
 }
 
 static void extern_rec(value v)
@@ -246,8 +248,15 @@ static void extern_rec(value v)
     asize_t h;
 
     if (tag == Forward_tag) {
-      v = Forward_val (v);
-      goto tailcall;
+      value f = Forward_val (v);
+      if (Is_block (f) && (Is_young (f) || Is_in_heap (f))
+          && (Tag_val (f) == Forward_tag || Tag_val (f) == Lazy_tag
+              || Tag_val (f) == Double_tag)){
+        /* Do not short-circuit the pointer. */
+      }else{
+        v = f;
+        goto tailcall;
+      }
     }
     /* Atoms are treated specially for two reasons: they are not allocated
        in the externed block, and they are automatically shared. */
@@ -285,7 +294,7 @@ static void extern_rec(value v)
     /* Output the contents of the object */
     switch(tag) {
     case String_tag: {
-      mlsize_t len = string_length(v);
+      mlsize_t len = caml_string_length(v);
       if (len < 0x20) {
         Write(PREFIX_SMALL_STRING + len);
       } else if (len < 0x100) {
@@ -323,15 +332,17 @@ static void extern_rec(value v)
       break;
     }
     case Abstract_tag:
-      extern_invalid_argument("output_value: abstract value");
+      extern_invalid_argument("output_value: abstract value (Abstract)");
       break;
     case Infix_tag:
       writecode32(CODE_INFIXPOINTER, Infix_offset_hd(hd));
       extern_rec(v - Infix_offset_hd(hd));
       break;
+    /* Use default case for objects
     case Object_tag:
       extern_invalid_argument("output_value: object value");
       break;
+    */
     case Custom_tag: {
       unsigned long sz_32, sz_64;
       char * ident = Custom_ops_val(v)->identifier;
@@ -339,7 +350,7 @@ static void extern_rec(value v)
                         unsigned long * wsize_64)
         = Custom_ops_val(v)->serialize;
       if (serialize == NULL) 
-        extern_invalid_argument("output_value: abstract value");
+        extern_invalid_argument("output_value: abstract value (Custom)");
       Write(CODE_CUSTOM);
       writeblock(ident, strlen(ident) + 1);
       Custom_ops_val(v)->serialize(v, &sz_32, &sz_64);
@@ -347,9 +358,6 @@ static void extern_rec(value v)
       size_64 += 2 + ((sz_64 + 7) >> 3);
       break;
     }
-    case Forward_tag:
-      Assert(0);
-      /*fallthrough*/
     default: {
       mlsize_t i;
       if (tag < 16 && sz < 8) {
@@ -370,14 +378,14 @@ static void extern_rec(value v)
     }
     return;
   }
-  if ((char *) v >= code_area_start && (char *) v < code_area_end) {
+  if ((char *) v >= caml_code_area_start && (char *) v < caml_code_area_end) {
     if (!extern_closures)
       extern_invalid_argument("output_value: functional value");
-    writecode32(CODE_CODEPOINTER, (char *) v - code_area_start);
-    writeblock((char *) code_checksum(), 16);
+    writecode32(CODE_CODEPOINTER, (char *) v - caml_code_area_start);
+    writeblock((char *) caml_code_checksum(), 16);
     return;
   }
-  extern_invalid_argument("output_value: abstract value");
+  extern_invalid_argument("output_value: abstract value (outside heap)");
 }
 
 enum { NO_SHARING = 1, CLOSURES = 2 };
@@ -388,7 +396,7 @@ static long extern_value(value v, value flags)
   long res_len;
   int fl;
   /* Parse flag list */
-  fl = convert_flag_list(flags, extern_flags);
+  fl = caml_convert_flag_list(flags, extern_flags);
   extern_ignore_sharing = fl & NO_SHARING;
   extern_closures = fl & CLOSURES;
   /* Allocate hashtable of objects already seen, if needed */
@@ -421,7 +429,7 @@ static long extern_value(value v, value flags)
     /* The object is so big its size cannot be written in the header.
        Besides, some of the array lengths or string lengths or shared offsets
        it contains may have overflowed the 32 bits used to write them. */
-    failwith("output_value: object too big");
+    caml_failwith("output_value: object too big");
   }
 #endif
   extern_ptr = extern_block + 4;
@@ -433,48 +441,48 @@ static long extern_value(value v, value flags)
   return res_len;
 }
 
-void output_val(struct channel *chan, value v, value flags)
+void caml_output_val(struct channel *chan, value v, value flags)
 {
   long len;
   char * block;
 
-  if (! channel_binary_mode(chan))
-    failwith("output_value: not a binary channel");
+  if (! caml_channel_binary_mode(chan))
+    caml_failwith("output_value: not a binary channel");
   alloc_extern_block();
   len = extern_value(v, flags);
-  /* During really_putblock, concurrent output_val operations can take
-     place (via signal handlers or context switching in systhreads),
-     and extern_block may change.  So, save the pointer in a local variable. */
+  /* During [caml_really_putblock], concurrent [caml_output_val] operations
+     can take place (via signal handlers or context switching in systhreads),
+     and [extern_block] may change. So, save the pointer in a local variable. */
   block = extern_block;
-  really_putblock(chan, extern_block, len);
-  stat_free(block);
+  caml_really_putblock(chan, extern_block, len);
+  caml_stat_free(block);
 }
 
-CAMLprim value output_value(value vchan, value v, value flags)
+CAMLprim value caml_output_value(value vchan, value v, value flags)
 {
   CAMLparam3 (vchan, v, flags);
   struct channel * channel = Channel(vchan);
 
   Lock(channel);
-  output_val(channel, v, flags);
+  caml_output_val(channel, v, flags);
   Unlock(channel);
   CAMLreturn (Val_unit);
 }
 
-CAMLprim value output_value_to_string(value v, value flags)
+CAMLprim value caml_output_value_to_string(value v, value flags)
 {
   long len;
   value res;
   alloc_extern_block();
   len = extern_value(v, flags);
-  res = alloc_string(len);
+  res = caml_alloc_string(len);
   memmove(String_val(res), extern_block, len);
-  stat_free(extern_block);
+  caml_stat_free(extern_block);
   return res;
 }
 
-CAMLprim value output_value_to_buffer(value buf, value ofs, value len,
-                                      value v, value flags)
+CAMLprim value caml_output_value_to_buffer(value buf, value ofs, value len,
+                                           value v, value flags)
 {
   long len_res;
   extern_block = &Byte(buf, Long_val(ofs));
@@ -485,8 +493,9 @@ CAMLprim value output_value_to_buffer(value buf, value ofs, value len,
   return Val_long(len_res);
 }
 
-CAMLexport void output_value_to_malloc(value v, value flags,
-                                       /*out*/ char ** buf, /*out*/ long * len)
+CAMLexport void caml_output_value_to_malloc(value v, value flags,
+                                            /*out*/ char ** buf,
+                                            /*out*/ long * len)
 {
   long len_res;
   alloc_extern_block();
@@ -495,8 +504,8 @@ CAMLexport void output_value_to_malloc(value v, value flags,
   *len = len_res;
 }
 
-CAMLexport long output_value_to_block(value v, value flags,
-                                      char * buf, long len)
+CAMLexport long caml_output_value_to_block(value v, value flags,
+                                           char * buf, long len)
 {
   long len_res;
   extern_block = buf;
@@ -509,14 +518,14 @@ CAMLexport long output_value_to_block(value v, value flags,
 
 /* Functions for writing user-defined marshallers */
 
-CAMLexport void serialize_int_1(int i)
+CAMLexport void caml_serialize_int_1(int i)
 {
   if (extern_ptr + 1 > extern_limit) resize_extern_block(1);
   extern_ptr[0] = i;
   extern_ptr += 1;
 }
 
-CAMLexport void serialize_int_2(int i)
+CAMLexport void caml_serialize_int_2(int i)
 {
   if (extern_ptr + 2 > extern_limit) resize_extern_block(2);
   extern_ptr[0] = i >> 8;
@@ -524,7 +533,7 @@ CAMLexport void serialize_int_2(int i)
   extern_ptr += 2;
 }
 
-CAMLexport void serialize_int_4(int32 i)
+CAMLexport void caml_serialize_int_4(int32 i)
 {
   if (extern_ptr + 4 > extern_limit) resize_extern_block(4);
   extern_ptr[0] = i >> 24;
@@ -534,90 +543,100 @@ CAMLexport void serialize_int_4(int32 i)
   extern_ptr += 4;
 }
 
-CAMLexport void serialize_int_8(int64 i)
+CAMLexport void caml_serialize_int_8(int64 i)
 {
-  serialize_block_8(&i, 1);
+  caml_serialize_block_8(&i, 1);
 }
 
-CAMLexport void serialize_float_4(float f)
+CAMLexport void caml_serialize_float_4(float f)
 {
-  serialize_block_4(&f, 1);
+  caml_serialize_block_4(&f, 1);
 }
 
-CAMLexport void serialize_float_8(double f)
+CAMLexport void caml_serialize_float_8(double f)
 {
-  serialize_block_8(&f, 1);
+  caml_serialize_block_8(&f, 1);
 }
 
-CAMLexport void serialize_block_1(void * data, long len)
+CAMLexport void caml_serialize_block_1(void * data, long len)
 {
   if (extern_ptr + len > extern_limit) resize_extern_block(len);
   memmove(extern_ptr, data, len);
   extern_ptr += len;
 }
 
-CAMLexport void serialize_block_2(void * data, long len)
+CAMLexport void caml_serialize_block_2(void * data, long len)
 {
-  unsigned char * p;
-  char * q;
   if (extern_ptr + 2 * len > extern_limit) resize_extern_block(2 * len);
 #ifndef ARCH_BIG_ENDIAN
-  for (p = data, q = extern_ptr; len > 0; len--, p += 2, q += 2)
-    Reverse_16(q, p);
-  extern_ptr = q;
+  {
+    unsigned char * p;
+    char * q;
+    for (p = data, q = extern_ptr; len > 0; len--, p += 2, q += 2)
+      Reverse_16(q, p);
+    extern_ptr = q;
+  }
 #else
   memmove(extern_ptr, data, len * 2);
   extern_ptr += len * 2;
 #endif
 }
 
-CAMLexport void serialize_block_4(void * data, long len)
+CAMLexport void caml_serialize_block_4(void * data, long len)
 {
-  unsigned char * p;
-  char * q;
   if (extern_ptr + 4 * len > extern_limit) resize_extern_block(4 * len);
 #ifndef ARCH_BIG_ENDIAN
-  for (p = data, q = extern_ptr; len > 0; len--, p += 4, q += 4)
-    Reverse_32(q, p);
-  extern_ptr = q;
+  {
+    unsigned char * p;
+    char * q;
+    for (p = data, q = extern_ptr; len > 0; len--, p += 4, q += 4)
+      Reverse_32(q, p);
+    extern_ptr = q;
+  }
 #else
   memmove(extern_ptr, data, len * 4);
   extern_ptr += len * 4;
 #endif
 }
 
-CAMLexport void serialize_block_8(void * data, long len)
+CAMLexport void caml_serialize_block_8(void * data, long len)
 {
-  unsigned char * p;
-  char * q;
   if (extern_ptr + 8 * len > extern_limit) resize_extern_block(8 * len);
 #ifndef ARCH_BIG_ENDIAN
-  for (p = data, q = extern_ptr; len > 0; len--, p += 8, q += 8)
-    Reverse_64(q, p);
-  extern_ptr = q;
+  {
+    unsigned char * p;
+    char * q;
+    for (p = data, q = extern_ptr; len > 0; len--, p += 8, q += 8)
+      Reverse_64(q, p);
+    extern_ptr = q;
+  }
 #else
   memmove(extern_ptr, data, len * 8);
   extern_ptr += len * 8;
 #endif
 }
 
-CAMLexport void serialize_block_float_8(void * data, long len)
+CAMLexport void caml_serialize_block_float_8(void * data, long len)
 {
-  unsigned char * p;
-  char * q;
   if (extern_ptr + 8 * len > extern_limit) resize_extern_block(8 * len);
 #if ARCH_FLOAT_ENDIANNESS == 0x01234567
   memmove(extern_ptr, data, len * 8);
   extern_ptr += len * 8;
 #elif ARCH_FLOAT_ENDIANNESS == 0x76543210
-  for (p = data, q = extern_ptr; len > 0; len--, p += 8, q += 8)
-    Reverse_64(q, p);
-  extern_ptr = q;
+  { 
+    unsigned char * p;
+    char * q;
+    for (p = data, q = extern_ptr; len > 0; len--, p += 8, q += 8)
+      Reverse_64(q, p);
+    extern_ptr = q;
+  }
 #else
-  for (p = data, q = extern_ptr; len > 0; len--, p += 8, q += 8)
-    Permute_64(q, 0x01234567, p, ARCH_FLOAT_ENDIANNESS);
-  extern_ptr = q;
+  { 
+    unsigned char * p;
+    char * q;
+    for (p = data, q = extern_ptr; len > 0; len--, p += 8, q += 8)
+      Permute_64(q, 0x01234567, p, ARCH_FLOAT_ENDIANNESS);
+    extern_ptr = q;
+  }
 #endif
 }
-
-

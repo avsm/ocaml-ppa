@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_info.ml,v 1.20 2004/05/23 10:41:50 guesdon Exp $ *)
 
 (** Interface for analysing documented OCaml source files and to the collected information. *)
 
@@ -45,9 +46,12 @@ and text_element = Odoc_types.text_element =
   | Ref of string * ref_kind option
   | Superscript of text
   | Subscript of text
-
+  | Module_list of string list
+  | Index_list
 
 and text = text_element list
+
+exception Text_syntax = Odoc_text.Text_syntax
 
 type see_ref = Odoc_types.see_ref =
     See_url of string
@@ -112,15 +116,17 @@ let reset_type_names = Printtyp.reset
 
 let string_of_variance t (co,cn) = Odoc_str.string_of_variance t (co, cn)
 
-let string_of_type_expr t = Odoc_misc.string_of_type_expr t
+let string_of_type_expr t = Odoc_print.string_of_type_expr t
 
-let string_of_type_list sep type_list = Odoc_str.string_of_type_list sep type_list
+let string_of_type_list ?par sep type_list = Odoc_str.string_of_type_list ?par sep type_list
 
 let string_of_type_param_list t = Odoc_str.string_of_type_param_list t
 
-let string_of_module_type = Odoc_misc.string_of_module_type
+let string_of_class_type_param_list l = Odoc_str.string_of_class_type_param_list l
 
-let string_of_class_type = Odoc_misc.string_of_class_type
+let string_of_module_type = Odoc_print.string_of_module_type
+
+let string_of_class_type = Odoc_print.string_of_class_type
 
 let string_of_text t = Odoc_misc.string_of_text t
 
@@ -172,6 +178,129 @@ let apply_if_equal f v1 v2 =
     f v1
   else
     v2
+
+let text_of_string = Odoc_text.Texter.text_of_string
+
+let text_string_of_text = Odoc_text.Texter.string_of_text
+
+
+let escape_arobas s =
+  let len = String.length s in
+  let b = Buffer.create len in
+  for i = 0 to len - 1 do
+    match s.[i] with
+      '@' -> Buffer.add_string b "\\@"
+    | c -> Buffer.add_char b c
+  done;
+  Buffer.contents b
+
+let info_string_of_info i =
+  let b = Buffer.create 256 in
+  let p = Printf.bprintf in
+  (
+   match i.i_desc with 
+     None -> ()
+   | Some t -> p b "%s" (escape_arobas (text_string_of_text t))
+  );
+  List.iter 
+    (fun s -> p b "\n@author %s" (escape_arobas s))
+    i.i_authors;
+  (
+   match i.i_version with
+     None -> ()
+   | Some s -> p b "\n@version %s" (escape_arobas s)
+  );
+  (
+   (* TODO: escape characters ? *)
+   let f_see_ref = function
+       See_url s -> Printf.sprintf "<%s>" s
+     | See_file s -> Printf.sprintf "'%s'" s
+     | See_doc s -> Printf.sprintf "\"%s\"" s
+   in
+   List.iter
+     (fun (sref, t) ->
+       p b "\n@see %s %s"
+	 (escape_arobas (f_see_ref sref))
+	 (escape_arobas (text_string_of_text t))
+     )
+     i.i_sees
+  );
+  (
+   match i.i_since with
+     None -> ()
+   | Some s -> p b "\n@since %s" (escape_arobas s)
+  );
+  (
+   match i.i_deprecated with 
+     None -> ()
+   | Some t -> 
+       p b "\n@deprecated %s" 
+	 (escape_arobas (text_string_of_text t))
+  );
+  List.iter
+    (fun (s, t) ->
+      p b "\n@param %s %s"
+	(escape_arobas s)
+	(escape_arobas (text_string_of_text t))
+    )
+    i.i_params;
+  List.iter
+    (fun (s, t) ->
+      p b "\n@raise %s %s"
+	(escape_arobas s)
+	(escape_arobas (text_string_of_text t))
+    )
+    i.i_raised_exceptions;
+  (
+   match i.i_return_value with 
+     None -> ()
+   | Some t -> 
+       p b "\n@return %s" 
+	 (escape_arobas (text_string_of_text t))
+  );
+  List.iter
+    (fun (s, t) ->
+      p b "\n@%s %s" s
+	(escape_arobas (text_string_of_text t))
+    )
+    i.i_raised_exceptions;
+  List.iter
+    (fun (s, t) ->
+      p b "\n@%s %s" s
+	(escape_arobas (text_string_of_text t))
+    )
+    i.i_custom;
+
+  Buffer.contents b
+
+let info_of_string s =
+  let dummy =
+    {
+      i_desc = None ;
+      i_authors = [] ;
+      i_version = None ;
+      i_sees = [] ;
+      i_since = None ;
+      i_deprecated = None ;
+      i_params = [] ;
+      i_raised_exceptions = [] ;
+      i_return_value = None ;
+      i_custom = [] ;
+    } 
+  in
+  let s2 = Printf.sprintf "(** %s *)" s in
+  let (_, i_opt) = Odoc_comments.Basic_info_retriever.first_special "-" s2 in
+  match i_opt with
+    None -> dummy
+  | Some i -> i
+      
+let info_of_comment_file f =
+  try
+    let s = Odoc_misc.input_file_as_string f in
+    info_of_string s
+  with
+    Sys_error s -> 
+      failwith s
 
 module Search = 
   struct 

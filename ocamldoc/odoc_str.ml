@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_str.ml,v 1.9 2004/03/22 15:06:31 guesdon Exp $ *)
 
 (** The functions to get a string from different kinds of elements (types, modules, ...). *)
 
@@ -55,7 +56,7 @@ let raw_string_of_type_list sep type_list =
     [] -> ()
   | [(variance, ty)] -> print_one_type variance ty
   | (variance, ty) :: tyl ->
-      Format.fprintf fmt "@[<hov 2>(";
+      Format.fprintf fmt "@[<hov 2>";
       print_one_type variance ty;
       List.iter
         (fun (variance, t) -> 
@@ -63,20 +64,56 @@ let raw_string_of_type_list sep type_list =
 	  print_one_type variance t
 	)
         tyl;
-      Format.fprintf fmt ")@]"
+      Format.fprintf fmt "@]"
   end;
   Format.pp_print_flush fmt ();
   Buffer.contents buf
 
-let string_of_type_list sep type_list =
-  raw_string_of_type_list sep (List.map (fun t -> ("", t)) type_list)
+let string_of_type_list ?par sep type_list =
+  let par =
+    match par with
+    | Some b -> b
+    | None ->
+	match type_list with
+	  [] | [_] -> false
+	| _ -> true
+  in
+  Printf.sprintf "%s%s%s"
+    (if par then "(" else "")
+    (raw_string_of_type_list sep (List.map (fun t -> ("", t)) type_list))
+    (if par then ")" else "")
 
 let string_of_type_param_list t =
-  raw_string_of_type_list ", "
-    (List.map 
-       (fun (typ, co, cn) -> (string_of_variance t (co, cn), typ))
-       t.Odoc_type.ty_parameters
+  let par = 
+    match t.Odoc_type.ty_parameters with
+      [] | [_] -> false
+    | _ -> true
+  in
+  Printf.sprintf "%s%s%s"
+    (if par then "(" else "")
+    (raw_string_of_type_list ", "
+       (List.map 
+	  (fun (typ, co, cn) -> (string_of_variance t (co, cn), typ))
+	  t.Odoc_type.ty_parameters
+       )
     )
+    (if par then ")" else "")
+
+let string_of_class_type_param_list l =
+  let par = 
+    match l with
+      [] | [_] -> false
+    | _ -> true
+  in
+  Printf.sprintf "%s%s%s"
+    (if par then "[" else "")
+    (raw_string_of_type_list ", "
+       (List.map 
+	  (fun typ -> ("", typ))
+	  l
+       )
+    )
+    (if par then "]" else "")
 
 let string_of_type t =
   let module M = Odoc_type in
@@ -85,7 +122,7 @@ let string_of_type t =
      (List.map 
         (fun (p, co, cn) -> 
 	  (string_of_variance t (co, cn))^
-	  (Odoc_misc.string_of_type_expr p)^" "
+	  (Odoc_print.string_of_type_expr p)^" "
 	)
         t.M.ty_parameters
      )
@@ -93,7 +130,7 @@ let string_of_type t =
   (Name.simple t.M.ty_name)^" "^
   (match t.M.ty_manifest with
     None -> ""
-  | Some typ -> "= "^(Odoc_misc.string_of_type_expr typ)^" "
+  | Some typ -> "= "^(Odoc_print.string_of_type_expr typ)^" "
   )^
   (match t.M.ty_kind with
     M.Type_abstract -> 
@@ -108,7 +145,7 @@ let string_of_type t =
                 [] -> "" 
               | l -> 
                   " of "^(String.concat " * " 
-                            (List.map (fun t -> "("^(Odoc_misc.string_of_type_expr t)^")") l))
+                            (List.map (fun t -> "("^(Odoc_print.string_of_type_expr t)^")") l))
               )^
               (match cons.M.vc_text with
                 None ->
@@ -126,7 +163,7 @@ let string_of_type t =
          (List.map 
             (fun record ->
               "   "^(if record.M.rf_mutable then "mutable " else "")^
-              record.M.rf_name^" : "^(Odoc_misc.string_of_type_expr record.M.rf_type)^";"^
+              record.M.rf_name^" : "^(Odoc_print.string_of_type_expr record.M.rf_type)^";"^
               (match record.M.rf_text with
                 None ->
                   ""
@@ -150,7 +187,7 @@ let string_of_exception e =
     [] -> ""
   | _ ->" : "^
       (String.concat " -> " 
-         (List.map (fun t -> "("^(Odoc_misc.string_of_type_expr t)^")") e.M.ex_args)
+         (List.map (fun t -> "("^(Odoc_print.string_of_type_expr t)^")") e.M.ex_args)
       )
   )^
   (match e.M.ex_alias with
@@ -169,7 +206,7 @@ let string_of_exception e =
 let string_of_value v =
   let module M = Odoc_value in
   "val "^(Name.simple v.M.val_name)^" : "^
-  (Odoc_misc.string_of_type_expr v.M.val_type)^"\n"^
+  (Odoc_print.string_of_type_expr v.M.val_type)^"\n"^
   (match v.M.val_info with
     None -> ""
   | Some i -> Odoc_misc.string_of_info i)
@@ -179,7 +216,7 @@ let string_of_attribute a =
   "val "^
   (if a.M.att_mutable then Odoc_messages.mutab^" " else "")^
   (Name.simple a.M.att_value.M.val_name)^" : "^
-  (Odoc_misc.string_of_type_expr a.M.att_value.M.val_type)^"\n"^
+  (Odoc_print.string_of_type_expr a.M.att_value.M.val_type)^"\n"^
   (match a.M.att_value.M.val_info with
     None -> ""
   | Some i -> Odoc_misc.string_of_info i)
@@ -189,7 +226,9 @@ let string_of_method m =
   "method "^
   (if m.M.met_private then Odoc_messages.privat^" " else "")^
   (Name.simple m.M.met_value.M.val_name)^" : "^
-  (Odoc_misc.string_of_type_expr m.M.met_value.M.val_type)^"\n"^
+  (Odoc_print.string_of_type_expr m.M.met_value.M.val_type)^"\n"^
   (match m.M.met_value.M.val_info with
     None -> ""
   | Some i -> Odoc_misc.string_of_info i)
+
+(* eof $Id: odoc_str.ml,v 1.9 2004/03/22 15:06:31 guesdon Exp $ *)

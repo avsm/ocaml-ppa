@@ -11,9 +11,10 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: opendir.c,v 1.8 2001/12/07 13:40:32 xleroy Exp $ */
+/* $Id: opendir.c,v 1.9 2004/02/14 10:21:22 xleroy Exp $ */
 
 #include <mlvalues.h>
+#include <alloc.h>
 #include "unixsupport.h"
 #include <sys/types.h>
 #ifdef HAS_DIRENT
@@ -25,7 +26,10 @@
 CAMLprim value unix_opendir(value path)
 {
   DIR * d;
+  value res;
   d = opendir(String_val(path));
   if (d == (DIR *) NULL) uerror("opendir", path);
-  return (value) d;
+  res = alloc_small(1, Abstract_tag);
+  DIR_Val(res) = d;
+  return res;
 }

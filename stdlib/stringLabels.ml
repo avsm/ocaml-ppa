@@ -11,8 +11,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stringLabels.ml,v 1.3 2001/12/07 13:41:00 xleroy Exp $ *)
+(* $Id: stringLabels.ml,v 1.4 2004/01/03 22:08:38 doligez Exp $ *)
 
-(* Module [SringLabels]: labelled String module *)
+(* Module [StringLabels]: labelled String module *)
 
 include String

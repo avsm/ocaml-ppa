@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pparse.ml,v 1.2 2002/11/01 17:06:42 doligez Exp $ *)
+(* $Id: pparse.ml,v 1.3 2004/06/16 16:58:46 doligez Exp $ *)
 
 open Format
 
@@ -23,7 +23,9 @@ let preprocess sourcefile =
     None -> sourcefile
   | Some pp ->
       let tmpfile = Filename.temp_file "camlpp" "" in
-      let comm = Printf.sprintf "%s %s > %s" pp sourcefile tmpfile in
+      let comm = Printf.sprintf "%s %s > %s"
+                                pp (Filename.quote sourcefile) tmpfile
+      in
       if Ccomp.command comm <> 0 then begin
         Misc.remove_file tmpfile;
         raise Error;

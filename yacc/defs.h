@@ -12,7 +12,7 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: defs.h,v 1.20 2003/09/03 13:26:10 doligez Exp $ */
+/* $Id: defs.h,v 1.22 2004/04/21 23:26:05 doligez Exp $ */
 
 #include <assert.h>
 #include <ctype.h>
@@ -21,10 +21,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../config/s.h"
-
-#if macintosh
-#include "../byterun/rotatecursor.h"
-#endif
 
 /*  machine-dependent definitions                              */
 /*  the following definitions are for the Tahoe                */
@@ -120,27 +116,12 @@
 
 /*  storage allocation macros  */
 
-#if macintosh
-
-#define INTERACT() ROTATECURSOR_MAGIC ()
-
-#define CALLOC(k,n)  (INTERACT (), calloc((unsigned)(k),(unsigned)(n)))
-#define FREE(x)      (INTERACT (), free((char*)(x)))
-#define MALLOC(n)    (INTERACT (), malloc((unsigned)(n)))
-#define NEW(t)       (INTERACT (), (t*)allocate(sizeof(t)))
-#define NEW2(n,t)    (INTERACT (), (t*)allocate((unsigned)((n)*sizeof(t))))
-#define REALLOC(p,n) (INTERACT (), realloc((char*)(p),(unsigned)(n)))
-
-#else
-
 #define CALLOC(k,n)      (calloc((unsigned)(k),(unsigned)(n)))
 #define FREE(x)          (free((char*)(x)))
 #define MALLOC(n)        (malloc((unsigned)(n)))
 #define NEW(t)           ((t*)allocate(sizeof(t)))
 #define NEW2(n,t)        ((t*)allocate((unsigned)((n)*sizeof(t))))
 #define REALLOC(p,n)     (realloc((char*)(p),(unsigned)(n)))
-
-#endif /* macintosh */
 
 
 /*  the structure of a symbol table entry  */
@@ -234,6 +215,7 @@ extern char *myname;
 extern char *cptr;
 extern char *line;
 extern int lineno;
+extern char *virtual_input_file_name;
 extern int outline;
 
 extern char *action_file_name;

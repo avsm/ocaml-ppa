@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_env.mli,v 1.3 2003/11/24 10:39:31 starynke Exp $ *)
 
 (** Environment for finding complete names from relative names. *)
 

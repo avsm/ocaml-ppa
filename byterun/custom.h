@@ -11,12 +11,15 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: custom.h,v 1.8 2002/06/07 09:49:37 xleroy Exp $ */
+/* $Id: custom.h,v 1.11 2004/01/01 16:42:35 doligez Exp $ */
 
-#ifndef _custom_
-#define _custom_
+#ifndef CAML_CUSTOM_H
+#define CAML_CUSTOM_H
 
 
+#ifndef CAML_NAME_SPACE
+#include "compatibility.h"
+#endif
 #include "mlvalues.h"
 
 struct custom_operations {
@@ -38,18 +41,19 @@ struct custom_operations {
 
 #define Custom_ops_val(v) (*((struct custom_operations **) (v)))
 
-CAMLextern value alloc_custom(struct custom_operations * ops,
-                              unsigned long size, /*size in bytes*/
-                              mlsize_t mem, /*resources consumed*/
-                              mlsize_t max  /*max resources*/);
+CAMLextern value caml_alloc_custom(struct custom_operations * ops,
+                                   unsigned long size, /*size in bytes*/
+                                   mlsize_t mem, /*resources consumed*/
+                                   mlsize_t max  /*max resources*/);
 
-CAMLextern void register_custom_operations(struct custom_operations * ops);
+CAMLextern void caml_register_custom_operations(struct custom_operations * ops);
 
 /* <private> */
-extern struct custom_operations * find_custom_operations(char * ident);
-extern struct custom_operations * final_custom_operations(void (*fn)(value));
+extern struct custom_operations * caml_find_custom_operations(char * ident);
+extern struct custom_operations *
+          caml_final_custom_operations(void (*fn)(value));
 
-extern void init_custom_operations(void);
+extern void caml_init_custom_operations(void);
 /* </private> */
 
-#endif
+#endif /* CAML_CUSTOM_H */

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: libgraph.h,v 1.7 2003/07/07 13:17:41 xleroy Exp $ */
+/* $Id: libgraph.h,v 1.8.2.1 2004/06/21 15:31:58 xleroy Exp $ */
 
 #include <stdio.h>
 #include <windows.h>
@@ -45,14 +45,11 @@ extern int bits_per_pixel;
 #define BORDER_WIDTH 2
 #define WINDOW_NAME "Caml graphics"
 #define ICON_NAME "Caml graphics"
-#define DEFAULT_EVENT_MASK \
-          (ExposureMask | KeyPressMask | StructureNotifyMask)
-#define DEFAULT_FONT "fixed"
 #define SIZE_QUEUE 256
 
 void gr_fail(char *fmt, char *arg);
 void gr_check_open(void);
-CAMLprim value gr_set_color(value vcolor);
+CAMLprim value caml_gr_set_color(value vcolor);
 
 // Windows specific definitions
 extern RECT WindowRect;
@@ -77,10 +74,5 @@ typedef struct tagWindow {
 
 extern GR_WINDOW grwindow;
 HFONT CreationFont(char *name);
-extern int MouseLbuttonDown,MouseMbuttonDown,MouseRbuttonDown;
-extern HANDLE EventHandle, EventProcessedHandle;
-extern MSG * InspectMessages;
-extern int MouseLbuttonDown,MouseMbuttonDown,MouseRbuttonDown;
-extern int MouseLastX, MouseLastY;
-extern int LastKey;
-
+extern void caml_gr_init_event_queue(void);
+extern void caml_gr_handle_event(UINT msg, WPARAM wParam, LPARAM lParam);

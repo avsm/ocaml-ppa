@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: globroots.c,v 1.4 2001/12/07 13:39:28 xleroy Exp $ */
+/* $Id: globroots.c,v 1.7 2004/01/05 20:25:58 doligez Exp $ */
 
 /* Registration of global memory roots */
 
@@ -55,7 +55,7 @@ struct global_root_list caml_global_roots = { NULL, { NULL, }, 0 };
 
 /* Register a global C root */
 
-void register_global_root(value *r)
+CAMLexport void caml_register_global_root(value *r)
 {
   struct global_root * update[MAX_LEVEL];
   struct global_root * e, * f;
@@ -84,8 +84,8 @@ void register_global_root(value *r)
       update[i] = (struct global_root *) &caml_global_roots;
     caml_global_roots.level = new_level;
   }
-  e = stat_alloc(sizeof(struct global_root) +
-                 new_level * sizeof(struct global_root *));
+  e = caml_stat_alloc(sizeof(struct global_root) +
+                      new_level * sizeof(struct global_root *));
   e->root = r;
   for (i = 0; i <= new_level; i++) {
     e->forward[i] = update[i]->forward[i];
@@ -95,7 +95,7 @@ void register_global_root(value *r)
 
 /* Un-register a global C root */
 
-void remove_global_root(value *r)
+CAMLexport void caml_remove_global_root(value *r)
 {
   struct global_root * update[MAX_LEVEL];
   struct global_root * e, * f;
@@ -121,7 +121,7 @@ void remove_global_root(value *r)
       update[i]->forward[i] = e->forward[i];
   }
   /* Reclaim list element */
-  stat_free(e);
+  caml_stat_free(e);
   /* Down-correct list level */
   while (caml_global_roots.level > 0 && 
          caml_global_roots.forward[caml_global_roots.level] == NULL)

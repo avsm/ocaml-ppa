@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: scanf.mli,v 1.38 2003/07/15 07:25:09 weis Exp $ *)
+(* $Id: scanf.mli,v 1.45.6.1 2004/06/24 11:19:05 doligez Exp $ *)
 
 (** Formatted input functions. *)
 
@@ -122,7 +122,7 @@ val bscanf :
      specification is greater than 1.
    - [C]: reads a single delimited character (delimiters and special
      escaped characters follow the lexical conventions of Caml).
-   - [f], [e], [E], [g], [G], [F]: reads an optionally signed
+   - [f], [e], [E], [g], [G]: reads an optionally signed
      floating-point number in decimal notation, in the style [dddd.ddd
      e/E+-dd].
    - [F]: reads a floating point number according to the lexical
@@ -140,11 +140,14 @@ val bscanf :
    - [\[ range \]]: reads characters that matches one of the characters
      mentioned in the range of characters [range] (or not mentioned in
      it, if the range starts with [^]). Returns a [string] that can be
-     empty, if no character in the input matches the range.
+     empty, if no character in the input matches the range. Hence,
+     [\['0'-'9'\]] returns a string representing a decimal number or an empty
+     string if no decimal digit is found. 
      If a closing bracket appears in a range, it must occur as the
      first character of the range (or just after the [^] in case of
      range negation); hence [\[\]\]] matches a [\]] character and
      [\[^\]\]] matches any character that is not [\]].
+   - [l]: applies [f] to the number of lines read so far.
    - [n]: applies [f] to the number of characters read so far.
    - [N]: applies [f] to the number of tokens read so far.
    - [!]: matches the end of input condition.
@@ -159,18 +162,27 @@ val bscanf :
    For instance, [%6d] reads an integer, having at most 6 decimal digits;
    and [%4f] reads a float with at most 4 characters.
 
-   Scanning indications appear just after string conversions [s] and
+   Scanning indications appear just after the string conversions [s] and
    [\[ range \]] to delimit the end of the token. A scanning
    indication is introduced by a [@] character, followed by some
    constant character [c]. It means that the string token should end
    just before the next matching [c] (which is skipped). If no [c]
    character is encountered, the string token spreads as much as
-   possible.  For instance, ["%s@\t"] reads a string up to the next
+   possible. For instance, ["%s@\t"] reads a string up to the next
    tabulation character. If a scanning indication [\@c] does not
    follow a string conversion, it is ignored and treated as a plain
    [c] character.
 
-   Note:
+   Notes:
+
+   - the scanning indications introduce slight differences in the
+   syntax of [Scanf] format strings compared to those used by the
+   [Printf] module. However, scanning indications are similar to those
+   of the [Format] module; hence, when producing formatted text to be
+   scanned by [!Scanf.bscanf], it is wise to use printing functions
+   from [Format] (or, if you need to use functions from [Printf],
+   banish or carefully double check the format strings that contain
+   ['@'] characters).
 
    - in addition to relevant digits, ['_'] characters may appear
    inside numbers (this is reminiscent to the usual Caml
@@ -181,22 +193,22 @@ val bscanf :
    analysis and parsing. If it appears not expressive enough for your
    needs, several alternative exists: regular expressions (module
    [Str]), stream parsers, [ocamllex]-generated lexers,
-   [ocamlyacc]-generated parsers. *)
+   [ocamlyacc]-generated parsers. 
+*)
 
 val fscanf : in_channel -> ('a, Scanning.scanbuf, 'b) format -> 'a -> 'b;;
-
 (** Same as {!Scanf.bscanf}, but inputs from the given channel.
 
     Warning: since all scanning functions operate from a scanning
     buffer, be aware that each [fscanf] invocation must allocate a new
     fresh scanning buffer (unless careful use of partial evaluation in
-    the program).  Hence, there are chances that some characters seem
+    the program). Hence, there are chances that some characters seem
     to be skipped (in fact they are pending in the previously used
     buffer). This happens in particular when calling [fscanf] again
     after a scan involving a format that necessitates some look ahead
     (such as a format that ends by skipping whitespace in the input).
 
-    To avoid confusion, consider using [bscanf] with an explicitely
+    To avoid confusion, consider using [bscanf] with an explicitly
     created scanning buffer. Use for instance [Scanning.from_file f]
     to allocate the scanning buffer reading from file [f].
 
@@ -208,7 +220,7 @@ val sscanf : string -> ('a, Scanning.scanbuf, 'b) format -> 'a -> 'b;;
 
 val scanf : ('a, Scanning.scanbuf, 'b) format -> 'a -> 'b;;
 (** Same as {!Scanf.bscanf}, but reads from the predefined scanning
-    buffer [Scanning.stdib] that is connected to [stdin]. *)
+    buffer {!Scanf.Scanning.stdib} that is connected to [stdin]. *)
 
 val kscanf :
   Scanning.scanbuf -> (Scanning.scanbuf -> exn -> 'a) ->

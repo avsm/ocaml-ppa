@@ -13,7 +13,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: configure,v 1.202 2003/09/25 08:17:13 xleroy Exp $
+# $Id: configure,v 1.215.2.3 2004/07/09 15:08:51 doligez Exp $
 
 configure_options="$*"
 prefix=/usr/local
@@ -39,7 +39,7 @@ verbose=no
 withcurses=yes
 withsharedlibs=yes
 binutils_dir=''
-gcc_warnings="-Wall -Wno-unused"
+gcc_warnings="-Wall"
 
 # Try to turn internationalization off, can cause config.guess to malfunction!
 unset LANG
@@ -401,11 +401,20 @@ esac
 # Determine alignment constraints
 
 case "$host" in
-  sparc-*-*)
+  sparc-*-*|hppa*-*-*)
     # On Sparc V9 with certain versions of gcc, determination of double
-    # alignment is not reliable (PR#1521), hence force it
-    echo "Doubles must be doubleword-aligned."
-    echo "#define ARCH_ALIGN_DOUBLE" >> m.h;;
+    # alignment is not reliable (PR#1521), hence force it.
+    # Same goes for hppa.
+    # But there's a knack (PR#2572):
+    # if we're in 64-bit mode (sizeof(long) == 8), 
+    # we must not doubleword-align floats...
+    if test $2 = 8; then
+      echo "Doubles can be word-aligned."
+      echo "#undef ARCH_ALIGN_DOUBLE" >> m.h
+    else
+      echo "Doubles must be doubleword-aligned."
+      echo "#define ARCH_ALIGN_DOUBLE" >> m.h
+    fi;;
   *)
     sh ./runtest dblalign.c
     case $? in
@@ -422,17 +431,28 @@ case "$host" in
 esac
 
 if $int64_native; then
-  sh ./runtest int64align.c
-  case $? in
-    0) echo "64-bit integers can be word-aligned."
-       echo "#undef ARCH_ALIGN_INT64" >> m.h;;
-    1) echo "64-bit integers must be doubleword-aligned."
-       echo "#define ARCH_ALIGN_INT64" >> m.h;;
-    *) echo "Something went wrong during alignment determination for 64-bit integers."
-       echo "I'm going to assume this architecture has alignment constraints."
-       echo "That's a safe bet: Objective Caml will work even if"
-       echo "this architecture has actually no alignment constraints."
-       echo "#define ARCH_ALIGN_INT64" >> m.h;;
+  case "$host" in
+    hppa*-*-*)
+      if test $2 = 8; then
+        echo "64-bit integers can be word-aligned."
+        echo "#undef ARCH_ALIGN_INT64" >> m.h
+      else
+        echo "64-bit integers must be doubleword-aligned."
+        echo "#define ARCH_ALIGN_INT64" >> m.h
+      fi;;
+    *)
+      sh ./runtest int64align.c
+      case $? in
+        0) echo "64-bit integers can be word-aligned."
+           echo "#undef ARCH_ALIGN_INT64" >> m.h;;
+        1) echo "64-bit integers must be doubleword-aligned."
+           echo "#define ARCH_ALIGN_INT64" >> m.h;;
+        *) echo "Something went wrong during alignment determination for 64-bit integers."
+           echo "I'm going to assume this architecture has alignment constraints."
+           echo "That's a safe bet: Objective Caml will work even if"
+           echo "this architecture has actually no alignment constraints."
+           echo "#define ARCH_ALIGN_INT64" >> m.h;;
+      esac
   esac
 else
   echo "#undef ARCH_ALIGN_INT64" >> m.h
@@ -470,13 +490,19 @@ if test $withsharedlibs = "yes"; then
       shared_libraries_supported=true;;
     alpha*-*-osf*)
       case "$bytecc" in
-        cc*) sharedcccompopts="";;
-        gcc*) sharedcccompopts="-fPIC";;
-      esac
-      mksharedlib="ld -shared -expect_unresolved '*' -o"
-      byteccrpath="-Wl,-rpath,"
-      mksharedlibrpath="-rpath "
-      shared_libraries_supported=true;;
+        gcc*)
+          sharedcccompopts="-fPIC"
+          mksharedlib="$bytecc -shared -o"
+          byteccrpath="-Wl,-rpath,"
+          mksharedlibrpath="-Wl,-rpath,"
+          shared_libraries_supported=true;;
+        cc*)
+          sharedcccompopts=""
+          mksharedlib="ld -shared -expect_unresolved '*' -o"
+          byteccrpath="-Wl,-rpath,"
+          mksharedlibrpath="-rpath "
+          shared_libraries_supported=true;;
+      esac;;
     *-*-solaris2*)
       case "$bytecc" in
         gcc*)
@@ -550,16 +576,17 @@ case "$host" in
   mips-*-irix6*)                arch=mips; system=irix;;
   hppa1.1-*-hpux*)              arch=hppa; system=hpux;;
   hppa2.0*-*-hpux*)             arch=hppa; system=hpux;;
-  hppa1.1-*-nextstep*)          arch=hppa; system=nextstep;;
-  rs6000-*-aix*)                arch=power; model=rs6000; system=aix;;
-  powerpc-*-aix*)               arch=power; model=ppc; system=aix;;
+  hppa*-*-linux*)		arch=hppa; system=linux;;
   powerpc-*-linux*)             arch=power; model=ppc; system=elf;;
   powerpc-*-netbsd*)            arch=power; model=ppc; system=bsd;;
   powerpc-*-rhapsody*)          arch=power; model=ppc; system=rhapsody;;
   powerpc-*-darwin*)            arch=power; model=ppc; system=rhapsody;;
   arm*-*-linux*)                arch=arm; system=linux;;
   ia64-*-linux*)                arch=ia64; system=linux;;
+  ia64-*-freebsd*)              arch=ia64; system=freebsd;;
   x86_64-*-linux*)              arch=amd64; system=linux;;
+  x86_64-*-freebsd*)            arch=amd64; system=freebsd;;
+  x86_64-*-openbsd*)            arch=amd64; system=openbsd;;
 esac
 
 if test -z "$ccoption"; then
@@ -580,15 +607,12 @@ case "$arch,$nativecc,$system,$host_type" in
   alpha,cc*,digital,*) nativecccompopts=-std1;;
   mips,cc*,irix,*)     nativecccompopts=-n32
                        nativecclinkopts="-n32 -Wl,-woff,84";;
-  power,gcc*,aix,*aix4.3*)
-                       nativecccompopts="$gcc_warnings -D_XOPEN_SOURCE=500";;
-  power,*,aix,*aix4.3*)
-                       nativecccompopts="-D_XOPEN_SOURCE=500";;
   *,*,nextstep,*)      nativecccompopts="$gcc_warnings -U__GNUC__ -posix"
                        nativecclinkopts="-posix";;
-  *,*,rhapsody,*darwin6*)
+  *,*,rhapsody,*darwin[1-5].*)
+                       nativecccompopts="$gcc_warnings -DSHRINKED_GNUC";;
+  *,*,rhapsody,*)
                  nativecccompopts="$gcc_warnings -DDARWIN_VERSION_6 $dl_defs";;
-  *,*,rhapsody,*)      nativecccompopts="$gcc_warnings -DSHRINKED_GNUC";;
   *,gcc*,cygwin,*)     nativecccompopts="$gcc_warnings -U_WIN32";;
   *,gcc*,*,*)          nativecccompopts="$gcc_warnings";;
 esac
@@ -615,13 +639,11 @@ case "$arch,$model,$system" in
   i386,*,solaris)   aspp='/usr/ccs/bin/as'; asppflags='-P -DSYS_$(SYSTEM)';;
   i386,*,*)         aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
   hppa,*,*)         aspp="$cc"; asppflags='-traditional -c -DSYS_$(SYSTEM)';;
-  power,rs6000,aix) asflags='-u -m pwr -w'; asppflags="$asflags";;
-  power,ppc,aix)    asflags='-u -m ppc -w'; asppflags="$asflags";;
   power,*,elf)      aspp='gcc'; asppflags='-c';;
   power,*,bsd)      aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
   power,*,rhapsody) ;;
   arm,*,linux)      aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  ia64,*,linux)     asflags=-xexplicit
+  ia64,*,*)         asflags=-xexplicit
                     aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM) -Wa,-xexplicit';;
   amd64,*,*)        aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
 esac
@@ -634,6 +656,7 @@ case "$arch,$model,$system" in
   sparc,*,solaris)
     profiling='prof'
     case "$nativecc" in gcc*) ;; *) cc_profile='-xpg';; esac;;
+  amd64,*,linux) profiling='prof';;
   *) profiling='noprof';;
 esac
 
@@ -729,11 +752,6 @@ fi
 
 # For the sys module
 
-if sh ./hasgot strerror; then
-  echo "strerror() found."
-  echo "#define HAS_STRERROR" >> s.h
-fi
-
 if sh ./hasgot times; then
   echo "times() found."
   echo "#define HAS_TIMES" >> s.h
@@ -754,7 +772,7 @@ fi
 
 # Configuration for the libraries
 
-otherlibraries="unix str dynlink bigarray"
+otherlibraries="unix str num dynlink bigarray"
 
 # For the Unix library
 
@@ -778,6 +796,13 @@ fi
 if sh ./hasgot inet_aton; then
   echo "inet_aton() found."
   echo "#define HAS_INET_ATON" >> s.h
+fi
+
+if sh ./hasgot -i sys/types.h -i sys/socket.h -i netinet/in.h \
+               -t 'struct sockaddr_in6' \
+&& sh ./hasgot getaddrinfo getnameinfo inet_pton inet_ntop; then
+  echo "IPv6 is supported."
+  echo "#define HAS_IPV6" >> s.h
 fi
 
 if sh ./hasgot -i unistd.h; then
@@ -1020,64 +1045,55 @@ esac
 # Determine the target architecture for the "num" library
 
 case "$host" in
-  mips-*-ultrix*) bignum_arch=mips;;
-  alpha*-*-osf*) bignum_arch=alpha;;
-  i[3456]86-*-linux*)
-    case `sh ./runtest elf.c` in
-      elf) bignum_arch=x86;;
-        *) bignum_arch=C;;
-    esac;;
-  i[3456]86-*-beos) bignum_arch=x86;;
-  i[3456]86-*-*bsd*)
-    case `sh ./runtest elf.c` in
-      elf) bignum_arch=x86;;
-        *) bignum_arch=C;;
-    esac;;
-  sparc*-*-sunos*) bignum_arch=supersparc;;
-  sparc*-*-solaris*) bignum_arch=supersparc-solaris;;
-  sparc*-*-*bsd*) bignum_arch=sparc;;
-  m68k-*-sunos*) bignum_arch=68K;;
-  *) bignum_arch=C
+  alpha*-*-*)    bng_arch=alpha; bng_asm_level=1;;
+  i[3456]86-*-*) bng_arch=ia32
+                 if sh ./trycompile ia32sse2.c
+                 then bng_asm_level=2
+                 else bng_asm_level=1
+                 fi;;
+  mips-*-*)      bng_arch=mips; bng_asm_level=1;;
+  powerpc-*-*)   bng_arch=ppc; bng_asm_level=1;;
+  sparc*-*-*)    bng_arch=sparc; bng_asm_level=1;;
+  x86_64-*-*)    bng_arch=amd64; bng_asm_level=1;;
+  *)             bng_arch=generic; bng_asm_level=0;;
 esac
 
-# Some systems (e.g. Solaris) don't have an assembler!
-if sh ./searchpath as; then :; else bignum_arch=C; fi
-
-echo "BIGNUM_ARCH=$bignum_arch" >> Makefile
+echo "BNG_ARCH=$bng_arch" >> Makefile
+echo "BNG_ASM_LEVEL=$bng_asm_level" >> Makefile
 
 # Determine if the POSIX threads library is supported
 
-case "$host" in
-  *-*-solaris*)  pthread_link="-lpthread -lposix4";;
-  *-*-freebsd*)  pthread_link="-pthread";;
-  *-*-openbsd*)  pthread_link="-pthread";;
-  *)             pthread_link="-lpthread";;
-esac
-
 if test "$pthread_wanted" = "yes"; then
-if ./hasgot -i pthread.h $pthread_link pthread_self; then
-  echo "POSIX threads library supported."
-  otherlibraries="$otherlibraries systhreads"
-  bytecccompopts="$bytecccompopts -D_REENTRANT"
-  nativecccompopts="$nativecccompopts -D_REENTRANT"
   case "$host" in
-    *-*-freebsd*)
-        bytecccompopts="$bytecccompopts -D_THREAD_SAFE"
-        nativecccompopts="$nativecccompopts -D_THREAD_SAFE";;
-    *-*-openbsd*)
-        bytecccompopts="$bytecccompopts -pthread"
-        asppflags="$asppflags -pthread"
-        nativecccompopts="$nativecccompopts -pthread";;
+    *-*-solaris*)  pthread_link="-lpthread -lposix4";;
+    *-*-freebsd*)  pthread_link="-pthread";;
+    *-*-openbsd*)  pthread_link="-pthread";;
+    *)             pthread_link="-lpthread";;
   esac
-  echo "Options for linking with POSIX threads: $pthread_link"
-  echo "PTHREAD_LINK=$pthread_link" >> Makefile
-  if sh ./hasgot $pthread_link sigwait; then
-    echo "sigwait() found"
-    echo "#define HAS_SIGWAIT" >> s.h
+  if ./hasgot -i pthread.h $pthread_link pthread_self; then
+    echo "POSIX threads library supported."
+    otherlibraries="$otherlibraries systhreads"
+    bytecccompopts="$bytecccompopts -D_REENTRANT"
+    nativecccompopts="$nativecccompopts -D_REENTRANT"
+    case "$host" in
+      *-*-freebsd*)
+          bytecccompopts="$bytecccompopts -D_THREAD_SAFE"
+          nativecccompopts="$nativecccompopts -D_THREAD_SAFE";;
+      *-*-openbsd*)
+          bytecccompopts="$bytecccompopts -pthread"
+          asppflags="$asppflags -pthread"
+          nativecccompopts="$nativecccompopts -pthread";;
+    esac
+    echo "Options for linking with POSIX threads: $pthread_link"
+    echo "PTHREAD_LINK=$pthread_link" >> Makefile
+    if sh ./hasgot $pthread_link sigwait; then
+      echo "sigwait() found"
+      echo "#define HAS_SIGWAIT" >> s.h
+    fi
+  else
+    echo "POSIX threads not found."
+    pthread_link=""
   fi
-else
-  echo "POSIX threads not found."
-fi
 fi
 
 # Determine if the bytecode thread library is supported
@@ -1523,7 +1539,7 @@ echo "Additional libraries supported:"
 echo "        $otherlibraries"
 
 echo "Configuration for the \"num\" library:"
-echo "        target architecture ...... $bignum_arch"
+echo "        target architecture ...... $bng_arch (asm level $bng_asm_level)"
 
 if test "$x11_include" != "not found" && test "$x11_lib" != "not found"; then
 echo "Configuration for the \"graph\" library:"

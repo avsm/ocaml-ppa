@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_str.mli,v 1.5 2004/03/22 15:06:31 guesdon Exp $ *)
 
 (** The functions to get a string from different kinds of elements (types, modules, ...). *)
 
@@ -16,12 +17,19 @@
 val string_of_variance : Odoc_type.t_type -> (bool * bool) -> string
 
 (** This function returns a string to represent the given list of types,
-   with a given separator. It writes in and flushes [Format.str_formatter].*)
-val string_of_type_list : string -> Types.type_expr list -> string
+   with a given separator.
+   @param par can be used to force the addition or not of parentheses around the returned string.
+*)
+val string_of_type_list : ?par: bool -> string -> Types.type_expr list -> string
 
 (** This function returns a string to represent the list of type parameters
-   for the given type. It writes in and flushes [Format.str_formatter].*)
+   for the given type. *)
 val string_of_type_param_list : Odoc_type.t_type -> string
+
+(** This function returns a string to represent the given list of 
+   type parameters of a class or class type,
+   with a given separator. *)
+val string_of_class_type_param_list : Types.type_expr list -> string
 
 (** @return a string to describe the given type. *)
 val string_of_type : Odoc_type.t_type -> string

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pcaml.mli,v 1.6 2003/07/10 12:28:15 michel Exp $ *)
+(* $Id: pcaml.mli,v 1.7.2.2 2004/06/25 07:08:01 mauny Exp $ *)
 
 (** Language grammar, entries and printers.
 
@@ -76,22 +76,27 @@ value add_option : string -> Arg.spec -> string -> unit;
    (** Add an option to the command line options. *)
 value no_constructors_arity : ref bool;
    (** [True]: dont generate constructor arity. *)
-(*value no_assert : ref bool;
-   (** [True]: dont generate assertion checks. *)
-*)
 
 value sync : ref (Stream.t char -> unit);
 
 value handle_expr_quotation : MLast.loc -> (string * string) -> MLast.expr;
-value handle_expr_locate : MLast.loc -> (int * string) -> MLast.expr;
+value handle_expr_locate : MLast.loc -> (Lexing.position * string) -> MLast.expr;
 
 value handle_patt_quotation : MLast.loc -> (string * string) -> MLast.patt;
-value handle_patt_locate : MLast.loc -> (int * string) -> MLast.patt;
+value handle_patt_locate : MLast.loc -> (Lexing.position * string) -> MLast.patt;
 
-value expr_reloc :
-  (MLast.loc -> MLast.loc) -> int -> MLast.expr -> MLast.expr;
-value patt_reloc :
-  (MLast.loc -> MLast.loc) -> int -> MLast.patt -> MLast.patt;
+(** Relocation functions for abstract syntax trees *)
+value expr_reloc :           (MLast.loc -> MLast.loc) -> Lexing.position -> MLast.expr -> MLast.expr;
+value patt_reloc :           (MLast.loc -> MLast.loc) -> Lexing.position -> MLast.patt -> MLast.patt;
+value module_type_reloc :    (MLast.loc -> MLast.loc) -> Lexing.position -> MLast.module_type -> MLast.module_type;
+value sig_item_reloc :       (MLast.loc -> MLast.loc) -> Lexing.position -> MLast.sig_item -> MLast.sig_item;
+value with_constr_reloc :    (MLast.loc -> MLast.loc) -> Lexing.position -> MLast.with_constr -> MLast.with_constr;
+value module_expr_reloc :    (MLast.loc -> MLast.loc) -> Lexing.position -> MLast.module_expr -> MLast.module_expr;
+value str_item_reloc :       (MLast.loc -> MLast.loc) -> Lexing.position -> MLast.str_item -> MLast.str_item;
+value class_type_reloc :     (MLast.loc -> MLast.loc) -> Lexing.position -> MLast.class_type -> MLast.class_type;
+value class_sig_item_reloc : (MLast.loc -> MLast.loc) -> Lexing.position -> MLast.class_sig_item -> MLast.class_sig_item;
+value class_expr_reloc :     (MLast.loc -> MLast.loc) -> Lexing.position -> MLast.class_expr -> MLast.class_expr;
+value class_str_item_reloc : (MLast.loc -> MLast.loc) -> Lexing.position -> MLast.class_str_item -> MLast.class_str_item;
 
 (** To possibly rename identifiers; parsers may call this function
     when generating their identifiers; default = identity *)
@@ -99,7 +104,7 @@ value rename_id : ref (string -> string);
 
 (** Allow user to catch exceptions in quotations *)
 type err_ctx =
-  [ Finding | Expanding | ParsingResult of (int * int) and string | Locating ]
+  [ Finding | Expanding | ParsingResult of MLast.loc and string | Locating ]
 ;
 exception Qerror of string and err_ctx and exn;
 
@@ -151,7 +156,8 @@ value inter_phrases : ref (option string);
 
 (* for system use *)
 
-value warning : ref ((int * int) -> string -> unit);
+value warning : ref (MLast.loc -> string -> unit);
 value expr_eoi : Grammar.Entry.e MLast.expr;
 value patt_eoi : Grammar.Entry.e MLast.patt;
 value arg_spec_list : unit -> list (string * Arg.spec * string);
+value no_constructors_arity : ref bool;

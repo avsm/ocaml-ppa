@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: obj.c,v 1.20 2003/06/23 12:46:13 xleroy Exp $ */
+/* $Id: obj.c,v 1.34 2004/06/05 01:15:53 garrigue Exp $ */
 
 /* Operations on objects */
 
@@ -19,6 +19,7 @@
 #include "alloc.h"
 #include "fail.h"
 #include "gc.h"
+#include "interp.h"
 #include "major_gc.h"
 #include "memory.h"
 #include "minor_gc.h"
@@ -26,39 +27,60 @@
 #include "mlvalues.h"
 #include "prims.h"
 
-CAMLprim value static_alloc(value size)
+CAMLprim value caml_static_alloc(value size)
 {
-  return (value) stat_alloc((asize_t) Long_val(size));
+  return (value) caml_stat_alloc((asize_t) Long_val(size));
 }
 
-CAMLprim value static_free(value blk)
+CAMLprim value caml_static_free(value blk)
 {
-  stat_free((void *) blk);
+  caml_stat_free((void *) blk);
   return Val_unit;
 }
 
-CAMLprim value static_resize(value blk, value new_size)
+/* signal to the interpreter machinery that a bytecode is no more
+   needed (before freeing it) - this might be useful for a JIT
+   implementation */
+
+CAMLprim value caml_static_release_bytecode(value blk, value size)
 {
-  return (value) stat_resize((char *) blk, (asize_t) Long_val(new_size));
+#ifndef NATIVE_CODE
+  caml_release_bytecode((code_t) blk, (asize_t) Long_val(size));
+#else
+  caml_failwith("Meta.static_release_bytecode impossible with native code");
+#endif
+  return Val_unit;
 }
 
-CAMLprim value obj_is_block(value arg)
+
+CAMLprim value caml_static_resize(value blk, value new_size)
+{
+  return (value) caml_stat_resize((char *) blk, (asize_t) Long_val(new_size));
+}
+
+CAMLprim value caml_obj_is_block(value arg)
 {
   return Val_bool(Is_block(arg));
 }
 
-CAMLprim value obj_tag(value arg)
+CAMLprim value caml_obj_tag(value arg)
 {
-  return Val_int(Tag_val(arg));
+  if (Is_long (arg)){
+    return 1000;
+  }else if (Is_young (arg) || Is_in_heap (arg)){
+    return Val_int(Tag_val(arg));
+  }else{
+    return 1001;
+  }
 }
 
-CAMLprim value obj_set_tag (value arg, value new_tag)
+CAMLprim value caml_obj_set_tag (value arg, value new_tag)
 {
   Tag_val (arg) = Int_val (new_tag);
   return Val_unit;
 }
 
-CAMLprim value obj_block(value tag, value size)
+CAMLprim value caml_obj_block(value tag, value size)
 {
   value res;
   mlsize_t sz, i;
@@ -67,14 +89,14 @@ CAMLprim value obj_block(value tag, value size)
   sz = Long_val(size);
   tg = Long_val(tag);
   if (sz == 0) return Atom(tg);
-  res = alloc(sz, tg);
+  res = caml_alloc(sz, tg);
   for (i = 0; i < sz; i++)
     Field(res, i) = Val_long(0);
 
   return res;
 }
 
-CAMLprim value obj_dup(value arg)
+CAMLprim value caml_obj_dup(value arg)
 {
   CAMLparam1 (arg);
   CAMLlocal1 (res);
@@ -85,14 +107,14 @@ CAMLprim value obj_dup(value arg)
   if (sz == 0) return arg;
   tg = Tag_val(arg);
   if (tg >= No_scan_tag) {
-    res = alloc(sz, tg);
+    res = caml_alloc(sz, tg);
     memcpy(Bp_val(res), Bp_val(arg), sz * sizeof(value));
   } else if (sz <= Max_young_wosize) {
-    res = alloc_small(sz, tg);
+    res = caml_alloc_small(sz, tg);
     for (i = 0; i < sz; i++) Field(res, i) = Field(arg, i);
   } else {
-    res = alloc_shr(sz, tg);
-    for (i = 0; i < sz; i++) initialize(&Field(res, i), Field(arg, i));
+    res = caml_alloc_shr(sz, tg);
+    for (i = 0; i < sz; i++) caml_initialize(&Field(res, i), Field(arg, i));
   }
   CAMLreturn (res);
 }
@@ -106,7 +128,7 @@ CAMLprim value obj_dup(value arg)
    with the leftover part of the object: this is needed in the major
    heap and harmless in the minor heap.
 */
-CAMLprim value obj_truncate (value v, value newsize)
+CAMLprim value caml_obj_truncate (value v, value newsize)
 {
   mlsize_t new_wosize = Long_val (newsize);
   header_t hd = Hd_val (v);
@@ -117,14 +139,16 @@ CAMLprim value obj_truncate (value v, value newsize)
 
   if (tag == Double_array_tag) new_wosize *= Double_wosize;  /* PR#156 */
 
-  if (new_wosize <= 0 || new_wosize > wosize) invalid_argument ("Obj.truncate");
+  if (new_wosize <= 0 || new_wosize > wosize){
+    caml_invalid_argument ("Obj.truncate");
+  }
   if (new_wosize == wosize) return Val_unit;
   /* PR#61: since we're about to lose our references to the elements
      beyond new_wosize in v, erase them explicitly so that the GC
      can darken them as appropriate. */
   if (tag < No_scan_tag) {
     for (i = new_wosize; i < wosize; i++){
-      modify(&Field(v, i), Val_unit);
+      caml_modify(&Field(v, i), Val_unit);
 #ifdef DEBUG
       Field (v, i) = Debug_free_truncate;
 #endif
@@ -140,21 +164,92 @@ CAMLprim value obj_truncate (value v, value newsize)
 }
 
 
-/* [lazy_is_forward] and [lazy_follow_forward] are used in stdlib/lazy.ml.
+/* The following functions are used in stdlib/lazy.ml.
    They are not written in O'Caml because they must be atomic with respect
    to the GC.
  */
 
-CAMLprim value lazy_is_forward (value v)
+/* [lazy_is_forward] is obsolete.  Stays here to make bootstrapping
+   easier for patched versions of 3.07.  To be removed before 3.08. FIXME */
+/*
+CAMLxxprim value lazy_is_forward (value v)
 {
   return Val_bool (Is_block (v) && Tag_val (v) == Forward_tag);
 }
+*/
 
-CAMLprim value lazy_follow_forward (value v)
+CAMLprim value caml_lazy_follow_forward (value v)
 {
-  if (Is_block (v) && Tag_val (v) == Forward_tag){
+  if (Is_block (v) && (Is_young (v) || Is_in_heap (v))
+      && Tag_val (v) == Forward_tag){
     return Forward_val (v);
   }else{
     return v;
   }
 }
+
+CAMLprim value caml_lazy_make_forward (value v)
+{
+  CAMLparam1 (v);
+  CAMLlocal1 (res);
+
+  res = caml_alloc_small (1, Forward_tag);
+  Modify (&Field (res, 0), v);
+  CAMLreturn (res);
+}
+
+/* For camlinternalOO.ml
+   See also GETPUBMET in interp.c
+ */
+
+CAMLprim value caml_get_public_method (value obj, value tag)
+{
+  value meths = Field (obj, 0);
+  int li = 3, hi = Field(meths,0), mi;
+  while (li < hi) {
+    mi = ((li+hi) >> 1) | 1;
+    if (tag < Field(meths,mi)) hi = mi-2;
+    else li = mi;
+  }
+  return Field (meths, li-1);
+}
+
+/* these two functions might be useful to an hypothetical JIT */
+
+#ifdef CAML_JIT
+#ifdef NATIVE_CODE
+#define MARK 1
+#else
+#define MARK 0
+#endif
+value caml_cache_public_method (value meths, value tag, value *cache)
+{
+  int li = 3, hi = Field(meths,0), mi;
+  while (li < hi) {
+    mi = ((li+hi) >> 1) | 1;
+    if (tag < Field(meths,mi)) hi = mi-2;
+    else li = mi;
+  }
+  *cache = (li-3)*sizeof(value) + MARK;
+  return Field (meths, li-1);
+}
+
+value caml_cache_public_method2 (value *meths, value tag, value *cache)
+{
+  value ofs = *cache & meths[1];
+  if (*(value*)(((char*)(meths+3)) + ofs - MARK) == tag)
+    return *(value*)(((char*)(meths+2)) + ofs - MARK);
+  {
+    int li = 3, hi = meths[0], mi;
+    while (li < hi) {
+      mi = ((li+hi) >> 1) | 1;
+      if (tag < meths[mi]) hi = mi-2;
+      else li = mi;
+    }
+    *cache = (li-3)*sizeof(value) + MARK;
+    return meths[li-1];
+  }
+}
+#endif /*CAML_JIT*/
+
+/* eof $Id: obj.c,v 1.34 2004/06/05 01:15:53 garrigue Exp $ */

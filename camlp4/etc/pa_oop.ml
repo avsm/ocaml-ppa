@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pa_oop.ml,v 1.3 2002/07/19 14:53:46 mauny Exp $ *)
+(* $Id: pa_oop.ml,v 1.4 2004/05/12 15:22:40 mauny Exp $ *)
 
 open Pcaml;
 
@@ -108,6 +108,7 @@ value rec cstream gloc =
 ;
 
 (* Syntax extensions in Ocaml grammar *)
+
 
 EXTEND
   GLOBAL: expr;

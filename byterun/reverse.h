@@ -11,12 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: reverse.h,v 1.11 2002/04/18 07:27:38 garrigue Exp $ */
+/* $Id: reverse.h,v 1.12 2003/12/15 18:10:48 doligez Exp $ */
 
 /* Swap byte-order in 16, 32, and 64-bit integers or floats */
 
-#ifndef _reverse_
-#define _reverse_
+#ifndef CAML_REVERSE_H
+#define CAML_REVERSE_H
 
 #define Reverse_16(dst,src) {                                               \
   char * _p, * _q;                                                          \
@@ -85,4 +85,4 @@
   _p[Perm_index(perm_dst, 7)] = _h;                                         \
 }
 
-#endif /* _reverse_ */
+#endif /* CAML_REVERSE_H */

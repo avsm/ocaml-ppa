@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: scheduler.c,v 1.57 2003/10/10 13:13:21 doligez Exp $ */
+/* $Id: scheduler.c,v 1.58 2003/12/29 22:15:02 doligez Exp $ */
 
 /* The thread scheduler */
 
@@ -514,7 +514,7 @@ try_again:
 static void check_callback(void)
 {
   if (callback_depth > 1)
-    fatal_error("Thread: deadlock during callback");
+    caml_fatal_error("Thread: deadlock during callback");
 }
 
 /* Reschedule without suspending the current thread */

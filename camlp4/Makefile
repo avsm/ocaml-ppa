@@ -1,10 +1,10 @@
-# $Id: Makefile,v 1.20 2003/07/10 12:27:00 michel Exp $
+# $Id: Makefile,v 1.22.2.3 2004/07/07 16:41:58 mauny Exp $
 
 include config/Makefile
 
-DIRS=odyl camlp4 meta etc top ocpp lib man
+DIRS=odyl camlp4 meta lib etc top ocpp man
 FDIRS=odyl camlp4 meta lib
-OPTDIRS= lib odyl camlp4 meta compile
+OPTDIRS=lib odyl camlp4 meta etc compile
 SHELL=/bin/sh
 COLD_FILES=ocaml_src/camlp4/argl.ml ocaml_src/camlp4/ast2pt.ml ocaml_src/camlp4/ast2pt.mli ocaml_src/camlp4/mLast.mli ocaml_src/camlp4/pcaml.ml ocaml_src/camlp4/pcaml.mli ocaml_src/camlp4/quotation.ml ocaml_src/camlp4/quotation.mli ocaml_src/camlp4/reloc.ml ocaml_src/camlp4/reloc.mli ocaml_src/camlp4/spretty.ml ocaml_src/camlp4/spretty.mli ocaml_src/lib/extfun.ml ocaml_src/lib/extfun.mli ocaml_src/lib/fstream.ml ocaml_src/lib/fstream.mli ocaml_src/lib/gramext.ml ocaml_src/lib/gramext.mli ocaml_src/lib/grammar.ml ocaml_src/lib/grammar.mli ocaml_src/lib/plexer.ml ocaml_src/lib/plexer.mli ocaml_src/lib/stdpp.ml ocaml_src/lib/stdpp.mli ocaml_src/lib/token.ml ocaml_src/lib/token.mli ocaml_src/meta/pa_extend.ml ocaml_src/meta/pa_extend_m.ml ocaml_src/meta/pa_macro.ml ocaml_src/meta/pa_r.ml ocaml_src/meta/pa_rp.ml ocaml_src/meta/pr_dump.ml ocaml_src/meta/q_MLast.ml ocaml_src/odyl/odyl_main.ml ocaml_src/odyl/odyl_main.mli ocaml_src/odyl/odyl.ml
 
@@ -136,6 +136,27 @@ bootstrap_sources:
 		 sed 's/# $$Id.*\$$/# $(TXTGEN)/' ../../$$i/Makefile | \
 		 sed 's-include ../config-include ../../config-g' | \
 		 sed 's-../boot-../../boot-g' > Makefile; \
+		 cp ../../$$i/.depend . ; \
+		); \
+	 done
+	@-for i in $(FDIRS); do \
+		(cd $$i; \
+		 for j in *.ml*; do \
+			echo ============================================; \
+			echo ocaml_src.new/$$i/$$j; \
+			OTOP=../.. ../tools/conv.sh $$j | \
+			sed 's/$$Id.*\$$/$(TXTGEN)/' > \
+			../ocaml_src.new/$$i/$$j; \
+		 done); \
+	done
+
+my_bootstrap_sources:
+	mkdir ocaml_src.new
+	@-for i in $(FDIRS); do \
+		(mkdir ocaml_src.new/$$i; cd ocaml_src.new/$$i; \
+		 sed 's/# $$Id.*\$$/# $(TXTGEN)/' ../../$$i/Makefile | \
+		 sed 's-include ../config-include ../../config-g' | \
+		 sed 's-../boot-../../boot-g' > Makefile; \
 		 sed 's/# $$Id.*\$$/# $(TXTGEN)/' ../../$$i/Makefile.Mac | \
 		 sed 's-:boot-::boot-g' > Makefile.Mac; \
 		 cp ../../$$i/.depend . ; \
@@ -146,7 +167,7 @@ bootstrap_sources:
 		 for j in *.ml*; do \
 			echo ============================================; \
 			echo ocaml_src.new/$$i/$$j; \
-			OTOP=../.. ../tools/conv.sh $$j | \
+			$$HOME/bin/conv.sh $$j | \
 			sed 's/$$Id.*\$$/$(TXTGEN)/' > \
 			../ocaml_src.new/$$i/$$j; \
 		 done); \

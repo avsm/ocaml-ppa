@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc.ml,v 1.6 2002/07/22 16:37:49 doligez Exp $ *)
+(* $Id: proc.ml,v 1.7 2004/05/09 15:19:16 xleroy Exp $ *)
 
 (* Description of the HP PA-RISC processor *)
 
@@ -217,7 +217,7 @@ let contains_calls = ref false
 (* Calling the assembler *)
 
 let assemble_file infile outfile =
-  Ccomp.command ("gas -o " ^ Filename.quote outfile ^ " " ^ Filename.quote infile)  
+  Ccomp.command ("as -o " ^ Filename.quote outfile ^ " " ^ Filename.quote infile)  
 
 open Clflags;;
 open Config;;

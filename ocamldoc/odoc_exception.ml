@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_exception.ml,v 1.3 2003/11/24 10:39:31 starynke Exp $ *)
 
 (** Representation and manipulation of exceptions. *)
 
@@ -27,4 +28,5 @@ and t_exception = {
     mutable ex_loc : Odoc_types.location ;
     mutable ex_code : string option ;
   } 
+
 

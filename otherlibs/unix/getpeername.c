@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getpeername.c,v 1.9 2001/12/07 13:40:29 xleroy Exp $ */
+/* $Id: getpeername.c,v 1.10 2004/04/09 13:25:21 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include "unixsupport.h"
@@ -26,7 +26,7 @@ CAMLprim value unix_getpeername(value sock)
   union sock_addr_union addr;
   socklen_param_type addr_len;
 
-  addr_len = sizeof(sock_addr);
+  addr_len = sizeof(addr);
   retcode = getpeername(Int_val(sock), &addr.s_gen, &addr_len);
   if (retcode == -1) uerror("getpeername", Nothing);
   return alloc_sockaddr(&addr, addr_len);

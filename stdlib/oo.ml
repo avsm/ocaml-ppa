@@ -11,9 +11,9 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: oo.ml,v 1.26 2002/06/26 09:12:49 xleroy Exp $ *)
+(* $Id: oo.ml,v 1.27 2004/05/26 11:10:52 garrigue Exp $ *)
 
 let copy = CamlinternalOO.copy
 external id : < .. > -> int = "%field1"
-let new_method = CamlinternalOO.new_method
+let new_method = CamlinternalOO.public_method_label
 let public_method_label = CamlinternalOO.public_method_label

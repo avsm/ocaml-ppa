@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.37 2002/06/27 11:36:02 xleroy Exp $
+# $Id: Makefile,v 1.38 2004/04/09 13:25:20 xleroy Exp $
 
 # Makefile for the Unix interface library
 
@@ -28,9 +28,10 @@ COMPFLAGS=-warn-error A
 OBJS=accept.o access.o addrofstr.o alarm.o bind.o chdir.o chmod.o \
   chown.o chroot.o close.o closedir.o connect.o cst2constr.o cstringv.o \
   dup.o dup2.o envir.o errmsg.o execv.o execve.o execvp.o exit.o \
-  fchmod.o fchown.o fcntl.o fork.o ftruncate.o getcwd.o getegid.o \
-  geteuid.o getgid.o getgr.o getgroups.o gethost.o gethostname.o \
-  getlogin.o getpeername.o getpid.o getppid.o getproto.o getpw.o \
+  fchmod.o fchown.o fcntl.o fork.o ftruncate.o \
+  getaddrinfo.o getcwd.o getegid.o geteuid.o getgid.o \
+  getgr.o getgroups.o gethost.o gethostname.o getlogin.o \
+  getnameinfo.o getpeername.o getpid.o getppid.o getproto.o getpw.o \
   gettimeofday.o getserv.o getsockname.o getuid.o \
   gmtime.o itimer.o kill.o link.o listen.o lockf.o lseek.o mkdir.o \
   mkfifo.o nice.o open.o opendir.o pipe.o putenv.o read.o \

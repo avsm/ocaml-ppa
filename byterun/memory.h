@@ -11,14 +11,16 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: memory.h,v 1.41 2002/12/12 18:59:11 doligez Exp $ */
+/* $Id: memory.h,v 1.50.2.1 2004/07/03 10:01:00 doligez Exp $ */
 
 /* Allocation macros and functions */
 
-#ifndef _memory_
-#define _memory_
+#ifndef CAML_MEMORY_H
+#define CAML_MEMORY_H
 
-
+#ifndef CAML_NAME_SPACE
+#include "compatibility.h"
+#endif
 #include "config.h"
 /* <private> */
 #include "gc.h"
@@ -28,20 +30,22 @@
 #include "misc.h"
 #include "mlvalues.h"
 
-CAMLextern value alloc_shr (mlsize_t, tag_t);
-void adjust_gc_speed (mlsize_t, mlsize_t);
-CAMLextern void modify (value *, value);
-CAMLextern void initialize (value *, value);
-CAMLextern value check_urgent_gc (value);
-CAMLextern void * stat_alloc (asize_t);              /* Size in bytes. */
-CAMLextern void stat_free (void *);
-CAMLextern void * stat_resize (void *, asize_t);     /* Size in bytes. */
-char *alloc_for_heap (asize_t request);   /* Size in bytes. */
-void free_for_heap (char *mem);
-int add_to_heap (char *mem);
-color_t allocation_color (void *hp);
+CAMLextern value caml_alloc_shr (mlsize_t, tag_t);
+CAMLextern void caml_adjust_gc_speed (mlsize_t, mlsize_t);
+CAMLextern void caml_alloc_dependent_memory (mlsize_t);
+CAMLextern void caml_free_dependent_memory (mlsize_t);
+CAMLextern void caml_modify (value *, value);
+CAMLextern void caml_initialize (value *, value);
+CAMLextern value caml_check_urgent_gc (value);
+CAMLextern void * caml_stat_alloc (asize_t);              /* Size in bytes. */
+CAMLextern void caml_stat_free (void *);
+CAMLextern void * caml_stat_resize (void *, asize_t);     /* Size in bytes. */
+char *caml_alloc_for_heap (asize_t request);   /* Size in bytes. */
+void caml_free_for_heap (char *mem);
+int caml_add_to_heap (char *mem);
+color_t caml_allocation_color (void *hp);
 
-/* void shrink_heap (char *);        Only used in compact.c */
+/* void caml_shrink_heap (char *);        Only used in compact.c */
 
 /* <private> */
 
@@ -56,19 +60,19 @@ color_t allocation_color (void *hp);
 #define DEBUG_clear(result, wosize)
 #endif
 
-#define Alloc_small(result, wosize, tag) do{      CAMLassert (wosize >= 1); \
-                                            CAMLassert ((tag_t) tag < 256); \
+#define Alloc_small(result, wosize, tag) do{    CAMLassert ((wosize) >= 1); \
+                                          CAMLassert ((tag_t) (tag) < 256); \
                                  CAMLassert ((wosize) <= Max_young_wosize); \
-  young_ptr -= Bhsize_wosize (wosize);                                      \
-  if (young_ptr < young_limit){                                             \
-    young_ptr += Bhsize_wosize (wosize);                                    \
+  caml_young_ptr -= Bhsize_wosize (wosize);                                 \
+  if (caml_young_ptr < caml_young_limit){                                   \
+    caml_young_ptr += Bhsize_wosize (wosize);                               \
     Setup_for_gc;                                                           \
-    minor_collection ();                                                    \
+    caml_minor_collection ();                                               \
     Restore_after_gc;                                                       \
-    young_ptr -= Bhsize_wosize (wosize);                                    \
+    caml_young_ptr -= Bhsize_wosize (wosize);                               \
   }                                                                         \
-  Hd_hp (young_ptr) = Make_header ((wosize), (tag), Caml_black);            \
-  (result) = Val_hp (young_ptr);                                            \
+  Hd_hp (caml_young_ptr) = Make_header ((wosize), (tag), Caml_black);       \
+  (result) = Val_hp (caml_young_ptr);                                       \
   DEBUG_clear ((result), (wosize));                                         \
 }while(0)
 
@@ -87,13 +91,13 @@ color_t allocation_color (void *hp);
   value _old_ = *(fp);                                                      \
   *(fp) = (val);                                                            \
   if (Is_in_heap (fp)){                                                     \
-    if (gc_phase == Phase_mark) darken (_old_, NULL);                       \
+    if (caml_gc_phase == Phase_mark) caml_darken (_old_, NULL);             \
     if (Is_block (val) && Is_young (val)                                    \
         && ! (Is_block (_old_) && Is_young (_old_))){                       \
-      *ref_table_ptr++ = (fp);                                              \
-      if (ref_table_ptr >= ref_table_limit){                                \
-        CAMLassert (ref_table_ptr == ref_table_limit);                      \
-        realloc_ref_table ();                                               \
+      *caml_ref_table_ptr++ = (fp);                                         \
+      if (caml_ref_table_ptr >= caml_ref_table_limit){                      \
+        CAMLassert (caml_ref_table_ptr == caml_ref_table_limit);            \
+        caml_realloc_ref_table ();                                          \
       }                                                                     \
     }                                                                       \
   }                                                                         \
@@ -108,7 +112,7 @@ struct caml__roots_block {
   value *tables [5];
 };
 
-CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
+CAMLextern struct caml__roots_block *caml_local_roots;  /* defined in roots.c */
 
 /* The following macros are used to declare C local variables and
    function parameters of type [value].
@@ -128,7 +132,7 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
    or more calls to the [CAMLlocal] macros.
    Use [CAMLlocalN] to declare an array of [value]s.
 
-   Your function may raise and exception or return a [value] with the
+   Your function may raise an exception or return a [value] with the
    [CAMLreturn] macro.  Its argument is simply the [value] returned by
    your function.  Do NOT directly return a [value] with the [return]
    keyword.  If your function returns void, use [CAMLreturn0].
@@ -139,7 +143,7 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
 */
 
 #define CAMLparam0() \
-  struct caml__roots_block *caml__frame = local_roots
+  struct caml__roots_block *caml__frame = caml_local_roots
 
 #define CAMLparam1(x) \
   CAMLparam0 (); \
@@ -166,11 +170,17 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
   CAMLxparamN (x, (size))
 
 
+#if defined (__GNUC__)
+  #define CAMLunused __attribute__ ((unused))
+#else
+  #define CAMLunused
+#endif
+
 #define CAMLxparam1(x) \
   struct caml__roots_block caml__roots_##x; \
-  int caml__dummy_##x = ( \
-    (caml__roots_##x.next = local_roots), \
-    (local_roots = &caml__roots_##x), \
+  CAMLunused int caml__dummy_##x = ( \
+    (caml__roots_##x.next = caml_local_roots), \
+    (caml_local_roots = &caml__roots_##x), \
     (caml__roots_##x.nitems = 1), \
     (caml__roots_##x.ntables = 1), \
     (caml__roots_##x.tables [0] = &x), \
@@ -178,9 +188,9 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
 
 #define CAMLxparam2(x, y) \
   struct caml__roots_block caml__roots_##x; \
-  int caml__dummy_##x = ( \
-    (caml__roots_##x.next = local_roots), \
-    (local_roots = &caml__roots_##x), \
+  CAMLunused int caml__dummy_##x = ( \
+    (caml__roots_##x.next = caml_local_roots), \
+    (caml_local_roots = &caml__roots_##x), \
     (caml__roots_##x.nitems = 1), \
     (caml__roots_##x.ntables = 2), \
     (caml__roots_##x.tables [0] = &x), \
@@ -189,9 +199,9 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
 
 #define CAMLxparam3(x, y, z) \
   struct caml__roots_block caml__roots_##x; \
-  int caml__dummy_##x = ( \
-    (caml__roots_##x.next = local_roots), \
-    (local_roots = &caml__roots_##x), \
+  CAMLunused int caml__dummy_##x = ( \
+    (caml__roots_##x.next = caml_local_roots), \
+    (caml_local_roots = &caml__roots_##x), \
     (caml__roots_##x.nitems = 1), \
     (caml__roots_##x.ntables = 3), \
     (caml__roots_##x.tables [0] = &x), \
@@ -201,9 +211,9 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
 
 #define CAMLxparam4(x, y, z, t) \
   struct caml__roots_block caml__roots_##x; \
-  int caml__dummy_##x = ( \
-    (caml__roots_##x.next = local_roots), \
-    (local_roots = &caml__roots_##x), \
+  CAMLunused int caml__dummy_##x = ( \
+    (caml__roots_##x.next = caml_local_roots), \
+    (caml_local_roots = &caml__roots_##x), \
     (caml__roots_##x.nitems = 1), \
     (caml__roots_##x.ntables = 4), \
     (caml__roots_##x.tables [0] = &x), \
@@ -214,9 +224,9 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
 
 #define CAMLxparam5(x, y, z, t, u) \
   struct caml__roots_block caml__roots_##x; \
-  int caml__dummy_##x = ( \
-    (caml__roots_##x.next = local_roots), \
-    (local_roots = &caml__roots_##x), \
+  CAMLunused int caml__dummy_##x = ( \
+    (caml__roots_##x.next = caml_local_roots), \
+    (caml_local_roots = &caml__roots_##x), \
     (caml__roots_##x.nitems = 1), \
     (caml__roots_##x.ntables = 5), \
     (caml__roots_##x.tables [0] = &x), \
@@ -228,9 +238,9 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
 
 #define CAMLxparamN(x, size) \
   struct caml__roots_block caml__roots_##x; \
-  int caml__dummy_##x = ( \
-    (caml__roots_##x.next = local_roots), \
-    (local_roots = &caml__roots_##x), \
+  CAMLunused int caml__dummy_##x = ( \
+    (caml__roots_##x.next = caml_local_roots), \
+    (caml_local_roots = &caml__roots_##x), \
     (caml__roots_##x.nitems = (size)), \
     (caml__roots_##x.ntables = 1), \
     (caml__roots_##x.tables[0] = &(x[0])), \
@@ -262,20 +272,23 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
 
 
 #define CAMLreturn0 do{ \
-  local_roots = caml__frame; \
+  caml_local_roots = caml__frame; \
   return; \
 }while (0)
 
 #define CAMLreturn(result) do{ \
-  local_roots = caml__frame; \
+  caml_local_roots = caml__frame; \
   return (result); \
 }while(0)
+
+#define CAMLnoreturn ((void) caml__frame)
+
 
 /* convenience macro */
 #define Store_field(block, offset, val) do{ \
   mlsize_t caml__temp_offset = (offset); \
   value caml__temp_val = (val); \
-  modify (&Field ((block), caml__temp_offset), caml__temp_val); \
+  caml_modify (&Field ((block), caml__temp_offset), caml__temp_val); \
 }while(0)
 
 /*
@@ -302,16 +315,16 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
 
 #define Begin_roots1(r0) { \
   struct caml__roots_block caml__roots_block; \
-  caml__roots_block.next = local_roots; \
-  local_roots = &caml__roots_block; \
+  caml__roots_block.next = caml_local_roots; \
+  caml_local_roots = &caml__roots_block; \
   caml__roots_block.nitems = 1; \
   caml__roots_block.ntables = 1; \
   caml__roots_block.tables[0] = &(r0);
 
 #define Begin_roots2(r0, r1) { \
   struct caml__roots_block caml__roots_block; \
-  caml__roots_block.next = local_roots; \
-  local_roots = &caml__roots_block; \
+  caml__roots_block.next = caml_local_roots; \
+  caml_local_roots = &caml__roots_block; \
   caml__roots_block.nitems = 1; \
   caml__roots_block.ntables = 2; \
   caml__roots_block.tables[0] = &(r0); \
@@ -319,8 +332,8 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
 
 #define Begin_roots3(r0, r1, r2) { \
   struct caml__roots_block caml__roots_block; \
-  caml__roots_block.next = local_roots; \
-  local_roots = &caml__roots_block; \
+  caml__roots_block.next = caml_local_roots; \
+  caml_local_roots = &caml__roots_block; \
   caml__roots_block.nitems = 1; \
   caml__roots_block.ntables = 3; \
   caml__roots_block.tables[0] = &(r0); \
@@ -329,8 +342,8 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
 
 #define Begin_roots4(r0, r1, r2, r3) { \
   struct caml__roots_block caml__roots_block; \
-  caml__roots_block.next = local_roots; \
-  local_roots = &caml__roots_block; \
+  caml__roots_block.next = caml_local_roots; \
+  caml_local_roots = &caml__roots_block; \
   caml__roots_block.nitems = 1; \
   caml__roots_block.ntables = 4; \
   caml__roots_block.tables[0] = &(r0); \
@@ -340,8 +353,8 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
 
 #define Begin_roots5(r0, r1, r2, r3, r4) { \
   struct caml__roots_block caml__roots_block; \
-  caml__roots_block.next = local_roots; \
-  local_roots = &caml__roots_block; \
+  caml__roots_block.next = caml_local_roots; \
+  caml_local_roots = &caml__roots_block; \
   caml__roots_block.nitems = 1; \
   caml__roots_block.ntables = 5; \
   caml__roots_block.tables[0] = &(r0); \
@@ -352,26 +365,25 @@ CAMLextern struct caml__roots_block *local_roots;  /* defined in roots.c */
 
 #define Begin_roots_block(table, size) { \
   struct caml__roots_block caml__roots_block; \
-  caml__roots_block.next = local_roots; \
-  local_roots = &caml__roots_block; \
+  caml__roots_block.next = caml_local_roots; \
+  caml_local_roots = &caml__roots_block; \
   caml__roots_block.nitems = (size); \
   caml__roots_block.ntables = 1; \
   caml__roots_block.tables[0] = (table);
 
-#define End_roots() local_roots = caml__roots_block.next; }
+#define End_roots() caml_local_roots = caml__roots_block.next; }
 
 
-/* [register_global_root] registers a global C variable as a memory root
-   for the duration of the program, or until [remove_global_root] is
+/* [caml_register_global_root] registers a global C variable as a memory root
+   for the duration of the program, or until [caml_remove_global_root] is
    called. */
 
-CAMLextern void register_global_root (value *);
+CAMLextern void caml_register_global_root (value *);
 
-/* [remove_global_root] removes a memory root registered on a global C
-   variable with [register_global_root]. */
+/* [caml_remove_global_root] removes a memory root registered on a global C
+   variable with [caml_register_global_root]. */
 
-CAMLextern void remove_global_root (value *);
+CAMLextern void caml_remove_global_root (value *);
 
 
-#endif /* _memory_ */
-
+#endif /* CAML_MEMORY_H */

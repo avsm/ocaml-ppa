@@ -11,13 +11,13 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.45 2003/06/23 12:52:06 xleroy Exp $
+# $Id: Makefile,v 1.48 2004/05/09 10:37:27 xleroy Exp $
 
 include ../config/Makefile
 
 CC=$(BYTECC)
-CFLAGS=-O $(BYTECCCOMPOPTS)
-DFLAGS=-g -DDEBUG $(BYTECCCOMPOPTS)
+CFLAGS=-DCAML_NAME_SPACE -O $(BYTECCCOMPOPTS)
+DFLAGS=-DCAML_NAME_SPACE -g -DDEBUG $(BYTECCCOMPOPTS)
 
 OBJS=interp.o misc.o stacks.o fix_code.o startup.o main.o \
   freelist.o major_gc.o minor_gc.o memory.o alloc.o roots.o globroots.o \
@@ -35,7 +35,7 @@ PRIMS=alloc.c array.c compare.c extern.c floats.c gc_ctrl.c hash.c \
   dynlink.c
 
 PUBLIC_INCLUDES=alloc.h callback.h config.h custom.h fail.h intext.h \
-  memory.h misc.h mlvalues.h signals.h
+  memory.h misc.h mlvalues.h signals.h compatibility.h
 
 all: ocamlrun$(EXE)
 
@@ -76,14 +76,15 @@ prims.c : primitives
 	(echo '#include "mlvalues.h"'; \
 	 echo '#include "prims.h"'; \
 	 sed -e 's/.*/extern value &();/' primitives; \
-	 echo 'c_primitive builtin_cprim[] = {'; \
+	 echo 'c_primitive caml_builtin_cprim[] = {'; \
 	 sed -e 's/.*/	&,/' primitives; \
 	 echo '	 0 };'; \
-	 echo 'char * names_of_builtin_cprim[] = {'; \
+	 echo 'char * caml_names_of_builtin_cprim[] = {'; \
 	 sed -e 's/.*/	"&",/' primitives; \
 	 echo '	 0 };') > prims.c
 
 opnames.h : instruct.h
+	LANG=C; \
 	sed -e '/\/\*/d' \
 	    -e '/^#/d' \
 	    -e 's/enum /char * names_of_/' \

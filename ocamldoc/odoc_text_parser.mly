@@ -10,6 +10,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_text_parser.mly,v 1.4 2004/05/23 10:41:50 guesdon Exp $ *)
+
 open Odoc_types
 
 let identchar = 
@@ -58,7 +60,8 @@ let print_DEBUG s = print_string s; print_newline ()
 %token ATT_REF
 %token MET_REF
 %token SEC_REF
-
+%token MOD_LIST_REF
+%token INDEX_LIST
 
 %token SUPERSCRIPT
 %token SUBSCRIPT
@@ -162,6 +165,13 @@ text_element:
       let s3 = remove_trailing_blanks s2 in
       Ref (s3, Some (RK_section []))
      }
+| MOD_LIST_REF string END { 
+      let s2 = remove_beginning_blanks $2 in
+      let s3 = remove_trailing_blanks s2 in
+      let l = Odoc_misc.split_with_blanks s3 in
+      Module_list l
+     }
+| INDEX_LIST { Index_list } 
 | VERB string END_VERB { Verbatim $2 }
 | LATEX string END_LATEX { Latex $2 }
 | LINK string END text END { Link ($2, $4) }

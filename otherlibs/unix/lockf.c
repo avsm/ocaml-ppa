@@ -11,11 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: lockf.c,v 1.11 2001/12/07 13:40:31 xleroy Exp $ */
+/* $Id: lockf.c,v 1.13 2004/06/11 23:16:14 doligez Exp $ */
 
 #include <errno.h>
 #include <fcntl.h>
 #include <mlvalues.h>
+#include <signals.h>
 #include "unixsupport.h"
 
 #if defined(F_GETLK) && defined(F_SETLK) && defined(F_SETLKW)
@@ -44,7 +45,9 @@ CAMLprim value unix_lockf(value fd, value cmd, value span)
     break;
   case 1: /* F_LOCK */
     l.l_type = F_WRLCK;
+    enter_blocking_section();
     ret = fcntl(fildes, F_SETLKW, &l);
+    leave_blocking_section();
     break;
   case 2: /* F_TLOCK */
     l.l_type = F_WRLCK;
@@ -64,7 +67,9 @@ CAMLprim value unix_lockf(value fd, value cmd, value span)
     break;
   case 4: /* F_RLOCK */
     l.l_type = F_RDLCK;
+    enter_blocking_section();
     ret = fcntl(fildes, F_SETLKW, &l);
+    leave_blocking_section();
     break;
   case 5: /* F_TRLOCK */
     l.l_type = F_RDLCK;

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: gc.mli,v 1.37 2002/08/01 14:14:10 doligez Exp $ *)
+(* $Id: gc.mli,v 1.40 2004/06/14 13:27:36 doligez Exp $ *)
 
 (** Memory management control and statistics; finalised values. *)
 
@@ -129,38 +129,45 @@ type control =
 }
 (** The GC parameters are given as a [control] record. *)
 
-external stat : unit -> stat = "gc_stat"
+external stat : unit -> stat = "caml_gc_stat"
 (** Return the current values of the memory management counters in a
-   [stat] record. *)
+   [stat] record.  This function examines every heap block to get the
+   statistics. *)
 
-external counters : unit -> float * float * float = "gc_counters"
-(** Return [(minor_words, promoted_words, major_words)].  Much faster
-   than [stat]. *)
+external quick_stat : unit -> stat = "caml_gc_quick_stat"
+(** Same as [stat] except that [live_words], [live_blocks], [free_words],
+    [free_blocks], [largest_free], and [fragments] are set to 0.  This
+    function is much faster than [stat] because it does not need to go
+    through the heap. *)
 
-external get : unit -> control = "gc_get"
+external counters : unit -> float * float * float = "caml_gc_counters"
+(** Return [(minor_words, promoted_words, major_words)].  This function
+    is as fast at [quick_stat]. *)
+
+external get : unit -> control = "caml_gc_get"
 (** Return the current values of the GC parameters in a [control] record. *)
 
-external set : control -> unit = "gc_set"
+external set : control -> unit = "caml_gc_set"
 (** [set r] changes the GC parameters according to the [control] record [r].
    The normal usage is: [Gc.set { (Gc.get()) with Gc.verbose = 0x00d }] *)
 
-external minor : unit -> unit = "gc_minor"
+external minor : unit -> unit = "caml_gc_minor"
 (** Trigger a minor collection. *)
 
-external major_slice : int -> int = "gc_major_slice";;
+external major_slice : int -> int = "caml_gc_major_slice";;
 (** Do a minor collection and a slice of major collection.  The argument
     is the size of the slice, 0 to use the automatically-computed
     slice size.  In all cases, the result is the computed slice size. *)
 
-external major : unit -> unit = "gc_major"
+external major : unit -> unit = "caml_gc_major"
 (** Do a minor collection and finish the current major collection cycle. *)
 
-external full_major : unit -> unit = "gc_full_major"
+external full_major : unit -> unit = "caml_gc_full_major"
 (** Do a minor collection, finish the current major collection cycle,
    and perform a complete new cycle.  This will collect all currently
    unreachable blocks. *)
 
-external compact : unit -> unit = "gc_compaction"
+external compact : unit -> unit = "caml_gc_compaction"
 (** Perform a full major collection and compact the heap.  Note that heap
    compaction is a lengthy operation. *)
 
@@ -181,14 +188,15 @@ val finalise : ('a -> unit) -> 'a -> unit
    be registered for the same value, or even several instances of the
    same function.  Each instance will be called once (or never,
    if the program terminates before [v] becomes unreachable).
-   
-  
-   A number of pitfalls are associated with finalised values:
-   finalisation functions are called asynchronously, sometimes
-   even during the execution of other finalisation functions.
-   In a multithreaded program, finalisation functions are called
-   from any thread, thus they must not acquire any mutex.
 
+   The GC will call the finalisation functions in the order of
+   deallocation.  When several values become unreachable at the
+   same time (i.e. during the same GC cycle), the finalisation
+   functions will be called in the reverse order of the corresponding
+   calls to [finalise].  If [finalise] is called in the same order
+   as the values are allocated, that means each value is finalised
+   before the values it depends upon.  Of course, this becomes
+   false if additional dependencies are introduced by assignments.
 
    Anything reachable from the closure of finalisation functions
    is considered reachable, so the following code will not work
@@ -225,9 +233,13 @@ val finalise : ('a -> unit) -> 'a -> unit
    
    The results of calling {!String.make}, {!String.create},
    {!Array.make}, and {!Pervasives.ref} are guaranteed to be
-   heap-allocated and non-constant
-   except when the length argument is [0].
+   heap-allocated and non-constant except when the length argument is [0].
 *)
+
+val finalise_release : unit -> unit;;
+(** A finalisation function may call [finalise_release] to tell the
+    GC that it can launch the next finalisation function without waiting
+    for the current one to return. *)
 
 type alarm
 (** An alarm is a piece of data that calls a user function at the end of

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: socket.c,v 1.9 2001/12/07 13:40:35 xleroy Exp $ */
+/* $Id: socket.c,v 1.10 2004/04/09 13:25:21 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include "unixsupport.h"
@@ -22,7 +22,14 @@
 #include <sys/socket.h>
 
 int socket_domain_table[] = {
-  PF_UNIX, PF_INET
+  PF_UNIX, PF_INET,
+#if defined(HAS_IPV6)
+  PF_INET6
+#elif defined(PF_UNDEF)
+  PF_UNDEF
+#else
+  0
+#endif
 };
 
 int socket_type_table[] = {
