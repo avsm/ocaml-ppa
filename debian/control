@@ -61,7 +61,8 @@ Description: ML language implementation with a class-based object system
  the moderate memory requirements of the bytecode compiler. It is not
  available on all arches though.
  .
- This package includes the standard ocaml graphics library.
+ This package contains everything needed to develop ocaml applications,
+ including the graphics libraries.
 
 Package: ocaml-base-nox
 Architecture: any

@@ -20,6 +20,10 @@ ocaml for Debian
 
   o ocaml-native-compilers : contains the native built part of the ocaml suite
     (ocamlc.opt, ocamlopt.opt, ocamllex.opt, camlp4o.opt and camlp4r.opt)
+  o ocaml-compiler-libs : contains several modules used internally by
+    the ocaml compilers.  They are not needed for normal ocaml
+    development, but may be helpful in the development of certain
+    applications.
   o ocaml-source : contains the full ocaml source for the (few) package which
     need them at build time or for personal use (it should _not_ be used to
     build ocam litself).
@@ -47,4 +51,4 @@ ocaml for Debian
   /usr/lib/ocaml/<ocaml_version>/stublibs.
   The older method of using ocaml-ldconf is obsolet now.
 
- -- Mike Furr <mfurr@debian.org>, Fri Jun 11 13:27:12 2004
+ -- Mike Furr <mfurr@debian.org>, Thu Jun 24 14:23:14 2004
