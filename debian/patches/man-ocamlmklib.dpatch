@@ -139,7 +139,7 @@ diff -urN ocaml-3.08.1.orig/man/ocamlmklib.m ocaml-3.08.1/man/ocamlmklib.m
 +.BI \-F dir
 +Specify a framework directory (MacOSX).
 +.TP
-+.BI \-framework name
++.BI \-framework\  name
 +Use framework
 +.I name
 +(MacOSX).
