@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pr_o.ml,v 1.41 2003/07/16 12:50:08 mauny Exp $ *)
+(* $Id: pr_o.ml,v 1.42 2003/08/25 13:30:13 mauny Exp $ *)
 
 open Pcaml;
 open Spretty;
@@ -1544,6 +1544,8 @@ pr_patt.pr_levels :=
       | <:patt< ~ $i$ : $p$ >> ->
           fun curr next dg k ->
             [: `S LO ("~" ^ i ^ ":"); `simple_patt p "" k :]
+      | <:patt< ? $i$ >> ->
+          fun curr next _ k -> [: `S LR ("?" ^ i); k :]
       | <:patt< ? $i$ : ($p$) >> ->
           fun curr next dg k ->
             if i = "" then [: `S LO "?"; `simple_patt p "" k :]

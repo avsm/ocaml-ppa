@@ -15,9 +15,11 @@ val open_tracker : string -> out_channel -> line_tracker
 val close_tracker : line_tracker -> unit
 val copy_chunk :
   string ->
-  in_channel -> out_channel -> line_tracker -> Syntax.location -> unit
+  in_channel -> out_channel -> line_tracker -> Syntax.location -> bool -> unit
 val output_mem_access : out_channel -> int -> unit
 val output_memory_actions :
   string -> out_channel -> Lexgen.memory_action list -> unit
 val output_env : out_channel -> (string * Lexgen.ident_info) list -> unit
 val output_args : out_channel -> string list -> unit
+
+val quiet_mode : bool ref;;

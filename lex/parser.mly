@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: parser.mly,v 1.18 2003/02/24 10:59:20 maranget Exp $ */
+/* $Id: parser.mly,v 1.19 2003/08/13 13:36:03 doligez Exp $ */
 
 /* The grammar for lexer definitions */
 
@@ -32,8 +32,6 @@ let regexp_for_string s =
         (Characters(Cset.singleton (Char.code s.[n])),
          re_string (succ n))
   in re_string 0
-
-let char_class c1 c2 = Cset.interval c1 c2
 
 let rec remove_as = function
   | Bind (e,_) -> remove_as e

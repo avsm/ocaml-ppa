@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: ocaml.c,v 1.5 2002/07/23 14:12:03 doligez Exp $ */
+/* $Id: ocaml.c,v 1.6 2003/09/09 09:07:14 xleroy Exp $ */
 
 /*@@ Wedit generated application. Written Sat Jun 02 18:22:38 2001
  @@header: D:\lcc\inria\inriares.h
@@ -29,6 +29,7 @@
 int EditControls = IDEDITCONTROL;
 static WNDPROC lpEProc;
 static char lineBuffer[1024*32];
+int ResetText(void);
 int ReadToLineBuffer(void);
 int AddLineBuffer(void);
 static int busy;

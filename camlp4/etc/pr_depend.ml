@@ -1,5 +1,5 @@
 (* camlp4r *)
-(* $Id: pr_depend.ml,v 1.12 2003/07/16 12:50:08 mauny Exp $ *)
+(* $Id: pr_depend.ml,v 1.13 2003/07/23 22:26:17 doligez Exp $ *)
 
 open MLast;
 
@@ -101,6 +101,8 @@ and expr =
   | ExApp _ e1 e2 -> do { expr e1; expr e2; }
   | ExAre _ e1 e2 -> do { expr e1; expr e2; }
   | ExArr _ el -> list expr el
+  | ExAsf _ -> ()
+  | ExAsr _ e -> do { expr e; }
   | ExAss _ e1 e2 -> do { expr e1; expr e2; }
   | ExChr _ _ -> ()
   | ExCoe _ e t1 t2 -> do { expr e; option ctyp t1; ctyp t2 }
@@ -108,6 +110,9 @@ and expr =
   | ExFun _ pwel -> list match_case pwel
   | ExIfe _ e1 e2 e3 -> do { expr e1; expr e2; expr e3; }
   | ExInt _ _ -> ()
+  | ExInt32 _ _ -> ()
+  | ExInt64 _ _ -> ()
+  | ExNativeInt _ _ -> ()
   | ExFlo _ _ -> ()
   | ExLab _ _ eo -> option expr eo
   | ExLaz _ e -> expr e

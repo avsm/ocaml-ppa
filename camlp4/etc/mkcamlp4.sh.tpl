@@ -1,17 +1,17 @@
 #!/bin/sh
-# $Id: mkcamlp4.sh.tpl,v 1.5 2003/07/10 12:28:19 michel Exp $
+# $Id: mkcamlp4.sh.tpl,v 1.7 2003/09/23 18:17:35 mauny Exp $
 
-OLIB=`ocamlc -where`
-LIB=LIBDIR/camlp4
+OLIB="`ocamlc -where`"
+LIB="LIBDIR/camlp4"
 
 INTERFACES=
 OPTS=
 INCL="-I ."
 while test "" != "$1"; do
-    case $1 in
+    case "$1" in
     -I) INCL="$INCL -I $2"; shift;;
     *)
-        j=`basename $1 .cmi`
+        j=`basename "$1" .cmi`
         if test "$j.cmi" = "$1"; then
             first="`expr "$j" : '\(.\)' | tr 'a-z' 'A-Z'`"
             rest="`expr "$j" : '.\(.*\)'`"
@@ -22,3 +22,12 @@ while test "" != "$1"; do
     esac
     shift
 done
+
+CRC=crc_$$
+set -e
+trap 'rm -f $CRC.ml $CRC.cmi $CRC.cmo' 0 2
+$OLIB/extract_crc -I $OLIB $INCL $INTERFACES > $CRC.ml
+echo "let _ = Dynlink.add_available_units crc_unit_list" >> $CRC.ml
+ocamlc -I $LIB odyl.cma camlp4.cma $CRC.ml $INCL $OPTS odyl.cmo -linkall
+rm -f $CRC.ml $CRC.cmi $CRC.cmo
+

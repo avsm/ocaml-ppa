@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.34 2002/06/27 11:36:01 xleroy Exp $
+# $Id: Makefile,v 1.35 2003/08/05 13:39:33 xleroy Exp $
 
 # Makefile for the portable graphics library
 
@@ -56,7 +56,7 @@ install:
 	cp graphics.cm[ia] graphicsX11.cmi graphics.mli graphicsX11.mli $(LIBDIR)
 
 installopt:
-	cp graphics.cmxa graphics.a $(LIBDIR)
+	cp graphics.cmx graphics.cmxa graphics.a $(LIBDIR)
 	cd $(LIBDIR); $(RANLIB) graphics.a
 
 .SUFFIXES: .ml .mli .cmo .cmi .cmx

@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: menu.c,v 1.5 2002/07/23 14:12:02 doligez Exp $ */
+/* $Id: menu.c,v 1.6 2003/09/09 09:07:14 xleroy Exp $ */
 
 #include <stdio.h>
 #include <windows.h>
@@ -18,6 +18,7 @@
 #include "inria.h"
 #include "inriares.h"
 
+void InterruptOcaml(void);
 LOGFONT CurrentFont;
 int CurrentFontFamily = (FIXED_PITCH | FF_MODERN);
 int CurrentFontStyle;

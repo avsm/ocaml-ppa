@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: output.ml,v 1.20 2002/12/10 09:14:30 maranget Exp $ *)
+(* $Id: output.ml,v 1.24 2003/08/29 17:33:45 doligez Exp $ *)
 
 (* Output the DFA tables and its entry points *)
 
@@ -48,7 +48,7 @@ let output_byte_array oc v =
 (* Output the tables *)
 
 let output_tables oc tbl =
-  output_string oc "let lex_tables = {\n";
+  output_string oc "let __ocaml_lex_tables = {\n";
 
   fprintf oc "  Lexing.lex_base = \n%a;\n" output_array tbl.tbl_base;
   fprintf oc "  Lexing.lex_backtrk = \n%a;\n" output_array tbl.tbl_backtrk;
@@ -86,17 +86,18 @@ let output_entry sourcefile ic oc oci e =
     e.auto_name
     output_args e.auto_args
     init_num;
-  fprintf oc "and __ocaml_lex_%s_rec %alexbuf state =\n"
+  fprintf oc "and __ocaml_lex_%s_rec %alexbuf __ocaml_lex_state =\n"
     e.auto_name output_args e.auto_args ;
-  fprintf oc "  match Lexing.%sengine lex_tables state lexbuf with\n    "
-    (if e.auto_mem_size == 0 then "" else "new_") ;
+  fprintf oc "  match Lexing.%sengine"
+          (if e.auto_mem_size == 0 then "" else "new_");
+  fprintf oc " __ocaml_lex_tables __ocaml_lex_state lexbuf with\n    ";
   List.iter
     (fun (num, env, loc) ->
       fprintf oc "  | ";
-      fprintf oc "%d -> (\n" num;
-      output_env oc env ;
-      copy_chunk sourcefile ic oc oci loc;
-      fprintf oc ")\n")
+      fprintf oc "%d ->\n" num;
+      output_env oc env;
+      copy_chunk sourcefile ic oc oci loc true;
+      fprintf oc "\n")
     e.auto_actions;
   fprintf oc "  | n -> lexbuf.Lexing.refill_buff lexbuf; \
                                 __ocaml_lex_%s_rec %alexbuf n\n\n"
@@ -107,12 +108,13 @@ let output_entry sourcefile ic oc oci e =
 exception Table_overflow
 
 let output_lexdef sourcefile ic oc oci header tables entry_points trailer =
-  Printf.printf "%d states, %d transitions, table size %d bytes\n"
-    (Array.length tables.tbl_base)
-    (Array.length tables.tbl_trans)
-    (2 * (Array.length tables.tbl_base + Array.length tables.tbl_backtrk +
-          Array.length tables.tbl_default + Array.length tables.tbl_trans +
-          Array.length tables.tbl_check));
+  if not !Common.quiet_mode then
+    Printf.printf "%d states, %d transitions, table size %d bytes\n"
+      (Array.length tables.tbl_base)
+      (Array.length tables.tbl_trans)
+      (2 * (Array.length tables.tbl_base + Array.length tables.tbl_backtrk +
+            Array.length tables.tbl_default + Array.length tables.tbl_trans +
+            Array.length tables.tbl_check));
   let size_groups =
     (2 * (Array.length tables.tbl_base_code +
           Array.length tables.tbl_backtrk_code +
@@ -120,11 +122,11 @@ let output_lexdef sourcefile ic oc oci header tables entry_points trailer =
           Array.length tables.tbl_trans_code +
           Array.length tables.tbl_check_code) +
     Array.length tables.tbl_code) in
-  if  size_groups > 0 then
+  if size_groups > 0 && not !Common.quiet_mode then
     Printf.printf "%d additional bytes used for bindings\n" size_groups ;
   flush stdout;
   if Array.length tables.tbl_trans > 0x8000 then raise Table_overflow;
-  copy_chunk sourcefile ic oc oci header;
+  copy_chunk sourcefile ic oc oci header false;
   output_tables oc tables;
   begin match entry_points with
     [] -> ()
@@ -135,4 +137,4 @@ let output_lexdef sourcefile ic oc oci header tables entry_points trailer =
         entries;
       output_string oc ";;\n\n";
   end;
-  copy_chunk sourcefile ic oc oci trailer
+  copy_chunk sourcefile ic oc oci trailer false

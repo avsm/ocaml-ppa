@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: btype.ml,v 1.32 2003/07/02 09:14:32 xleroy Exp $ *)
+(* $Id: btype.ml,v 1.33 2003/08/09 11:47:57 garrigue Exp $ *)
 
 (* Basic operations on core types *)
 
@@ -328,6 +328,20 @@ let rec forget_abbrev_rec mem path =
 let forget_abbrev mem path =
   try mem := forget_abbrev_rec !mem path with Exit -> ()
 
+let rec check_abbrev_rec path = function
+    Mnil -> true
+  | Mcons (path', _, ty, rem) ->
+      if Path.same path path' && 
+        match repr ty with
+          {desc = Tconstr(path',_,_)} -> Path.same path path'
+        | _ -> false
+      then false
+      else check_abbrev_rec path rem
+  | Mlink mem' ->
+      check_abbrev_rec path !mem'
+
+let check_memorized_abbrevs path =
+  List.for_all (fun mem -> check_abbrev_rec path !mem) !memo
 
                   (**********************************)
                   (*  Utilities for labels          *)
@@ -392,6 +406,10 @@ let log_change ch =
 let log_type ty =
   if ty.id <= !last_snapshot then log_change (Ctype (ty, ty.desc))
 let link_type ty ty' = log_type ty; ty.desc <- Tlink ty'
+(*match repr ty' with
+    {desc=Tconstr(path,_,_)} -> assert (check_memorized_abbrevs path)
+  | _ -> ()
+*)
 let set_level ty level =
   if ty.id <= !last_snapshot then log_change (Clevel (ty, ty.level));
   ty.level <- level

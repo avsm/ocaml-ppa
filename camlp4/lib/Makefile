@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 2003/07/10 12:28:24 michel Exp $
+# $Id: Makefile,v 1.7 2003/08/29 12:15:15 xleroy Exp $
 
 include ../config/Makefile
 
@@ -18,7 +18,7 @@ $(TARGET:.cma=.cmxa): $(OBJS:.cmo=.cmx)
 	$(OCAMLOPT) $(OBJS:.cmo=.cmx) -a -o $(TARGET:.cma=.cmxa)
 
 clean::
-	rm -f *.cm[ioax] *.cmxa *.pp[io] *.o *.a *.bak .*.bak $(TARGET)
+	rm -f *.cm[ioax] *.cmxa *.pp[io] *.$(O) *.$(A) *.bak .*.bak $(TARGET)
 
 depend:
 	cp .depend .depend.bak
@@ -43,10 +43,6 @@ install:
 
 installopt:
 	cp $(TARGET:.cma=.cmxa) *.cmx "$(LIBDIR)/camlp4/."
-	if test -f $(TARGET:.cma=.lib); then \
-	  cp $(TARGET:.cma=.lib) "$(LIBDIR)/camlp4/."; \
-	else \
-	  tar cf - $(TARGET:.cma=.a) | (cd "$(LIBDIR)/camlp4/."; tar xf -); \
-	fi
+	tar cf - $(TARGET:.cma=.$(A)) | (cd "$(LIBDIR)/camlp4/."; tar xf -)
 
 include .depend

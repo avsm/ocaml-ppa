@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unix.mli,v 1.70 2003/01/21 12:51:55 doligez Exp $ *)
+(* $Id: unix.mli,v 1.71 2003/09/14 16:46:31 doligez Exp $ *)
 
 (** Interface to the Unix system *)
 
@@ -416,7 +416,8 @@ val fchown : file_descr -> int -> int -> unit
 (** Change the owner uid and owner gid of an opened file. *)
 
 val umask : int -> int
-(** Set the process creation mask, and return the previous mask. *)
+(** Set the process's file mode creation mask, and return the previous
+    mask. *)
 
 val access : string -> access_permission list -> unit
 (** Check that the process has the given permissions over the named

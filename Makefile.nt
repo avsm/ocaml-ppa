@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt,v 1.92 2003/07/03 16:21:47 xleroy Exp $
+# $Id: Makefile.nt,v 1.94 2003/09/25 08:19:17 xleroy Exp $
 
 # The main Makefile
 
@@ -200,7 +200,8 @@ cleanboot:
 opt: runtimeopt ocamlopt libraryopt otherlibrariesopt camlp4opt
 
 # Native-code versions of the tools
-opt.opt: ocamlc.opt ocamlopt.opt ocamllex.opt ocamltoolsopt.opt ocamldoc.opt
+opt.opt: ocamlc.opt ocamlopt.opt ocamllex.opt ocamltoolsopt.opt \
+	camlp4optopt ocamldoc.opt
 
 # Installation
 install: installbyt installopt
@@ -225,9 +226,7 @@ installbyt:
 	cd ocamldoc ; $(MAKEREC) install
 	mkdir -p $(STUBLIBDIR)
 	for i in $(OTHERLIBRARIES); do $(MAKEREC) -C otherlibs/$$i install; done
-ifeq ($(TOOLCHAIN),msvc)
 	cd win32caml ; $(MAKE) install
-endif
 	cd camlp4 ; make install
 	cp README $(DISTRIB)/Readme.gen
 	cp README.win32 $(DISTRIB)/Readme.win
@@ -241,6 +240,12 @@ installopt:
 	cd stdlib ; $(MAKEREC) installopt
 	cd ocamldoc ; $(MAKEREC) installopt
 	for i in $(OTHERLIBRARIES); do $(MAKEREC) -C otherlibs/$$i installopt; done
+	if test -f ocamlc.opt; \
+	  then cp ocamlc.opt $(BINDIR)/ocamlc.opt.exe; else :; fi
+	if test -f ocamlopt.opt; \
+	  then cp ocamlopt.opt $(BINDIR)/ocamlopt.opt.exe; else :; fi
+	if test -f lex/ocamllex.opt; \
+	  then cp lex/ocamllex.opt $(BINDIR)/ocamllex.opt.exe; else :; fi
 
 clean:: partialclean
 
@@ -560,6 +565,8 @@ camlp4out:
 	cd camlp4/config ; \
 	(cat Makefile.tpl; \
 	 echo 'EXE=.exe'; \
+	 echo 'O=$(O)'; \
+	 echo 'A=$(A)'; \
 	 echo 'OPT='; \
 	 echo 'OTOP=../..'; \
 	 echo 'OLIBDIR=$$(OTOP)/boot'; \
@@ -569,15 +576,16 @@ camlp4out:
 	cd camlp4 ; $(MAKE)
 camlp4opt:
 	cd camlp4 ; $(MAKE) opt
+camlp4optopt:
+	cd camlp4; $(MAKE) opt.opt
 partialclean::
 	cd camlp4 ; $(MAKE) clean
 
 # The Win32 toplevel GUI
 
 win32gui:
-ifeq ($(TOOLCHAIN),msvc)
 	cd win32caml ; $(MAKE) all
-endif
+
 clean::
 	cd win32caml ; $(MAKE) clean
 

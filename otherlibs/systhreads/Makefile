@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.34 2002/06/27 11:36:02 xleroy Exp $
+# $Id: Makefile,v 1.35 2003/08/21 13:52:07 xleroy Exp $
 
 include ../../config/Makefile
 
@@ -66,7 +66,7 @@ partialclean:
 	rm -f *.cm*
 
 clean: partialclean
-	rm -f libthreads*.a *.o threads.a
+	rm -f *.o *.a *.so
 	rm -f $(GENFILES)
 
 install:

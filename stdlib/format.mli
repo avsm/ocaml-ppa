@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: format.mli,v 1.61 2003/07/05 11:13:23 xleroy Exp $ *)
+(* $Id: format.mli,v 1.63 2003/09/25 10:33:52 weis Exp $ *)
 
 (** Pretty printing.
 
@@ -279,17 +279,17 @@ type tag = string;;
 
    By default, those tags do not influence line breaking calculation:
    the tag ``markers'' are not considered as part of the printing
-   material that drive line breaking (in other words, the length of
+   material that drives line breaking (in other words, the length of
    those strings is considered as zero for line breaking).
 
    Thus, tag handling is in some sense transparent to pretty-printing
-   and do not interfere with usual pretty-printing. Hence, a single
+   and does not interfere with usual pretty-printing. Hence, a single
    pretty printing routine can output both simple ``verbatim''
    material or richer decorated output depending on the treatment of
-   tags. Default behavior of the pretty printer engine is to consider
-   tags as active, so that output is decorated. Otherwise, if
-   [set_tags] is set to [false], the pretty printer engine just skips
-   tags, and the output is regular.
+   tags. By default, tags are not active, hence the output is not
+   decorated with tag information.  Once [set_tags] is set to [true],
+   the pretty printer engine honors tags and decorates the output
+   accordingly.
 
    When a tag has been opened (or closed), it is both and successively
    ``printed'' and ``marked''. Printing a tag means calling a
@@ -303,7 +303,7 @@ type tag = string;;
    marker string associated to its tag argument. Being flushed
    directly into the output device of the formatter, tag marker
    strings are not considered as part of the printing material that
-   drive line breaking (in other words, the length of the strings
+   drives line breaking (in other words, the length of the strings
    corresponding to tag markers is considered as zero for line
    breaking). In addition, advanced users may take advantage of
    the specificity of tag markers to be precisely output when the
@@ -338,7 +338,7 @@ val set_mark_tags : bool -> unit;;
     [set_mark_tags b] turns on or off the output of tag markers. *)
 val get_print_tags : unit -> bool;;
 val get_mark_tags : unit -> bool;;
-(** Return the current status of tag printing and marking. *)
+(** Return the current status of tags printing and tags marking. *)
 
 
 (** {6 Redirecting formatter output} *)

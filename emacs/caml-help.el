@@ -27,6 +27,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+(eval-and-compile
+  (if (and (boundp 'running-xemacs) running-xemacs) 
+      (require 'caml-xemacs)
+    (require 'caml-emacs)))
+
 ;; Loading or building databases.
 ;; 
 
@@ -217,7 +222,7 @@
 When call interactively, make completion over known modules."
   (interactive "P")
   (if (not (stringp arg))
-      (let ((modules (ocaml-module-alist)) module)
+      (let ((modules (ocaml-module-alist)))
         (setq arg
               (completing-read "Open module: " modules))))
   (if (and (stringp arg) (not (equal arg "")))
@@ -236,7 +241,7 @@ Otherwise if ARG is true, close all modules and reset to default. "
   (interactive "P")
   (if (= (prefix-numeric-value arg) 4)
       (setq ocaml-visible-modules 'lazy)
-    (let* ((modules (ocaml-visible-modules)) default)
+    (let* ((modules (ocaml-visible-modules)))
       (if (null modules) (error "No visible module to close"))
       (unless (stringp arg)
         (setq arg
@@ -314,7 +319,7 @@ with an optional non-nil argument.
       )))
 
 (defun caml-complete (arg)
-  "Does completion for qualified identifiers. 
+  "Does completion for OCaml identifiers qualified. 
 
 It attemps to recognize an qualified identifier Module . entry 
 around point using function \\[ocaml-qualified-identifier].
@@ -325,9 +330,8 @@ If Module is undefined, it does completion in visible modules.
 Then, if completion fails, it does completion among  all modules 
 where identifier is defined."
   (interactive "p")
-  (let* ((module-entry (ocaml-qualified-identifier))
+  (let* ((module-entry (ocaml-qualified-identifier)) (entry)
          (module) 
-         (entry (cdr module-entry))
          (beg) (end) (pattern))
     (if (car module-entry)
         (progn
@@ -360,8 +364,7 @@ where identifier is defined."
         (error "Did not find anything to complete around point")
 
       (setq pattern (buffer-substring beg end))
-      (let* ((table 'ocaml-completion)
-             (all-completions (ocaml-completion pattern module))
+      (let* ((all-completions (ocaml-completion pattern module))
              (completion
               (try-completion pattern (mapcar 'list all-completions))))
         (cond ((eq completion t))
@@ -382,7 +385,7 @@ where identifier is defined."
                       (t
                        (setq hist (mapcar 'car modules))
                        (completing-read "Module: " modules nil t
-                                        "" (cons 'hist 0)))
+                                        "" (cons hist 0)))
                       )))
                  (if (null module)
                      (error "Can't find completion for \"%s\"" pattern)
@@ -556,6 +559,7 @@ command. An entry may be an info module or a complete file name."
 
 ;; Help function. 
 
+
 (defun ocaml-goto-help (&optional module entry)
   "Searches info manual for MODULE and ENTRY in MODULE.
 If unspecified, MODULE and ENTRY are inferred from the position in the
@@ -564,7 +568,7 @@ current buffer using \\[ocaml-qualified-identifier]."
   (let ((window (selected-window))
         (info-section (assoc module (ocaml-info-alist))))
     (if info-section
-        (info-other-window (cdr info-section))
+        (caml-info-other-window (cdr info-section))
       (ocaml-visible-modules)
       (let* ((module-info
               (or (assoc module (ocaml-module-alist))
@@ -607,7 +611,7 @@ current buffer using \\[ocaml-qualified-identifier]."
     ))
 
 (defun caml-help (arg)
-  "Find help for qualified identifiers. 
+  "Find documentation for OCaml qualified identifiers. 
 
 It attemps to recognize an qualified identifier of the form
 ``Module . entry'' around point using function `ocaml-qualified-identifier'.
@@ -715,9 +719,8 @@ buffer positions."
 
 (defun ocaml-link-goto (click)
   (interactive "e")
-  (let* ((start  (event-start click))
-         (pos (posn-point start))
-         (buf (window-buffer (posn-window start)))
+  (let* ((pos (caml-event-point-start click))
+         (buf (window-buffer (caml-event-window click)))
          (window (selected-window))
          (link))
     (setq link
@@ -770,30 +773,30 @@ buffer positions."
 
   
 
-;; bindings
+;; bindings ---now in caml.el
 
-(and
- (boundp 'caml-mode-map)
- (keymapp caml-mode-map)
- (progn 
-   (define-key caml-mode-map [?\C-c?i] 'ocaml-add-path)
-   (define-key caml-mode-map [?\C-c?]] 'ocaml-close-module)
-   (define-key caml-mode-map [?\C-c?[] 'ocaml-open-module)
-   (define-key caml-mode-map [?\C-c?\C-h] 'caml-help)
-   (define-key caml-mode-map [?\C-c?\t] 'caml-complete)
-   (let ((map (lookup-key caml-mode-map [menu-bar caml])))
-     (and
-      (keymapp map)
-      (progn
-        (define-key map [separator-help] '("---"))
-        (define-key map [open] '("Open add path" . ocaml-add-path ))
-        (define-key map [close]
-          '("Close module for help" . ocaml-close-module))
-        (define-key map [open] '("Open module for help" . ocaml-open-module))
-        (define-key map [help] '("Help for identifier" . caml-help))
-        (define-key map [complete] '("Complete identifier" . caml-complete))
-        ) 
-   ))))
+; (and
+;  (boundp 'caml-mode-map)
+;  (keymapp caml-mode-map)
+;  (progn 
+;    (define-key caml-mode-map [?\C-c?i] 'ocaml-add-path)
+;    (define-key caml-mode-map [?\C-c?]] 'ocaml-close-module)
+;    (define-key caml-mode-map [?\C-c?[] 'ocaml-open-module)
+;    (define-key caml-mode-map [?\C-c?\C-h] 'caml-help)
+;    (define-key caml-mode-map [?\C-c?\t] 'caml-complete)
+;    (let ((map (lookup-key caml-mode-map [menu-bar caml])))
+;      (and
+;       (keymapp map)
+;       (progn
+;         (define-key map [separator-help] '("---"))
+;         (define-key map [open] '("Open add path" . ocaml-add-path ))
+;         (define-key map [close]
+;           '("Close module for help" . ocaml-close-module))
+;         (define-key map [open] '("Open module for help" . ocaml-open-module))
+;         (define-key map [help] '("Help for identifier" . caml-help))
+;         (define-key map [complete] '("Complete identifier" . caml-complete))
+;         ) 
+;    ))))
 
 
 (provide 'caml-help)

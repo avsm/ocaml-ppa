@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: int32.mli,v 1.12 2002/06/26 14:52:34 xleroy Exp $ *)
+(* $Id: int32.mli,v 1.13 2003/09/09 09:18:58 xleroy Exp $ *)
 
 (** 32-bit integers.
 
@@ -133,14 +133,6 @@ external of_string : string -> int32 = "int32_of_string"
 val to_string : int32 -> string
 (** Return the string representation of its argument, in signed decimal. *)
 
-external format : string -> int32 -> string = "int32_format"
-(** [Int32.format fmt n] return the string representation of the
-   32-bit integer [n] in the format specified by [fmt].
-   [fmt] is a [Printf]-style format containing exactly
-   one [%d], [%i], [%u], [%x], [%X] or [%o] conversion specification.
-   This function is deprecated; use {!Printf.sprintf} with a [%lx] format
-   instead. *)
-
 type t = int32
 (** An alias for the type of 32-bit integers. *)
 
@@ -149,3 +141,16 @@ val compare: t -> t -> int
     {!Pervasives.compare}.  Along with the type [t], this function [compare]
     allows the module [Int32] to be passed as argument to the functors
     {!Set.Make} and {!Map.Make}. *)
+
+(**/**)
+
+(** {6 Deprecated functions} *)
+
+external format : string -> int32 -> string = "int32_format"
+(** [Int32.format fmt n] return the string representation of the
+   32-bit integer [n] in the format specified by [fmt].
+   [fmt] is a [Printf]-style format consisting of exactly
+   one [%d], [%i], [%u], [%x], [%X] or [%o] conversion specification.
+   This function is deprecated; use {!Printf.sprintf} with a [%lx] format
+   instead. *)
+

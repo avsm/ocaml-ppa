@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: list.mli,v 1.42 2003/02/12 13:01:12 doligez Exp $ *)
+(* $Id: list.mli,v 1.43 2003/07/25 21:40:06 doligez Exp $ *)
 
 (** List operations.
 
@@ -273,5 +273,5 @@ val merge : ('a -> 'a -> int) -> 'a list -> 'a list -> 'a list
     sorted list containting all the elements of [l1] and [l2].
     If several elements compare equal, the elements of [l1] will be
     before the elements of [l2].
-    Not tail-recursive (sum of the lenghts of the arguments).
+    Not tail-recursive (sum of the lengths of the arguments).
 *)

@@ -9,7 +9,7 @@
 #(*                                                                     *)
 #(***********************************************************************)
 
-# $Id: Makefile,v 1.35 2003/07/11 07:26:18 guesdon Exp $
+# $Id: Makefile,v 1.43 2003/09/29 14:05:01 xleroy Exp $
 
 include ../config/Makefile
 
@@ -25,7 +25,7 @@ OCAMLLIB = $(LIBDIR)
 OCAMLBIN = $(BINDIR)
 EXTRAC_CRC = $(CAMLRUN) ../otherlibs/dynlink/extract_crc
 
-OCAMLPP=-pp 'grep -v DEBUG'
+OCAMLPP=-pp './remove_DEBUG'
 
 # For installation 
 ##############
@@ -154,8 +154,8 @@ OCAMLCMOFILES=$(OCAMLSRCDIR)/parsing/printast.cmo \
 	$(OCAMLSRCDIR)/typing/printtyp.cmo \
 	$(OCAMLSRCDIR)/typing/includecore.cmo \
 	$(OCAMLSRCDIR)/typing/typetexp.cmo \
-	$(OCAMLSRCDIR)/typing/parmatch.cmo \
 	$(OCAMLSRCDIR)/typing/typedtree.cmo \
+	$(OCAMLSRCDIR)/typing/parmatch.cmo \
 	$(OCAMLSRCDIR)/typing/stypes.cmo \
 	$(OCAMLSRCDIR)/typing/typecore.cmo \
 	$(OCAMLSRCDIR)/typing/includeclass.cmo \
@@ -277,7 +277,7 @@ odoc_see_lexer.ml: odoc_see_lexer.mll
 install: dummy
 	if test -d $(INSTALL_BINDIR); then : ; else $(MKDIR) $(INSTALL_BINDIR); fi
 	if test -d $(INSTALL_LIBDIR); then : ; else $(MKDIR) $(INSTALL_LIBDIR); fi
-	$(CP) $(OCAMLDOC) $(INSTALL_BINDIR)
+	$(CP) $(OCAMLDOC)$(EXE) $(INSTALL_BINDIR)/$(OCAMLDOC)$(EXE)
 	$(CP) ocamldoc.hva *.cmi $(GENERATORS) $(OCAMLDOC_LIBCMA) $(INSTALL_LIBDIR)
 	$(CP) $(INSTALL_MLIS) $(INSTALL_CMIS) $(INSTALL_LIBDIR)
 	if test -d $(INSTALL_MANODIR); then : ; else $(MKDIR) $(INSTALL_MANODIR); fi
@@ -289,7 +289,7 @@ installopt:
 installopt_really:
 	if test -d $(INSTALL_BINDIR); then : ; else $(MKDIR) $(INSTALL_BINDIR); fi
 	if test -d $(INSTALL_LIBDIR); then : ; else $(MKDIR) $(INSTALL_LIBDIR); fi
-	$(CP) $(OCAMLDOC_OPT) $(INSTALL_BINDIR)
+	$(CP) $(OCAMLDOC_OPT) $(INSTALL_BINDIR)/$(OCAMLDOC_OPT)$(EXE)
 	$(CP) ocamldoc.hva $(OCAMLDOC_LIBA) $(OCAMLDOC_LIBCMXA) $(INSTALL_LIBDIR)
 	$(CP) $(INSTALL_MLIS) $(INSTALL_CMIS) $(INSTALL_LIBDIR)
 
@@ -297,34 +297,34 @@ installopt_really:
 ###########
 test: dummy
 	$(MKDIR) $@ 
-	$(OCAMLDOC_RUN) -html -colorize-code -d $@ $(INCLUDES) -dump $@/ocamldoc.odoc odoc*.ml odoc*.mli
+	$(OCAMLDOC_RUN) -html -colorize-code -sort -d $@ $(INCLUDES) -dump $@/ocamldoc.odoc odoc*.ml odoc*.mli
 
 test_stdlib: dummy
 	$(MKDIR) $@ 
-	$(OCAMLDOC_RUN) -html -colorize-code -d $@ $(INCLUDES) -dump $@/stdlib.odoc ../stdlib/*.mli \
+	$(OCAMLDOC_RUN) -html -colorize-code -sort -d $@ $(INCLUDES) -dump $@/stdlib.odoc ../stdlib/*.mli \
 	../otherlibs/unix/unix.mli \
 	../otherlibs/str/str.mli
 
 test_framed: dummy
 	$(MKDIR) $@ 
-	$(OCAMLDOC_RUN) -g odoc_fhtml.cmo -colorize-code -d $@ $(INCLUDES) odoc*.ml odoc*.mli
+	$(OCAMLDOC_RUN) -g odoc_fhtml.cmo -sort -colorize-code -d $@ $(INCLUDES) odoc*.ml odoc*.mli
 
 test_latex: dummy
 	$(MKDIR) $@ 
-	$(OCAMLDOC_RUN) -latex -d $@ $(INCLUDES) odoc*.ml odoc*.mli ../stdlib/*.mli ../otherlibs/unix/unix.mli
+	$(OCAMLDOC_RUN) -latex -sort -o $@/test.tex -d $@ $(INCLUDES) odoc*.ml odoc*.mli ../stdlib/*.mli ../otherlibs/unix/unix.mli
 
 test_man: dummy
 	$(MKDIR) $@ 
-	$(OCAMLDOC_RUN) -man -d $@ $(INCLUDES) odoc*.ml odoc*.mli
+	$(OCAMLDOC_RUN) -man -sort -d $@ $(INCLUDES) odoc*.ml odoc*.mli
 
 test_texi: dummy
 	$(MKDIR) $@ 
-	$(OCAMLDOC_RUN) -texi -d $@ $(INCLUDES) odoc*.ml odoc*.mli
+	$(OCAMLDOC_RUN) -texi -sort -d $@ $(INCLUDES) odoc*.ml odoc*.mli
 
 stdlib_man/Pervasives.o: $(STDLIB_MLIS)
 	$(MKDIR) stdlib_man
 	$(OCAMLDOC_RUN) -man -d stdlib_man $(INCLUDES) \
-	-t "OCaml library" -man-mini -man-suffix 3 \
+	-t "OCaml library" -man-mini -man-suffix 3o \
 	$(STDLIB_MLIS)
 
 # backup, clean and depend :
@@ -332,7 +332,7 @@ stdlib_man/Pervasives.o: $(STDLIB_MLIS)
 
 clean:: dummy
 	@rm -f *~ \#*\#
-	@rm -f $(OCAMLDOC) $(OCAMLDOC_OPT) *.cma *.cmxa *.cmo *.cmi *.cmx *.a *.o
+	@rm -f $(OCAMLDOC)$(EXE) $(OCAMLDOC_OPT) *.cma *.cmxa *.cmo *.cmi *.cmx *.a *.o
 	@rm -f odoc_parser.output odoc_text_parser.output
 	@rm -f odoc_lexer.ml odoc_text_lexer.ml odoc_see_lexer.ml odoc_ocamlhtml.ml
 	@rm -f odoc_parser.ml odoc_parser.mli odoc_text_parser.ml odoc_text_parser.mli odoc_crc.ml

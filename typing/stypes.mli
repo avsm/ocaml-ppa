@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stypes.mli,v 1.2 2003/04/02 06:57:14 garrigue Exp $ *)
+(* $Id: stypes.mli,v 1.3 2003/07/23 16:52:41 doligez Exp $ *)
 
 (* Recording and dumping (partial) type information *)
 
@@ -26,6 +26,7 @@ type type_info =
 ;;
 
 val record : type_info -> unit;;
+val record_phrase : Location.t -> unit;;
 val dump : string -> unit;;
 
 val get_location : type_info -> Location.t;;

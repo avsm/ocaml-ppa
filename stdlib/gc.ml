@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: gc.ml,v 1.16 2002/02/05 17:11:32 doligez Exp $ *)
+(* $Id: gc.ml,v 1.17 2003/08/07 14:17:59 doligez Exp $ *)
 
 type stat = {
   minor_words : float;
@@ -90,10 +90,9 @@ let rec call_alarm arec =
 ;;
 
 let create_alarm f =
-  let a = ref true in
   let arec = { active = ref true; f = f } in
   finalise call_alarm arec;
-  a
+  arec.active
 ;;
 
 let delete_alarm a = a := false;;

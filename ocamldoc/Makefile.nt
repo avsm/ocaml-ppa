@@ -9,7 +9,7 @@
 #(*                                                                     *)
 #(***********************************************************************)
 
-# $Id: Makefile.nt,v 1.18 2003/07/08 13:52:21 guesdon Exp $
+# $Id: Makefile.nt,v 1.19 2003/08/29 12:15:41 xleroy Exp $
 
 include ../config/Makefile
 
@@ -316,7 +316,7 @@ installopt:
 installopt_really:
 	$(MKDIR) -p $(INSTALL_BINDIR)
 	$(MKDIR) -p $(INSTALL_LIBDIR)
-	$(CP) $(OCAMLDOC_OPT) $(INSTALL_BINDIR)/$(OCAMLDOC_OPT)
+	$(CP) $(OCAMLDOC_OPT) $(INSTALL_BINDIR)/$(OCAMLDOC_OPT).exe
 	$(CP) ocamldoc.hva $(OCAMLDOC_LIBA) $(OCAMLDOC_LIBCMXA) $(INSTALL_LIBDIR)
 	$(CP) $(INSTALL_MLIS) $(INSTALL_CMIS) $(INSTALL_LIBDIR)
 

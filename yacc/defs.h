@@ -12,7 +12,7 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: defs.h,v 1.19 2003/07/17 14:51:43 xleroy Exp $ */
+/* $Id: defs.h,v 1.20 2003/09/03 13:26:10 doligez Exp $ */
 
 #include <assert.h>
 #include <ctype.h>
@@ -226,6 +226,7 @@ extern char lflag;
 extern char rflag;
 extern char tflag;
 extern char vflag;
+extern char qflag;
 extern char sflag;
 extern char big_endian;
 
