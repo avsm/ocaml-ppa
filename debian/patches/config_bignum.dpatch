@@ -21,29 +21,11 @@ exit 0
 @DPATCH@
 diff -ur ocaml-3.07.2a.orig/configure ocaml-3.07.2a/configure
 --- ocaml-3.07.2a.orig/configure	2003-12-17 00:59:21.000000000 +0100
-+++ ocaml-3.07.2a/configure	2003-12-17 00:59:00.000000000 +0100
-@@ -1021,30 +1021,21 @@
++++ ocaml-3.07.2a/configure	2003-12-17 12:50:10.000000000 +0100
+@@ -1021,6 +1021,25 @@
  # Determine the target architecture for the "num" library
  
  case "$host" in
--  mips-*-ultrix*) bignum_arch=mips;;
--  alpha*-*-osf*) bignum_arch=alpha;;
--  i[3456]86-*-linux*)
--    case `sh ./runtest elf.c` in
--      elf) bignum_arch=x86;;
--        *) bignum_arch=C;;
--    esac;;
--  i[3456]86-*-beos) bignum_arch=x86;;
--  i[3456]86-*-*bsd*)
--    case `sh ./runtest elf.c` in
--      elf) bignum_arch=x86;;
--        *) bignum_arch=C;;
--    esac;;
--  sparc*-*-sunos*) bignum_arch=supersparc;;
--  sparc*-*-solaris*) bignum_arch=supersparc-solaris;;
--  sparc*-*-*bsd*) bignum_arch=sparc;;
--  m68k-*-sunos*) bignum_arch=68K;;
--  *) bignum_arch=C
 +  alpha*-*-*)    bng_arch=alpha; bng_asm_level=1;;
 +  i[3456]86-*-*) bng_arch=ia32
 +                 if `sh ./trycompile ia32sse2.c`
@@ -55,23 +37,24 @@ diff -ur ocaml-3.07.2a.orig/configure ocaml-3.07.2a/configure
 +  sparc*-*-*)    bng_arch=sparc; bng_asm_level=1;;
 +  x86_64-*-*)    bng_arch=amd64; bng_asm_level=1;;
 +  *)             bng_arch=generic; bng_asm_level=0;;
- esac
- 
--# Some systems (e.g. Solaris) don't have an assembler!
--if sh ./searchpath as; then :; else bignum_arch=C; fi
--
--echo "BIGNUM_ARCH=$bignum_arch" >> Makefile
++esac
++
 +echo "BNG_ARCH=$bng_arch" >> Makefile
 +echo "BNG_ASM_LEVEL=$bng_asm_level" >> Makefile
- 
- # Determine if the POSIX threads library is supported
- 
-@@ -1524,7 +1515,7 @@
++
++# Determine the target architecture for the "num" library
++
++case "$host" in
+   mips-*-ultrix*) bignum_arch=mips;;
+   alpha*-*-osf*) bignum_arch=alpha;;
+   i[3456]86-*-linux*)
+@@ -1524,7 +1543,8 @@
  echo "        $otherlibraries"
  
  echo "Configuration for the \"num\" library:"
 -echo "        target architecture ...... $bignum_arch"
-+echo "        target architecture ...... $bng_arch (asm level $bng_asm_level)"
++echo "        (new) target architecture ...... $bng_arch (asm level $bng_asm_level)"
++echo "        (old) target architecture ...... $bignum_arch"
  
  if test "$x11_include" != "not found" && test "$x11_lib" != "not found"; then
  echo "Configuration for the \"graph\" library:"

@@ -1,3 +1,12 @@
+ocaml (3.07.2a-2) unstable; urgency=low
+
+  * Now install the config/Makefile so that nat/bignum can be built as an
+    external package.
+  * Modified configure so that the Makefile variables for both nat/bignum
+    implementations are written in the config/Makefile.
+
+ -- Sven Luther <luther@debian.org>  Wed, 17 Dec 2003 12:52:28 +0100
+
 ocaml (3.07.2a-1) unstable; urgency=low
 
   * New upstream .2 release, including the ocaml-3.07-pl2 patch.
