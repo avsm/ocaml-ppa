@@ -1,6 +1,8 @@
 ocaml (3.07-5) unstable; urgency=low
 
-  * Somehow the objinfo patch forgot to install objinfo, fixed now.
+  * Somehow the objinfo patch forgot to install objinfo, fixed now. Also
+    renamed objinfo to ocamlobjinfo, to be more in line with the other ocaml
+    executables.
   * Test for emacsen flavor early one and abort if unsupported.
     (Closes: #213862)
 

@@ -1,5 +1,5 @@
 #! /bin/sh -e 
-## objinfo.dpatch by <luther@debian.org>
+## ocamlobjinfo.dpatch by <luther@debian.org>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
 ## DP: Makefiles, configure scripts and other build stuff adapted for
@@ -19,21 +19,21 @@ esac
 
 exit 0
 @DPATCH@
-diff -urN ocaml-3.07.orig/man/objinfo.m ocaml-3.07/man/objinfo.m
---- ocaml-3.07.orig/man/objinfo.m	1970-01-01 01:00:00.000000000 +0100
-+++ ocaml-3.07/man/objinfo.m	2003-10-03 17:00:19.000000000 +0200
+diff -urN ocaml-3.07.orig/man/ocamlobjinfo.m ocaml-3.07/man/ocamlobjinfo.m
+--- ocaml-3.07.orig/man/ocamlobjinfo.m	1970-01-01 01:00:00.000000000 +0100
++++ ocaml-3.07/man/ocamlobjinfo.m	2003-10-03 17:00:19.000000000 +0200
 @@ -0,0 +1,40 @@
 +.TH OCAML-SOAP 1 "October 26, 2002"
 +.SH NAME
-+objinfo \- dump an OCaml compilation unit description
++ocamlobjinfo \- dump an OCaml compilation unit description
 +.SH SYNOPSIS
-+.B objinfo
++.B ocamlobjinfo
 +.RI file\ ...
 +.SH DESCRIPTION
 +Dump information contained in OCaml compilation units.
 +Currently it works on .cmi, .cmo and .cma files.
 +.sp 2
-+.B objinfo
++.B ocamlobjinfo
 +is able to show information regarding:
 +.br
 +.IP
@@ -72,7 +72,7 @@ diff -urN ocaml-3.07.orig/man/ocamlc.m ocaml-3.07/man/ocamlc.m
  .BR ocaml (1),
 -.BR ocamlrun (1).
 +.BR ocamlrun (1),
-+.BR objinfo (1).
++.BR ocamlobjinfo (1).
  .br
  .I The Objective Caml user's manual,
  chapter "Batch compilation".
@@ -85,7 +85,7 @@ diff -urN ocaml-3.07.orig/man/ocamlopt.m ocaml-3.07/man/ocamlopt.m
  .SH SEE ALSO
 -.BR ocamlc (1).
 +.BR ocamlc (1),
-+.BR objinfo (1).
++.BR ocamlobjinfo (1).
  .br
  .I The Objective Caml user's manual,
  chapter "Native-code compilation".
@@ -106,7 +106,7 @@ diff -urN ocaml-3.07.orig/tools/Makefile ocaml-3.07/tools/Makefile
  	cp ocamlprof $(BINDIR)/ocamlprof$(EXE)
  	cp ocamlcp $(BINDIR)/ocamlcp$(EXE)
  	cp profiling.cmi profiling.cmo $(LIBDIR)
-+	cp objinfo $(BINDIR)/objinfo$(EXE)
++	cp objinfo $(BINDIR)/ocamlobjinfo$(EXE)
  
  clean::
  	rm -f ocamlprof ocamlcp
