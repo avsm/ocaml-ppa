@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typemod.ml,v 1.63 2003/07/01 13:05:43 xleroy Exp $ *)
+(* $Id: typemod.ml,v 1.65 2003/08/20 14:35:14 xleroy Exp $ *)
 
 (* Type-checking of the module language *)
 
@@ -659,7 +659,10 @@ and type_structure anchor env sstr =
         (Tstr_include (modl, bound_value_identifiers sg) :: str_rem,
          sg @ sig_rem,
          final_env)
-  in type_struct env sstr
+  in
+  if !Clflags.save_types
+  then List.iter (function {pstr_loc = l} -> Stypes.record_phrase l) sstr;
+  type_struct env sstr
 
 let type_module = type_module None
 let type_structure = type_structure None
@@ -766,6 +769,7 @@ let package_units objfiles cmifile modulename =
          (modname, Env.read_signature modname (pref ^ ".cmi")))
       objfiles in
   (* Compute signature of packaged unit *)
+  Ident.reinit();
   let sg = package_signatures Subst.identity units in
   (* See if explicit interface is provided *)
   let mlifile =

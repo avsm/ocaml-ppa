@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parmatch.mli,v 1.8 2002/05/24 14:34:37 maranget Exp $ *)
+(* $Id: parmatch.mli,v 1.9 2003/08/18 08:26:18 garrigue Exp $ *)
 
 (* Detection of partial matches and unused match cases. *)
 open Types
@@ -44,8 +44,8 @@ val pat_of_constr : pattern -> constructor_description -> pattern
 val complete_constrs :
     pattern -> constructor_tag list -> constructor_description  list
 
-val check_partial:
-        Env.t -> Location.t -> (pattern * expression) list -> partial
+val pressure_variants: Env.t -> pattern list -> unit
+val check_partial: Location.t -> (pattern * expression) list -> partial
 val check_unused: Env.t -> (pattern * expression) list -> unit
 
 

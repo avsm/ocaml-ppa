@@ -1,10 +1,11 @@
-# $Id: Makefile,v 1.10 2003/06/12 11:39:04 doligez Exp $
+# $Id: Makefile,v 1.15 2003/08/29 15:38:28 doligez Exp $
 
 include ../config/Makefile
 
 # Files to install
 FILES=	caml-font.el caml-hilit.el caml.el camldebug.el \
-	inf-caml.el caml-compat.el caml-help.el
+	inf-caml.el caml-compat.el caml-help.el caml-types.el \
+	caml-xemacs.el caml-emacs.el
 
 # Where to install. If empty, automatically determined.
 #EMACSDIR=
@@ -18,6 +19,8 @@ SCRIPTDIR = $(BINDIR)
 # Command for byte-compiling the files
 COMPILECMD=(progn \
               (setq load-path (cons "." load-path)) \
+              (byte-compile-file "caml-xemacs.el") \
+	      (byte-compile-file "caml-emacs.el") \
               (byte-compile-file "caml.el") \
               (byte-compile-file "inf-caml.el") \
               (byte-compile-file "caml-help.el") \
@@ -37,11 +40,17 @@ install:
           $(MAKE) simple-install; \
         fi
 
+# install the .el files, but do not compile them.
+install-el:
+	$(MAKE) NOCOMPILE=true install
+
 simple-install:
 	@echo "Installing in $(EMACSDIR)..."
 	if test -d $(EMACSDIR); then : ; else mkdir -p $(EMACSDIR); fi
 	cp $(FILES) $(EMACSDIR)
-	cd $(EMACSDIR); $(EMACS) --batch --eval '$(COMPILECMD)'
+	if [ -z "$(NOCOMPILE)" ]; then \
+	  cd $(EMACSDIR); $(EMACS) --batch --eval '$(COMPILECMD)'; \
+	fi
 
 ocamltags:	ocamltags.in
 	sed -e 's:@EMACS@:$(EMACS):' ocamltags.in >ocamltags

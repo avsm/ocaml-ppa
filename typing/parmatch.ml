@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parmatch.ml,v 1.55 2003/07/02 09:14:33 xleroy Exp $ *)
+(* $Id: parmatch.ml,v 1.61 2003/08/18 08:26:18 garrigue Exp $ *)
 
 (* Detection of partial matches and unused match cases. *)
 
@@ -33,6 +33,8 @@ let rec omegas i =
   if i <= 0 then [] else omega :: omegas (i-1)
 
 let omega_list l = List.map (fun _ -> omega) l
+
+let zero = make_pat (Tpat_constant (Const_int 0)) Ctype.none Env.empty
 
 (***********************)
 (* Compatibility check *)
@@ -531,13 +533,51 @@ let filter_all pat0 pss =
       pss)
     pss
 
+(* Variant related functions *)
+
+let rec set_last a = function
+    [] -> []
+  | [_] -> [a]
+  | x::l -> x :: set_last a l
+
+(* mark constructor lines for failure when they are incomplete *)
+let rec mark_partial = function
+    ({pat_desc = Tpat_alias(p,_)}::ps)::pss -> 
+      mark_partial ((p::ps)::pss)
+  | ({pat_desc = Tpat_or(p1,p2,_)}::ps)::pss ->
+      mark_partial ((p1::ps)::(p2::ps)::pss)
+  | ({pat_desc = (Tpat_any | Tpat_var(_))} :: _ as ps) :: pss ->
+      ps :: mark_partial pss
+  | ps::pss  ->
+      (set_last zero ps) :: mark_partial pss
+  | [] -> []
+
+let close_variant env row =
+  let row = Btype.row_repr row in
+  let nm =
+    List.fold_left
+      (fun nm (tag,f) ->
+        match Btype.row_field_repr f with
+        | Reither(_, _, false, e) ->
+            (* m=false means that this tag is not explicitly matched *)
+            Btype.set_row_field e Rabsent;
+            None
+        | Rabsent | Reither (_, _, true, _) | Rpresent _ -> nm)
+      row.row_name row.row_fields in
+  if not row.row_closed || nm != row.row_name then begin
+    (* this unification cannot fail *)
+    Ctype.unify env row.row_more
+      (Btype.newgenty
+         (Tvariant {row with row_fields = []; row_more = Btype.newgenvar();
+                    row_closed = true; row_name = nm}))
+  end
 
 (*
   Check whether the first column of env makes up a complete signature or
   not.
 *)      
 
-let full_match tdefs force env =  match env with
+let full_match closing env =  match env with
 | ({pat_desc = Tpat_construct ({cstr_tag=Cstr_exception _},_)},_)::_ ->
     false
 | ({pat_desc = Tpat_construct(c,_)},_) :: _ ->
@@ -550,30 +590,17 @@ let full_match tdefs force env =  match env with
         env
     in
     let row = Btype.row_repr row in
-    if force && not row.row_fixed then begin
-      (* force=true, we are called from check_partial, and must close *)
-      let (ok, nm) =
-        List.fold_left
-          (fun (ok,nm) (tag,f) ->
-            match Btype.row_field_repr f with
-              Rabsent -> (ok, nm)
-            | Reither(_, _, false, e) ->
-                (* m=false means that this tag is not explicitly matched *)
-                Btype.set_row_field e Rabsent;
-                (ok, None)
-            | Reither (_, _, true, _)
-                (* m=true, do not discard matched tags, rather warn *)
-            | Rpresent _ ->
-                (ok && List.mem tag fields, nm))
-          (true, row.row_name) row.row_fields in
-      if not row.row_closed || nm != row.row_name then
-        (* this unification cannot fail *)
-        Ctype.unify tdefs row.row_more
-          (Btype.newgenty
-             (Tvariant {row with row_fields = []; row_more = Btype.newgenvar();
-                        row_closed = true; row_name = nm}));
-      ok
-    end else
+    if closing && not row.row_fixed then
+      (* closing=true, we are considering the variant as closed *)
+      List.for_all
+        (fun (tag,f) ->
+          match Btype.row_field_repr f with
+            Rabsent | Reither(_, _, false, _) -> true
+          | Reither (_, _, true, _)
+              (* m=true, do not discard matched tags, rather warn *)
+          | Rpresent _ -> List.mem tag fields)
+        row.row_fields
+    else
       row.row_closed &&
       List.for_all
         (fun (tag,f) ->
@@ -705,7 +732,9 @@ let build_other env =  match env with
           | Reither (c, _, _, _) -> make_other_pat tag c :: others
           | Rpresent arg -> make_other_pat tag (arg = None) :: others)
         [] row.row_fields
-    with [] -> assert false
+    with
+      [] ->
+        make_other_pat "AnyExtraTag" true
     | pat::other_pats ->
         List.fold_left
           (fun p_res pat ->
@@ -831,7 +860,7 @@ let rec satisfiable pss qs = match pss with
           (* first column of pss is made of variables only *)
         | [] -> satisfiable (filter_extra pss) qs
         | constrs  ->
-            (not (full_match Env.empty false constrs) &&
+            (not (full_match false constrs) &&
              satisfiable (filter_extra pss) qs) ||
              List.exists
                (fun (p,pss) -> satisfiable pss (simple_match_args p omega @ qs))
@@ -903,61 +932,107 @@ and try_many_extra some qs = function
   supplies an example of a matching value.
 
   This function should be called for exhaustiveness check only.
-  It impacts variant typing
 *)
 
 type 'a result = 
   | Rnone           (* No matching value *)
   | Rsome of 'a     (* This matching value *)
 
-(* boolean argument ``variants'' is unused at present *)
-let rec try_many variants f = function
+let rec try_many f = function
   | [] -> Rnone
   | x::rest ->
       begin match f x with
-      | Rnone -> try_many variants f rest
-      | r ->
-          if variants then ignore (try_many variants f rest);
-          r
+      | Rnone -> try_many f rest
+      | r -> r
       end
 
-let rec exhaust variants tdefs pss n = match pss with
+let rec exhaust pss n = match pss with
 | []    ->  Rsome (omegas n)
 | []::_ ->  Rnone
 | pss   ->
-    let q0 = discr_pat omega pss in     
+    let q0 = discr_pat omega pss in
     begin match filter_all q0 pss with
           (* first column of pss is made of variables only *)
-      [] ->
-        begin match exhaust variants tdefs (filter_extra pss) (n-1) with
+    | [] ->
+        begin match exhaust (filter_extra pss) (n-1) with
         | Rsome r -> Rsome (q0::r)
         | r -> r
       end
     | constrs ->          
         let try_non_omega (p,pss) =
           match
-            exhaust variants tdefs pss
-              (List.length (simple_match_args p omega) + n - 1)
+            exhaust pss (List.length (simple_match_args p omega) + n - 1)
           with
           | Rsome r -> Rsome (set_args p r)
           | r       -> r in
-        if full_match tdefs true constrs
-        then try_many variants try_non_omega constrs
+        if full_match false constrs
+        then try_many try_non_omega constrs
         else
-          match exhaust variants tdefs (filter_extra pss) (n-1) with
-          | Rnone ->   try_many variants try_non_omega constrs
+          (*
+             D = filter_extra pss is the default matrix
+             as it is included in pss, one can avoid
+             recursive calls on specialized matrices,
+             Essentially :
+             * D exhaustive => pss exhaustive
+             * D non-exhaustive => we have a non-filtered value
+          *)
+          let r =  exhaust (filter_extra pss) (n-1) in
+          match r with
+          | Rnone -> Rnone
           | Rsome r ->
-              (* try all constructors anyway, for variant typing ! *)
-              (* Note: it may impact dramatically on cost *)
-              if variants then
-                ignore (try_many variants try_non_omega constrs) ;
               try
                 Rsome (build_other constrs::r)
               with
       (* cannot occur, since constructors don't make a full signature *)
               | Empty -> fatal_error "Parmatch.exhaust"
-
     end
+
+(*
+   Another exhaustiveness check, enforcing variant typing.
+   Note that it does not check exact exhaustiveness, but whether a
+   matching could be made exhaustive by closing all variant types.
+   When this is true of all other columns, the current column is left
+   open (even if it means that the whole matching is not exhaustive as
+   a result).
+   When this is false for the matrix minus the current column, and the
+   current column is composed of variant tags, we close the variant
+   (even if it doesn't help in making the matching exhaustive).
+*)
+
+let rec pressure_variants tdefs = function
+  | []    -> false
+  | []::_ -> true
+  | pss   ->
+      let q0 = discr_pat omega pss in
+      begin match filter_all q0 pss with
+        [] -> pressure_variants tdefs (filter_extra pss)
+      | constrs ->   
+          let rec try_non_omega = function
+              (p,pss) :: rem ->
+                let ok = pressure_variants tdefs pss in
+                try_non_omega rem && ok
+            | [] -> true
+          in
+          if full_match (tdefs=None) constrs then
+            try_non_omega constrs
+          else if tdefs = None then
+            pressure_variants None (filter_extra pss)
+          else
+            let full = full_match true constrs in
+            let ok =
+              if full then try_non_omega constrs
+              else try_non_omega (filter_all q0 (mark_partial pss))
+            in
+            begin match constrs, tdefs with
+              ({pat_desc=Tpat_variant(_,_,row)},_):: _, Some env ->
+                let row = Btype.row_repr row in
+                if row.row_fixed
+                || pressure_variants None (filter_extra pss) then ()
+                else close_variant env row
+            | _ -> ()
+            end;
+            ok
+      end
 
 
 (* Yet another satisfiable fonction *)
@@ -1338,24 +1413,17 @@ and lubs ps qs = match ps,qs with
       
 (******************************)
 (* Entry points               *)
+(*    - Variant closing       *)
 (*    - Partial match         *)
 (*    - Unused match case     *)
 (******************************)
 
+(* Apply pressure to variants *)
 
-(*
-  A small cvs commit/commit discussion....
-  JG: 
-  Exhaustiveness of matching MUST be checked, even
-  when the warning is excluded explicitely by user.
-  LM: 
-  Why such a strange thing ? 
-  JG:
-  Because the typing of variants depends on it.
-  LM:    
-  Ok, note that by contrast, unused clause check still can be avoided at
-  user request.
-  *)
+let pressure_variants tdefs patl =
+  let pss = List.map (fun p -> [p;omega]) patl in
+  ignore (pressure_variants (Some tdefs) pss)
+
 (*
   Build up a working pattern matrix.
    - Forget about guarded patterns
@@ -1438,23 +1506,8 @@ let check_partial_all v casel =
   with
   | NoGuard -> None
 
-(* look for variants *)
-let rec look_variant p = match p.pat_desc with
-  | Tpat_variant (_,_,_) -> true
-  | Tpat_any | Tpat_var _ | Tpat_constant _ -> false
-  | Tpat_alias (p,_)  -> look_variant p
-  | Tpat_or (p1,p2,_) -> look_variant p1 || look_variant p2
-  | Tpat_construct (_,ps) | Tpat_tuple ps | Tpat_array ps -> look_variants ps
-  | Tpat_record lps -> look_variants (List.map snd lps)
-      
-and look_variants = function
-  | [] -> false
-  | q::rem -> look_variant q || look_variants rem
-
-
-let check_partial tdefs loc casel =
-  let variant_inside = List.exists (fun (p,_) -> look_variant p) casel in
-  let pss = initial_matrix casel in    
+let check_partial loc casel =
+  let pss = initial_matrix casel in
   let pss = get_mins le_pats pss in
   match pss with
   | [] ->
@@ -1475,7 +1528,7 @@ let check_partial tdefs loc casel =
       end ;
       Partial
   | ps::_  ->      
-      begin match exhaust variant_inside tdefs pss (List.length ps) with
+      begin match exhaust pss (List.length ps) with
       | Rnone -> Total
       | Rsome [v] ->
           let errmsg =

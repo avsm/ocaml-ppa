@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typedtree.mli,v 1.32 2003/06/19 15:53:53 xleroy Exp $ *)
+(* $Id: typedtree.mli,v 1.33 2003/08/12 03:11:38 garrigue Exp $ *)
 
 (* Abstract syntax tree after typing *)
 
@@ -150,6 +150,9 @@ and module_coercion =
   | Tcoerce_primitive of Primitive.description
 
 (* Auxiliary functions over the a.s.t. *)
+
+val iter_pattern_desc : (pattern -> unit) -> pattern_desc -> unit
+val map_pattern_desc : (pattern -> pattern) -> pattern_desc -> pattern_desc
 
 val let_bound_idents: (pattern * expression) list -> Ident.t list
 val rev_let_bound_idents: (pattern * expression) list -> Ident.t list

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: nativeint.mli,v 1.14 2002/06/26 14:52:34 xleroy Exp $ *)
+(* $Id: nativeint.mli,v 1.15 2003/09/09 09:18:58 xleroy Exp $ *)
 
 (** Processor-native integers.
 
@@ -162,14 +162,6 @@ external of_string : string -> nativeint = "nativeint_of_string"
 val to_string : nativeint -> string
 (** Return the string representation of its argument, in decimal. *)
 
-external format : string -> nativeint -> string = "nativeint_format"
-(** [Nativeint.format fmt n] return the string representation of the
-   native integer [n] in the format specified by [fmt].
-   [fmt] is a [Printf]-style format containing exactly
-   one [%d], [%i], [%u], [%x], [%X] or [%o] conversion specification.
-   This function is deprecated; use {!Printf.sprintf} with a [%nx] format
-   instead. *)
-
 type t = nativeint
 (** An alias for the type of native integers. *)
 
@@ -178,4 +170,16 @@ val compare: t -> t -> int
     {!Pervasives.compare}.  Along with the type [t], this function [compare]
     allows the module [Nativeint] to be passed as argument to the functors
     {!Set.Make} and {!Map.Make}. *)
+
+(**/**)
+
+(** {6 Deprecated functions} *)
+
+external format : string -> nativeint -> string = "nativeint_format"
+(** [Nativeint.format fmt n] return the string representation of the
+   native integer [n] in the format specified by [fmt].
+   [fmt] is a [Printf]-style format consisting of exactly
+   one [%d], [%i], [%u], [%x], [%X] or [%o] conversion specification.
+   This function is deprecated; use {!Printf.sprintf} with a [%nx] format
+   instead. *)
 

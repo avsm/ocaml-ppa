@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.17 2003/07/14 17:59:28 mauny Exp $
+# $Id: Makefile,v 1.19 2003/08/29 12:15:14 xleroy Exp $
 
 include ../config/Makefile
 
@@ -37,7 +37,7 @@ camlp4.cmxa: $(CAMLP4_XOBJS)
 	$(OCAMLOPT) $(LINKFLAGS) $(CAMLP4_XOBJS) -a -o camlp4.cmxa
 
 clean::
-	rm -f *.cm* *.pp[io] *.o *.bak .*.bak *.out *.opt
+	rm -f *.cm* *.pp[io] *.$(O) *.$(A) *.bak .*.bak *.out *.opt
 	rm -f $(CAMLP4)
 
 depend:
@@ -64,7 +64,7 @@ install:
 	cp mLast.cmi quotation.cmi ast2pt.cmi pcaml.cmi spretty.cmi "$(LIBDIR)/camlp4/."
 	cp camlp4.cma $(LIBDIR)/camlp4/.
 	if [ -f camlp4.cmxa ]; \
-	  then cp camlp4.cmxa camlp4.a $(LIBDIR)/camlp4/.; \
+	  then cp camlp4.cmxa camlp4.$(A) $(LIBDIR)/camlp4/.; \
 	  else : ; \
 	fi
 

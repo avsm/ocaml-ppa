@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexer.mll,v 1.65 2003/04/25 12:27:30 xleroy Exp $ *)
+(* $Id: lexer.mll,v 1.66 2003/08/25 13:15:47 doligez Exp $ *)
 
 (* The lexer definition *)
 
@@ -68,7 +68,7 @@ let keyword_table =
     "of", OF;
     "open", OPEN;
     "or", OR;
-    "parser", PARSER;
+(*  "parser", PARSER; *)
     "private", PRIVATE;
     "rec", REC;
     "sig", SIG;

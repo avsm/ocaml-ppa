@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml,v 1.5 2000/07/16 02:57:31 xleroy Exp $ *)
+(* $Id: selection.ml,v 1.6 2003/08/05 13:39:03 xleroy Exp $ *)
 
 (* Instruction selection for the IA64 processor *)
 
@@ -161,7 +161,10 @@ method emit_stores env data regs_addr =
         self#insert (Iop(Ispecific(Istoreincr 16))) [| t2; r  |] [| t2 |];
         backlog := None in
   List.iter
-    (fun exp -> Array.iter do_store (self#emit_expr env exp))
+    (fun exp ->
+      match self#emit_expr env exp with
+        None -> assert false
+      | Some regs -> Array.iter do_store regs)
     data;
   (* Store the backlog if any *)
   begin match !backlog with

@@ -13,7 +13,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: configure,v 1.195 2003/07/22 07:41:31 xleroy Exp $
+# $Id: configure,v 1.202 2003/09/25 08:17:13 xleroy Exp $
 
 configure_options="$*"
 prefix=/usr/local
@@ -30,6 +30,7 @@ dllib=''
 x11_include_dir=''
 x11_lib_dir=''
 tk_wanted=yes
+pthread_wanted=yes
 tk_defs=''
 tk_libs=''
 tk_x11=yes
@@ -43,6 +44,9 @@ gcc_warnings="-Wall -Wno-unused"
 # Try to turn internationalization off, can cause config.guess to malfunction!
 unset LANG
 unset LC_ALL LC_CTYPE LC_COLLATE LC_MESSAGES LC_MONETARY LC_NUMERIC LC_TIME 
+
+# Turn off some MacOS X debugging stuff, same reason
+unset RC_TRACE_ARCHIVES RC_TRACE_DYLIBS RC_TRACE_PREBINDING_DISABLED
 
 # Parse command-line arguments
 
@@ -81,6 +85,8 @@ while : ; do
         x11_lib_dir=$2; shift;;
     -with-pthread*|--with-pthread*)
         ;; # Ignored for backward compatibility
+    -no-pthread*|--no-pthread*)
+        pthread_wanted=no;;
     -no-tk|--no-tk)
         tk_wanted=no;;
     -tkdefs*|--tkdefs*)
@@ -543,6 +549,7 @@ case "$host" in
   i[3456]86-*-cygwin*)          arch=i386; system=cygwin;;
   mips-*-irix6*)                arch=mips; system=irix;;
   hppa1.1-*-hpux*)              arch=hppa; system=hpux;;
+  hppa2.0*-*-hpux*)             arch=hppa; system=hpux;;
   hppa1.1-*-nextstep*)          arch=hppa; system=nextstep;;
   rs6000-*-aix*)                arch=power; model=rs6000; system=aix;;
   powerpc-*-aix*)               arch=power; model=ppc; system=aix;;
@@ -1003,11 +1010,11 @@ fi
 # Determine if system stack overflows can be detected
 
 case "$arch,$system" in
-  i386,linux_elf|i386,bsd_elf)
-      echo "System stack overflow can be detected."
-      echo "#define HAS_STACK_OVERFLOW_DETECTION" >> s.h;;
+  i386,linux_elf)
+    echo "System stack overflow can be detected."
+    echo "#define HAS_STACK_OVERFLOW_DETECTION" >> s.h;;
   *)
-      echo "Cannot detect system stack overflow.";;
+    echo "Cannot detect system stack overflow.";;
 esac
 
 # Determine the target architecture for the "num" library
@@ -1047,6 +1054,7 @@ case "$host" in
   *)             pthread_link="-lpthread";;
 esac
 
+if test "$pthread_wanted" = "yes"; then
 if ./hasgot -i pthread.h $pthread_link pthread_self; then
   echo "POSIX threads library supported."
   otherlibraries="$otherlibraries systhreads"
@@ -1063,8 +1071,13 @@ if ./hasgot -i pthread.h $pthread_link pthread_self; then
   esac
   echo "Options for linking with POSIX threads: $pthread_link"
   echo "PTHREAD_LINK=$pthread_link" >> Makefile
+  if sh ./hasgot $pthread_link sigwait; then
+    echo "sigwait() found"
+    echo "#define HAS_SIGWAIT" >> s.h
+  fi
 else
   echo "POSIX threads not found."
+fi
 fi
 
 # Determine if the bytecode thread library is supported
@@ -1182,6 +1195,7 @@ for dir in \
 do
   if test -f $dir/libX11.a || \
      test -f $dir/libX11.so || \
+     test -f $dir/libX11.dll.a || \
      test -f $dir/libX11.sa; then
     if test $dir = /usr/lib; then
       x11_link="-lX11"
@@ -1228,6 +1242,8 @@ for dir in /usr/include /usr/include/db1 /usr/include/gdbm; do
       dbm_link="-ldb1"
     elif sh ./hasgot -lgdbm dbm_open; then
       dbm_link="-lgdbm"
+    elif sh ./hasgot -lgdbm_compat -lgdbm dbm_open; then
+      dbm_link="-lgdbm_compat -lgdbm" 
     fi
     break
   fi
@@ -1357,6 +1373,9 @@ if test $has_tk = true; then
     tk_libs="$tk_libs -ltk$tkmaj$tkmin -ltcl$tclmaj$tclmin $dllib"
 # elif sh ./hasgot $tk_libs -ltcl $tkauxlibs Tcl_DoOneEvent; then
 #   tk_libs="$tk_libs -ltk -ltcl"
+  elif sh ./hasgot -L/sw/lib $tk_libs -ltcl$tclmaj.$tclmin $tkauxlibs \
+                   Tcl_DoOneEvent
+  then tk_libs="-L/sw/lib -ltk$tkmaj.$tkmin -ltcl$tclmaj.$tclmin $dllib"
   else
     echo "Tcl library not found."
     has_tk=false

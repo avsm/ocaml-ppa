@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: str.mli,v 1.20 2002/12/09 14:05:18 xleroy Exp $ *)
+(* $Id: str.mli,v 1.21 2003/09/23 15:41:44 doligez Exp $ *)
 
 (** Regular expressions and high-level string processing *)
 
@@ -123,14 +123,18 @@ val group_beginning : int -> int
    of the substring that was matched by the [n]th group of
    the regular expression. 
    @raise Not_found if the [n]th group of the regular expression
-   was not matched. *)
+   was not matched.
+   @raise Invalid_argument if there are fewer than [n] groups in
+   the regular expression. *)
 
 val group_end : int -> int
 (** [group_end n] returns
    the position of the character following the last character of
    substring that was matched by the [n]th group of the regular expression. 
    @raise Not_found if the [n]th group of the regular expression
-   was not matched. *)
+   was not matched.
+   @raise Invalid_argument if there are fewer than [n] groups in
+   the regular expression. *)
 
 
 (** {6 Replacement} *)

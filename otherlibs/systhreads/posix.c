@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: posix.c,v 1.46 2003/06/16 12:31:13 xleroy Exp $ */
+/* $Id: posix.c,v 1.47 2003/07/29 15:35:12 xleroy Exp $ */
 
 /* Thread interface for POSIX 1003.1c threads */
 
@@ -779,6 +779,7 @@ int caml_threadstatus_wait (value wrapper)
 
 value caml_wait_signal(value sigs) /* ML */
 {
+#ifdef HAS_SIGWAIT
   sigset_t set;
   int retcode, signo;
 
@@ -793,6 +794,10 @@ value caml_wait_signal(value sigs) /* ML */
   leave_blocking_section();
   caml_pthread_check(retcode, "Thread.wait_signal");
   return Val_int(signo);
+#else
+  invalid_argument("Thread.wait_signal not implemented");
+  return Val_int(0);		/* not reached */
+#endif
 }
 
 /* Error report */

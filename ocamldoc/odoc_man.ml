@@ -257,9 +257,18 @@ class man =
 
     (** Groff string to display a [Types.type_expr list].*)
     method man_of_type_expr_list m_name sep l =
-      let s = Odoc_misc.string_of_type_list sep l in
+      let s = Odoc_str.string_of_type_list sep l in
       let s2 = Str.global_replace (Str.regexp "\n") "\n.B " s in
       "\n.B "^(self#relative_idents m_name s2)^"\n"
+
+    (** Groff string to display the parameters of a type.*)
+    method man_of_type_expr_param_list m_name t =
+      match t.ty_parameters with
+        [] -> ""
+      | l ->
+	  let s = Odoc_str.string_of_type_param_list t in
+	  let s2 = Str.global_replace (Str.regexp "\n") "\n.B " s in
+	  "\n.B "^(self#relative_idents m_name s2)^"\n"
 
     (** Groff string to display a [Types.module_type]. *)
     method man_of_module_type m_name t =
@@ -306,12 +315,7 @@ class man =
       Odoc_info.reset_type_names () ;
       let father = Name.father t.ty_name in
       ".I type "^
-      (match t.ty_parameters with
-        [] -> ""
-      | tp :: [] -> (Odoc_misc.string_of_type_expr tp)
-      | l ->
-          (self#man_of_type_expr_list father ", " l)
-      )^
+      (self#man_of_type_expr_param_list father t)^
       (match t.ty_parameters with [] -> "" | _ -> ".I ")^(Name.simple t.ty_name)^" \n"^
       (match t.ty_manifest with None -> "" | Some typ -> "= "^(self#man_of_type_expr father typ))^
       (
@@ -455,7 +459,7 @@ class man =
       (
        match c.cl_type_parameters with
          [] -> ()
-       | l -> p buf "[%s.I] " (Odoc_misc.string_of_type_list ", " l)
+       | l -> p buf "[%s] " (Odoc_str.string_of_type_list ", " l)
       );
       p buf "%s : %s" 
         (Name.simple c.cl_name)
@@ -473,7 +477,7 @@ class man =
       (
        match ct.clt_type_parameters with
         [] -> ()
-      | l -> p buf "[%s.I ] " (Odoc_misc.string_of_type_list ", " l)
+      | l -> p buf "[%s] " (Odoc_str.string_of_type_list ", " l)
       );
       p buf "%s = %s" 
         (Name.simple ct.clt_name)
@@ -541,7 +545,7 @@ class man =
 
 	let abstract = 
 	  match cl.cl_info with
-	    None | Some { i_desc = None } -> ""
+	    None | Some { i_desc = None } -> "no description"
 	  | Some { i_desc = Some t } ->
 	      let s = Odoc_info.string_of_text (Odoc_info.first_sentence_of_text t) in
 	      self#remove_newlines s
@@ -603,7 +607,7 @@ class man =
 
 	let abstract = 
 	  match ct.clt_info with
-	    None | Some { i_desc = None } -> ""
+	    None | Some { i_desc = None } -> "no description"
 	  | Some { i_desc = Some t } ->
 	      let s = Odoc_info.string_of_text (Odoc_info.first_sentence_of_text t) in
 	      self#remove_newlines s
@@ -661,7 +665,7 @@ class man =
 
 	let abstract = 
 	  match mt.mt_info with
-	    None | Some { i_desc = None } -> ""
+	    None | Some { i_desc = None } -> "no description"
 	  | Some { i_desc = Some t } ->
 	      let s = Odoc_info.string_of_text (Odoc_info.first_sentence_of_text t) in
 	      self#remove_newlines s
@@ -740,7 +744,7 @@ class man =
 
 	let abstract = 
 	  match m.m_info with
-	    None | Some { i_desc = None } -> ""
+	    None | Some { i_desc = None } -> "no description"
 	  | Some { i_desc = Some t } ->
 	      let s = Odoc_info.string_of_text (Odoc_info.first_sentence_of_text t) in
 	      self#remove_newlines s
@@ -868,7 +872,7 @@ class man =
            "OCamldoc "^
            "\""^(match !Args.title with Some t -> t | None -> "")^"\"\n"^
 	   ".SH NAME\n"^
-	   name^" \\- \n\n"
+	   name^" \\- all "^name^" elements\n\n"
 	  );
 
         let f ele =

@@ -8,7 +8,7 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (***********************************************************************)
 
-(* $Id: odoc_texi.ml,v 1.12 2003/07/04 09:30:55 guesdon Exp $ *)
+(* $Id: odoc_texi.ml,v 1.13 2003/09/05 15:40:12 guesdon Exp $ *)
 
 (** Generation of Texinfo documentation. *)
 
@@ -591,11 +591,19 @@ class texi =
       self#texi_of_text t
 
 
-    method string_of_type_parameter = function
+    method string_of_type_parameters t = 
+      let f (tp, co, cn) =
+	Printf.sprintf "%s%s"
+	  (Odoc_info.string_of_variance t (co, cn))
+	  (Odoc_info.string_of_type_expr tp)
+      in
+      match t.ty_parameters with
       | [] -> ""
-      | [ tp ] -> (Odoc_info.string_of_type_expr tp) ^ " "
-      | l -> "(" ^ (String.concat ", "
-                      (List.map Odoc_info.string_of_type_expr l)) ^ ") "
+      | [ (tp, co, cn) ] -> 
+	  (f (tp, co, cn))^" "
+      | l -> 
+	  Printf.sprintf "(%s) "
+	    (String.concat ", " (List.map f l))
 
     method string_of_type_args = function
       | [] -> ""
@@ -607,7 +615,7 @@ class texi =
       let t = 
         [ self#fixedblock ( 
           [ Newline ; minus ; Raw "type " ;
-            Raw (self#string_of_type_parameter ty.ty_parameters) ;
+            Raw (self#string_of_type_parameters ty) ;
             Raw (Name.simple ty.ty_name) ] @
           ( match ty.ty_manifest with
           | None -> [] 

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: toploop.ml,v 1.81 2003/06/30 15:31:06 xleroy Exp $ *)
+(* $Id: toploop.ml,v 1.83 2003/08/21 13:55:30 xleroy Exp $ *)
 
 (* The interactive toplevel loop *)
 
@@ -336,14 +336,6 @@ let refill_lexbuf buffer len =
     | Exit -> !i
   end
 
-(* Discard data left in lexer buffer. *)
-
-let empty_lexbuf lb =
-  lb.lex_curr_pos <- 0;
-  lb.lex_abs_pos <- 0;
-  lb.lex_curr_p <- {lb.lex_curr_p with pos_cnum = 0};
-  lb.lex_buffer_len <- 0
-
 (* Toplevel initialization. Performed here instead of at the
    beginning of loop() so that user code linked in with ocamlmktop
    can call directives from Topdirs. *)
@@ -358,7 +350,11 @@ let _ =
     crc_intfs
 
 let load_ocamlinit ppf =
+  let home_init = 
+    try Filename.concat (Sys.getenv "HOME") ".ocamlinit"
+    with Not_found -> ".ocamlinit" in
   if Sys.file_exists ".ocamlinit" then ignore(use_silently ppf ".ocamlinit")
+  else if Sys.file_exists home_init then ignore(use_silently ppf home_init)
 
 let set_paths () =
   (* Add whatever -I options have been specified on the command line,
@@ -386,7 +382,7 @@ let loop ppf =
   while true do
     let snap = Btype.snapshot () in
     try
-      empty_lexbuf lb;
+      Lexing.flush_input lb;
       Location.reset();
       first_line := true;
       let phr = try !parse_toplevel_phrase lb with Exit -> raise PPerror in

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pervasives.mli,v 1.92 2003/07/05 11:13:23 xleroy Exp $ *)
+(* $Id: pervasives.mli,v 1.93 2003/09/04 12:44:48 doligez Exp $ *)
 
 (** The initially opened module.
 
@@ -157,7 +157,7 @@ external ( mod ) : int -> int -> int = "%modint"
 (** Integer remainder.  If [y] is not zero, the result
    of [x mod y] satisfies the following properties:
    [x = (x / y) * y + x mod y] and
-   [abs(x mod y) < abs(y)].
+   [abs(x mod y) <= abs(y)-1].
    If [y = 0], [x mod y] raises [Division_by_zero].
    Notice that [x mod y] is negative if and only if [x < 0]. *)
 

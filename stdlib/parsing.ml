@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parsing.ml,v 1.16 2002/11/01 17:06:46 doligez Exp $ *)
+(* $Id: parsing.ml,v 1.17 2003/08/01 23:28:58 doligez Exp $ *)
 
 (* The parsing engine *)
 
@@ -151,6 +151,7 @@ let yyparse tables start lexer lexbuf =
   and init_errflag = env.errflag in
   env.stackbase <- env.sp + 1;
   env.curr_char <- start;
+  env.symb_end <- lexbuf.lex_curr_p;
   try
     loop Start (Obj.repr ())
   with exn ->
