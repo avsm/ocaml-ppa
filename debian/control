@@ -7,10 +7,10 @@ Standards-Version: 3.6.1
 
 Package: ocaml-nox
 Architecture: any
-Depends: libncurses5-dev, ocaml-base-nox (=${Source-Version}), ocaml-base-nox-3.08, ocaml-interp-3.08
+Depends: libncurses5-dev, ocaml-base-nox (=${Source-Version}), ocaml-base-nox-3.08.3, ocaml-interp-3.08.3
 Suggests: ocaml-doc, libgdbm-dev, emacsen
 Recommends: ledit, file
-Provides: ocaml-nox-3.08 ${F:BestProvides}, libnums-ocaml-dev
+Provides: ocaml-nox-3.08.3 ${F:BestProvides}, libnums-ocaml-dev
 Replaces: camlp4, ocaml (<< 3.07.2a-3), libnums-ocaml-dev
 Conflicts: camlp4, camlidl (<< 1.04), ocaml (<< 3.07.2a-3), libnums-ocaml-dev
 Description: ML language implementation with a class-based object system
@@ -38,9 +38,9 @@ Description: ML language implementation with a class-based object system
 
 Package: ocaml
 Architecture: any
-Depends: ocaml-base (= ${Source-Version}), ocaml-base-3.08, ocaml-nox-3.08
+Depends: ocaml-base (= ${Source-Version}), ocaml-base-3.08.3, ocaml-nox-3.08.3
 Suggests: xlibs-dev, tcl8.4-dev, tk8.4-dev, 
-Provides: ocaml-3.08
+Provides: ocaml-3.08.3
 Description: ML language implementation with a class-based object system
  Objective Caml is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
@@ -66,7 +66,7 @@ Description: ML language implementation with a class-based object system
 
 Package: ocaml-base-nox
 Architecture: any
-Provides: ocaml-base-nox-3.08, libnums-ocaml
+Provides: ocaml-base-nox-3.08.3, libnums-ocaml
 Depends: ${shlibs:Depends}
 Replaces: ocaml-base (<< 3.07.2a-3), libnums-ocaml
 Conflicts: ocaml (<< 3.04-2), ocaml-base (<< 3.07.2a-3), libnums-ocaml
@@ -81,8 +81,8 @@ Description: Runtime system for ocaml bytecode executables
 
 Package: ocaml-base
 Architecture: any
-Depends: ${shlibs:Depends}, ocaml-base-nox-3.08
-Provides: ocaml-base-3.08
+Depends: ${shlibs:Depends}, ocaml-base-nox-3.08.3
+Provides: ocaml-base-3.08.3
 Description: Runtime system for ocaml bytecode executables
  Objective Caml is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
@@ -95,7 +95,7 @@ Description: Runtime system for ocaml bytecode executables
 
 Package: ocaml-native-compilers
 Architecture: alpha amd64 arm hppa i386 ia64 powerpc sparc
-Depends: ocaml-nox (= ${Source-Version}), ocaml-nox-3.08, ${shlibs:Depends}
+Depends: ocaml-nox (= ${Source-Version}), ocaml-nox-3.08.3, ${shlibs:Depends}
 Provides: ocaml-best-compilers
 Description: Native code compilers of the ocaml suite (the .opt ones)
  Objective Caml is an implementation of the ML language, based on
@@ -110,7 +110,7 @@ Description: Native code compilers of the ocaml suite (the .opt ones)
 
 Package: ocaml-source
 Architecture: all
-Provides: ocaml-source-3.08
+Provides: ocaml-source-3.08.3
 Description: Sources for Objective Caml
  Objective Caml is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
@@ -122,8 +122,8 @@ Description: Sources for Objective Caml
 
 Package: ocaml-interp
 Architecture: any
-Provides: ocaml-interp-3.08
-Depends: ocaml-base-nox-3.08
+Provides: ocaml-interp-3.08.3
+Depends: ocaml-base-nox-3.08.3
 Replaces: ocaml (<< 3.07.2a-3)
 Conflicts: ocaml (<< 3.07.2a-3)
 Description: Ocaml interpreter and standard libraries
@@ -136,8 +136,8 @@ Description: Ocaml interpreter and standard libraries
 
 Package: ocaml-compiler-libs
 Architecture: any
-Provides: ocaml-compiler-libs-3.08
-Depends: ocaml-nox-3.08
+Provides: ocaml-compiler-libs-3.08.3
+Depends: ocaml-nox-3.08.3
 Description: Ocaml interpreter and standard libraries
  Objective Caml is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system

@@ -8,7 +8,7 @@
 # We want to use dpatch.
 include /usr/share/dpatch/dpatch.make
 PACKAGE = ocaml
-VERSION = 3.08
+VERSION = 3.08.3
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
@@ -175,11 +175,11 @@ install-arch:
 	install -m 644 utils/*.mli utils/*.cmi utils/*.cmo		\
 		typing/*.mli typing/*.cmi typing/*.cmo			\
 		parsing/*.mli parsing/*.cmi parsing/*.cmo		\
-		$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/3.08/compiler-libs
+		$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/3.08.3/compiler-libs
 	if [ -e opt-built-stamp ]; then					\
 		install -m 644 utils/*.cmx utils/*.o typing/*.cmx	\
 			typing/*.o parsing/*.cmx parsing/*.o		\
-			$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/3.08/compiler-libs; \
+			$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/3.08.3/compiler-libs; \
 	fi
 
 
