@@ -4,7 +4,8 @@ ocaml (3.07.2a-3) unstable; urgency=low
   * Split out all of the tk/xlibs stuff from ocaml into ocaml-nox and from
     ocaml-base into ocaml-base-nox
   * Added a bunch of internal modules from the compiler into a new binary:
-    compiler-libs
+    compiler-libs.  Also added notes in REAMDE.D and copyright that these
+    are QPL, not LGPL like everything else.
   * Changed 'Objectif' to 'Objective' in ocaml-source short description
   * Cleaned up debian/rules.  It now uses stamp files a little more
     intelligently so that it doesn't rebuild the whole thing every time
