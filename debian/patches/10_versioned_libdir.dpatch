@@ -1,0 +1,56 @@
+#! /bin/sh -e 
+## 10_versionedlibdir.dpatch by  <luther@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Makefiles, configure scripts and other build stuff adapted for
+## DP: debian package creation
+
+if [ $# -ne 1 ]; then
+    echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+    exit 1
+fi
+case "$1" in
+    -patch) patch -f --no-backup-if-mismatch -p1 < $0;;
+    -unpatch) patch -f --no-backup-if-mismatch -R -p1 < $0;;	
+    *)
+	echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+	exit 1;;
+esac
+
+exit 0
+@DPATCH@
+diff -ur ocaml-3.07beta1.orig/camlp4/config/configure_batch ocaml-3.07beta1/camlp4/config/configure_batch
+--- ocaml-3.07beta1.orig/camlp4/config/configure_batch	2002-07-23 16:11:49.000000000 +0200
++++ ocaml-3.07beta1/camlp4/config/configure_batch	2003-08-06 13:06:09.000000000 +0200
+@@ -92,13 +92,13 @@
+    *) echo "BINDIR=$bindir" >> Makefile.cnf;;
+ esac
+ case "$libdir" in
+-  "") echo 'LIBDIR=$(PREFIX)/lib/camlp4' >> Makefile.cnf
+-      libdir="$prefix/lib/camlp4";;
++  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml/3.07/camlp4' >> Makefile.cnf
++      libdir="$prefix/lib/ocaml/3.07/camlp4";;
+    *) echo "LIBDIR=$libdir" >> Makefile.cnf;;
+ esac
+ case "$mandir" in
+-  "") echo 'MANDIR=$(PREFIX)/man/man1' >> Makefile.cnf
+-      mandir="$prefix/man/man1";;
++  "") echo 'MANDIR=$(PREFIX)/share/man/man1' >> Makefile.cnf
++      mandir="$prefix/share/man/man1";;
+    *) echo "MANDIR=$mandir" >> Makefile.cnf;;
+ esac
+ 
+diff -ur ocaml-3.07beta1.orig/configure ocaml-3.07beta1/configure
+--- ocaml-3.07beta1.orig/configure	2003-07-22 09:41:31.000000000 +0200
++++ ocaml-3.07beta1/configure	2003-08-06 13:04:38.000000000 +0200
+@@ -143,8 +143,8 @@
+    *) echo "BINDIR=$bindir" >> Makefile;;
+ esac
+ case "$libdir" in
+-  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml' >> Makefile
+-      libdir="$prefix/lib/ocaml";;
++  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml/3.07' >> Makefile
++      libdir="$prefix/lib/ocaml/3.07";;
+    *) echo "LIBDIR=$libdir" >> Makefile;;
+ esac
+ echo 'STUBLIBDIR=$(LIBDIR)/stublibs' >> Makefile

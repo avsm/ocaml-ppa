@@ -1,0 +1,101 @@
+#! /bin/sh -e 
+## 16_objinfo.dpatch by <luther@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Makefiles, configure scripts and other build stuff adapted for
+## DP: debian package creation
+
+if [ $# -ne 1 ]; then
+    echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+    exit 1
+fi
+case "$1" in
+    -patch) patch -f --no-backup-if-mismatch -p1 < $0;;
+    -unpatch) patch -f --no-backup-if-mismatch -R -p1 < $0;;	
+    *)
+	echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+	exit 1;;
+esac
+
+exit 0
+@DPATCH@
+diff -ur ocaml-3.07beta1.orig/tools/Makefile ocaml-3.07beta1/tools/Makefile
+--- ocaml-3.07beta1.orig/tools/Makefile	2003-04-02 03:17:58.000000000 +0200
++++ ocaml-3.07beta1/tools/Makefile	2003-08-06 13:15:53.000000000 +0200
+@@ -23,7 +23,8 @@
+ COMPFLAGS= -warn-error A $(INCLUDES)
+ LINKFLAGS=$(INCLUDES)
+ 
+-all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels
++all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels \
++	objinfo
+ 
+ opt.opt: ocamldep.opt
+ 
+--- ocaml-3.07-3.06.99.2003.07.05.orig/man/ocamlc.m
++++ ocaml-3.07-3.06.99.2003.07.05/man/ocamlc.m
+@@ -241,7 +241,8 @@
+ 
+ .SH SEE ALSO
+ .BR ocaml (1),
+-.BR ocamlrun (1).
++.BR ocamlrun (1),
++.BR objinfo (1).
+ .br
+ .I The Objective Caml user's manual,
+ chapter "Batch compilation".
+--- ocaml-3.07-3.06.99.2003.07.05.orig/man/ocamlopt.m
++++ ocaml-3.07-3.06.99.2003.07.05/man/ocamlopt.m
+@@ -224,7 +224,8 @@
+ array or string outside of its bounds.
+ 
+ .SH SEE ALSO
+-.BR ocamlc (1).
++.BR ocamlc (1),
++.BR objinfo (1).
+ .br
+ .I The Objective Caml user's manual,
+ chapter "Native-code compilation".
+--- ocaml-3.07-3.06.99.2003.07.05.orig/man/objinfo.m
++++ ocaml-3.07-3.06.99.2003.07.05/man/objinfo.m
+@@ -0,0 +1,40 @@
++.TH OCAML-SOAP 1 "October 26, 2002"
++.SH NAME
++objinfo \- dump an OCaml compilation unit description
++.SH SYNOPSIS
++.B objinfo
++.RI file\ ...
++.SH DESCRIPTION
++Dump information contained in OCaml compilation units.
++Currently it works on .cmi, .cmo and .cma files.
++.sp 2
++.B objinfo
++is able to show information regarding:
++.br
++.IP
++module names
++.sp 2
++unit name
++.sp 2
++declared primitives
++.sp 2
++imported interfaces
++.sp 2
++md5sums of imported interfaces
++.sp 2
++forced custom mode
++.sp 2
++extra C libraries needed
++.sp 2
++extra C flags needed
++.sp 2
++use of unsafe features
++.PP
++depending on its invocation on .cmi, .cmo or .cma arguments.
++.SH SEE ALSO
++.BR ocamlc (1),
++.BR ocamlopt (1)
++.br
++.SH AUTHOR
++This manual page was written by Stefano Zacchiroli <zack@debian.org>,
++for the Debian GNU/Linux system (but may be used by others).

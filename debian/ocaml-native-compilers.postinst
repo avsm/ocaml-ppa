@@ -1,0 +1,9 @@
+#!/bin/sh
+ln -sf /usr/share/man/man1/ocamlc.1.gz /usr/share/man/man1/ocamlc.opt.1.gz
+ln -sf /usr/share/man/man1/ocamlopt.1.gz /usr/share/man/man1/ocamlopt.opt.1.gz
+ln -sf /usr/share/man/man1/ocamllex.1.gz /usr/share/man/man1/ocamllex.opt.1.gz
+ln -sf /usr/share/man/man1/camlp4r.1.gz /usr/share/man/man1/camlp4r.opt.1.gz
+ln -sf /usr/share/man/man1/camlp4o.1.gz /usr/share/man/man1/camlp4o.opt.1.gz
+
+#DEBHELPER#
+

@@ -1,0 +1,101 @@
+#! /bin/sh -e 
+## 14_clean.dpatch by <luther@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Makefiles, configure scripts and other build stuff adapted for
+## DP: debian package creation
+
+if [ $# -ne 1 ]; then
+    echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+    exit 1
+fi
+case "$1" in
+    -patch) patch -f --no-backup-if-mismatch -p1 < $0;;
+    -unpatch) patch -f --no-backup-if-mismatch -R -p1 < $0;;	
+    *)
+	echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+	exit 1;;
+esac
+
+exit 0
+@DPATCH@
+diff -ur ocaml-3.07beta1.orig/camlp4/camlp4/Makefile ocaml-3.07beta1/camlp4/camlp4/Makefile
+--- ocaml-3.07beta1.orig/camlp4/camlp4/Makefile	2003-07-14 19:59:28.000000000 +0200
++++ ocaml-3.07beta1/camlp4/camlp4/Makefile	2003-08-06 13:10:30.000000000 +0200
+@@ -39,6 +39,7 @@
+ clean::
+ 	rm -f *.cm* *.pp[io] *.o *.bak .*.bak *.out *.opt
+ 	rm -f $(CAMLP4)
++	rm -f camlp4.a
+ 
+ depend:
+ 	cp .depend .depend.bak
+Seulement dans ocaml-3.07beta1/debian/patches: 10_versionedlibdir.dpatch
+diff -ur ocaml-3.07beta1.orig/otherlibs/labltk/camltk/Makefile ocaml-3.07beta1/otherlibs/labltk/camltk/Makefile
+--- ocaml-3.07beta1.orig/otherlibs/labltk/camltk/Makefile	2002-04-26 15:57:38.000000000 +0200
++++ ocaml-3.07beta1/otherlibs/labltk/camltk/Makefile	2003-08-06 13:14:02.000000000 +0200
+@@ -19,6 +19,7 @@
+ 
+ clean:
+ 	$(MAKE) -f Makefile.gen clean
++	-rm -f .depend
+ 
+ install: $(CAMLTKOBJS)
+ 	if test -d $(INSTALLDIR); then : ; else mkdir $(INSTALLDIR); fi
+diff -ur ocaml-3.07beta1.orig/otherlibs/labltk/labltk/Makefile ocaml-3.07beta1/otherlibs/labltk/labltk/Makefile
+--- ocaml-3.07beta1.orig/otherlibs/labltk/labltk/Makefile	2002-04-26 15:57:39.000000000 +0200
++++ ocaml-3.07beta1/otherlibs/labltk/labltk/Makefile	2003-08-06 13:13:51.000000000 +0200
+@@ -27,6 +27,7 @@
+ 
+ clean:
+ 	$(MAKE) -f Makefile.gen clean
++	-rm -f .depend
+ 
+ .SUFFIXES :
+ .SUFFIXES : .mli .ml .cmi .cmx .cmo .mlp
+diff -ur ocaml-3.07beta1.orig/otherlibs/labltk/Makefile ocaml-3.07beta1/otherlibs/labltk/Makefile
+--- ocaml-3.07beta1.orig/otherlibs/labltk/Makefile	2002-05-16 17:23:05.000000000 +0200
++++ ocaml-3.07beta1/otherlibs/labltk/Makefile	2003-08-06 13:13:21.000000000 +0200
+@@ -3,7 +3,7 @@
+ SUBDIRS=compiler support lib jpf frx tkanim examples_labltk \
+ 	camltk labltk examples_camltk browser
+ 
+-all:
++all: backup
+ 	cd support; $(MAKE)
+ 	cd compiler; $(MAKE)
+ 	cd labltk; $(MAKE) -f Makefile.gen
+@@ -16,7 +16,7 @@
+ 	cd tkanim; $(MAKE)
+ 	cd browser; $(MAKE)
+ 
+-allopt:
++allopt: backup
+ 	cd support; $(MAKE) opt
+ 	cd labltk; $(MAKE) -f Makefile.gen
+ 	cd labltk; $(MAKE) opt
+@@ -71,5 +71,13 @@
+ 	for d in $(SUBDIRS); do \
+ 	    cd $$d; $(MAKE) -f Makefile clean; cd ..; \
+ 	done
++	-mv README.labltk README
++	-mv labltk/.depend.original labltk/.depend
++	-mv camltk/.depend.original camltk/.depend
++
++backup:
++	-mv README README.labltk
++	-cp labltk/.depend labltk/.depend.original
++	-cp camltk/.depend camltk/.depend.original
+ 
+ depend:
+diff -ur ocaml-3.07beta1.orig/otherlibs/systhreads/Makefile ocaml-3.07beta1/otherlibs/systhreads/Makefile
+--- ocaml-3.07beta1.orig/otherlibs/systhreads/Makefile	2002-06-27 13:36:02.000000000 +0200
++++ ocaml-3.07beta1/otherlibs/systhreads/Makefile	2003-08-06 13:15:24.000000000 +0200
+@@ -68,6 +68,7 @@
+ clean: partialclean
+ 	rm -f libthreads*.a *.o threads.a
+ 	rm -f $(GENFILES)
++	rm -f dllthreads.so
+ 
+ install:
+ 	if test -f dllthreads.so; then cp dllthreads.so $(STUBLIBDIR)/dllthreads.so; fi

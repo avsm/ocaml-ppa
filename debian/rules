@@ -1,0 +1,198 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+#
+# Modified to make a template file for a multi-binary package with separated
+# build-arch and build-indep targets  by Bill Allombert 2001
+
+# We want to use dpatch.
+include /usr/share/dpatch/dpatch.make
+PACKAGE = ocaml
+VERSION = 3.07
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+config.status: configure
+	dh_testdir
+	# Add here commands to configure the package.
+	./configure --with-pthread -prefix /usr				\
+		-mandir /usr/share/man					\
+		-tkdefs "-I/usr/include/tcl8.4"				\
+		-tklibs "-L/usr/lib -ltk8.4 -ltcl8.4"
+	sed -e "s%MANDIR=.*$$%MANDIR=\$$(PREFIX)/share/man%g"      	\
+		config/Makefile >config/Makefile.debian
+	mv config/Makefile.debian config/Makefile
+	if test -z "`grep "OTHERLIBRARIES.*labltk" config/Makefile`"; then\
+		echo "Error, labltk library was not built";		\
+		echo "Check your tcl/tk development packages";		\
+		echo "Aborting.";					\
+		exit 1;							\
+	fi
+
+
+#Architecture 
+build: build-arch build-indep
+
+build-arch: build-arch-stamp
+build-arch-stamp: patch-stamp config.status
+	
+	# Add here commands to compile the arch part of the package.
+	if test ! -d boot.debian; then 					\
+		cp -xa boot boot.debian;				\
+	fi
+	$(MAKE) world bootstrap
+	if test -z `grep "ARCH=none" config/Makefile`;then		\
+		echo "Building native compilers";			\
+		$(MAKE) opt opt.opt;					\
+		touch opt-built-stamp;					\
+	fi
+
+build-indep: build-indep-stamp
+build-indep-stamp: patch-stamp config.status
+	
+	# Add here commands to compile the indep part of the package.
+	#$(MAKE) doc
+
+clean: unpatch
+	dh_testdir
+	dh_testroot
+	rm -f build-arch-stamp build-indep-stamp config-stamp
+
+	# Add here commands to clean up after the build process.
+	-$(MAKE) clean
+	if test -d boot.debian; then	\
+		rm -rf boot;		\
+		mv boot.debian boot;	\
+	fi
+	-$(MAKE) -C emacs clean
+	
+	dh_clean
+
+install: install-indep install-arch
+install-indep:
+	dh_testdir
+	dh_testroot
+	dh_clean -k -i
+	dh_installdirs -i
+	
+	# Add here commands to install the indep part of the package into
+	# debian/<package>-doc.
+	for i in `cat debian/ocaml-source.files`; do				\
+		install -m 644 -D $$i						\
+		debian/ocaml-source/usr/src/ocaml/ocaml-$(VERSION)/$$i;		\
+	done
+	install -m 644 debian/ocaml-source.override \
+		$(CURDIR)/debian/ocaml-source/usr/share/lintian/overrides/ocaml-source
+	
+	dh_install -i
+
+install-arch:
+	dh_testdir
+	dh_testroot
+	dh_clean -k -a
+	dh_installdirs -a
+
+	# Add here commands to install the arch part of the package into 
+	# debian/tmp.
+	#$(MAKE) install prefix=$(CURDIR)/debian/ocaml/usr
+
+	# Let's install ocaml first.
+	$(MAKE) install PREFIX=$(CURDIR)/debian/ocaml/usr
+	$(MAKE) -C emacs EMACSDIR=$(CURDIR)/debian/ocaml/usr/share/emacs/site-lisp/ocaml simple-install
+	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml/usr/bin install-ocamltags
+	install -m 644 debian/JoeCaml.xpm \
+		$(CURDIR)/debian/ocaml/usr/X11R6/include/X11/pixmaps
+	install -m 644 debian/ocaml.override \
+		$(CURDIR)/debian/ocaml/usr/share/lintian/overrides/ocaml
+
+	# Then move the ocaml-base package.
+	dh_movefiles -pocaml-base --sourcedir=debian/ocaml
+	install -m 644 debian/ld.conf \
+		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(VERSION)
+	#install -m 644 debian/ocaml-base.override \
+		$(CURDIR)/debian/ocaml-base/usr/share/lintian/overrides/ocaml-base
+
+	# The ocaml-native-compilers, if available.
+	if [ -e opt-built-stamp ]; then					\
+		dh_movefiles -pocaml-native-compilers			\
+			--sourcedir=debian/ocaml;			\
+		install -m 644 debian/ocaml-native-compilers.override	\
+			$(CURDIR)/debian/ocaml-native-compilers/usr/share/lintian/overrides/ocaml-native-compilers; \
+	fi
+
+	dh_install -a
+
+# Must not depend on anything. This is to be called by
+# binary-arch/binary-multi
+# in another 'make' thread.
+binary-common:
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs Changes
+	dh_installdocs
+	dh_installexamples
+#	dh_installmenu
+#	dh_installdebconf	
+#	dh_installlogrotate	
+	dh_installemacsen
+#	dh_installpam
+#	dh_installmime
+#	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress 
+	dh_fixperms
+#	dh_perl
+#	dh_python
+	dh_makeshlibs
+	dh_installdeb
+
+# Build architecture independant packages using the common target.
+binary-indep: build-indep install-indep
+	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+	dh_gencontrol -i
+	dh_md5sums -i
+	dh_builddeb -i
+
+# Build architecture dependant packages using the common target.
+binary-arch: build-arch install-arch
+	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
+	if [ ! -e opt-built-stamp ]; then			\
+	  dh_gencontrol -pocaml					\
+		-u-VF:BestProvides=" ,ocaml-best-compilers";	\
+	else 							\
+	  dh_gencontrol -pocaml					\
+	  	-u-VF:BestProvides="";				\
+	  dh_gencontrol -pocaml-native-compilers;		\
+	fi
+	dh_gencontrol -pocaml-base;				\
+	dh_gencontrol -pocaml-source;				\
+	dh_md5sums -a 
+	dh_builddeb -a
+
+binary: binary-arch binary-indep
+.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch 

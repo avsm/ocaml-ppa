@@ -1,0 +1,47 @@
+ocaml for Debian
+----------------
+
+  WARNING !!!
+
+  If you installed this package, and all of a sudden your bytecode program
+  stopped working, then you need to upgrade your ocaml library packages (the
+  libfoo-ocaml ones) to packages rebuilt using ocaml (>= 3.06-13). Normally
+  you should not have been able to upgrade ocaml to 3.06-13 or later if such
+  libraries are still installed on your system, but Bug#170825 in dpkg allowed
+  you to upgrade ocaml without checking that the virtual dependencies are
+  still provided. 
+
+  1) The ocaml package has been split into different binary packages :
+
+  o ocaml-base : contains the rutime stuff (ocamlrun + dlls)
+  o ocaml : contains the full ocaml suite
+  o ocaml-native-compilers : contains the native built part of the ocaml suite
+    (ocamlc.opt, ocamlopt.opt, ocamllex.opt, camlp4o.opt and camlp4r.opt)
+  o ocaml-source : contains the full ocaml source for the (few) package which
+    need them at build time or for personal use (it should _not_ be used to
+    build ocam litself).
+
+  2) The caml include files are found under /usr/lib/ocaml/<ocaml_version>/caml.
+  A symlink is provided from /usr/include/caml for convenience. If
+  /usr/include/caml was previously a directory, for whatever reason, a warning
+  will be isued and the file moved to /usr/include/caml.bad. This can be
+  safely erased later on.
+
+  3) User installed stuff should not go under /usr/lib/ocaml/<ocaml_version>,
+  but rather under /usr/local/lib/ocaml/<ocaml_version>. 
+  I will take no responsability for people who break this rule and mess things
+  up.
+  
+  4) Starting from ocaml 3.05, ocaml now puts all dll.so files into a common
+  stublibs directory, so the ocaml-ldconf tool for handling the ld.conf
+  file is not needed anymore, but we will still keep it aroung until all
+  libraries are ported. ocaml-ldconf is now declared deprecated, and will
+  be removed in the near future, probably at the time of the ocaml 3.07
+  release, and outputs a warning in this sense when a package still using
+  it get installed.
+  Notice that user installed dll.so files should go into
+  /usr/local/lib/ocaml/<ocaml_version>/stublibs which is searched before
+  /usr/lib/ocaml/<ocaml_version>/stublibs.
+  The older method of using ocaml-ldconf is obsolet now.
+
+ -- Sven Luther <luther@lambda.u-strasbg.fr>, Sat, 14 Dec 2002 22:27:22 +0100

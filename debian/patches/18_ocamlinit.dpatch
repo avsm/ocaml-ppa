@@ -1,0 +1,51 @@
+#! /bin/sh -e
+## 18_ocamlinit.dpatch by <luther@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: if no .ocamlinit exists in the current working directory, try
+## DP: to load the one in the user home directory, if any, before giving
+## DP: up
+
+if [ $# -ne 1 ]; then
+    echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+    exit 1
+fi
+case "$1" in
+    -patch) patch -f --no-backup-if-mismatch -p1 < $0;;
+    -unpatch) patch -f --no-backup-if-mismatch -R -p1 < $0;;
+    *)
+        echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+        exit 1;;
+esac
+
+exit 0
+@DPATCH@
+--- ocaml-3.07-3.06.99.2003.07.05.orig/toplevel/toploop.ml
++++ ocaml-3.07-3.06.99.2003.07.05/toplevel/toploop.ml
+@@ -358,7 +358,25 @@
+     crc_intfs
+ 
+ let load_ocamlinit ppf =
+-  if Sys.file_exists ".ocamlinit" then ignore(use_silently ppf ".ocamlinit")
++  let homedir =
++    try Some (Sys.getenv "HOME")
++    with Not_found -> None
++  in
++  let initfile =
++    if Sys.file_exists ".ocamlinit" then
++      Some ".ocamlinit"
++    else
++      (match homedir with
++      | Some d ->
++          if Sys.file_exists (d ^ "/.ocamlinit") then
++            Some (d ^ "/.ocamlinit")
++          else
++            None
++      | None -> None)
++  in
++  match initfile with
++  | Some f -> ignore(use_silently ppf f)
++  | None -> ()
+ 
+ let set_paths () =
+   (* Add whatever -I options have been specified on the command line,
