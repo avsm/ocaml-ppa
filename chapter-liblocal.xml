@@ -56,11 +56,12 @@
      </varlistentry>
      <varlistentry>
       <term>&ocamldoc; generated documentation ( <filename>*.odoc</filename> )</term>
-      <listitem>/usr/local/share/ocamldoc-base</filename></listitem>
+      <listitem><filename>/usr/local/share/ocamldoc-base</filename></listitem>
      </varlistentry>
      <varlistentry>
       <term>&camlp4; related files ( <filename>*.cm[ao]</filename> )</term>
-      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/ and subdirectory</filename>
+      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/</filename> and
+        <filename>subdirectory</filename></listitem>
      </varlistentry>
      </variablelist>
     </para>
