@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+     "dtd/docbook-xml/4.2/docbookx.dtd" [
+<!ENTITY ocaml-pkg "<application>ocaml-<var>upstream_version</var>-<var>package_compatibility</var></application>">
+<!ENTITY ocaml-base-pkg "<application>ocaml-base-<var>upstream_version</var>-<var>package_compatibility</var></application>">
+]>
+<article>
+ <articleinfo>
+  <title>Debian Ocaml Policy</title>
+  <subtitle>For Objective Caml version 3.06</subtitle>
+  <releaseinfo>Revision 0.1</releaseinfo>
+  <author>
+   <firstname>Sven</firstname>
+   <sunrname>LUTHER</surname>
+   <affiliation>
+    <orgname>The Debian Project</orgname>
+    <address><email>luther@lambda.u-strasbg.fr</email></address>
+   </affiliation>
+  </author>
+  <author>
+   <firstname>Stefano</firstname>
+   <sunrname>ZACCHIROLI</surname>
+   <affiliation>
+    <orgname>The Debian Project</orgname>
+    <address><email>zack@cs.unibo.it</email></address>
+   </affiliation>
+  </author>
+  <author>
+   <firstname>Sylvain</firstname>
+   <sunrname>LE GALL</surname>
+   <affiliation>
+    <orgname>The NM Debian Project</orgname>
+    <address><email>sylvain.le-gall@polytechnique.org</email></address>
+   </affiliation>
+  </author>
+  <copyright>
+   <year>2002</year><year>2003</year>
+   <holder>Sven LUTHER, Stefano ZACCHIROLI and Sylvain LE GALL</holder>
+   <legalnotice>
+    <para>
+	  This manual is free software; you can redistribute it and/or
+	  modify it under the terms of the GNU General Public License
+	  as published by the Free Software Foundation; either version
+	  2 of the License, or (at your option) any later version.
+    </para>
+    <para>
+	  This is distributed in the hope that it will be useful, but
+	  WITHOUT ANY WARRANTY; without even the implied warranty of
+	  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+	  the GNU General Public License for more details.
+    </para>
+    <para>
+	  A copy of the GNU General Public License is available as
+	  <tt>/usr/share/common-licenses/GPL</tt> in the Debian GNU/Linux
+	  distribution or on the World Wide Web at 
+	  <url id="http://www.gnu.org/copyleft/gpl.html"
+	  name="The GNU Public Licence">.
+    </para>
+    <para>
+	  You can also obtain it by writing to the
+	  Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+	  Boston, MA 02111-1307, USA.
+    </para>
+   </legalnotice>
+  </articleinfo>
+
+  <chapter id="ocaml">
+   <title>Ocaml Packaging</title>
+   <sect id="versions">
+    <title>Version</title>
+    <para>
+    At any given time, the package <application>ocaml</application>
+    should represent the current stable upstream version of Ocam 
+    revision 3.06.
+    </para>
+
+    <para>
+    This package provides a virtual package called &ocaml-pkg;. 
+    This will help to track incompatible changes made within the 
+    same version of Ocaml.
+    </para>
+    
+   </sect>
+   
+   <sect id="base">
+    <title>Base Package</title>
+    <para>
+    In order to have a minimal installation, a virtual package 
+    <application>ocaml-base</application> exists. It enable to have
+    a bare minimum install of Ocaml library.
+    </para>
+
+    <para>
+    As for <application>ocaml</application> this package provides
+    a virtual package &ocaml-base-pkg;. This will help to track
+    incompatible changes made within the same version of Ocaml.
+    </para>
+
+   </sect>
+   
+   <sect id="files">
+    <title>File terminology for Ocaml packaging</title>
+
+    <para>
+     Ocaml is a complete language allowing to create :
+     <simplelist>
+      <listitem>bytecoded executable</listitem>
+      <listitem>bytecoded library ( *.cma )</listitem>
+      <listitem>native executable</listitem>
+      <listitem>native library ( *.cmxa )</listitem>
+      <listitem>shared library ( for C-binding ) ( dll*.so )</listitem>
+      <listitem>static library ( for C-binding ) ( lib*.a )</listitem>
+      <listitem>bytecoded object ( *.cmo )</listitem>
+      <listitem>native object ( *.cmx )</listitem>
+      <listitem>configuration file for handling library ( META )</listitem>
+     </simplelist>
+    </para>
+   
+    <para>
+     There is a convention considering that native executable should be 
+     called <var>progname</var>.opt and bytecoded one 
+     <var>progname</var>.byte. When packaging, only <var>progname</var> is 
+     taken in account.
+    </para>
+
+    <para>
+     For easying library management, the Ocaml Task Force used the 
+     <application>ocamlfind</application> library management scheme.
+     This scheme includes a file named <emph>META</emph> which holds
+     all the library possibility. This is the configuration file for
+     handling library ( see XXX ).
+    </para>
+   </sect>
+   
+   <sect id="path">
+    <title>Library paths</title>
+    <para>
+    Ocaml will search library in two different location, referred to
+    as <var>local</var> which hold user installed library and as 
+    <var>core</var> in which packaged modules stood.
+    </para>
+
+    <para>
+    By default, ocaml will look for modules in this order :
+    <variablelist>
+     <varlistentry>
+      <term><var>local</var></term>
+      <listitem>
+      /usr/local/lib/ocaml/<var>ocaml_version</var>/
+      /usr/local/lib/ocaml/<var>ocaml_version</var>/
+      </listitem>
+   </sect>
+
+    <sect id="documentation">
+    <title>Documentation</title>
+    <para>
+    </para>
+   </sect>
+  </chapter>
+
+  <chapter id="liblocal">
+   <title>Locally installed library</title>
+
+   <sect id="liblocal-camlp4">
+    <title>Camlp4 files</title>
+   </sect>
+  </chapter>
+
+  <chapter id="libpack">
+   <title>Packaged library</title>
+   
+   <sect id="libpack-camlp4">
+    <title>Camlp4 files</title>
+   </sect>
+  </chapter>
+
+  <chapter id="progpack">
+   <title>Packaged program</title>
+  </chapter>
+
+  <appendix id="transition">
+   <title>Managing version transition</title>
+  </appendix>
+
+  <appendix id="resources">
+   <title>Debian Ocaml task force</title>
+  </appendix>
+
