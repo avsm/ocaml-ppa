@@ -1,3 +1,17 @@
+;(***********************************************************************)
+;(*                                                                     *)
+;(*                           Objective Caml                            *)
+;(*                                                                     *)
+;(*                Jacques Garrigue and Ian T Zimmerman                 *)
+;(*                                                                     *)
+;(*  Copyright 1997 Institut National de Recherche en Informatique et   *)
+;(*  en Automatique.  All rights reserved.  This file is distributed    *)
+;(*  under the terms of the GNU General Public License.                 *)
+;(*                                                                     *)
+;(***********************************************************************)
+
+;(* $Id: caml-font.el,v 1.18.2.1 2004/08/09 16:09:33 doligez Exp $ *)
+
 ;; useful colors
 
 (cond

@@ -6,11 +6,11 @@
 ;(*                                                                     *)
 ;(*  Copyright 2003 Institut National de Recherche en Informatique et   *)
 ;(*  en Automatique.  All rights reserved.  This file is distributed    *)
-;(*  under the terms of the Q Public License version 1.0.               *)
+;(*  under the terms of the GNU General Public License.                 *)
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id: caml-types.el,v 1.29 2003/10/21 07:36:06 remy Exp $ *)
+;(* $Id: caml-types.el,v 1.29.6.1 2004/08/09 16:09:33 doligez Exp $ *)
 
 ; An emacs-lisp complement to the "-dtypes" option of ocamlc and ocamlopt.
 

@@ -1,3 +1,17 @@
+;(***********************************************************************)
+;(*                                                                     *)
+;(*                           Objective Caml                            *)
+;(*                                                                     *)
+;(*            Didier Remy, projet Cristal, INRIA Rocquencourt          *)
+;(*                                                                     *)
+;(*  Copyright 2003 Institut National de Recherche en Informatique et   *)
+;(*  en Automatique.  All rights reserved.  This file is distributed    *)
+;(*  under the terms of the GNU General Public License.                 *)
+;(*                                                                     *)
+;(***********************************************************************)
+
+;(* $Id: caml-emacs.el,v 1.6.6.1 2004/08/09 16:09:33 doligez Exp $ *)
+
 ;; for caml-help.el
 (defalias 'caml-info-other-window 'info-other-window)
 

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_messages.ml,v 1.24.4.2 2004/07/09 14:32:42 guesdon Exp $ *)
+(* $Id: odoc_messages.ml,v 1.24.4.3 2004/08/06 13:42:16 guesdon Exp $ *)
 
 (** The messages of the application. *)
 
@@ -36,6 +36,8 @@ let verbose_mode = "\t\tverbose mode"
 let include_dirs = "<dir>\tAdd <dir> to the list of include directories"
 let rectypes = "\tAllow arbitrary recursive types"
 let preprocess = "<command>\tPipe sources through preprocessor <command>"
+let option_impl ="<file>\tConsider <file> as a .ml file"
+let option_intf ="<file>\tConsider <file> as a .mli file"
 let display_custom_generators_dir = "\tDisplay custom generators standard directory and exit"
 let add_load_dir = "<dir>\tAdd the given directory to the search path for custom\n"^
   "\t\tgenerators "^bytecode_only
