@@ -1,10 +1,12 @@
-ocaml (3.08.0-1) unstable; urgency=high
+ocaml (3.08.1-1) unstable; urgency=high
 
   * New upstream stable point release.
   * Dropped QPL 6c qnd choice of venue clause from the QPL licence.
   * The emacs files are now under GPL, adding them again.
+  * Added ocamlmklib man page, courtesy of Samuel Mimram .
+  * Removed camlp4-coq-fix, since it is now fixed upstream.
 
- -- Sven Luther <luther@debian.org>  Thu, 19 Aug 2004 16:49:26 +0200
+ -- Sven Luther <luther@debian.org>  Thu, 19 Aug 2004 18:49:30 +0200
 
 ocaml (3.08.0-2) unstable; urgency=low
 

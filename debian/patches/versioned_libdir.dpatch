@@ -2,8 +2,7 @@
 ## versioned_libdir.dpatch by  <luther@debian.org>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
-## DP: Makefiles, configure scripts and other build stuff adapted for
-## DP: debian package creation
+## DP: Add the version as path element for OCAML_LIBDIR.
 
 if [ $# -ne 1 ]; then
     echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
