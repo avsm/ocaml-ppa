@@ -7,7 +7,11 @@ NEW_DEBHELPER_VERSION = $(DEBHELPER_VERSION)+dh_ocaml
 DEBHELPER_DIR = debhelper-$(DEBHELPER_VERSION)
 NEW_DEBHELPER_DIR = debhelper-$(NEW_DEBHELPER_VERSION)
 
-all: $(SCRIPTS) debhelper
+# all: ocaml-md5sums $(SCRIPTS) debhelper
+all: ocaml-md5sums
+
+ocaml-md5sums: ocaml-md5sums.ml
+	ocamlfind ocamlc -package str,unix -linkpkg -o $@ $<
 
 $(DEBHELPER_DSC):
 	apt-get -d source debhelper
