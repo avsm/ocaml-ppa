@@ -6,7 +6,8 @@
  <!ENTITY ocaml-pkg      "<application>ocaml-&ocaml-version;-&ocaml-compat;</application>">
  <!ENTITY ocaml-base-pkg "<application>ocaml-base-&ocaml-version;-&ocaml-compat;</application>">
  <!ENTITY ocaml-name     "<application>OCaml</application>">
- <!ENTITY ocaml-force    "The OCaml Task Force">
+ <!ENTITY ocaml-force    "The Debian OCaml Task Force">
+ <!ENTITY debian-name    "Debian">
  <!ENTITY authors             SYSTEM "authors.xml">
  <!ENTITY legal               SYSTEM "legal.xml">
  <!ENTITY chapter-ocaml       SYSTEM "chapter-ocaml.xml">
@@ -18,7 +19,7 @@
 ]>
 <article>
  <articleinfo>
-  <title>Debian Ocaml Packaging Policy</title>
+  <title>&debian-name; &ocaml-name; Packaging Policy</title>
   <subtitle>For Objective Caml version &ocaml-version;</subtitle>
   <releaseinfo>Revision 0.1</releaseinfo>
   &authors;
@@ -26,7 +27,7 @@
   </articleinfo>
 
   <chapter id="ocaml">
-   <title>Ocaml Packaging</title>
+   <title>&ocaml-name; Packaging</title>
     &chapter-ocaml;
   </chapter>
 
@@ -51,7 +52,7 @@
   </appendix>
 
   <appendix id="resources">
-   <title>Debian Ocaml task force</title>
+   <title>&ocaml-task; resources</title>
    &appendix-resources;
   </appendix>
 </article>

@@ -57,14 +57,56 @@
     </para>
 
     <para>
-     For easying library management, the Ocaml Task Force used the 
+     For easying library management, &ocaml-force; used the 
      <application>ocamlfind</application> library management scheme.
      This scheme includes a file named <filename>META</filename> which holds
      all the library possibility. This is the configuration file for
      handling library ( see XXX ).
     </para>
    </section>
-   
+ 
+   <section id="documentation">
+    <title>Documentation</title>
+    <para>
+    The documentation is a joint effort of  &ocaml-force; and usptream. 
+    There is many way to have documentation : 
+    <simplelist>
+     <listitem>Header files ( <filename>*.mli</filename> )</listitem>
+     <listitem>Source files ( <filename>*.ml</filename> )</listitem>
+     <listitem>Specific documentation provided by the upstream</listitem>
+     <listitem>OCamldoc generated documentation</listitem>
+    </simplelist>
+    </para>
+
+    <para>This documentation should be browse by different mean, from the
+    most simple to the most complex. At least, they could all be browsed with 
+    simple text editor. Specific and <application>ocamldoc</application>
+    generated documentation shoudl be browse by using different viewer ( like
+    <application>advi</application>, HTML browser ...). There is also at least two
+    specific &ocaml-name; browser : <application>docbrowse</application> shipped
+    with <application>cameleon</application> and <application>ocamlbrowser</application>
+    shipped with <application>ocaml</application> itself. The first one, need specific
+    <application>ocamldoc</application> generated documentation : this is in fact the
+    output of the intermediary stage of <application>ocamldoc</application> when 
+    generating any kind of output, this is file with ".odoco
+	
+	which is installed in 
+    <filename>/usr/lib/ocaml/&ocaml-version;/</filename> and his subdirectory.
+    You can also browse documentation with <application>ocamlbrowser</application>.
+    At last, for some package, a special scheme is used to handle documentation 
+    file : ocamldoc generated documentation. By this mean you can have different access
+    to library documentation : using <application>docbrowser</application> which is
+    shipped with <application>cameleon</application>, HTML pages registered under
+    the <application>doc-base</application> <organization>Debian</organization> package,
+    or manpages.
+    </para>
+
+    <para>As of this date, there is no automatic way to generate manpages and HTML 
+    documentation with a debian package. For now, <filename>*.odoc</filename> files
+    will be stored in <filename>/usr/share/ocamldoc-base</filename>. A tools, to
+    auto-generate manpages and HTML documentation is under construction.
+    </para>
+   </section>  
    <section id="path">
     <title>Library paths</title>
     <para>
@@ -88,24 +130,4 @@
     </para>
    </section>
 
-    <section id="documentation">
-    <title>Documentation</title>
-    <para>
-    The documentation is a joint effort of  &ocaml-force; and usptream. 
-    There is many way to have documentation : *.mli file, which is installed in 
-    <filename>/usr/lib/ocaml/&ocaml-version;/</filename> and his subdirectory.
-    You can also browse documentation with <application>ocamlbrowser</application>.
-    At last, for some package, a special scheme is used to handle documentation 
-    file : ocamldoc generated documentation. By this mean you can have different access
-    to library documentation : using <application>docbrowser</application> which is
-    shipped with <application>cameleon</application>, HTML pages registered under
-    the <application>doc-base</application> <organization>Debian</organization> package,
-    or manpages.
-    </para>
 
-    <para>As of this date, there is no automatic way to generate manpages and HTML 
-    documentation with a debian package. For now, <filename>*.odoc</filename> files
-    will be stored in <filename>/usr/share/ocamldoc-base</filename>. A tools, to
-    auto-generate manpages and HTML documentation is under construction.
-    </para>
-   </section>
