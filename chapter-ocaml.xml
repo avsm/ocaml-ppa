@@ -2,14 +2,14 @@
     <title>Version</title>
     <para>
     At any given time, the package <application>ocaml</application>
-    should represent the current stable upstream version of Ocam 
-    revision 3.06.
+    should represent the current stable upstream version of &ocaml-name; 
+    revision &ocaml-version;.
     </para>
 
     <para>
     This package provides a virtual package called &ocaml-pkg;. 
     This will help to track incompatible changes made within the 
-    same version of Ocaml.
+    same version of &ocaml-name;.
     </para>
     
    </section>
@@ -19,13 +19,13 @@
     <para>
     In order to have a minimal installation, a virtual package 
     <application>ocaml-base</application> exists. It enable to have
-    a bare minimum install of Ocaml library.
+    a bare minimum install of &ocaml-name; library.
     </para>
 
     <para>
     As for <application>ocaml</application> this package provides
     a virtual package &ocaml-base-pkg;. This will help to track
-    incompatible changes made within the same version of Ocaml.
+    incompatible changes made within the same version of &ocaml-name;.
     </para>
 
    </section>
@@ -34,7 +34,7 @@
     <title>File terminology for Ocaml packaging</title>
 
     <para>
-     Ocaml is a complete language allowing to create :
+     &ocaml-name; is a complete language allowing to create :
      <simplelist>
       <listitem>bytecoded executable</listitem>
       <listitem>bytecoded library ( *.cma )</listitem>
@@ -45,6 +45,7 @@
       <listitem>bytecoded object ( *.cmo )</listitem>
       <listitem>native object ( *.cmx )</listitem>
       <listitem>configuration file for handling library ( META )</listitem>
+      <listitem>ocamldoc generated documentation ( *.odoc )</listitem>
      </simplelist>
     </para>
    
@@ -73,14 +74,15 @@
     </para>
 
     <para>
-    By default, ocaml will look for modules in this order :
+    By default, &ocaml-name; will look for modules in this order :
     <variablelist>
      <varlistentry>
       <term><varname>local</varname></term>
-      <simplelist>
-	      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/</filename></listitem>
-	      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/</filename></listitem>
-      </simplelist>
+      <para><filename>/usr/local/lib/ocaml/&ocaml-version;/</filename></para>
+     </varlistentry>
+     <varlistentry>
+      <term><varname>core</varname></term>
+      <para><filename>/usr/lib/ocaml/&ocaml-version;/</filename></para>
      </varlistentry>
     </variablelist>
     </para>
@@ -89,5 +91,21 @@
     <section id="documentation">
     <title>Documentation</title>
     <para>
+    The documentation is a joint effort of  &ocaml-force; and usptream. 
+    There is many way to have documentation : *.mli file, which is installed in 
+    <filename>/usr/lib/ocaml/&ocaml-version;/</filename> and his subdirectory.
+    You can also browse documentation with <application>ocamlbrowser</application>.
+    At last, for some package, a special scheme is used to handle documentation 
+    file : ocamldoc generated documentation. By this mean you can have different access
+    to library documentation : using <application>docbrowser</application> which is
+    shipped with <application>cameleon</application>, HTML pages registered under
+    the <application>doc-base</application> <organization>Debian</organization> package,
+    or manpages.
+    </para>
+
+    <para>As of this date, there is no automatic way to generate manpages and HTML 
+    documentation with a debian package. For now, <filename>*.odoc</filename> files
+    will be stored in <filename>/usr/share/ocamldoc-base</filename>. A tools, to
+    auto-generate manpages and HTML documentation is under construction.
     </para>
    </section>

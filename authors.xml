@@ -1,4 +1,4 @@
-  <author>
+  <!--author>
    <firstname>Sven</firstname>
    <surname>Luther</surname>
    <affiliation>
@@ -21,5 +21,9 @@
     <orgname>The NM Debian Project</orgname>
     <address><email>sylvain.le-gall@polytechnique.org</email></address>
    </affiliation>
+  </author-->
+  <author>
+   <organization>The Debian OCaml Task Force</organization>
+   <address><email>debian-ocaml-maint@lists.debian.org</email></address>
   </author>
 

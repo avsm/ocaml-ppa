@@ -5,6 +5,8 @@
  <!ENTITY ocaml-compat  "1">
  <!ENTITY ocaml-pkg      "<application>ocaml-&ocaml-version;-&ocaml-compat;</application>">
  <!ENTITY ocaml-base-pkg "<application>ocaml-base-&ocaml-version;-&ocaml-compat;</application>">
+ <!ENTITY ocaml-name     "<application>OCaml</application>">
+ <!ENTITY ocaml-force    "The OCaml Task Force">
  <!ENTITY authors             SYSTEM "authors.xml">
  <!ENTITY legal               SYSTEM "legal.xml">
  <!ENTITY chapter-ocaml       SYSTEM "chapter-ocaml.xml">
@@ -16,7 +18,7 @@
 ]>
 <article>
  <articleinfo>
-  <title>Debian Ocaml Policy</title>
+  <title>Debian Ocaml Packaging Policy</title>
   <subtitle>For Objective Caml version &ocaml-version;</subtitle>
   <releaseinfo>Revision 0.1</releaseinfo>
   &authors;
