@@ -1,3 +1,9 @@
+ocaml (3.08.1-2) unstable; urgency=high
+
+  * Cleaned up ocaml-source location.
+
+ -- Sven Luther <luther@debian.org>  Wed, 25 Aug 2004 15:10:12 +0200
+
 ocaml (3.08.1-1) unstable; urgency=high
 
   * New upstream stable point release.
