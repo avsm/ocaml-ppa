@@ -1,23 +1,23 @@
 <?xml version="1.0"?>
   <author>
    <firstname>Sven</firstname>
-   <sunrname>LUTHER</surname>
+   <surname>Luther</surname>
    <affiliation>
     <orgname>The Debian Project</orgname>
-    <address><email>luther@lambda.u-strasbg.fr</email></address>
+    <address><email>luther@debian.org</email></address>
    </affiliation>
   </author>
   <author>
    <firstname>Stefano</firstname>
-   <sunrname>ZACCHIROLI</surname>
+   <surname>Zacchiroli</surname>
    <affiliation>
     <orgname>The Debian Project</orgname>
-    <address><email>zack@cs.unibo.it</email></address>
+    <address><email>zack@debian.orgcs.unibo.it</email></address>
    </affiliation>
   </author>
   <author>
    <firstname>Sylvain</firstname>
-   <sunrname>LE GALL</surname>
+   <surname>Le Gall</surname>
    <affiliation>
     <orgname>The NM Debian Project</orgname>
     <address><email>sylvain.le-gall@polytechnique.org</email></address>
