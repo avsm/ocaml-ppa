@@ -18,8 +18,11 @@ INRIA" in the following directories and their sub-directories:
 and "the Compiler" refers to all files marked "Copyright INRIA" in the
 other directories and their sub-directories.
 
-The Compiler is distributed under the terms of a modified the Q Public
-License version 1.0 (included below).
+The Compiler is distributed under the terms of the Q Public License
+version 1.0 (included below).
+
+As a special exception to the Q Public License version 1.0, you may ignore
+the QPL 6c clause completely.
 
 The Library is distributed under the terms of the GNU Library General
 Public License version 2 (found in /usr/share/common-licenses/LGPL-2
@@ -41,20 +44,11 @@ Public License.
 
 ----------------------------------------------------------------------
 
-           THE OCAML MODIFIED Q PUBLIC LICENSE version 1.0
+                   THE Q PUBLIC LICENSE version 1.0
 
               Copyright (C) 1999 Troll Tech AS, Norway.
                   Everyone is permitted to copy and
                   distribute this license document.
-
-Modification from the QPL 1.0 are : 
-
-  a) Modified clause 3a to allow for adding authors to and translation of
-     copyright notices.
-
-  b) Removed clause 6c.
-
-  c) Removed choise of venue mention in the Choice of Law.
 
 The intent of this license is to establish freedom to share and change
 the software regulated by this license under the open source model.
@@ -84,7 +78,7 @@ modifications, in a form that is separate from the Software, such as
 patches. The following restrictions apply to modifications:
 
       a. Modifications must not alter or remove any copyright notices
-      in the Software except by adding new authors.
+      in the Software.
 
       b. When modifications to the Software are released under this
       license, a non-exclusive royalty-free right is granted to the
@@ -129,6 +123,10 @@ requirements:
       items in both machine-executable and source code forms. The
       recipients must be able to do so without any charges whatsoever,
       and they must be able to re-distribute to anyone they choose.
+
+      c. If the items are not available to the general public, and the
+      initial developer of the Software requests a copy of the items,
+      then you must supply one.
 
                        Limitations of Liability
 
