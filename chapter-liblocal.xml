@@ -12,7 +12,7 @@
       <listitem>/usr/local/bin</listitem>
       <listitem>/usr/local/sbin</listitem>
      </varlistentry>
-     <varlistentry>
+     <!--varlistentry>
       <term>bytecoded library ( <filename>*.cma</filename> )</term>
       <listitem>/usr/local/lib/ocaml/&ocaml-version;/
       <listitem>native executable</listitem>
@@ -23,8 +23,8 @@
       <listitem>native object ( <filename>*.cmx</filename> )</listitem>
       <listitem>configuration file for handling library ( <filename>META</filename> )</listitem>
       <listitem>&ocamldoc; generated documentation ( <filename>*.odoc</filename> )</listitem>
-      <listitem>&camlp4; related files ( <filename>*.cm[ao]</filename> )</listitem>
-     </simplelist>
+      <listitem>&camlp4; related files ( <filename>*.cm[ao]</filename> )</listitem-->
+     </variablelist>
     </para>
 
 

@@ -1,6 +1,7 @@
 %.html: %.xml
-	xsltproc --nonet /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/html/docbook.xsl \
-	$^ > $@
+	xsltproc --nonet --output $@ \
+	/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/html/docbook.xsl \
+	$^ 
 
 all: ocaml_packaging_policy.html 
 
