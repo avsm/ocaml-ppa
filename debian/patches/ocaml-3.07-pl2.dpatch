@@ -777,7 +777,7 @@ diff -u csl/emacs/caml-types.el:1.24 csl/emacs/caml-types.el:1.26
 +      ;; Will then execute the action for mouse release (if bound).
 +      ;; Emacs does not allow to test whether mouse is up or down.
 +      ;; Same problem may happen above while exploring
-+      (if (and event (caml-read-event)))
++      (if event (caml-read-event))
        )))
  
  (defun caml-types-typed-make-overlay (target-buf pos)

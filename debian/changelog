@@ -1,3 +1,9 @@
+ocaml (3.07-8) unstable; urgency=low
+
+  * Fixed broken emacs file caml-types.el. (Closes: #218226)
+
+ -- Sven Luther <luther@debian.org>  Fri, 31 Oct 2003 14:46:02 +0100
+
 ocaml (3.07-7) unstable; urgency=high
 
   * Fixed hppa build problem : hppa needs doubleword aligned doubles.
