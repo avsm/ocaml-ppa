@@ -163,6 +163,66 @@
      
     </subsection>
 
+    <subsection id="META-path">
+    <title><filename>META</filename></title>
+    
+    <para>
+    <filename>META</filename> distribution is the best way to make more 
+    easy specific library subdirectory oragnization. Even, if user building 
+    a simple executable should only need one library, and don't want to 
+    bother himself by using &ocamlfind;, this same user will find one day 
+    that using &ocamlfind; permit him to compile from anywhere.
+    </para>
+
+    <para>
+    Since we distribute <filename>META</filename>, all devel library
+    should suggest the use of &ocamlfind;. So a <varname>Suggest:</varname>
+    should be set to &ocamlfind-pkg;.
+    </para>
+
+    <para>
+     By default, &ocamlfind; will look for <filename>META</filename> in this order :
+     <variablelist>
+      <varlistentry>
+       <term><varname>local</varname></term>
+       <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/META/</filename></listitem>
+       <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/package/</filename></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><varname>core</varname></term>
+       <listitem><filename>/usr/lib/ocaml/&ocaml-version;/META/</filename></listitem>
+       <listitem><filename>/usr/lib/ocaml/&ocaml-version;/package/</filename></listitem>
+      </varlistentry>
+     </variablelist>
+    </para>
+
+    <para>
+    The naming scheme of <filename>META</filename> is pretty simple :
+    <simplelist>
+    	<listitem>If <filename>META</filename> is placed in the subdirectory
+	of the package, it should be called <filename>META</filename>. If
+	you don't call it this way, it won't be recognized by &ocamlfind;.
+	</listitem>
+	<listitem>If <filename>META</filename> is placed in 
+	<filename>/usr/lib/ocaml/&ocaml-version;/META/</filename>, it should
+	be called <filename>META.package</filename>. In order to avoid
+	name clash, it should be specialized to the binary package it is shipped
+	from, otherwise package should be the package source.
+	</listitem>
+    </simplelist>
+    </para>
+
+    <para>
+    If upstream doesn't provide a <filename>META</filename>, packager are encouraged
+    to create one. It should be placed in the 
+    <filename>/usr/lib/ocaml/&ocaml-version;/META/</filename>. <filename>META</filename>
+    should be sent to upstream authors, in order to have it in the next version of
+    the upstream source.
+    </para>
+
+    </subsection>
+
+
     <subsection id="ocamldoc-base-path">
     <title>&ocamldoc; specific generated documentation</title>
 
@@ -185,6 +245,32 @@
       </varlistentry>
      </variablelist>
     </para>
+
+   <para>
+   As for library, the naming scheme of the <filename>*.odoc</filename> should be 
+   at least the name of the source package from which the documentation was
+   generated. If a source package is split in many binary package and the
+   documentation comes only in one <filename>*.odoc</filename>, packagers are 
+   encouraged to create a separate package and to <varname>Suggest:</varname> it
+   in each binary package which he described. If this could not be met, it is at 
+   least a good practice to <varname>Suggest:</varname> the package containing
+   the documentation.
+   The packager should consider to ship one <filename>*.odoc</filename> per 
+   library package.
+   </para>
+
+   <para>
+   By doing this, &ocaml-force; is trying to build a clear way of distributing
+   documentation. It should help user to find and exploit the documentation 
+   coming from the source. Generating &ocamldoc; documentation is not so hard,
+   and should take a one line call. Commenting the code in order to generate
+   fully functional documentation is however an upstream task. Packager are encouraged
+   to patch <filename>Makefile</filename> in order to have a target 
+   <varname>odoc</varname>, generating this documentation and to contact upstream
+   author to have a well commented source.
+   </para>
+   </subsection>
+   
 
    </section>
 
