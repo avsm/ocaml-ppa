@@ -179,7 +179,7 @@ install-arch:
 	if [ -e opt-built-stamp ]; then					\
 		install -m 644 utils/*.cmx utils/*.o typing/*.cmx	\
 			typing/*.o parsing/*.cmx parsing/*.o		\
-			$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/3.08/compiler-libs \
+			$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/3.08/compiler-libs; \
 	fi
 
 
