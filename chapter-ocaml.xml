@@ -46,6 +46,7 @@
       <listitem>native object ( <filename>*.cmx</filename> )</listitem>
       <listitem>configuration file for handling library ( <filename>META</filename> )</listitem>
       <listitem>&ocamldoc; generated documentation ( <filename>*.odoc</filename> )</listitem>
+      <listitem>&camlp4; related files ( <filename>*.cm[ao]</filename> )</listitem>
      </simplelist>
     </para>
    
@@ -270,8 +271,36 @@
    author to have a well commented source.
    </para>
    </subsection>
-   
 
+   <subsection id="camlp4-path">
+   <para>
+   Actually, &camlp4; extensions are stored in 
+   <filename>/usr/lib/ocaml/&ocaml-version;/camlp4/</filename>. In order to do something
+   cleaner, &ocaml-force; propose to put this files in their own directory, even in their
+   own package. It is not mandatory, but it could ease a lot, the user of camlp4, by avoiding
+   name clash.
+   </para>
+
+   <para>
+   You just have to consider &camlp4; file just as standard library, except that you
+   prefix them with <varname>-syntax</varname>. <example>For example : the syntax 
+   extension coming with <application>libokey-ocaml-dev</application> should be stored
+   in <filename>/usr/lib/ocaml/&ocaml-version;/okey-syntax/</filename>, the package
+   containing it should be called <application>libokey-syntax-ocaml-dev</application>.
+   </example>
+   </para>
+
+   <para>
+   It is recommended to use <filename>META</filename> to specify how to handle this
+   extension.
+   </para>
+
+   <para>
+   All definition is taken from previous text considering syntax extension as a standalone
+   library.
+   </para>
+
+   </subsection>
    </section>
 
 

@@ -1,3 +1,31 @@
-   <section id="liblocal-camlp4">
-    <title>Camlp4 files</title>
-   </section>
+    <para>
+    Installation and use of locally installed &ocaml-name; is out of the 
+    scope of this document. However, in order to have it work with a standard
+    &ocaml-name; &debian-name; install, you should follow some guideline.
+    </para>
+
+    <section id="liblocal-path">     
+    <para>You user this path to install local library and executable :
+    <variablelist>
+     <varlistentry>
+      <term>bytecoded executable</term>
+      <listitem>/usr/local/bin</listitem>
+      <listitem>/usr/local/sbin</listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>bytecoded library ( <filename>*.cma</filename> )</term>
+      <listitem>/usr/local/lib/ocaml/&ocaml-version;/
+      <listitem>native executable</listitem>
+      <listitem>native library ( <filename>*.cmxa</filename> )</listitem>
+      <listitem>shared library ( for C-binding ) ( <filename>dll*.so</filename> )</listitem>
+      <listitem>static library ( for C-binding ) ( <filename>lib*.a</filename> )</listitem>
+      <listitem>bytecoded object ( <filename>*.cmo</filename> )</listitem>
+      <listitem>native object ( <filename>*.cmx</filename> )</listitem>
+      <listitem>configuration file for handling library ( <filename>META</filename> )</listitem>
+      <listitem>&ocamldoc; generated documentation ( <filename>*.odoc</filename> )</listitem>
+      <listitem>&camlp4; related files ( <filename>*.cm[ao]</filename> )</listitem>
+     </simplelist>
+    </para>
+
+
+    </section>
