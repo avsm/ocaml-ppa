@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.48.4.1 2004/07/16 16:11:33 doligez Exp $
+# $Id: Makefile,v 1.48.4.2 2004/08/20 15:11:36 doligez Exp $
 
 include ../config/Makefile
 
@@ -35,7 +35,7 @@ PRIMS=alloc.c array.c compare.c extern.c floats.c gc_ctrl.c hash.c \
   dynlink.c
 
 PUBLIC_INCLUDES=alloc.h callback.h config.h custom.h fail.h intext.h \
-  memory.h misc.h mlvalues.h signals.h compatibility.h
+  memory.h misc.h mlvalues.h printexc.h signals.h compatibility.h
 
 all: ocamlrun$(EXE) ld.conf
 

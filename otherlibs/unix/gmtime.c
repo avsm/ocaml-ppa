@@ -11,10 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: gmtime.c,v 1.16 2001/12/07 13:40:31 xleroy Exp $ */
+/* $Id: gmtime.c,v 1.16.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
+#include <fail.h>
 #include <memory.h>
 #include "unixsupport.h"
 #include <time.h>
@@ -88,6 +89,7 @@ CAMLprim value unix_mktime(value t)
 
 #else
 
-CAMLprim value unix_mktime(value t) { invalid_argument("mktime not implemented"); }
+CAMLprim value unix_mktime(value t)
+{ invalid_argument("mktime not implemented"); }
 
 #endif

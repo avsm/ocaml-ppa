@@ -10,7 +10,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id: caml-xemacs.el,v 1.5.6.1 2004/08/09 16:09:33 doligez Exp $ *)
+;(* $Id: caml-xemacs.el,v 1.5.6.2 2004/11/02 10:21:03 doligez Exp $ *)
 
 (require 'overlay)
 
@@ -40,8 +40,8 @@
 
 
 (defun caml-sit-for (sec &optional mili)
-  (sit-for (+ sec (if mili (* 0.001 mili)))))
-                  
+  (sit-for (+ sec (if mili (* 0.001 mili) 0))))
+
 
 
 (defmacro caml-track-mouse (&rest body) (cons 'progn body))

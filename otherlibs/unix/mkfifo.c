@@ -11,10 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: mkfifo.c,v 1.10 2001/12/07 13:40:32 xleroy Exp $ */
+/* $Id: mkfifo.c,v 1.10.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <fail.h>
 #include <mlvalues.h>
 #include "unixsupport.h"
 

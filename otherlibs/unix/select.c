@@ -11,10 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: select.c,v 1.21 2002/05/07 07:37:18 xleroy Exp $ */
+/* $Id: select.c,v 1.21.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
+#include <fail.h>
 #include <memory.h>
 #include <signals.h>
 #include "unixsupport.h"

@@ -11,10 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: sockopt.c,v 1.18 2002/10/01 12:34:58 xleroy Exp $ */
+/* $Id: sockopt.c,v 1.18.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
+#include <fail.h>
 #include "unixsupport.h"
 
 #ifdef HAS_SOCKETS

@@ -19,16 +19,27 @@ Pcaml.no_constructors_arity := false;;
 
 let help_sequences () =
   Printf.eprintf "\
-New syntax:     do {e1; e2; ... ; en}     while e do {e1; e2; ... ; en}     for v = v1 to/downto v2 do {e1; e2; ... ; en}Old (discouraged) syntax:     do e1; e2; ... ; en-1; return en     while e do e1; e2; ... ; en; done     for v = v1 to/downto v2 do e1; e2; ... ; en; doneTo avoid compilation warning use the new syntax.";
+New syntax:
+     do {e1; e2; ... ; en}
+     while e do {e1; e2; ... ; en}
+     for v = v1 to/downto v2 do {e1; e2; ... ; en}
+Old (discouraged) syntax:
+     do e1; e2; ... ; en-1; return en
+     while e do e1; e2; ... ; en; done
+     for v = v1 to/downto v2 do e1; e2; ... ; en; done
+To avoid compilation warning use the new syntax.
+";
   flush stderr;
   exit 1
 ;;
 Pcaml.add_option "-help_seq" (Arg.Unit help_sequences)
   "Print explanations about new sequences and exit.";;
 
+let (lexer, pos) = Plexer.make_lexer ();;
+
 let odfa = !(Plexer.dollar_for_antiquotation) in
 Plexer.dollar_for_antiquotation := false;
-Grammar.Unsafe.gram_reinit gram (Plexer.gmake ());
+Grammar.Unsafe.gram_reinit gram lexer;
 Plexer.dollar_for_antiquotation := odfa;
 Grammar.Unsafe.clear_entry interf;
 Grammar.Unsafe.clear_entry implem;
@@ -50,6 +61,7 @@ Grammar.Unsafe.clear_entry class_str_item;;
 
 Pcaml.parse_interf := Grammar.Entry.parse interf;;
 Pcaml.parse_implem := Grammar.Entry.parse implem;;
+Pcaml.position := pos;;
 
 let o2b =
   function

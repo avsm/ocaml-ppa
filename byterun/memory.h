@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: memory.h,v 1.50.2.1 2004/07/03 10:01:00 doligez Exp $ */
+/* $Id: memory.h,v 1.50.2.2 2004/11/22 11:16:03 doligez Exp $ */
 
 /* Allocation macros and functions */
 
@@ -129,8 +129,9 @@ CAMLextern struct caml__roots_block *caml_local_roots;  /* defined in roots.c */
    call to [CAMLparam] for some other arguments).
 
    If you need local variables of type [value], declare them with one
-   or more calls to the [CAMLlocal] macros.
-   Use [CAMLlocalN] to declare an array of [value]s.
+   or more calls to the [CAMLlocal] macros at the beginning of the
+   function. Use [CAMLlocalN] (at the beginning of the function) to
+   declare an array of [value]s.
 
    Your function may raise an exception or return a [value] with the
    [CAMLreturn] macro.  Its argument is simply the [value] returned by

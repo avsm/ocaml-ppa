@@ -11,12 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getserv.c,v 1.13 2001/12/07 13:40:30 xleroy Exp $ */
+/* $Id: getserv.c,v 1.13.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
-#include <memory.h>
 #include <fail.h>
+#include <memory.h>
 #include "unixsupport.h"
 
 #ifdef HAS_SOCKETS

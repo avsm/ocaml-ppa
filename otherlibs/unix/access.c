@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: access.c,v 1.10 2002/06/07 09:49:40 xleroy Exp $ */
+/* $Id: access.c,v 1.10.6.1 2004/11/02 16:21:25 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -42,9 +42,10 @@ static int access_permission_table[] = {
 
 CAMLprim value unix_access(value path, value perms)
 {
-  int ret;
-  ret = access(String_val(path),
-               convert_flag_list(perms, access_permission_table));
+  int ret, cv_flags;
+
+  cv_flags = convert_flag_list(perms, access_permission_table);
+  ret = access(String_val(path), cv_flags);
   if (ret == -1)
     uerror("access", path);
   return Val_unit;

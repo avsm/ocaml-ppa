@@ -11,8 +11,9 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: fcntl.c,v 1.11 2001/12/07 13:40:28 xleroy Exp $ */
+/* $Id: fcntl.c,v 1.11.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
+#include <fail.h>
 #include <mlvalues.h>
 #include "unixsupport.h"
 #ifdef HAS_UNISTD

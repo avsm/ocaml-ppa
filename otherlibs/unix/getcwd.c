@@ -11,10 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getcwd.c,v 1.14 2001/12/07 13:40:28 xleroy Exp $ */
+/* $Id: getcwd.c,v 1.14.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
+#include <fail.h>
 #include "unixsupport.h"
 
 #if !defined (_WIN32) && !macintosh

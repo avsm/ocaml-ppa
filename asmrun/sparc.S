@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: sparc.S,v 1.24 2004/02/17 12:30:11 xleroy Exp $ */
+/* $Id: sparc.S,v 1.24.4.1 2004/10/06 09:02:36 garrigue Exp $ */
 
 /* Asm part of the runtime system for the Sparc processor.  */
 /* Must be preprocessed by cpp */
@@ -382,6 +382,7 @@ Caml_callback3_exn:
         .data
 #endif
         .global Caml_system__frametable
+        .align  4               /* required for gas? */
 Caml_system__frametable:
         .word   1               /* one descriptor */
         .word   L109            /* return address into callback */

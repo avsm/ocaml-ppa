@@ -11,10 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: itimer.c,v 1.13 2003/11/21 16:00:52 xleroy Exp $ */
+/* $Id: itimer.c,v 1.13.4.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
+#include <fail.h>
 #include <memory.h>
 #include "unixsupport.h"
 

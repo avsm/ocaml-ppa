@@ -11,10 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: accept.c,v 1.12 2001/12/07 13:40:24 xleroy Exp $ */
+/* $Id: accept.c,v 1.12.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
+#include <fail.h>
 #include <memory.h>
 #include <signals.h>
 #include "unixsupport.h"
@@ -47,6 +48,7 @@ CAMLprim value unix_accept(value sock)
 
 #else
 
-CAMLprim value unix_accept(value sock) { invalid_argument("accept not implemented"); }
+CAMLprim value unix_accept(value sock)
+{ invalid_argument("accept not implemented"); }
   
 #endif

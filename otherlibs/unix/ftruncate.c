@@ -11,9 +11,10 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: ftruncate.c,v 1.9 2002/03/02 09:16:36 xleroy Exp $ */
+/* $Id: ftruncate.c,v 1.9.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <sys/types.h>
+#include <fail.h>
 #include <mlvalues.h>
 #include <io.h>
 #include "unixsupport.h"

@@ -11,8 +11,9 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: shutdown.c,v 1.10 2001/12/07 13:40:35 xleroy Exp $ */
+/* $Id: shutdown.c,v 1.10.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
+#include <fail.h>
 #include <mlvalues.h>
 #include "unixsupport.h"
 

@@ -11,8 +11,9 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: symlink.c,v 1.8 2001/12/07 13:40:36 xleroy Exp $ */
+/* $Id: symlink.c,v 1.8.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
+#include <fail.h>
 #include <mlvalues.h>
 #include "unixsupport.h"
 
