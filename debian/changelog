@@ -1,4 +1,4 @@
-ocaml (3.07-7) unstable; urgency=low
+ocaml (3.07-7) unstable; urgency=high
 
   * Fixed hppa build problem : hppa needs doubleword aligned doubles.
   * Removed .dpatch extensions for debian/patches/00list, should enable to
