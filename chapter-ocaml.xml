@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+   <sect id="versions">
+    <title>Version</title>
+    <para>
+    At any given time, the package <application>ocaml</application>
+    should represent the current stable upstream version of Ocam 
+    revision 3.06.
+    </para>
+
+    <para>
+    This package provides a virtual package called &ocaml-pkg;. 
+    This will help to track incompatible changes made within the 
+    same version of Ocaml.
+    </para>
+    
+   </sect>
+   
+   <sect id="base">
+    <title>Base Package</title>
+    <para>
+    In order to have a minimal installation, a virtual package 
+    <application>ocaml-base</application> exists. It enable to have
+    a bare minimum install of Ocaml library.
+    </para>
+
+    <para>
+    As for <application>ocaml</application> this package provides
+    a virtual package &ocaml-base-pkg;. This will help to track
+    incompatible changes made within the same version of Ocaml.
+    </para>
+
+   </sect>
+   
+   <sect id="files">
+    <title>File terminology for Ocaml packaging</title>
+
+    <para>
+     Ocaml is a complete language allowing to create :
+     <simplelist>
+      <listitem>bytecoded executable</listitem>
+      <listitem>bytecoded library ( *.cma )</listitem>
+      <listitem>native executable</listitem>
+      <listitem>native library ( *.cmxa )</listitem>
+      <listitem>shared library ( for C-binding ) ( dll*.so )</listitem>
+      <listitem>static library ( for C-binding ) ( lib*.a )</listitem>
+      <listitem>bytecoded object ( *.cmo )</listitem>
+      <listitem>native object ( *.cmx )</listitem>
+      <listitem>configuration file for handling library ( META )</listitem>
+     </simplelist>
+    </para>
+   
+    <para>
+     There is a convention considering that native executable should be 
+     called <var>progname</var>.opt and bytecoded one 
+     <var>progname</var>.byte. When packaging, only <var>progname</var> is 
+     taken in account.
+    </para>
+
+    <para>
+     For easying library management, the Ocaml Task Force used the 
+     <application>ocamlfind</application> library management scheme.
+     This scheme includes a file named <emph>META</emph> which holds
+     all the library possibility. This is the configuration file for
+     handling library ( see XXX ).
+    </para>
+   </sect>
+   
+   <sect id="path">
+    <title>Library paths</title>
+    <para>
+    Ocaml will search library in two different location, referred to
+    as <var>local</var> which hold user installed library and as 
+    <var>core</var> in which packaged modules stood.
+    </para>
+
+    <para>
+    By default, ocaml will look for modules in this order :
+    <variablelist>
+     <varlistentry>
+      <term><var>local</var></term>
+      <listitem>
+      /usr/local/lib/ocaml/<var>ocaml_version</var>/
+      /usr/local/lib/ocaml/<var>ocaml_version</var>/
+      </listitem>
+   </sect>
+
+    <sect id="documentation">
+    <title>Documentation</title>
+    <para>
+    </para>
+   </sect>
