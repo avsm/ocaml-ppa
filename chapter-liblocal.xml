@@ -5,25 +5,63 @@
     </para>
 
     <section id="liblocal-path">     
+    <title>Path of localy installed component</title>
+    
+    <para>Warning : the <varname>+</varname> preceding any library
+    in <option>-I</option> of &ocamlc;, &ocamlopt; wont be expanded 
+    to the local standard library path. You need to specify this 
+    path entirely.
+    </para>
+    
     <para>You user this path to install local library and executable :
     <variablelist>
      <varlistentry>
       <term>bytecoded executable</term>
-      <listitem>/usr/local/bin</listitem>
-      <listitem>/usr/local/sbin</listitem>
+      <listitem><filename>/usr/local/bin/</filename></listitem>
+      <listitem><filename>/usr/local/sbin/</filename></listitem>
      </varlistentry>
-     <!--varlistentry>
+     <varlistentry>
       <term>bytecoded library ( <filename>*.cma</filename> )</term>
-      <listitem>/usr/local/lib/ocaml/&ocaml-version;/
-      <listitem>native executable</listitem>
-      <listitem>native library ( <filename>*.cmxa</filename> )</listitem>
-      <listitem>shared library ( for C-binding ) ( <filename>dll*.so</filename> )</listitem>
-      <listitem>static library ( for C-binding ) ( <filename>lib*.a</filename> )</listitem>
-      <listitem>bytecoded object ( <filename>*.cmo</filename> )</listitem>
-      <listitem>native object ( <filename>*.cmx</filename> )</listitem>
-      <listitem>configuration file for handling library ( <filename>META</filename> )</listitem>
-      <listitem>&ocamldoc; generated documentation ( <filename>*.odoc</filename> )</listitem>
-      <listitem>&camlp4; related files ( <filename>*.cm[ao]</filename> )</listitem-->
+      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/</filename></listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>native executable</term>
+      <listitem><filename>/usr/local/bin/</filename></listitem>
+      <listitem><filename>/usr/local/sbin/</filename></listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>native library ( <filename>*.cmxa</filename> )</term>
+     </varlistentry>
+     <varlistentry>
+      <term>shared library ( for C-binding ) ( <filename>dll*.so</filename> )</term>
+      <listitem>/usr/local/lib/ocaml/&ocaml-version;/stublibs/</listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>static library ( for C-binding ) ( <filename>lib*.a</filename> )</term>
+      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/</filename></listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>bytecoded object ( <filename>*.cmo</filename> )</term>
+      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/</filename></listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>native object ( <filename>*.cmx</filename> )</term>
+      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/</filename></listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>configuration file for handling library ( <filename>META</filename> )</term>
+      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/ and subdirectory</filename>
+      </listitem>
+      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/META</filename></listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>&ocamldoc; generated documentation ( <filename>*.odoc</filename> )</term>
+      <listitem>/usr/local/share/ocamldoc-base</filename></listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>&camlp4; related files ( <filename>*.cm[ao]</filename> )</term>
+      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/ and subdirectory</filename>
+     </varlistentry>
      </variablelist>
     </para>
 
