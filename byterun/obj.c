@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: obj.c,v 1.34 2004/06/05 01:15:53 garrigue Exp $ */
+/* $Id: obj.c,v 1.34.2.1 2004/07/16 15:01:13 doligez Exp $ */
 
 /* Operations on objects */
 
@@ -66,11 +66,11 @@ CAMLprim value caml_obj_is_block(value arg)
 CAMLprim value caml_obj_tag(value arg)
 {
   if (Is_long (arg)){
-    return 1000;
-  }else if (Is_young (arg) || Is_in_heap (arg)){
+    return Val_int (1000);
+  }else if (Is_young (arg) || Is_in_heap (arg) || Is_atom (arg)){
     return Val_int(Tag_val(arg));
   }else{
-    return 1001;
+    return Val_int (1001);
   }
 }
 
@@ -169,15 +169,6 @@ CAMLprim value caml_obj_truncate (value v, value newsize)
    to the GC.
  */
 
-/* [lazy_is_forward] is obsolete.  Stays here to make bootstrapping
-   easier for patched versions of 3.07.  To be removed before 3.08. FIXME */
-/*
-CAMLxxprim value lazy_is_forward (value v)
-{
-  return Val_bool (Is_block (v) && Tag_val (v) == Forward_tag);
-}
-*/
-
 CAMLprim value caml_lazy_follow_forward (value v)
 {
   if (Is_block (v) && (Is_young (v) || Is_in_heap (v))
@@ -252,4 +243,4 @@ value caml_cache_public_method2 (value *meths, value tag, value *cache)
 }
 #endif /*CAML_JIT*/
 
-/* eof $Id: obj.c,v 1.34 2004/06/05 01:15:53 garrigue Exp $ */
+/* eof $Id: obj.c,v 1.34.2.1 2004/07/16 15:01:13 doligez Exp $ */

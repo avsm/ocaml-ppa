@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_analyse.mli,v 1.3 2003/11/24 10:39:28 starynke Exp $ *)
+(* $Id: odoc_analyse.mli,v 1.3.6.1 2004/08/06 13:42:16 guesdon Exp $ *)
 
 (** Analysis of source files. *)
 
@@ -19,7 +19,7 @@
 *)
 val analyse_files : 
     ?init: Odoc_module.t_module list -> 
-      string list -> 
+      Odoc_args.source_file list -> 
         Odoc_module.t_module list
 
 (** Dump of a list of modules into a file. 

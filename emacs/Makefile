@@ -1,4 +1,16 @@
-# $Id: Makefile,v 1.16 2003/10/10 13:25:38 remy Exp $
+#########################################################################
+#                                                                       #
+#                            Objective Caml                             #
+#                                                                       #
+#            Xavier Leroy, projet Cristal, INRIA Rocquencourt           #
+#                                                                       #
+#   Copyright 1997 Institut National de Recherche en Informatique et    #
+#   en Automatique.  All rights reserved.  This file is distributed     #
+#   under the terms of the GNU General Public License.                  #
+#                                                                       #
+#########################################################################
+
+# $Id: Makefile,v 1.16.4.1 2004/08/09 16:09:33 doligez Exp $
 
 include ../config/Makefile
 

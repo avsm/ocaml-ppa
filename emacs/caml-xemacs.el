@@ -1,3 +1,17 @@
+;(***********************************************************************)
+;(*                                                                     *)
+;(*                           Objective Caml                            *)
+;(*                                                                     *)
+;(*            Didier Remy, projet Cristal, INRIA Rocquencourt          *)
+;(*                                                                     *)
+;(*  Copyright 2003 Institut National de Recherche en Informatique et   *)
+;(*  en Automatique.  All rights reserved.  This file is distributed    *)
+;(*  under the terms of the GNU General Public License.                 *)
+;(*                                                                     *)
+;(***********************************************************************)
+
+;(* $Id: caml-xemacs.el,v 1.5.6.1 2004/08/09 16:09:33 doligez Exp $ *)
+
 (require 'overlay)
 
 ;; for caml-help.el

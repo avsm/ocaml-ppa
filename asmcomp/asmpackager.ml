@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asmpackager.ml,v 1.14 2004/05/26 11:10:27 garrigue Exp $ *)
+(* $Id: asmpackager.ml,v 1.14.4.1 2004/08/10 12:16:47 xleroy Exp $ *)
 
 (* "Package" a set of .cmx/.o files into one .cmx/.o file having the
    original compilation units as sub-modules. *)
@@ -121,6 +121,13 @@ let prefix_symbol p s =
     assert (String.length s > 4 && String.sub s 0 4 = "caml");
     "caml" ^ p ^ "__" ^ String.sub s 4 (String.length s - 4)
   end
+
+(* Strip leading _ from a low-level ident *)
+
+let strip_underscore s =
+  if String.length s > 0 && s.[0] = '_'
+  then String.sub s 1 (String.length s - 1)
+  else s
 
 (* return the list of symbols to rename in low-level form
    (with the leading "_caml" or "caml")
@@ -261,8 +268,10 @@ let build_package_cmx members target symbols_to_rename cmxfile =
     List.fold_left map_id Tbl.empty symbols_to_rename
   in
   let mapping_lbl =
-    List.fold_left (fun tbl s -> Tbl.add s (prefix_symbol target s) tbl)
-                   Tbl.empty symbols_to_rename in
+    List.fold_left
+      (fun tbl s ->
+        let s = strip_underscore s in Tbl.add s (prefix_symbol target s) tbl)
+      Tbl.empty symbols_to_rename in
   let member_defines m =
     match m.pm_kind with PM_intf -> [] | PM_impl info -> info.ui_defines in
   let defines =

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.15.4.5 2004/07/02 14:43:31 mauny Exp $
+# $Id: Makefile,v 1.15.4.6 2004/07/28 13:11:07 mauny Exp $
 
 include ../config/Makefile
 
@@ -68,8 +68,15 @@ compare:
 install:
 	-$(MKDIR) "$(LIBDIR)/camlp4" "$(BINDIR)"
 	cp odyl.cmo odyl.cma odyl_main.cmi $(LIBDIR)/camlp4/.
-	for f in odyl.$(A) odyl.p.$(A) odyl.cmx odyl.o odyl.p.cmx odyl.p.o odyl.cmxa odyl.p.cmxa ; do \
-	   test -f $$f && cp $$f "$(LIBDIR)/camlp4/." || true; \
+	for f in odyl.$(A) odyl.p.$(A)  ; do \
+	   if test -f $$f ; then \
+		cp $$f "$(LIBDIR)/camlp4/."  && ( cd "$(LIBDIR)/camlp4/." && $(RANLIB) $$f ) ; \
+	   fi ; \
+	done
+	for f in odyl.cmx odyl.o odyl.p.cmx odyl.p.o odyl.cmxa odyl.p.cmxa ; do \
+	    if test -f $$f ; then \
+	       cp $$f "$(LIBDIR)/camlp4/." ; \
+	    fi ; \
 	done
 
 include .depend

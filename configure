@@ -13,7 +13,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: configure,v 1.215.2.3 2004/07/09 15:08:51 doligez Exp $
+# $Id: configure,v 1.215.2.6 2004/08/12 16:02:00 xleroy Exp $
 
 configure_options="$*"
 prefix=/usr/local
@@ -284,10 +284,10 @@ case "$bytecc,$host" in
   *,alpha*-*-unicos*)
     # For the Cray T3E
     bytecccompopts="-DUMK";;
-  gcc*,powerpc-*-aix4.3*)
+  gcc*,powerpc-*-aix*)
     # Avoid name-space pollution by requiring Unix98-conformant includes
     bytecccompopts="-fno-defer-pop $gcc_warnings -D_XOPEN_SOURCE=500";;
-  *,powerpc-*-aix4.3*)
+  *,powerpc-*-aix*)
     bytecccompopts="-D_XOPEN_SOURCE=500";;
   gcc*,*-*-cygwin*)
     bytecccompopts="-fno-defer-pop $gcc_warnings -U_WIN32"
@@ -1423,12 +1423,17 @@ else
   echo "Configuration failed, LablTk will not be built."
 fi
 
-# Camlp4
-
+# Begin Camlp4
 (
 cd ../../camlp4/config
-EXE=$exe ./configure_batch -bindir "$bindir" -libdir "$libdir" -mandir "$mandir" -ocaml-top ../.. > /dev/null
+EXE=$exe ./configure_batch -prefix "$prefix" -bindir "$bindir" -libdir "$libdir" -mandir "$mandir" -ocaml-top ../.. > /dev/null
 )
+
+case $? in
+    0) echo "Camlp4 correctly configured.";;
+    *) echo "Warning: Camlp4 configuration terminated with error code $?";;
+esac
+# End Camlp4
 
 # Final twiddling of compiler options to work around known bugs
 

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8.2.4 2004/07/09 15:09:46 doligez Exp $
+# $Id: Makefile,v 1.8.2.6 2004/07/28 13:55:43 mauny Exp $
 
 include ../config/Makefile
 
@@ -48,11 +48,13 @@ install:
 	test -f $(TARGET:.cma=.cmxa) && $(MAKE) installopt LIBDIR="$(LIBDIR)" || true
 
 installopt:
-	for f in $(TARGET:.cma=.cmxa) $(TARGET:.cma=.p.cmxa) ; do \
+	for f in $(TARGET:.cma=.cmxa) $(TARGET:.cma=.p.cmxa) *.cmx ; do \
 		test -f $$f && cp $$f "$(LIBDIR)/camlp4/." || true ; \
 	done
 	# Special treatment for this one: some versions of make don't like $(A) in $(TARGET:.cma=.$(A)) 
 	target="`echo $(TARGET) | sed -e 's/\.cma$$/.$(A)/'`" ; \
-	   test -f $$target && cp $$target "$(LIBDIR)/camlp4/." || true
+	   if test -f $$target ; then \
+	      cp $$target "$(LIBDIR)/camlp4/." && ( cd "$(LIBDIR)/camlp4/." && $(RANLIB) $$target ) \
+	  fi
 
 include .depend

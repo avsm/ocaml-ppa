@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_str.ml,v 1.9 2004/03/22 15:06:31 guesdon Exp $ *)
+(* $Id: odoc_str.ml,v 1.9.4.1 2004/08/06 12:35:07 guesdon Exp $ *)
 
 (** The functions to get a string from different kinds of elements (types, modules, ...). *)
 
@@ -114,6 +114,30 @@ let string_of_class_type_param_list l =
        )
     )
     (if par then "]" else "")
+
+let string_of_class_params c =
+  let b = Buffer.create 256 in
+  let rec iter = function
+      Types.Tcty_fun (label, t, ctype) ->
+	Printf.bprintf b "%s%s -> "
+	  (
+	   match label with
+	     "" -> ""
+	   | s -> s^":"
+	  )
+	  (Odoc_print.string_of_type_expr
+	     (if Odoc_misc.is_optional label then
+	       Odoc_misc.remove_option t
+	     else
+	       t
+	     )
+	  );
+	iter ctype
+    | Types.Tcty_signature _ 
+    | Types.Tcty_constr _ -> ()
+  in
+  iter c.Odoc_class.cl_type;
+  Buffer.contents b
 
 let string_of_type t =
   let module M = Odoc_type in
@@ -231,4 +255,4 @@ let string_of_method m =
     None -> ""
   | Some i -> Odoc_misc.string_of_info i)
 
-(* eof $Id: odoc_str.ml,v 1.9 2004/03/22 15:06:31 guesdon Exp $ *)
+(* eof $Id: odoc_str.ml,v 1.9.4.1 2004/08/06 12:35:07 guesdon Exp $ *)

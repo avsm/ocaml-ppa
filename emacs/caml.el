@@ -1,3 +1,17 @@
+;(***********************************************************************)
+;(*                                                                     *)
+;(*                           Objective Caml                            *)
+;(*                                                                     *)
+;(*                Jacques Garrigue and Ian T Zimmerman                 *)
+;(*                                                                     *)
+;(*  Copyright 1997 Institut National de Recherche en Informatique et   *)
+;(*  en Automatique.  All rights reserved.  This file is distributed    *)
+;(*  under the terms of the GNU General Public License.                 *)
+;(*                                                                     *)
+;(***********************************************************************)
+
+;(* $Id: caml.el,v 1.36.4.1 2004/08/09 16:09:33 doligez Exp $ *)
+
 ;;; caml.el --- O'Caml code editing commands for Emacs
 
 ;; Xavier Leroy, july 1993.

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: plexer.ml,v 1.20.2.1 2004/06/30 13:05:31 mauny Exp $ *)
+(* $Id: plexer.ml,v 1.20.2.2 2004/08/18 11:17:37 mauny Exp $ *)
 
 open Stdpp;
 open Token;
@@ -317,7 +317,7 @@ value next_token_fun dfa ssd find_kwd fname lnum bolpos glexr =
     parser
     [ [: `'"' :] -> len
     | [: `'\\'; `c; s :] ep  -> string bp (store (store len '\\') c) s
-    | [: `'\010'; s :] ep -> do { bolpos.val := ep; incr lnum; string bp len s }
+    | [: `'\010'; s :] ep -> do { bolpos.val := ep; incr lnum; string bp (store len '\010') s }
     | [: `'\013'; s :] ep ->
         let (len, ep) =
           match Stream.peek s with

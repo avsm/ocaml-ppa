@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_analyse.ml,v 1.8 2003/11/24 10:39:28 starynke Exp $ *)
+(* $Id: odoc_analyse.ml,v 1.8.6.1 2004/08/06 13:42:16 guesdon Exp $ *)
 
 (** Analysis of source files. This module is strongly inspired from driver/main.ml :-) *)
 
@@ -20,6 +20,7 @@ open Clflags
 open Misc
 open Format
 open Typedtree
+
 
 (** Initialize the search path.
    The current directory is always searched first,
@@ -194,45 +195,49 @@ let process_error exn =
 let process_file ppf sourcefile =
   if !Odoc_args.verbose then 
     (
-     print_string (Odoc_messages.analysing sourcefile) ;
+     let f = match sourcefile with Odoc_args.Impl_file f | Odoc_args.Intf_file f -> f in
+     print_string (Odoc_messages.analysing f) ;
      print_newline ();
     );
-  if Filename.check_suffix sourcefile "ml" then
-    (
-     try
-       let (parsetree_typedtree_opt, input_file) = process_implementation_file ppf sourcefile in
-       match parsetree_typedtree_opt with
-         None ->
-           None
-       | Some (parsetree, typedtree) ->
-           let file_module = Ast_analyser.analyse_typed_tree sourcefile !Location.input_name parsetree typedtree in
-
-           file_module.Odoc_module.m_top_deps <- Odoc_dep.impl_dependencies parsetree ;
-
-           if !Odoc_args.verbose then 
-             (
-              print_string Odoc_messages.ok;
-              print_newline ()
-             );
-           remove_preprocessed input_file;
-           Some file_module
-     with
-     | Sys_error s 
-     | Failure s ->
-         prerr_endline s ;
-         incr Odoc_global.errors ;
-         None
-     | e ->
-         process_error e ;
-         incr Odoc_global.errors ;
-         None
-    )
-  else
-    if Filename.check_suffix sourcefile "mli" then
+  match sourcefile with
+    Odoc_args.Impl_file file ->
       (
        try
-         let (ast, signat, input_file) = process_interface_file ppf sourcefile in
-         let file_module = Sig_analyser.analyse_signature sourcefile !Location.input_name ast signat in
+	 let (parsetree_typedtree_opt, input_file) = process_implementation_file ppf file in
+	 match parsetree_typedtree_opt with
+           None ->
+             None
+	 | Some (parsetree, typedtree) ->
+             let file_module = Ast_analyser.analyse_typed_tree file
+		 !Location.input_name parsetree typedtree 
+	     in
+             file_module.Odoc_module.m_top_deps <- Odoc_dep.impl_dependencies parsetree ;
+
+             if !Odoc_args.verbose then 
+               (
+		print_string Odoc_messages.ok;
+		print_newline ()
+               );
+             remove_preprocessed input_file;
+             Some file_module
+       with
+       | Sys_error s 
+       | Failure s ->
+           prerr_endline s ;
+           incr Odoc_global.errors ;
+           None
+       | e ->
+           process_error e ;
+           incr Odoc_global.errors ;
+           None
+      )
+  | Odoc_args.Intf_file file ->
+      (
+       try
+         let (ast, signat, input_file) = process_interface_file ppf file in
+         let file_module = Sig_analyser.analyse_signature file
+	     !Location.input_name ast signat 
+	 in
 
          file_module.Odoc_module.m_top_deps <- Odoc_dep.intf_dependencies ast ;
 
@@ -253,10 +258,6 @@ let process_file ppf sourcefile =
            process_error e ;
            incr Odoc_global.errors ;
            None
-      )
-    else
-      (
-       raise (Failure (Odoc_messages.unknown_extension sourcefile))
       )
 
 (** Remove the class elements after the stop special comment. *)
@@ -445,4 +446,4 @@ let load_modules file =
       raise (Failure s)
 
 
-(* eof $Id: odoc_analyse.ml,v 1.8 2003/11/24 10:39:28 starynke Exp $ *)
+(* eof $Id: odoc_analyse.ml,v 1.8.6.1 2004/08/06 13:42:16 guesdon Exp $ *)

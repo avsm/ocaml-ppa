@@ -9,9 +9,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_args.mli,v 1.12 2003/11/24 10:39:29 starynke Exp $ *)
+(* $Id: odoc_args.mli,v 1.12.6.1 2004/08/06 13:42:16 guesdon Exp $ *)
 
 (** Analysis of the command line arguments. *)
+
+(** The kind of source file in arguments. *)
+type source_file =
+    Impl_file of string
+  | Intf_file of string
 
 (** The include_dirs in the OCaml compiler. *)
 val include_dirs : string list ref
@@ -161,7 +166,7 @@ val man_suffix : string ref
 val man_mini : bool ref
 
 (** The files to be analysed. *)
-val files : string list ref
+val files : source_file list ref
     
 (** To set the documentation generator. *)
 val set_doc_generator : doc_generator option -> unit

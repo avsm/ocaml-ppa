@@ -1,3 +1,17 @@
+;(***********************************************************************)
+;(*                                                                     *)
+;(*                           Objective Caml                            *)
+;(*                                                                     *)
+;(*                   Xavier Leroy and Jacques Garrigue                 *)
+;(*                                                                     *)
+;(*  Copyright 1997 Institut National de Recherche en Informatique et   *)
+;(*  en Automatique.  All rights reserved.  This file is distributed    *)
+;(*  under the terms of the GNU General Public License.                 *)
+;(*                                                                     *)
+;(***********************************************************************)
+
+;(* $Id: inf-caml.el,v 1.10.8.1 2004/08/09 16:09:33 doligez Exp $ *)
+
 ;;; inf-caml.el --- run the Caml toplevel in an Emacs buffer
 
 ;; Xavier Leroy, july 1993.
