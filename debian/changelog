@@ -1,5 +1,10 @@
-ocaml (3.07-8) unstable; urgency=low
+ocaml (3.07.2a-1) unstable; urgency=low
 
+  * New upstream .2 release, including the ocaml-3.07-pl2 patch.
+  * Removed the otherlibs/num library, since the copyright is non-free, and
+    the copyright got lost in the HP/Compaq acquisition. Thanks to Bdale
+    Garbee for trying to solve this issue, but since the release approaches,
+    and upstream is reimplementing the library anyway, i will remove it here.
   * Fixed broken emacs file caml-types.el. (Closes: #218226)
 
  -- Sven Luther <luther@debian.org>  Fri, 31 Oct 2003 14:46:02 +0100
