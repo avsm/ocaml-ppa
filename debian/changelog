@@ -1,3 +1,9 @@
+ocaml (3.07.2a-5) unstable; urgency=low
+
+  * Added amd64 native code compilers build.
+
+ -- Sven Luther <luther@debian.org>  Mon, 12 Jul 2004 12:06:33 +0200
+
 ocaml (3.07.2a-4) unstable; urgency=low
 
   * *-nox and -interp now conflict with the package which previously

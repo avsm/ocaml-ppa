@@ -94,7 +94,7 @@ Description: Runtime system for ocaml bytecode executables
  you do not require any graphical capilities for your runtime.
 
 Package: ocaml-native-compilers
-Architecture: arm alpha i386 ia64 powerpc sparc
+Architecture: alpha amd64 arm i386 ia64 powerpc sparc
 Depends: ocaml-nox (= ${Source-Version}), ocaml-nox-3.07, ${shlibs:Depends}
 Provides: ocaml-best-compilers
 Description: Native code compilers of the ocaml suite (the .opt ones)
