@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: mips.s,v 1.11 2004/01/03 12:51:19 doligez Exp $ */
+/* $Id: mips.s,v 1.11.4.1 2004/07/13 08:01:59 xleroy Exp $ */
 
 /* Asm part of the runtime system, Mips processor, IRIX n32 conventions */
 
@@ -96,7 +96,7 @@ caml_call_gc:
         s.d     $f30, 30 * 8($sp)
         s.d     $f31, 31 * 8($sp)
     /* Call the garbage collector */
-        jal     garbage_collection
+        jal     caml_garbage_collection
     /* Restore all regs used by the code generator */
         addu    $24, $sp, 0x100
         lw      $2, 2 * 4($24)
