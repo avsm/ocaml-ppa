@@ -10,7 +10,7 @@ Copyright:
 In the following, "the Library" refers to all files marked "Copyright
 INRIA" in the following directories and their sub-directories:
 
-    asmrun, byterun, config, maccaml, otherlibs, stdlib, win32caml
+  asmrun, byterun, camlp4, config, otherlibs, stdlib, win32caml
 
 The Library is distributed under the terms of the GNU Library General
 Public License version 2 (found in /usr/share/common-licenses/LGPL-2
