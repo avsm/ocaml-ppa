@@ -42,13 +42,10 @@ ocaml for Debian
   4) Starting from ocaml 3.05, ocaml now puts all dll.so files into a common
   stublibs directory, so the ocaml-ldconf tool for handling the ld.conf
   file is not needed anymore, but we will still keep it aroung until all
-  libraries are ported. ocaml-ldconf is now declared deprecated, and will
-  be removed in the near future, probably at the time of the ocaml 3.07
-  release, and outputs a warning in this sense when a package still using
-  it get installed.
+  libraries are ported. As of ocam l3.08, ocaml-ldconf is now deprecated
+  and not available anymore.
   Notice that user installed dll.so files should go into
   /usr/local/lib/ocaml/<ocaml_version>/stublibs which is searched before
   /usr/lib/ocaml/<ocaml_version>/stublibs.
-  The older method of using ocaml-ldconf is obsolet now.
 
  -- Mike Furr <mfurr@debian.org>, Thu Jun 24 14:23:14 2004

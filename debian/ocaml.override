@@ -1,7 +1,0 @@
-ocaml: binary-without-manpage labltk
-ocaml: cvsignore-file-in-package usr/share/doc/ocaml/examples_labltk/.cvsignore
-ocaml: binary-or-shlib-defines-rpath ./usr/lib/ocaml/3.06/stublibs/dllgraphics.so /usr/X11R6/lib
-ocaml: binary-or-shlib-defines-rpath ./usr/lib/ocaml/3.06/stublibs/dlllabltk.so /usr/lib:/usr/X11R6/lib
-ocaml: binary-or-shlib-defines-rpath ./usr/lib/ocaml/3.06/stublibs/dlltkanim.so /usr/lib:/usr/X11R6/lib
-ocaml: postinst-does-not-load-confmodule
-

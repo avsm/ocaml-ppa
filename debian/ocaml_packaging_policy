@@ -1,17 +1,17 @@
 
-Policy for the packaging of ocaml libraries and programs (version 0.4)
+Policy for the packaging of ocaml libraries and programs (version 0.5)
 ----------------------------------------------------------------------
 
   1) User installed libraries.
 
      Debian package installed ocaml related stuff install per default under
-     /usr/lib/ocaml/<ocaml_version> (that is /usr/lib/ocaml/3.06 for
-     ocaml 3.06).
+     /usr/lib/ocaml/<ocaml_version> (that is /usr/lib/ocaml/3.08 for
+     ocaml 3.08).
 
      User installed stuff cannot by policy go under this directory, since the
      /usr tree is for dpkg handled packages alone. As thus, user installed
      stuff should go into /usr/local/lib/ocaml/<ocaml_version> (that is
-     /usr/local/lib/ocaml/3.06 for ocaml 3.06).
+     /usr/local/lib/ocaml/3.08 for ocaml 3.08).
 
      Findlib knows about this, and will install user installed stuff into the
      right place. But this does not resolve the problem of user stuff which
@@ -32,32 +32,13 @@ Policy for the packaging of ocaml libraries and programs (version 0.4)
      Starting from ocaml 3.05, ocaml now puts all dll.so files into a common
      stublibs directory, so the ocaml-ldconf tool for handling the ld.conf
      file is not needed anymore, but we will still keep it aroung until all
-     libraries are ported. ocaml-ldconf is now declared deprecated, and will
-     be removed in the near future, probably at the time of the ocaml 3.07
-     release, and outputs a warning in this sense when a package still using
-     it get installed.
+     libraries are ported. Since ocaml 3.08, ocaml-ldconf is now deprecated
+     and removed.
 
      Notice that user installed dll.so files should go into
      /usr/local/lib/ocaml/<ocaml_version>/stublibs which is searched before
      /usr/lib/ocaml/<ocaml_version>/stublibs.
 
-     Ocaml-ldconf handled the ld.conf file in a different way than what ocaml
-     does. There are three involved files, /var/lib/ocaml/ld.conf which is
-     handled by dpkg and its dh_ocamlld generated postinst/prerm script,
-     /etc/ocaml/ld.conf which the sysadmin can adapt to its needs, and finally
-     /usr/lib/ocaml/ld.conf which is generated from the previous two by
-     ocaml-ldconf. Since many libraries don't know about this,
-     /usr/lib/ocaml/ld.conf will be made read only (except for the
-     ocaml-ldconf tool).
-
-     Ocaml library packager should install the stub libraries (dll.so) into
-     /usr/lib/ocaml/stublibs, so no further meddling with the ld.conf file is
-     needed. If (for whatever unrecommended reasons) a separate stub library
-     is wanted, then a call to dh_ocamlld should be added in the debian/rules
-     file as follows :
-
-       dh_ocamlld -p<package> <dir1> <dir2> ...
-     
   3) Findlib and META files
 
      Findlib [2] provides a tool (namely "ocamlfind") to handle OCaml libraries 
@@ -66,7 +47,7 @@ Policy for the packaging of ocaml libraries and programs (version 0.4)
      Meta information regarding a library are contained in files (usually one
      for each library), named "META" files, contained in the library directory.
      For example: the META file for the lablgtk [3] library is named "META" and
-     has path /usr/lib/ocaml/3.06/lablgtk/META, where "/usr/lib/ocaml/3.06" is
+     has path /usr/lib/ocaml/3.08/lablgtk/META, where "/usr/lib/ocaml/3.08" is
      the main OCaml installation directory and "lablgtk" is the lablgtk library
      directory.
 
@@ -179,24 +160,24 @@ Policy for the packaging of ocaml libraries and programs (version 0.4)
 
      The ocaml libraries should always depend on the exact version of ocaml
      they were build with. Since ocaml 3.06-13, the ocaml and ocaml-base
-     package now provide virtual packages called ocaml-3.06-1 and
-     ocaml-base-3.06-1 respectively.
+     package now provide virtual packages called ocaml-3.08 and
+     ocaml-base-3.081 respectively.
      
-     Ocaml libraries should build depend on ocaml-3.06-1 :
+     Ocaml libraries should build depend on ocaml-3.08 :
      
-       Build-Depends: ocaml-3.06-1
+       Build-Depends: ocaml-3.08
 
      Ocaml library runtime packages (the libxxx-ocaml)
-     should depend on ocaml-base-3.06-1 :
+     should depend on ocaml-base-3.08 :
 
-       Depends: ocaml-base-3.06-1
+       Depends: ocaml-base-3.08
 
      And Ocaml library developpment packages (the libxxx-ocaml-dev)
-     should depend on ocaml-3.06-1 :
+     should depend on ocaml-3.08 :
      
-       Depends: ocaml-3.06-1
+       Depends: ocaml-3.08
      
-     The old way of doing this (epends: ocaml (>= 3.06), ocaml (<< 3.07)) is
+     The old way of doing this (Depends: ocaml (>= 3.08), ocaml (<< 3.09)) is
      deprecated 
 
      It is necessary to do this to future proof library packages, so they will

@@ -177,7 +177,7 @@ install-arch:
 	install -m 644 utils/*.mli utils/*.cmi utils/*.cmo utils/*.cmx utils/*.o \
 		typing/*.mli typing/*.cmi typing/*.cmo typing/*.cmx typing/*.o \
 		parsing/*.mli parsing/*.cmi parsing/*.cmo parsing/*.cmx parsing/*.o \
-		$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/3.07/compiler-libs
+		$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/3.08/compiler-libs
 
 
 	dh_install -a

@@ -1,7 +1,7 @@
 usr/bin
-usr/lib/ocaml/3.07
-usr/lib/ocaml/3.07/config
-usr/include/ocaml/3.07
+usr/lib/ocaml/3.08
+usr/lib/ocaml/3.08/config
+usr/include/ocaml/3.08
 usr/share/man/man1
 usr/share/man/man3
 usr/share/emacs/site-lisp/ocaml

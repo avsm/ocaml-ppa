@@ -1,6 +1,0 @@
-ocaml-native-compilers: binary-without-manpage camlp4o.opt
-ocaml-native-compilers: binary-without-manpage camlp4r.opt
-ocaml-native-compilers: binary-without-manpage ocamlc.opt
-ocaml-native-compilers: binary-without-manpage ocamldoc.opt
-ocaml-native-compilers: binary-without-manpage ocamllex.opt
-ocaml-native-compilers: binary-without-manpage ocamlopt.opt
