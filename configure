@@ -754,7 +754,7 @@ fi
 
 # Configuration for the libraries
 
-otherlibraries="unix str num dynlink bigarray"
+otherlibraries="unix str dynlink bigarray"
 
 # For the Unix library
 

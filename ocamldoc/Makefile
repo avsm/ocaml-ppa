@@ -60,7 +60,6 @@ INCLUDES_NODEP=	-I $(OCAMLSRCDIR)/stdlib \
 	-I $(OCAMLSRCDIR)/otherlibs/str \
 	-I $(OCAMLSRCDIR)/otherlibs/dynlink \
 	-I $(OCAMLSRCDIR)/otherlibs/unix \
-	-I $(OCAMLSRCDIR)/otherlibs/num \
 	-I $(OCAMLSRCDIR)/otherlibs/graph
 
 INCLUDES=$(INCLUDES_DEP) $(INCLUDES_NODEP)
@@ -180,7 +179,6 @@ STDLIB_MLIS=../stdlib/*.mli \
 	../otherlibs/unix/unix.mli \
 	../otherlibs/str/str.mli \
 	../otherlibs/bigarray/bigarray.mli \
-	../otherlibs/num/num.mli
 
 all: exe lib manpages
 exe: $(OCAMLDOC)
@@ -206,11 +204,11 @@ manpages: stdlib_man/Pervasives.o
 
 odoc_crc.ml: $(CMIFILES)
 	$(EXTRAC_CRC) $(INCLUDES) \
-	Arg Arith_status Array Big_int Buffer Callback Char Digest Dynlink \
+	Arg Array Buffer Callback Char Digest Dynlink \
 	Filename Format Gc Genlex Hashtbl \
-	Lazy Lexing List Map Marshal Nat Nativeint \
-	Num Obj CamlinternalOO Outcometree Parsing Pervasives Printexc \
-	Printf Profiling Queue Random Ratio \
+	Lazy Lexing List Map Marshal Nativeint \
+	Obj CamlinternalOO Outcometree Parsing Pervasives Printexc \
+	Printf Profiling Queue Random \
 	Set Sort Stack Std_exit Str Stream \
 	String Sys Topdirs Toploop Unix Weak \
 	Printast Ident Tbl Misc Config Clflags Warnings Ccomp \
