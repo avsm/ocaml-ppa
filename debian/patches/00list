@@ -1,3 +1,4 @@
 versioned_libdir
 objinfo
 hppa
+config_bignum

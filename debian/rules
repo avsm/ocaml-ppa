@@ -135,6 +135,8 @@ install-arch:
 		$(CURDIR)/debian/ocaml/usr/share/lintian/overrides/ocaml
 	install -m 644 otherlibs/labltk/README \
 		$(CURDIR)/debian/README.labltk
+	install -m 644 config/Makefile \
+		$(CURDIR)/debian/ocaml/usr/lib/ocaml/$(VERSION)/config/Makefile
 
 	# Then move the ocaml-base package.
 	dh_movefiles -pocaml-base --sourcedir=debian/ocaml
