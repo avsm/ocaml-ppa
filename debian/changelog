@@ -1,3 +1,10 @@
+ocaml (3.08.3-3) unstable; urgency=medium
+
+  * Missed the include symlink in 3.08 -> 3.08.3 migration.
+    /me slaps myself, really need to automate this.
+
+ -- Sven Luther <luther@debian.org>  Wed, 23 Mar 2005 00:30:19 +0100
+
 ocaml (3.08.3-2) unstable; urgency=medium
 
   * Missed some 3.08 -> 3.08.3 migration for ld.conf files.
