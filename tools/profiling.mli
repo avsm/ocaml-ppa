@@ -12,8 +12,9 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: profiling.mli,v 1.5 2001/12/07 13:41:02 xleroy Exp $ *)
+(* $Id: profiling.mli,v 1.5.10.1 2004/11/18 23:52:08 doligez Exp $ *)
 
 (* Run-time library for profiled programs *)
 
-val counters: (string * (string * int array)) list ref
+val counters: (string * (string * int array)) list ref;;
+val incr: int array -> int -> unit;;

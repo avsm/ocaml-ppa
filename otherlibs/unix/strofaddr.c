@@ -11,10 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: strofaddr.c,v 1.9 2004/04/09 13:25:22 xleroy Exp $ */
+/* $Id: strofaddr.c,v 1.9.2.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
+#include <fail.h>
 #include "unixsupport.h"
 
 #ifdef HAS_SOCKETS

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: plexer.mli,v 1.7 2003/07/15 09:13:58 mauny Exp $ *)
+(* $Id: plexer.mli,v 1.7.4.1 2004/10/07 09:18:13 mauny Exp $ *)
 
 (** A lexical analyzer. *)
 
@@ -49,6 +49,14 @@ value gmake : unit -> Token.glexer Token.t;
 
        The lexer do not use global (mutable) variables: instantiations
        of [Plexer.gmake ()] do not perturb each other.  *)
+
+value make_lexer :
+    unit -> (Token.glexer Token.t * (ref int * ref int * ref string));
+   (** [make_lexer] builds a lexer as [gmake does], but returns also
+       the triple [(bolpos, lnum, fname)] where
+- [bolpos] contains the character number of the beginning of the current line,
+- [lnum] contains the current line number and
+- [fname] contains the name of the file being parsed. *)
 
 value dollar_for_antiquotation : ref bool;
    (** When True (default), the next call to [Plexer.make ()] returns a

@@ -10,7 +10,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id: caml-types.el,v 1.29.6.1 2004/08/09 16:09:33 doligez Exp $ *)
+;(* $Id: caml-types.el,v 1.29.6.2 2004/11/15 12:50:54 doligez Exp $ *)
 
 ; An emacs-lisp complement to the "-dtypes" option of ocamlc and ocamlopt.
 
@@ -112,8 +112,8 @@ For the moment, the only possible keyword is \"type\"."
    . Even if type checking fails, you can still look at the types
      in the file, up to where the type checker failed.
 
-Types are also diplayed in the buffer *caml-types*, which buffer is
-display when the commande is called with Prefix argument 4. 
+Types are also displayed in the buffer *caml-types*, which is
+displayed when the command is called with Prefix argument 4. 
 
 See also `caml-types-explore' for exploration by mouse dragging.
 See `caml-types-location-re' for annotation file format.

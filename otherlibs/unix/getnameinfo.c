@@ -11,13 +11,13 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getnameinfo.c,v 1.1 2004/04/09 13:25:21 xleroy Exp $ */
+/* $Id: getnameinfo.c,v 1.1.4.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <string.h>
 #include <mlvalues.h>
 #include <alloc.h>
-#include <memory.h>
 #include <fail.h>
+#include <memory.h>
 #include <signals.h>
 #include "unixsupport.h"
 

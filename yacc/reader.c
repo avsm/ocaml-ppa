@@ -12,7 +12,7 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: reader.c,v 1.28 2004/06/12 11:59:11 xleroy Exp $ */
+/* $Id: reader.c,v 1.28.2.1 2004/08/20 15:26:02 doligez Exp $ */
 
 #include <string.h>
 #include "defs.h"
@@ -825,13 +825,17 @@ get_tag(void)
     register int i;
     register char *s;
     char *t_line = dup_line();
+    long bracket_depth;
 
     cinc = 0;
+    bracket_depth = 0;
     while (1) {
       c = *++cptr;
       if (c == EOF) unexpected_EOF();
       if (c == '\n') syntax_error(lineno, line, cptr);
-      if (c == '>' && cptr[-1] != '-') break;
+      if (c == '>' && 0 == bracket_depth && cptr[-1] != '-') break;
+      if (c == '[') ++ bracket_depth;
+      if (c == ']') -- bracket_depth;
       cachec(c);
     }
     ++cptr;

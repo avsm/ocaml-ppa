@@ -11,10 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: wait.c,v 1.17 2001/12/07 13:40:39 xleroy Exp $ */
+/* $Id: wait.c,v 1.17.6.2 2004/11/02 16:21:25 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
+#include <fail.h>
 #include <memory.h>
 #include <signals.h>
 #include "unixsupport.h"
@@ -83,11 +84,11 @@ static int wait_flag_table[] = {
 
 CAMLprim value unix_waitpid(value flags, value pid_req)
 {
-  int pid, status;
-  
+  int pid, status, cv_flags;
+
+  cv_flags = convert_flag_list(flags, wait_flag_table);
   enter_blocking_section();
-  pid = waitpid(Int_val(pid_req), &status, 
-                convert_flag_list(flags, wait_flag_table));
+  pid = waitpid(Int_val(pid_req), &status, cv_flags);
   leave_blocking_section();
   if (pid == -1) uerror("waitpid", Nothing);
   return alloc_process_status(pid, status);

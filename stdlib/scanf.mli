@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: scanf.mli,v 1.45.6.1 2004/06/24 11:19:05 doligez Exp $ *)
+(* $Id: scanf.mli,v 1.45.6.2 2004/09/09 07:44:30 weis Exp $ *)
 
 (** Formatted input functions. *)
 
@@ -141,7 +141,7 @@ val bscanf :
      mentioned in the range of characters [range] (or not mentioned in
      it, if the range starts with [^]). Returns a [string] that can be
      empty, if no character in the input matches the range. Hence,
-     [\['0'-'9'\]] returns a string representing a decimal number or an empty
+     [\[0-9\]] returns a string representing a decimal number or an empty
      string if no decimal digit is found. 
      If a closing bracket appears in a range, it must occur as the
      first character of the range (or just after the [^] in case of

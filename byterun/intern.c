@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: intern.c,v 1.58 2004/06/19 16:02:07 xleroy Exp $ */
+/* $Id: intern.c,v 1.58.2.1 2004/11/03 19:47:20 doligez Exp $ */
 
 /* Structured input, compact format */
 
@@ -381,6 +381,8 @@ static void intern_add_to_heap(mlsize_t whsize)
       caml_make_free_blocks ((value *) intern_dest,
                              end_extra_block - intern_dest, 0);
     }
+    caml_allocated_words +=
+      Wsize_bsize ((char *) intern_dest - intern_extra_block);
     caml_add_to_heap(intern_extra_block);
   }
 }

@@ -11,8 +11,9 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: rewinddir.c,v 1.11 2004/06/19 15:38:31 xleroy Exp $ */
+/* $Id: rewinddir.c,v 1.11.2.1 2004/08/23 11:31:44 doligez Exp $ */
 
+#include <fail.h>
 #include <mlvalues.h>
 #include "unixsupport.h"
 #include <errno.h>

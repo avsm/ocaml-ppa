@@ -11,8 +11,9 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getpeername.c,v 1.10 2004/04/09 13:25:21 xleroy Exp $ */
+/* $Id: getpeername.c,v 1.10.2.1 2004/08/23 11:31:44 doligez Exp $ */
 
+#include <fail.h>
 #include <mlvalues.h>
 #include "unixsupport.h"
 

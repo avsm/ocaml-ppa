@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: set.ml,v 1.18 2004/04/23 10:01:54 xleroy Exp $ *)
+(* $Id: set.ml,v 1.18.4.1 2004/11/03 21:19:49 doligez Exp $ *)
 
 (* Sets over ordered types *)
 
@@ -290,7 +290,7 @@ module Make(Ord: OrderedType) =
     let rec fold f s accu =
       match s with
         Empty -> accu
-      | Node(l, v, r, _) -> fold f l (f v (fold f r accu))
+      | Node(l, v, r, _) -> fold f r (f v (fold f l accu))
 
     let rec for_all p = function
         Empty -> true

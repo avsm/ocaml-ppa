@@ -12,13 +12,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: profiling.ml,v 1.6 2001/12/07 13:41:01 xleroy Exp $ *)
+(* $Id: profiling.ml,v 1.6.10.1 2004/11/18 23:52:08 doligez Exp $ *)
 
 (* Run-time library for profiled programs *)
 
 type profiling_counters = (string * (string * int array)) list
 
-let counters = ref ([] : profiling_counters)
+let counters = ref ([] : profiling_counters);;
+let incr a i = a.(i) <- a.(i) + 1;;
 
 exception Bad_profile
 

@@ -11,10 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: lockf.c,v 1.13 2004/06/11 23:16:14 doligez Exp $ */
+/* $Id: lockf.c,v 1.13.2.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <errno.h>
 #include <fcntl.h>
+#include <fail.h>
 #include <mlvalues.h>
 #include <signals.h>
 #include "unixsupport.h"

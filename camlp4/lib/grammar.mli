@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: grammar.mli,v 1.6 2004/05/12 15:22:42 mauny Exp $ *)
+(* $Id: grammar.mli,v 1.6.2.1 2004/11/22 13:41:24 mauny Exp $ *)
 
 (** Extensible grammars.
 
@@ -163,6 +163,10 @@ value warning_verbose : ref bool;
 
 value strict_parsing : ref bool;
    (** Flag to apply strict parsing, without trying to recover errors;
+       default = [False] *)
+
+value strict_parsing_warning : ref bool;
+   (** Flag for displaying a warning when entering recovery mode;
        default = [False] *)
 
 value print_entry : Format.formatter -> Gramext.g_entry 'te -> unit;

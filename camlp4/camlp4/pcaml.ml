@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pcaml.ml,v 1.13.2.3 2004/07/12 22:33:50 mauny Exp $ *)
+(* $Id: pcaml.ml,v 1.13.2.4 2004/10/07 09:18:13 mauny Exp $ *)
 
 value version = Sys.ocaml_version;
 
@@ -479,3 +479,7 @@ value string_of pr x =
 ;
 
 value inter_phrases = ref None;
+
+value position =
+  ref(ref 0, ref 0, ref "")
+;

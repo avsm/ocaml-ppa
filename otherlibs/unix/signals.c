@@ -11,12 +11,13 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: signals.c,v 1.9 2001/12/07 13:40:35 xleroy Exp $ */
+/* $Id: signals.c,v 1.9.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <errno.h>
 #include <signal.h>
 
 #include <alloc.h>
+#include <fail.h>
 #include <memory.h>
 #include <mlvalues.h>
 #include <signals.h>

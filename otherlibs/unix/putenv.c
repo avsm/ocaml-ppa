@@ -11,11 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: putenv.c,v 1.8 2001/12/07 13:40:32 xleroy Exp $ */
+/* $Id: putenv.c,v 1.8.6.1 2004/08/23 11:31:44 doligez Exp $ */
 
 #include <stdlib.h>
 #include <string.h>
 
+#include <fail.h>
 #include <memory.h>
 #include <mlvalues.h>
 

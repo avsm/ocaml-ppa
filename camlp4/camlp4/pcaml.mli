@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pcaml.mli,v 1.7.2.3 2004/07/12 22:33:51 mauny Exp $ *)
+(* $Id: pcaml.mli,v 1.7.2.4 2004/10/07 09:18:13 mauny Exp $ *)
 
 (** Language grammar, entries and printers.
 
@@ -36,6 +36,11 @@ value parse_implem :
        use another technology than the Camlp4 extended grammars. By
        default, they use the grammars entries [implem] and [interf]
        defined below. *)
+
+value position: ref (ref int * ref int * ref string);
+   (** References holding respectively the character number of the beginning
+       of the current line, the current line number and the name of the file
+       being parsed. *)
 
 value gram : Grammar.g;
    (** Grammar variable of the OCaml language *)

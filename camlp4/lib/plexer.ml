@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: plexer.ml,v 1.20.2.2 2004/08/18 11:17:37 mauny Exp $ *)
+(* $Id: plexer.ml,v 1.20.2.4 2004/10/07 09:18:13 mauny Exp $ *)
 
 open Stdpp;
 open Token;
@@ -316,7 +316,18 @@ value next_token_fun dfa ssd find_kwd fname lnum bolpos glexr =
   and string bp len =
     parser
     [ [: `'"' :] -> len
-    | [: `'\\'; `c; s :] ep  -> string bp (store (store len '\\') c) s
+    | [: `'\\'; `c; s :] ep  ->
+        let len = store len '\\' in
+        match c with [
+          '\010' -> do { bolpos.val := ep; incr lnum; string bp (store len c) s }
+        | '\013' ->
+            let (len, ep) =
+              match Stream.peek s with [
+                Some '\010' -> do { Stream.junk s; (store (store len '\013') '\010', ep+1) }
+              | _ -> (store len '\013', ep) ] in
+            do { bolpos.val := ep; incr lnum; string bp len s }
+        | c -> string bp (store len c) s
+        ]
     | [: `'\010'; s :] ep -> do { bolpos.val := ep; incr lnum; string bp (store len '\010') s }
     | [: `'\013'; s :] ep ->
         let (len, ep) =
@@ -558,7 +569,8 @@ value func kwd_table glexr =
   let find = Hashtbl.find kwd_table in
   let dfa = dollar_for_antiquotation.val in
   let ssd = specific_space_dot.val in
-  Token.lexer_func_of_parser (next_token_fun dfa ssd find fname lnum bolpos glexr)
+  (Token.lexer_func_of_parser (next_token_fun dfa ssd find fname lnum bolpos glexr),
+   (bolpos, lnum, fname))
 ;
 
 value rec check_keyword_stream =
@@ -740,7 +752,7 @@ value tok_match =
   | tok -> Token.default_match tok ]
 ;
 
-value gmake () =
+value make_lexer () =
   let kwd_table = Hashtbl.create 301 in
   let id_table = Hashtbl.create 301 in
   let glexr =
@@ -748,13 +760,18 @@ value gmake () =
      {tok_func = fun []; tok_using = fun []; tok_removing = fun [];
       tok_match = fun []; tok_text = fun []; tok_comm = None}
   in
+  let (f,pos) = func kwd_table glexr in
   let glex =
-    {tok_func = func kwd_table glexr;
+    {tok_func = f;
      tok_using = using_token kwd_table id_table;
      tok_removing = removing_token kwd_table id_table; tok_match = tok_match;
      tok_text = text; tok_comm = None}
   in
-  do { glexr.val := glex; glex }
+  do { glexr.val := glex; (glex, pos) }
+;
+
+value gmake () =
+  let (p,_) = make_lexer () in p
 ;
 
 value tparse =
@@ -777,6 +794,6 @@ value make () =
      {tok_func = fun []; tok_using = fun []; tok_removing = fun [];
       tok_match = fun []; tok_text = fun []; tok_comm = None}
   in
-  {func = func kwd_table glexr; using = using_token kwd_table id_table;
+  {func = fst(func kwd_table glexr); using = using_token kwd_table id_table;
    removing = removing_token kwd_table id_table; tparse = tparse; text = text}
 ;
