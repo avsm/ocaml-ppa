@@ -1,4 +1,4 @@
-ocaml (3.08.3-1) unstable; urgency=low
+ocaml (3.08.3-0.experimental.1) experimental; urgency=low
 
   * New upstream stable point version.
     - breaks binary compatibility, we thus have to up the ABI version
