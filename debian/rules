@@ -93,7 +93,7 @@ ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	cp -f /usr/share/misc/config.guess config/gnu/config.guess
 endif
 	
-	dh_clean debian/README.labltk
+	dh_clean debian/README.labltk camlp4/config/Makefile.cnf camlp4/config/Makefile config/m.h config/s.h config/Makefile
 
 install: install-indep install-arch
 install-indep:
@@ -104,12 +104,13 @@ install-indep:
 	
 	# Add here commands to install the indep part of the package into
 	# debian/<package>-doc.
-	for i in `cat debian/ocaml-source.files`; do				\
-		install -m 644 -D $$i						\
-		debian/ocaml-source/usr/src/ocaml/ocaml-$(VERSION)/$$i;		\
+	for i in `cat debian/ocaml-source.files`; do			\
+		install -m 644 -D $$i					\
+		debian/ocaml-source/usr/src/ocaml-$(VERSION)/$$i;	\
 	done
-	install -m 644 debian/ocaml-source.override \
-		$(CURDIR)/debian/ocaml-source/usr/share/lintian/overrides/ocaml-source
+	tar cjf debian/ocaml-source/usr/src/ocaml-source-$(VERSION).tar.bz2	\
+		-C debian/ocaml-source/usr/src ocaml-$(VERSION)
+	rm -rf debian/ocaml-source/usr/src/ocaml-$(VERSION)
 	
 	dh_install -i
 
@@ -139,7 +140,7 @@ install-arch:
 	dh_movefiles -pocaml-base --sourcedir=debian/ocaml
 	install -m 644 debian/ld.conf \
 		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(VERSION)
-	#install -m 644 debian/ocaml-base.override \
+	install -m 644 debian/ocaml-base.override \
 		$(CURDIR)/debian/ocaml-base/usr/share/lintian/overrides/ocaml-base
 
 	# The ocaml-native-compilers, if available.
@@ -190,18 +191,19 @@ binary-indep: build-indep install-indep
 # Build architecture dependant packages using the common target.
 binary-arch: build-arch install-arch
 	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
+	dh_shlibdeps -a
 	if [ ! -e opt-built-stamp ]; then			\
 	  dh_gencontrol -pocaml					\
-		-u-VF:BestProvides=" ,ocaml-best-compilers";	\
+		-u-VF:BestProvides=",ocaml-best-compilers";	\
 	else 							\
 	  dh_gencontrol -pocaml					\
 	  	-u-VF:BestProvides="";				\
 	  dh_gencontrol -pocaml-native-compilers;		\
 	fi
-	dh_gencontrol -pocaml-base;				\
-	dh_gencontrol -pocaml-source;				\
+	dh_gencontrol -pocaml-base
+	dh_gencontrol -pocaml-source
 	dh_md5sums -a 
 	dh_builddeb -a
 
-binary: binary-arch binary-indep
+binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install install-indep install-arch 

@@ -1,2 +1,3 @@
 versioned_libdir.dpatch
 objinfo.dpatch
+camlp4_optional.dpatch

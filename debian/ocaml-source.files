@@ -1,4 +1,3 @@
-asmcomp/alpha
 asmcomp/alpha/emit.mlp
 asmcomp/alpha/arch.ml
 asmcomp/alpha/reload.ml
@@ -332,7 +331,6 @@ camlp4/camlp4/reloc.ml
 camlp4/camlp4/reloc.mli
 camlp4/camlp4/spretty.ml
 camlp4/camlp4/spretty.mli
-camlp4/compile
 camlp4/compile/Makefile
 camlp4/compile/comp_head.ml
 camlp4/compile/comp_trail.ml
@@ -444,7 +442,6 @@ camlp4/top/Makefile
 camlp4/top/camlp4_top.ml
 camlp4/top/oprint.ml
 camlp4/top/rprint.ml
-config/auto-aux
 config/auto-aux/async_io.c
 config/auto-aux/align.c
 config/auto-aux/ansi.c
@@ -963,21 +960,17 @@ otherlibs/num/bignum/c/bztest.c
 otherlibs/num/bignum/c/KerN.c
 otherlibs/num/bignum/c/bz.c
 otherlibs/num/bignum/c/bzf.c
-otherlibs/num/bignum/c/bn
 otherlibs/num/bignum/c/bn/bnDivide.c
 otherlibs/num/bignum/c/bn/bnCmp.c
 otherlibs/num/bignum/c/bn/bnInit.c
 otherlibs/num/bignum/c/bn/bnMult.c
 otherlibs/num/bignum/c/testKerN.c
-otherlibs/num/bignum/h
 otherlibs/num/bignum/h/BigNum.h
 otherlibs/num/bignum/h/BigZ.h
 otherlibs/num/bignum/h/BntoBnn.h
 otherlibs/num/bignum/Makefile
 otherlibs/num/bignum/README
-otherlibs/num/bignum/o
 otherlibs/num/bignum/o/EMPTY
-otherlibs/num/bignum/s
 otherlibs/num/bignum/s/68KerN.s
 otherlibs/num/bignum/s/68KerN_mot.s
 otherlibs/num/bignum/s/68KerN_sony.s

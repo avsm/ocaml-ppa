@@ -1,30 +1,49 @@
+ocaml (3.07-4) unstable; urgency=low
+
+  * Arg, dh_gencontrol seems to not support putting stuff after the
+    substitution variable, which seems somewhat broken to me, anyway, let's
+    put the substitution variable last.
+  * Forgot to add the camlp4_optional.dpatch to the list of patches to be
+    applied :(. (Closes: #213881)
+
+ -- Sven Luther <luther@debian.org>  Fri,  3 Oct 2003 10:54:26 +0200
+
+ocaml (3.07-3) unstable; urgency=low
+
+  * Fixed BestProvide magic, as a space was breaking non-native builds.
+
+ -- Sven Luther <luther@debian.org>  Fri,  3 Oct 2003 08:16:18 +0200
+
+ocaml (3.07-2) unstable; urgency=low
+
+  * I mistakenly uploaded to experimental, and thus am forced to upload a -2.
+
+ -- Sven Luther <luther@debian.org>  Thu,  2 Oct 2003 11:41:53 +0200
+
 ocaml (3.07-1) experimental; urgency=low
 
-  * New upstream version.
-
- -- Sven Luther <luther@debian.org>  Tue, 30 Sep 2003 19:35:17 +0200
-
-ocaml (3.06.99.beta2-2) experimental; urgency=low
-
+  * New upstream release.
+    - Most debian patches where included upstream.
+    - Standard library now use .3o suffixes. (Closes: #205391)
+  * Dpatchification.
+  * Applied the camlp4 optional arguments fix.
   * Fixed emacsen-install so that caml-xemacs and caml-emacs get installed
     only for the corresponding emacs flavors. Thanks go to Jerome Marant.
+  * Moved ocaml-source into a tarball.
 
- -- Sven Luther <luther@debian.org>  Fri,  5 Sep 2003 15:34:48 +0200
+ -- Sven Luther <luther@debian.org>  Wed,  1 Oct 2003 13:31:23 +0200
 
-ocaml (3.06.99.beta2-1) experimental; urgency=low
+ocaml (3.06-21) unstable; urgency=low
 
-  * New ocaml 3.07 beta release.
-  * Integrated some of the debian patches :)))
-  * Disabled caml-xemacs.el as it seems broken.
+  * I botched the debian/rules in the -20 release, fixed it.
 
- -- Sven Luther <luther@debian.org>  Tue, 26 Aug 2003 21:10:27 +0200
+ -- Sven Luther <luther@debian.org>  Wed, 20 Aug 2003 13:57:28 +0200
 
-ocaml (3.06.99.beta1-1) experimental; urgency=low
+ocaml (3.06-20) unstable; urgency=low
 
-  * Ocaml 3.07 beta 1 release.
-  * Dpatchification.
+  * Fixed BestProvides substvar stuff. (Closes: #205228, #204537)
 
- -- Sven Luther <luther@debian.org>  Wed,  6 Aug 2003 13:53:08 +0200
+ -- Sven Luther <luther@debian.org>  Tue, 19 Aug 2003 18:36:29 +0200
 
 ocaml (3.06-19) unstable; urgency=low
 

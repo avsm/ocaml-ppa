@@ -2,7 +2,7 @@ Source: ocaml
 Section: devel
 Priority: optional
 Maintainer: Sven Luther <luther@debian.org>
-Build-Depends: debhelper (>> 4.1.0), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch 
+Build-Depends: debhelper (>> 4.1.0), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2
 Standards-Version: 3.6.0
 
 Package: ocaml
@@ -10,7 +10,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, libncurses5-dev, ocaml-base (= ${Source-Version}), ocaml-base-3.07
 Suggests: xlibs-dev, tcl8.4-dev, tk8.4-dev, ocaml-doc, libgdbm-dev, emacsen
 Recommends: ledit, file
-Provides: ocaml-3.07${F:BestProvides}
+Provides: ocaml-3.07 ${F:BestProvides}
 Replaces: camlp4
 Conflicts: camlp4, camlidl (<< 1.04)
 Description: ML language implementation with a class-based object system

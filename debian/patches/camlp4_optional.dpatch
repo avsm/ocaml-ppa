@@ -1,0 +1,452 @@
+#! /bin/sh -e 
+## versioned_libdir.dpatch by  <luther@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Makefiles, configure scripts and other build stuff adapted for
+## DP: debian package creation
+
+if [ $# -ne 1 ]; then
+    echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+    exit 1
+fi
+case "$1" in
+    -patch) patch -f --no-backup-if-mismatch -p1 < $0;;
+    -unpatch) patch -f --no-backup-if-mismatch -R -p1 < $0;;	
+    *)
+	echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+	exit 1;;
+esac
+
+exit 0
+@DPATCH@
+diff -ur ocaml-3.07/camlp4/camlp4/ast2pt.ml ocaml.cvs/camlp4/camlp4/ast2pt.ml
+--- ocaml-3.07/camlp4/camlp4/ast2pt.ml	2003-07-16 20:59:12.000000000 +0200
++++ ocaml.cvs/camlp4/camlp4/ast2pt.ml	2003-09-30 16:39:26.000000000 +0200
+@@ -10,7 +10,7 @@
+ (*                                                                     *)
+ (***********************************************************************)
+ 
+-(* $Id: ast2pt.ml,v 1.25 2003/07/16 18:59:12 mauny Exp $ *)
++(* $Id: ast2pt.ml,v 1.26 2003/09/30 14:39:26 mauny Exp $ *)
+ 
+ open Stdpp;
+ open MLast;
+@@ -177,10 +177,10 @@
+   | TyObj loc fl v -> mktyp loc (Ptyp_object (meth_list loc fl v))
+   | TyCls loc id ->
+       mktyp loc (Ptyp_class (long_id_of_string_list loc id) [] [])
+-  | TyLab loc _ _ -> error loc "labeled type not allowed here"
++  | TyLab loc _ _ -> error loc "labelled type not allowed here"
+   | TyLid loc s -> mktyp loc (Ptyp_constr (lident s) [])
+-  | TyMan loc _ _ -> error loc "type manifest not allowed here"
+-  | TyOlb loc lab _ -> error loc "labeled type not allowed here"
++  | TyMan loc _ _ -> error loc "manifest type not allowed here"
++  | TyOlb loc lab _ -> error loc "labelled type not allowed here"
+   | TyPol loc pl t -> mktyp loc (Ptyp_poly pl (ctyp t))
+   | TyQuo loc s -> mktyp loc (Ptyp_var s)
+   | TyRec loc _ _ -> error loc "record type not allowed here"
+diff -ur ocaml-3.07/camlp4/etc/pa_o.ml ocaml.cvs/camlp4/etc/pa_o.ml
+--- ocaml-3.07/camlp4/etc/pa_o.ml	2003-09-25 14:05:05.000000000 +0200
++++ ocaml.cvs/camlp4/etc/pa_o.ml	2003-09-30 16:39:38.000000000 +0200
+@@ -10,7 +10,7 @@
+ (*                                                                     *)
+ (***********************************************************************)
+ 
+-(* $Id: pa_o.ml,v 1.52 2003/09/25 12:05:05 mauny Exp $ *)
++(* $Id: pa_o.ml,v 1.54 2003/09/30 14:39:38 mauny Exp $ *)
+ 
+ open Stdpp;
+ open Pcaml;
+@@ -1148,16 +1148,16 @@
+       | i = LIDENT -> [i] ] ]
+   ;
+   (* Labels *)
+-  ctyp: AFTER "arrow"
+-    [ NONA
++  ctyp: LEVEL "arrow"
++    [ RIGHTA
+       [ i = lident_colon; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
+-          <:ctyp< ~ $i$ : $t1$ -> $t2$ >>
++          <:ctyp< ( ~ $i$ : $t1$ ) -> $t2$ >>
+       | i = OPTLABEL; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
+-          <:ctyp< ? $i$ : $t1$ -> $t2$ >>
++          <:ctyp< ( ? $i$ : $t1$ ) -> $t2$ >>
+       | i = QUESTIONIDENT; ":"; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
+-          <:ctyp< ? $i$ : $t1$ -> $t2$ >>
++          <:ctyp< ( ? $i$ : $t1$ ) -> $t2$ >>
+       | "?"; i=lident_colon;t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
+-          <:ctyp< ? $i$ : $t1$ -> $t2$ >> ] ]
++          <:ctyp< ( ? $i$ : $t1$ ) -> $t2$ >> ] ]
+   ;
+   ctyp: LEVEL "simple"
+     [ [ "["; OPT "|"; rfl = LIST1 row_field SEP "|"; "]" ->
+Seulement dans ocaml.cvs/camlp4/lib: CVS
+Seulement dans ocaml.cvs/camlp4/man: CVS
+Seulement dans ocaml.cvs/camlp4/meta: CVS
+diff -ur ocaml-3.07/camlp4/meta/pa_r.ml ocaml.cvs/camlp4/meta/pa_r.ml
+--- ocaml-3.07/camlp4/meta/pa_r.ml	2003-09-25 14:05:06.000000000 +0200
++++ ocaml.cvs/camlp4/meta/pa_r.ml	2003-09-30 12:20:06.000000000 +0200
+@@ -10,7 +10,7 @@
+ (*                                                                     *)
+ (***********************************************************************)
+ 
+-(* $Id: pa_r.ml,v 1.53 2003/09/25 12:05:06 mauny Exp $ *)
++(* $Id: pa_r.ml,v 1.54 2003/09/30 10:20:06 mauny Exp $ *)
+ 
+ open Stdpp;
+ open Pcaml;
+@@ -748,8 +748,8 @@
+       | i = LIDENT -> [i] ] ]
+   ;
+   (* Labels *)
+-  ctyp: AFTER "arrow"
+-    [ NONA
++  ctyp: LEVEL "arrow"
++    [ RIGHTA
+       [ i = TILDEIDENT; ":"; t = SELF -> <:ctyp< ~ $i$ : $t$ >>
+       | i = LABEL; t = SELF -> <:ctyp< ~ $i$ : $t$ >>
+       | i = QUESTIONIDENT; ":"; t = SELF -> <:ctyp< ? $i$ : $t$ >> 
+diff -ur ocaml-3.07/camlp4/meta/q_MLast.ml ocaml.cvs/camlp4/meta/q_MLast.ml
+--- ocaml-3.07/camlp4/meta/q_MLast.ml	2003-07-16 14:50:08.000000000 +0200
++++ ocaml.cvs/camlp4/meta/q_MLast.ml	2003-09-30 13:38:04.000000000 +0200
+@@ -10,7 +10,7 @@
+ (*                                                                     *)
+ (***********************************************************************)
+ 
+-(* $Id: q_MLast.ml,v 1.51 2003/07/16 12:50:08 mauny Exp $ *)
++(* $Id: q_MLast.ml,v 1.52 2003/09/30 11:38:04 mauny Exp $ *)
+ 
+ value gram = Grammar.gcreate (Plexer.gmake ());
+ 
+@@ -127,7 +127,9 @@
+ value a_STRING = Grammar.Entry.create gram "a_STRING";
+ value a_CHAR = Grammar.Entry.create gram "a_CHAR";
+ value a_TILDEIDENT = Grammar.Entry.create gram "a_TILDEIDENT";
++value a_LABEL = Grammar.Entry.create gram "a_LABEL";
+ value a_QUESTIONIDENT = Grammar.Entry.create gram "a_QUESTIONIDENT";
++value a_OPTLABEL = Grammar.Entry.create gram "a_OPTLABEL";
+ 
+ value o2b =
+   fun
+@@ -1007,10 +1009,13 @@
+       | i = a_LIDENT -> Qast.List [i] ] ]
+   ;
+   (* Labels *)
+-  ctyp: AFTER "arrow"
+-    [ NONA
++  ctyp: LEVEL "arrow"
++    [ RIGHTA
+       [ i = a_TILDEIDENT; ":"; t = SELF -> Qast.Node "TyLab" [Qast.Loc; i; t]
++      | i = a_LABEL; t = SELF -> Qast.Node "TyLab" [Qast.Loc; i; t]
+       | i = a_QUESTIONIDENT; ":"; t = SELF ->
++          Qast.Node "TyOlb" [Qast.Loc; i; t]
++      | i = a_OPTLABEL; t = SELF ->
+           Qast.Node "TyOlb" [Qast.Loc; i; t] ] ]
+   ;
+   ctyp: LEVEL "simple"
+@@ -1044,11 +1049,16 @@
+       | "#"; sl = mod_ident -> Qast.Node "PaTyp" [Qast.Loc; sl]
+       | i = a_TILDEIDENT; ":"; p = SELF ->
+           Qast.Node "PaLab" [Qast.Loc; i; Qast.Option (Some p)]
++      | i = a_LABEL; p = SELF ->
++          Qast.Node "PaLab" [Qast.Loc; i; Qast.Option (Some p)]
+       | i = a_TILDEIDENT -> Qast.Node "PaLab" [Qast.Loc; i; Qast.Option None]
+       | i = a_QUESTIONIDENT; ":"; "("; p = patt_tcon; eo = SOPT eq_expr;
+         ")" ->
+           Qast.Node "PaOlb"
+             [Qast.Loc; i; Qast.Option (Some (Qast.Tuple [p; eo]))]
++      | i = a_OPTLABEL; "("; p = patt_tcon; eo = SOPT eq_expr; ")" ->
++          Qast.Node "PaOlb"
++            [Qast.Loc; i; Qast.Option (Some (Qast.Tuple [p; eo]))]
+       | i = a_QUESTIONIDENT ->
+           Qast.Node "PaOlb" [Qast.Loc; i; Qast.Option None]
+       | "?"; "("; p = patt_tcon; eo = SOPT eq_expr; ")" ->
+@@ -1063,11 +1073,16 @@
+   ipatt:
+     [ [ i = a_TILDEIDENT; ":"; p = SELF ->
+           Qast.Node "PaLab" [Qast.Loc; i; Qast.Option (Some p)]
++      | i = a_LABEL; p = SELF ->
++          Qast.Node "PaLab" [Qast.Loc; i; Qast.Option (Some p)]
+       | i = a_TILDEIDENT -> Qast.Node "PaLab" [Qast.Loc; i; Qast.Option None]
+       | i = a_QUESTIONIDENT; ":"; "("; p = ipatt_tcon; eo = SOPT eq_expr;
+         ")" ->
+           Qast.Node "PaOlb"
+             [Qast.Loc; i; Qast.Option (Some (Qast.Tuple [p; eo]))]
++      | i = a_OPTLABEL; "("; p = ipatt_tcon; eo = SOPT eq_expr; ")" ->
++          Qast.Node "PaOlb"
++            [Qast.Loc; i; Qast.Option (Some (Qast.Tuple [p; eo]))]
+       | i = a_QUESTIONIDENT ->
+           Qast.Node "PaOlb" [Qast.Loc; i; Qast.Option None]
+       | "?"; "("; p = ipatt_tcon; eo = SOPT eq_expr; ")" ->
+@@ -1086,9 +1101,13 @@
+     [ "label" NONA
+       [ i = a_TILDEIDENT; ":"; e = SELF ->
+           Qast.Node "ExLab" [Qast.Loc; i; Qast.Option (Some e)]
++      | i = a_LABEL; e = SELF ->
++          Qast.Node "ExLab" [Qast.Loc; i; Qast.Option (Some e)]
+       | i = a_TILDEIDENT -> Qast.Node "ExLab" [Qast.Loc; i; Qast.Option None]
+       | i = a_QUESTIONIDENT; ":"; e = SELF ->
+           Qast.Node "ExOlb" [Qast.Loc; i; Qast.Option (Some e)]
++      | i = a_OPTLABEL; e = SELF ->
++          Qast.Node "ExOlb" [Qast.Loc; i; Qast.Option (Some e)]
+       | i = a_QUESTIONIDENT ->
+           Qast.Node "ExOlb" [Qast.Loc; i; Qast.Option None] ] ]
+   ;
+@@ -1335,10 +1354,16 @@
+     [ [ "~"; a = ANTIQUOT -> antiquot "" loc a
+       | s = TILDEIDENT -> Qast.Str s ] ]
+   ;
++  a_LABEL:
++    [ [ s = LABEL -> Qast.Str s ] ]
++  ;
+   a_QUESTIONIDENT:
+     [ [ "?"; a = ANTIQUOT -> antiquot "" loc a
+       | s = QUESTIONIDENT -> Qast.Str s ] ]
+   ;
++  a_OPTLABEL:
++    [ [ s = OPTLABEL -> Qast.Str s ] ]
++  ;
+ END;
+ 
+ value apply_entry e =
+diff -ur ocaml-3.07/camlp4/ocaml_src/camlp4/ast2pt.ml ocaml.cvs/camlp4/ocaml_src/camlp4/ast2pt.ml
+--- ocaml-3.07/camlp4/ocaml_src/camlp4/ast2pt.ml	2003-07-24 00:26:18.000000000 +0200
++++ ocaml.cvs/camlp4/ocaml_src/camlp4/ast2pt.ml	2003-09-30 16:39:38.000000000 +0200
+@@ -169,10 +169,10 @@
+   | TyObj (loc, fl, v) -> mktyp loc (Ptyp_object (meth_list loc fl v))
+   | TyCls (loc, id) ->
+       mktyp loc (Ptyp_class (long_id_of_string_list loc id, [], []))
+-  | TyLab (loc, _, _) -> error loc "labeled type not allowed here"
++  | TyLab (loc, _, _) -> error loc "labelled type not allowed here"
+   | TyLid (loc, s) -> mktyp loc (Ptyp_constr (lident s, []))
+-  | TyMan (loc, _, _) -> error loc "type manifest not allowed here"
+-  | TyOlb (loc, lab, _) -> error loc "labeled type not allowed here"
++  | TyMan (loc, _, _) -> error loc "manifest type not allowed here"
++  | TyOlb (loc, lab, _) -> error loc "labelled type not allowed here"
+   | TyPol (loc, pl, t) -> mktyp loc (Ptyp_poly (pl, ctyp t))
+   | TyQuo (loc, s) -> mktyp loc (Ptyp_var s)
+   | TyRec (loc, _, _) -> error loc "record type not allowed here"
+Seulement dans ocaml.cvs/camlp4/ocaml_src/camlp4: CVS
+Seulement dans ocaml.cvs/camlp4/ocaml_src: CVS
+Seulement dans ocaml.cvs/camlp4/ocaml_src/lib: CVS
+Seulement dans ocaml.cvs/camlp4/ocaml_src/meta: CVS
+diff -ur ocaml-3.07/camlp4/ocaml_src/meta/pa_r.ml ocaml.cvs/camlp4/ocaml_src/meta/pa_r.ml
+--- ocaml-3.07/camlp4/ocaml_src/meta/pa_r.ml	2003-09-25 14:05:07.000000000 +0200
++++ ocaml.cvs/camlp4/ocaml_src/meta/pa_r.ml	2003-09-30 12:20:06.000000000 +0200
+@@ -2241,8 +2241,8 @@
+         (fun (l : 'class_longident) _ (m : string) (loc : int * int) ->
+            (m :: l : 'class_longident))]];
+     Grammar.Entry.obj (ctyp : 'ctyp Grammar.Entry.e),
+-    Some (Gramext.After "arrow"),
+-    [None, Some Gramext.NonA,
++    Some (Gramext.Level "arrow"),
++    [None, Some Gramext.RightA,
+      [[Gramext.Stoken ("OPTLABEL", ""); Gramext.Sself],
+       Gramext.action
+         (fun (t : 'ctyp) (i : string) (loc : int * int) ->
+diff -ur ocaml-3.07/camlp4/ocaml_src/meta/q_MLast.ml ocaml.cvs/camlp4/ocaml_src/meta/q_MLast.ml
+--- ocaml-3.07/camlp4/ocaml_src/meta/q_MLast.ml	2003-07-24 00:26:19.000000000 +0200
++++ ocaml.cvs/camlp4/ocaml_src/meta/q_MLast.ml	2003-09-30 13:38:04.000000000 +0200
+@@ -153,7 +153,9 @@
+ let a_STRING = Grammar.Entry.create gram "a_STRING";;
+ let a_CHAR = Grammar.Entry.create gram "a_CHAR";;
+ let a_TILDEIDENT = Grammar.Entry.create gram "a_TILDEIDENT";;
++let a_LABEL = Grammar.Entry.create gram "a_LABEL";;
+ let a_QUESTIONIDENT = Grammar.Entry.create gram "a_QUESTIONIDENT";;
++let a_OPTLABEL = Grammar.Entry.create gram "a_OPTLABEL";;
+ 
+ let o2b =
+   function
+@@ -626,7 +628,7 @@
+                 Qast.Tuple [xx1; xx2; xx3] -> xx1, xx2, xx3
+               | _ ->
+                   match () with
+-                  _ -> raise (Match_failure ("q_MLast.ml", 300, 19))
++                  _ -> raise (Match_failure ("q_MLast.ml", 302, 19))
+             in
+             Qast.Node ("StExc", [Qast.Loc; c; tl; b]) :
+             'str_item));
+@@ -896,7 +898,7 @@
+                 Qast.Tuple [xx1; xx2; xx3] -> xx1, xx2, xx3
+               | _ ->
+                   match () with
+-                  _ -> raise (Match_failure ("q_MLast.ml", 358, 19))
++                  _ -> raise (Match_failure ("q_MLast.ml", 360, 19))
+             in
+             Qast.Node ("SgExc", [Qast.Loc; c; tl]) :
+             'sig_item));
+@@ -3345,9 +3347,15 @@
+         (fun (l : 'class_longident) _ (m : 'a_UIDENT) (loc : int * int) ->
+            (Qast.Cons (m, l) : 'class_longident))]];
+     Grammar.Entry.obj (ctyp : 'ctyp Grammar.Entry.e),
+-    Some (Gramext.After "arrow"),
+-    [None, Some Gramext.NonA,
++    Some (Gramext.Level "arrow"),
++    [None, Some Gramext.RightA,
+      [[Gramext.Snterm
++         (Grammar.Entry.obj (a_OPTLABEL : 'a_OPTLABEL Grammar.Entry.e));
++       Gramext.Sself],
++      Gramext.action
++        (fun (t : 'ctyp) (i : 'a_OPTLABEL) (loc : int * int) ->
++           (Qast.Node ("TyOlb", [Qast.Loc; i; t]) : 'ctyp));
++      [Gramext.Snterm
+          (Grammar.Entry.obj
+             (a_QUESTIONIDENT : 'a_QUESTIONIDENT Grammar.Entry.e));
+        Gramext.Stoken ("", ":"); Gramext.Sself],
+@@ -3355,6 +3363,12 @@
+         (fun (t : 'ctyp) _ (i : 'a_QUESTIONIDENT) (loc : int * int) ->
+            (Qast.Node ("TyOlb", [Qast.Loc; i; t]) : 'ctyp));
+       [Gramext.Snterm
++         (Grammar.Entry.obj (a_LABEL : 'a_LABEL Grammar.Entry.e));
++       Gramext.Sself],
++      Gramext.action
++        (fun (t : 'ctyp) (i : 'a_LABEL) (loc : int * int) ->
++           (Qast.Node ("TyLab", [Qast.Loc; i; t]) : 'ctyp));
++      [Gramext.Snterm
+          (Grammar.Entry.obj (a_TILDEIDENT : 'a_TILDEIDENT Grammar.Entry.e));
+        Gramext.Stoken ("", ":"); Gramext.Sself],
+       Gramext.action
+@@ -3518,6 +3532,30 @@
+         (fun (i : 'a_QUESTIONIDENT) (loc : int * int) ->
+            (Qast.Node ("PaOlb", [Qast.Loc; i; Qast.Option None]) : 'patt));
+       [Gramext.Snterm
++         (Grammar.Entry.obj (a_OPTLABEL : 'a_OPTLABEL Grammar.Entry.e));
++       Gramext.Stoken ("", "(");
++       Gramext.Snterm
++         (Grammar.Entry.obj (patt_tcon : 'patt_tcon Grammar.Entry.e));
++       Gramext.srules
++         [[Gramext.Sopt
++             (Gramext.Snterm
++                (Grammar.Entry.obj (eq_expr : 'eq_expr Grammar.Entry.e)))],
++          Gramext.action
++            (fun (a : 'eq_expr option) (loc : int * int) ->
++               (Qast.Option a : 'a_opt));
++          [Gramext.Snterm
++             (Grammar.Entry.obj (a_opt : 'a_opt Grammar.Entry.e))],
++          Gramext.action
++            (fun (a : 'a_opt) (loc : int * int) -> (a : 'a_opt))];
++       Gramext.Stoken ("", ")")],
++      Gramext.action
++        (fun _ (eo : 'a_opt) (p : 'patt_tcon) _ (i : 'a_OPTLABEL)
++           (loc : int * int) ->
++           (Qast.Node
++              ("PaOlb",
++               [Qast.Loc; i; Qast.Option (Some (Qast.Tuple [p; eo]))]) :
++            'patt));
++      [Gramext.Snterm
+          (Grammar.Entry.obj
+             (a_QUESTIONIDENT : 'a_QUESTIONIDENT Grammar.Entry.e));
+        Gramext.Stoken ("", ":"); Gramext.Stoken ("", "(");
+@@ -3548,6 +3586,13 @@
+         (fun (i : 'a_TILDEIDENT) (loc : int * int) ->
+            (Qast.Node ("PaLab", [Qast.Loc; i; Qast.Option None]) : 'patt));
+       [Gramext.Snterm
++         (Grammar.Entry.obj (a_LABEL : 'a_LABEL Grammar.Entry.e));
++       Gramext.Sself],
++      Gramext.action
++        (fun (p : 'patt) (i : 'a_LABEL) (loc : int * int) ->
++           (Qast.Node ("PaLab", [Qast.Loc; i; Qast.Option (Some p)]) :
++            'patt));
++      [Gramext.Snterm
+          (Grammar.Entry.obj (a_TILDEIDENT : 'a_TILDEIDENT Grammar.Entry.e));
+        Gramext.Stoken ("", ":"); Gramext.Sself],
+       Gramext.action
+@@ -3606,6 +3651,30 @@
+         (fun (i : 'a_QUESTIONIDENT) (loc : int * int) ->
+            (Qast.Node ("PaOlb", [Qast.Loc; i; Qast.Option None]) : 'ipatt));
+       [Gramext.Snterm
++         (Grammar.Entry.obj (a_OPTLABEL : 'a_OPTLABEL Grammar.Entry.e));
++       Gramext.Stoken ("", "(");
++       Gramext.Snterm
++         (Grammar.Entry.obj (ipatt_tcon : 'ipatt_tcon Grammar.Entry.e));
++       Gramext.srules
++         [[Gramext.Sopt
++             (Gramext.Snterm
++                (Grammar.Entry.obj (eq_expr : 'eq_expr Grammar.Entry.e)))],
++          Gramext.action
++            (fun (a : 'eq_expr option) (loc : int * int) ->
++               (Qast.Option a : 'a_opt));
++          [Gramext.Snterm
++             (Grammar.Entry.obj (a_opt : 'a_opt Grammar.Entry.e))],
++          Gramext.action
++            (fun (a : 'a_opt) (loc : int * int) -> (a : 'a_opt))];
++       Gramext.Stoken ("", ")")],
++      Gramext.action
++        (fun _ (eo : 'a_opt) (p : 'ipatt_tcon) _ (i : 'a_OPTLABEL)
++           (loc : int * int) ->
++           (Qast.Node
++              ("PaOlb",
++               [Qast.Loc; i; Qast.Option (Some (Qast.Tuple [p; eo]))]) :
++            'ipatt));
++      [Gramext.Snterm
+          (Grammar.Entry.obj
+             (a_QUESTIONIDENT : 'a_QUESTIONIDENT Grammar.Entry.e));
+        Gramext.Stoken ("", ":"); Gramext.Stoken ("", "(");
+@@ -3636,6 +3705,13 @@
+         (fun (i : 'a_TILDEIDENT) (loc : int * int) ->
+            (Qast.Node ("PaLab", [Qast.Loc; i; Qast.Option None]) : 'ipatt));
+       [Gramext.Snterm
++         (Grammar.Entry.obj (a_LABEL : 'a_LABEL Grammar.Entry.e));
++       Gramext.Sself],
++      Gramext.action
++        (fun (p : 'ipatt) (i : 'a_LABEL) (loc : int * int) ->
++           (Qast.Node ("PaLab", [Qast.Loc; i; Qast.Option (Some p)]) :
++            'ipatt));
++      [Gramext.Snterm
+          (Grammar.Entry.obj (a_TILDEIDENT : 'a_TILDEIDENT Grammar.Entry.e));
+        Gramext.Stoken ("", ":"); Gramext.Sself],
+       Gramext.action
+@@ -3669,6 +3745,13 @@
+         (fun (i : 'a_QUESTIONIDENT) (loc : int * int) ->
+            (Qast.Node ("ExOlb", [Qast.Loc; i; Qast.Option None]) : 'expr));
+       [Gramext.Snterm
++         (Grammar.Entry.obj (a_OPTLABEL : 'a_OPTLABEL Grammar.Entry.e));
++       Gramext.Sself],
++      Gramext.action
++        (fun (e : 'expr) (i : 'a_OPTLABEL) (loc : int * int) ->
++           (Qast.Node ("ExOlb", [Qast.Loc; i; Qast.Option (Some e)]) :
++            'expr));
++      [Gramext.Snterm
+          (Grammar.Entry.obj
+             (a_QUESTIONIDENT : 'a_QUESTIONIDENT Grammar.Entry.e));
+        Gramext.Stoken ("", ":"); Gramext.Sself],
+@@ -3682,6 +3765,13 @@
+         (fun (i : 'a_TILDEIDENT) (loc : int * int) ->
+            (Qast.Node ("ExLab", [Qast.Loc; i; Qast.Option None]) : 'expr));
+       [Gramext.Snterm
++         (Grammar.Entry.obj (a_LABEL : 'a_LABEL Grammar.Entry.e));
++       Gramext.Sself],
++      Gramext.action
++        (fun (e : 'expr) (i : 'a_LABEL) (loc : int * int) ->
++           (Qast.Node ("ExLab", [Qast.Loc; i; Qast.Option (Some e)]) :
++            'expr));
++      [Gramext.Snterm
+          (Grammar.Entry.obj (a_TILDEIDENT : 'a_TILDEIDENT Grammar.Entry.e));
+        Gramext.Stoken ("", ":"); Gramext.Sself],
+       Gramext.action
+@@ -4427,6 +4517,11 @@
+      Gramext.action
+        (fun (a : string) _ (loc : int * int) ->
+           (antiquot "" loc a : 'a_TILDEIDENT))]];
++   Grammar.Entry.obj (a_LABEL : 'a_LABEL Grammar.Entry.e), None,
++   [None, None,
++    [[Gramext.Stoken ("LABEL", "")],
++     Gramext.action
++       (fun (s : string) (loc : int * int) -> (Qast.Str s : 'a_LABEL))]];
+    Grammar.Entry.obj (a_QUESTIONIDENT : 'a_QUESTIONIDENT Grammar.Entry.e),
+    None,
+    [None, None,
+@@ -4437,7 +4532,12 @@
+      [Gramext.Stoken ("", "?"); Gramext.Stoken ("ANTIQUOT", "")],
+      Gramext.action
+        (fun (a : string) _ (loc : int * int) ->
+-          (antiquot "" loc a : 'a_QUESTIONIDENT))]]];;
++          (antiquot "" loc a : 'a_QUESTIONIDENT))]];
++   Grammar.Entry.obj (a_OPTLABEL : 'a_OPTLABEL Grammar.Entry.e), None,
++   [None, None,
++    [[Gramext.Stoken ("OPTLABEL", "")],
++     Gramext.action
++       (fun (s : string) (loc : int * int) -> (Qast.Str s : 'a_OPTLABEL))]]];;
+ 
+ let apply_entry e =
+   let f s = Grammar.Entry.parse e (Stream.of_string s) in
