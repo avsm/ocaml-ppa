@@ -1,7 +1,709 @@
+ocaml (3.07-1) experimental; urgency=low
+
+  * New upstream version.
+
+ -- Sven Luther <luther@debian.org>  Tue, 30 Sep 2003 19:35:17 +0200
+
+ocaml (3.06.99.beta2-2) experimental; urgency=low
+
+  * Fixed emacsen-install so that caml-xemacs and caml-emacs get installed
+    only for the corresponding emacs flavors. Thanks go to Jerome Marant.
+
+ -- Sven Luther <luther@debian.org>  Fri,  5 Sep 2003 15:34:48 +0200
+
+ocaml (3.06.99.beta2-1) experimental; urgency=low
+
+  * New ocaml 3.07 beta release.
+  * Integrated some of the debian patches :)))
+  * Disabled caml-xemacs.el as it seems broken.
+
+ -- Sven Luther <luther@debian.org>  Tue, 26 Aug 2003 21:10:27 +0200
+
 ocaml (3.06.99.beta1-1) experimental; urgency=low
 
-  * ocaml 3.07 beta 1 release.
-  * dpatchification.
+  * Ocaml 3.07 beta 1 release.
+  * Dpatchification.
+
+ -- Sven Luther <luther@debian.org>  Wed,  6 Aug 2003 13:53:08 +0200
+
+ocaml (3.06-19) unstable; urgency=low
+
+  * Fix a alloc_channel bug. (Closes: #204146).
+
+ -- Sven Luther <luther@debian.org>  Wed,  6 Aug 2003 10:54:38 +0200
+
+ocaml (3.06-18) unstable; urgency=low
+
+  * Dropped camlp4, libcamltk-ocaml and camltk provides as it may confuse apt.
+
+ -- Sven Luther <luther@debian.org>  Fri, 18 Jul 2003 22:29:45 +0200
+
+ocaml (3.06-17) unstable; urgency=low
+
+  * Fixes typo in ocaml_packaging_policy.
+  * Moved ocamldoc generated library manpages from section o to 3.
+  * Linked to libgdbm-compat, using the new libgdbm-dev package.
+    (Closes: #188553)
+  * Removed the /etc/magic debconf question, as ocaml is recognized by file
+    since version 4.02-1. (Closes: #190037, #189774)
+  * Uncommented site specific emacs stuff as suggested by Laurent Bonnaud and
+    okeyed by Ralf Treinen. (Closes: #192131)
+  * Conflicts with camlidl (<< 1.04), warn if /usr/include/caml is still not
+    a symlink, but this should only happen if the user did some hand
+    installation.  (Closes: #195574, #192552)
+
+ -- Sven Luther <luther@debian.org>  Sun,  8 Jun 2003 11:52:10 +0200
+
+ocaml (3.06-16) unstable; urgency=low
+
+  * Fix GC memory problem in stat_aux function in stat.c, reported in upstream
+    bug #1665 and causes random SEGVs when using Unix.Largefile.stat or
+    friends. Thanks to David Brown for providing a patch.  (Closes: #191582)
+  * Properly install the latex file ocamldoc.sty. (Closes: #175821)
+  * Fixed or overrided most lintian warnings.
+  * Fixed configure script to work around the sparc FTBFS with gcc 3.2.
+  * Applied Remi's ocaml_packaging_policy changes. (Closes: #177850)
+  * Backported the config/auto-aux/async_io.c patch from CVS, to solve the
+    graphics module/sleep problem. (Closes: #179199)
+
+ -- Sven Luther <luther@debian.org>  Sat,  3 May 2003 09:45:38 +0200
+
+ocaml (3.06-15) unstable; urgency=low
+
+  * Fixed the /usr/include/caml issue. (Closes: #173720)
+
+ -- Sven Luther <luther@debian.org>  Tue, 24 Dec 2002 10:31:55 +0100
+
+ocaml (3.06-14) unstable; urgency=low
+
+  * Removed the (bad) /usr/lib/ocaml/3.06/ld.conf that comes with the ocaml
+    package.
+  * Now run ocaml-ldconf in ocaml postinst also. This is needed since
+    /usr/lib/ocaml/3.06/ld.conf was in ocaml 3.06-13 and will thus be removed
+    when we upgradeto 3.06-14.
+  * Some script cleanup.
+
+ -- Sven Luther <luther@debian.org>  Tue, 17 Dec 2002 00:05:22 +0100
+
+ocaml (3.06-13) unstable; urgency=low
+
+  * Ocaml and ocaml-base now provides ocaml-3.06-1 and ocaml-base-3.06-1. All
+    library packages depending on ocaml-3.06 and ocaml-base-3.06 are now
+    uninstallable, and should be rebuilt with these new dependencies. Notice
+    that a bug in dpkg (Bug#170825) allows to upgrade ocaml to 3.06-13 even if
+    packages depending on the older virtual provides are still present,
+    apt-get handles this properly.
+  * Changed libdir from /usr/lib/ocaml to /usr/lib/ocaml/3.06, and adapted the
+    ocaml_packaging_policy consequently.
+  * Added Stefano's section on META files and findlib in the
+    ocaml_packaging_policy.
+  * Now /usr/include/caml is a symlink to /usr/lib/ocaml/3.06/caml, and not
+    the other side around. Need to find a nicer solution here, or even stop
+    shipping the headers in /usr/include. One solution would be to ship them
+    under /usr/include/ocaml/3.06/caml.
+  
+ -- Sven Luther <luther@debian.org>  Sat, 14 Dec 2002 22:24:05 +0100
+
+ocaml (3.06-12) unstable; urgency=low
+
+  * Fixed configure so it now builds dbm support. (Closes: #168458)
+
+ -- Sven Luther <luther@debian.org>  Mon, 11 Nov 2002 12:45:32 +0100
+
+ocaml (3.06-11) unstable; urgency=low
+
+  * Applied posix systhread patch from Xavier. Now the tick thread dies
+    properly when killing a threaded native code program. (Closes: #144719)
+
+ -- Sven Luther <luther@debian.org>  Tue, 29 Oct 2002 18:22:16 +0100
+
+ocaml (3.06-10) unstable; urgency=low
+
+  * Now call dh_installdebconf to install the debconf .templates file.
+    (Closes: #166707)
+
+ -- Sven Luther <luther@debian.org>  Mon, 28 Oct 2002 10:29:04 +0100
+
+ocaml (3.06-9) unstable; urgency=low
+
+  * Now test for the existence of /etc/magic before trying to fill it.
+
+ -- Sven Luther <luther@debian.org>  Mon, 28 Oct 2002 10:29:04 +0100
+
+ocaml (3.06-8) unstable; urgency=low
+
+  * Added objinfo man page, courtesy of Stefano Zacchiroli, and modified
+    ocamlc manpage to make reference to it.
+  * Applied Stefano's .ocamlinit patch. (Closes: #166199)
+  * Added a debconf template to fill /etc/magic with the appropriate ocaml
+    magic.
+
+ -- Sven Luther <luther@debian.org>  Sun, 27 Oct 2002 00:20:24 +0200
+
+ocaml (3.06-7) unstable; urgency=low
+
+  * Ocaml needed a rebuild, since native code compilation using the Str
+    library was broken. I don't really understand what did break, most
+    probably it is one of the developpment libraries (binutils, libc6, ...)
+    which did change in an incompatible way we are not aware of.
+  * Now ship objinfo. (Closes: #165446)
+  * Applied odoc_man.ml patch from Maxence i got out of CVS. (Closes: #159581)
+  * Removed /usr/lib/ocaml/ld.conf from the ocaml package, since it is shipped
+    with ocaml-base. (Closes: #161742)
+
+ -- Sven Luther <luther@debian.org>  Wed, 23 Oct 2002 10:20:04 +0200
+
+ocaml (3.06-6.1) unstable; urgency=low
+
+  * (NMU) recompile at maintener request
+    Since i uploaded ocam lsource only, ocaml-source was not built,
+    so i asked for an NMU, not having the bandwith for uploading ocaml-source
+    myself. (Sven Luther)
+
+ -- Remi Vanicat <vanicat@debian.org>  Tue, 24 Sep 2002 11:46:27 +0200
+
+ocaml (3.06-6) unstable; urgency=high
+
+  * ocaml-ldconf in postrm was called only on remove, not upgrade.
+    (Closes: #159859).
+  * Moved ocaml-source stuff to /usr/src.
+    (Closes: #159862).
+  * Added more verbose info to ocaml-ldconf.ml
+    (Closes: #159860).
+  * Now ocaml-ldconf also accepts the -R option to remove all directories
+    associated with the given package.
+
+ -- Sven Luther <luther@debian.org>  Fri,  6 Sep 2002 18:12:18 +0200
+
+ocaml (3.06-5) unstable; urgency=high
+
+  * Removed reference to /usr/include/ocaml in README.Debian.
+    (Closes: #158126).
+
+ -- Sven Luther <luther@debian.org>  Mon,  2 Sep 2002 14:38:22 +0200
+
+ocaml (3.06-4) unstable; urgency=high
+
+  * Apparently the dh_ocamlld patch did not do, i will now call ocaml-ldconf
+    in ocaml-base.postinst, to be sure the /usr/lib/ocaml/ld.conf is created
+    correctly (Closes: #158905).
+
+ -- Sven Luther <luther@debian.org>  Mon,  2 Sep 2002 14:04:17 +0200
+
+ocaml (3.06-3) unstable; urgency=high
+
+  * Added a Provide: ocaml-source-3.06 to the ocaml-source control file.
+    (Asked by Jérôme Marant)
+
+ -- Sven Luther <luther@debian.org>  Fri, 30 Aug 2002 09:39:25 +0200
+
+ocaml (3.06-2) unstable; urgency=high
+
+  * Now we create the /usr/local/lib/ocaml directory in the postinst instead
+    of including it in the package. We also don't fail if we are not able to
+    create this directory (if /usr/local is mounted read-only for example).
+    (Closes: #157898)
+  * Now use mmap() instead of malloc() for allocation of major heap chunks,
+    for alpha (same fix as for the ia64 problem encountered previously).
+    (Closes: #158444)
+
+ -- Sven Luther <luther@debian.org>  Thu, 29 Aug 2002 08:26:53 +0200
+
+ocaml (3.06-1) unstable; urgency=high
+
+  * New upstream (bugfix) release. (Closes: Bug#139427)
+  * 3.05 as released by upstream was broken, i should not have uploaded it (as
+    it broke all the libraries) but it was too late when i was made aware of
+    the problems with 3.05.
+  * Added a statement in the ocaml-source package description that it is _not_
+    supposed to be used for building ocaml. (Closes: #150077)
+  * Now ship labltk examples and README file. (Closes: #152588)
+  * Added ia64 to the list of arches who support the native code compilers.
+    (Closes: #157110)
+  * Removed .opt man pages from the list of files of the ocaml package.
+    (Closes: #152237)
+  * Camlp4 -where now gives the correct path. (Closes: #155701)
+  * Now include a default /usr/lib/ocaml/ld.conf file in the ocaml-base
+    package. (Closes: #156042, #155428)
+  * Updated ocaml_packaging_policy and README.Debian file.
+  * ocaml-ldconf now handles directory only lines in /etc/ocaml/ld.donf as the
+    add command.
+  
+ -- Sven Luther <luther@debian.org>  Tue, 20 Aug 2002 15:36:45 +0200
+
+ocaml (3.05-1) unstable; urgency=high
+
+  * New upstream release.
+  * Now /usr/lib/ocaml/stublibs is the default path for storing dynamic stub
+    libraries. We still keep the ocaml-ldconf/dh_ocamlld stuff on, as it may
+    still be usefull and for backward compatibility, but we will slowly
+    migrate all library packages to use the new path.
+  * Some updates to the policy file (standard stublib path, findlib, ...)
+  * Now ship labltk examples and README file.
+  * This upstream release fixes the bytecode compilers for powerpc (the same
+    as the patch applied in 3.04-9) and ia64.
+
+ -- Sven Luther <luther@debian.org>  Tue, 30 Jul 2002 10:44:39 +0200
+
+ocaml (3.04-13) unstable; urgency=high
+
+  * Modified ocaml-ldconf.ml so it no longer reverse the path list
+    (contributed from Denis Barbier <barbier@debian.org>).
+
+ -- Sven Luther <luther@debian.org>  Thu, 13 Jun 2002 17:15:12 +0200
+
+ocaml (3.04-12) unstable; urgency=high
+
+  * Link the .opt manpages by hand in postinst/prerm scripts, until debhelper
+    is fixed to support .so files pointing to manpages from other binary
+    packages. (Closes: Bug#138642)
+
+ -- Sven Luther <luther@debian.org>  Wed, 24 Apr 2002 11:25:17 +0200
+
+ocaml (3.04-11) unstable; urgency=high
+
+  * Now install also the emacs caml-help.el file.
+  * Removed the "\C-c\C-b" addition bindings, since they cause conflicts with
+    xemacs21 (Closes: Bug#139812) (taken from upsteream CVS).
+
+ -- Sven Luther <luther@debian.org>  Fri, 19 Apr 2002 19:29:13 +0200
+
+ocaml (3.04-10) unstable; urgency=high
+
+  * Fixed the bad /usr/lib/ocaml/ld.conf file permissions (Closes: Bug#138495).
+  * Added the ocaml-ldconf.1 manpage.
+  * Hopefully fixed the dangling camlp4r.opt.1 and camlp4o.opt.1 symlinks
+    (Closes: Bug#138642).
+
+ -- Sven Luther <luther@debian.org>  Tue, 19 Mar 2002 09:12:59 +0100
+
+ocaml (3.04-9) unstable; urgency=high
+
+  * Applied the correct powerpc patch from upstream (Closes: Bug#134113)
+
+ -- Sven Luther <luther@debian.org>  Tue, 19 Feb 2002 18:11:56 +0100
+
+ocaml (3.04-8) unstable; urgency=high
+
+  * Removed the not working ppc patch and replaced it by the one from
+    upstream's CVS (hope it works) (Closes: Bug#134113)
+  * Fixed ocaml-ldconf so it would work even if the files did not exist, and
+    added two of the ld.conf files as conffiles (not /usr/lib/ocaml/ld.conf,
+    which is a install time generated package).
+  * Renamed the include files again to /usr/include/caml, as it breaks things
+    otherwise.
+
+ -- Sven Luther <luther@debian.org>  Mon, 18 Feb 2002 11:30:35 +0100
+
+ocaml (3.04-7) unstable; urgency=high
+
+  * Fixed the emacs problem (Closes: Bug#132955)
+  * Fixed the dh_ocamlld execution problem (Closes: Bug#132959)
+
+ -- Sven Luther <luther@debian.org>  Mon, 11 Feb 2002 17:35:52 +0100
+
+ocaml (3.04-6) unstable; urgency=low
+
+  * Added ocaml-ldconf and ld.conf handling.
+  * Added a ocaml_packaging_policy file.
+  * Fixed the emacs problem, hope it works.
+  * Added a symlink from /usr/lib/ocaml/caml to /usr/include/ocaml
+  * Fixed the ocaml-native-compilers description problem.
+
+ -- Sven Luther <luther@debian.org>  Thu,  7 Feb 2002 12:19:10 +0100
+
+ocaml (3.04-5) unstable; urgency=low
+
+  * Split ocamlc.opt, ocamlopt.opt and ocamllex.opt into the
+    ocaml-native-compilers package.
+  * The ocaml-best-compilers virtual package is provided by
+    ocaml-native-compilers if it is built and by ocaml if not.
+  * Added an ocaml-source package containing the source to ocaml for packages
+    which need them as build-depends.
+  * Applied Ian Zimmerman's caml.el patch. (Closes:#129650,#130301)
+  
+
+ -- Sven Luther <luther@debian.org>  Wed, 16 Jan 2002 18:08:39 +0100
+
+ocaml (3.04-4) unstable; urgency=low
+
+  * fixed emacs support and added ocamltags.
+
+ -- Sven Luther <luther@debian.org>  Wed, 16 Jan 2002 16:50:12 +0100
+
+ocaml (3.04-3) unstable; urgency=low
+
+  * small patch to build on powerpc.
+  * don't build opt.opt on ia64.
+  * ocaml now doesn't include the ocaml-base stuff anymore but depends on it.
+
+ -- Sven Luther <luther@debian.org>  Wed,  9 Jan 2002 17:34:00 +0100
+
+ocaml (3.04-2) unstable; urgency=low
+
+  * added runtime dynamic libraries to ocaml-base.
+  * other small fixes.
+
+ -- Sven Luther <luther@debian.org>  Thu, 20 Dec 2001 09:35:21 +0100
+
+ocaml (3.04-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Sven Luther <luther@debian.org>  Fri, 14 Dec 2001 12:44:03 +0100
+
+ocaml (3.02-3) unstable; urgency=low
+
+  * alpha lacked the -mieee flag to gcc, so the fpu exceptions were not caught
+    correctly.
+
+ -- Sven Luther <luther@debian.org>  Tue,  6 Nov 2001 12:46:52 +0100
+
+ocaml (3.02-2) unstable; urgency=low
+
+  * Build with gcc.
+
+ -- Sven Luther <luther@debian.org>  Thu,  9 Aug 2001 14:11:19 +0200
+
+ocaml (3.02-1) unstable; urgency=low
+
+  * New upstream release.
+  * This is mostly a upstream bugfix release, including fixes to the arm
+    native code compiler and the config stuff for the parisc port.
+
+ -- Sven Luther <luther@debian.org>  Mon, 30 Jul 2001 17:20:38 +0200
+
+ocaml (3.01-6.1) unstable; urgency=low
+
+  * copy in new config.{guess,sub} to get support for new architectures.
+    Closes: #94755.
+
+ -- LaMont Jones <lamont@debian.org>  Mon,  9 Jul 2001 21:39:34 -0600
+
+ocaml (3.01-6) unstable; urgency=low
+
+  * Fix from Xavier Leroy for the arm native code compiler bug.
+
+ -- Sven Luther <luther@debian.org>  Fri,  6 Apr 2001 15:34:26 +0200
+
+ocaml (3.01-5.2) unstable; urgency=low
+
+  * Adds menu file, Closes: #83490.
+
+ -- Sven Luther <luther@debian.org>  Wed,  4 Apr 2001 15:00:53 +0200
+
+ocaml (3.01-5.1) unstable; urgency=low
+
+  * Fixes configure script to automatically find tcl/tk 8.3. This will
+    enable us to build this package on potato also.
+
+ -- Sven Luther <luther@debian.org>  Tue,  3 Apr 2001 13:12:27 +0200
+
+ocaml (3.01-5) unstable; urgency=low
+
+  * Disabled native code support on the arm arch, waiting for an upstream fix
+    on it.
+  * Removed Build dependency on emacsen, since it is no longer needed at
+    build time, but at install time.
+
+ -- Sven Luther <luther@debian.org>  Thu, 29 Mar 2001 13:03:43 +0200
+
+ocaml (3.01-4) unstable; urgency=low
+
+  * fixes arm build. Fixes: #90089.
+
+ -- Sven Luther <luther@debian.org>  Thu, 22 Mar 2001 15:37:30 +0100
+
+ocaml (3.01-3) unstable; urgency=low
+
+  * clean now trully brings the package to it's previous state.
+  * added emacs patch from Ralf Treineim.
+
+ -- Sven Luther <luther@debian.org>  Thu, 22 Mar 2001 09:57:32 +0100
+
+ocaml (3.01-2) unstable; urgency=low
+
+  * Fix missing dbm and labltk builds.
+
+ -- Sven Luther <luther@debian.org>  Fri, 16 Mar 2001 10:49:02 +0100
+
+ocaml (3.01-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Sven Luther <luther@debian.org>  Fri,  9 Mar 2001 16:25:19 +0100
+
+ocaml (3.00-6) unstable; urgency=low
+
+  * Added some suggest field, Fixes: #85280.
+
+ -- Sven Luther <luther@debian.org>  Fri,  9 Feb 2001 09:40:14 +0100
+
+ocaml (3.00-5) unstable; urgency=low
+
+  * Erm, ... apparently, strip is still not behaving itself correctly, it
+    removed the bytecode from the ocamlbrowser executable :(((
+    Fixed it by don't stripping ocamlbrowser and ocamldebug manually.
+
+ -- Sven Luther <luther@debian.org>  Mon,  5 Feb 2001 14:50:54 +0100
+
+ocaml (3.00-4) unstable; urgency=low
+
+  * added debhelper to the Build-depends :((((
+
+ -- Sven Luther <luther@debian.org>  Tue, 10 Jan 2001 18:25:32 +0100
+
+ocaml (3.00-3) unstable; urgency=low
+
+  * had to rebuild due to the dpkg 1.8.1.1 bug :(((
+
+ -- Sven Luther <luther@debian.org>  Tue,  9 Jan 2001 15:45:32 +0100
+
+ocaml (3.00-2) unstable; urgency=low
+
+  * Updated to standard version 3.2.1.0.
+  * Added build dependencies, hope i didn't miss them.
+  * Needed rebuilt on alpha anyway, since the tcl/tk developpment packages
+    where missing when it got built, now, the build dependencies should handle
+    this correctly.
+  * Fixes #81337. (bcopy redefinition bug due to new libc). Thanks for
+    Paul Slootman for providing a patch to this one.
+  * Fixes #69724 (i hope). Now that strip doesn't destroy files it doesn't
+    know anything about, we can strip executables safely again.
+
+ -- Sven Luther <luther@debian.org>  Mon,  8 Jan 2001 14:34:26 +0100
+
+ocaml (3.00-1) unstable; urgency=low
+
+  * new upstream release.
+
+ -- Sven Luther <luther@debian.org>  Thu, 27 Apr 2000 00:22:42 +0200
+
+ocaml3 (2.99-1) unstable; urgency=low
+
+  * New upstream release. This is the beta version of upcomming ocaml 3.0.
+  * This package will conflict with ocaml 2.04 for now, when ocaml 3.0
+    comes out, it will replace ocaml 2.04 also. Don't know if we will need
+    a ocaml 2.04 compatibility package, i guess not, but if needed, we could
+    do it.
+
+ -- Sven Luther <luther@debian.org>  Mon,  6 Mar 2000 13:03:17 +0100
+
+ocaml (2.04-6) frozen unstable; urgency=low
+
+  * emacs mode was missing, added it again.
+
+ -- Sven Luther <luther@debian.org>  Tue, 29 Feb 2000 14:37:35 +0100
+
+ocaml (2.04-5) frozen unstable; urgency=low
+
+  * Fix the lintian error about LGPL link pointing to old place.
+
+ -- Sven Luther <luther@debian.org>  Fri,  4 Feb 2000 16:14:27 +0100
+
+ocaml (2.04-4) unstable; urgency=low
+
+  * Added a libncurses5-dev dependency, as ocamlopt needs it to compile
+    programs, not sure if a depends dependency is the right way to do things
+    though.
+
+ -- Sven Luther <luther@debian.org>  Fri,  4 Feb 2000 15:29:23 +0100
+
+ocaml (2.04-3) unstable; urgency=low
+
+  * Don't strip binaries, as stripping of ocaml binaries is not supported.
+  * Closes Bug #49637.
+
+ -- Sven Luther <luther@debian.org>  Tue, 25 Jan 2000 17:14:53 +0100
+
+ocaml (2.04-2) unstable; urgency=low
+
+  * Disables m68k nativ code compiler.
+  * Closes Bug #52130.
+
+ -- Sven Luther <luther@debian.org>  Thu,  9 Dec 1999 10:20:06 +0100
+
+ocaml (2.04-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Sven Luther <luther@debian.org>  Tue, 30 Nov 1999 14:46:37 +0100
+
+ocaml (2.03-1) unstable; urgency=low
+
+  * New upstream release.
+  * License change (QPL & LGPL mix), can go in main now.
+  * configuration patch seems to be included in main.
+
+ -- Sven Luther <luther@debian.org>  Mon, 22 Nov 1999 11:40:28 +0100
+
+ocaml (2.02-9) unstable; urgency=low
+
+  * fixed thread support for native code stuff,
+    using systhread instead of thread.
+
+ -- Sven Luther <luther@debian.org>  Thu, 18 Nov 1999 14:55:46 +0100
+
+ocaml (2.02-8) unstable; urgency=low
+
+  * fixed bad suggests line for ocaml-doc.
+
+ -- Sven Luther <luther@debian.org>  Mon,  8 Nov 1999 12:26:47 +0100
+
+ocaml (2.02-7) unstable; urgency=low
+
+  * Added a man page for ocamldebug.
+  * seems FHS compliant.
+
+ -- Sven Luther <luther@debian.org>  Sat,  9 Oct 1999 14:20:25 +0200
+
+ocaml (2.02-6) unstable; urgency=low
+
+  * Adding FHS-compliance.
+
+ -- Sven Luther <luther@debian.org>  Sat,  9 Oct 1999 12:05:47 +0200
+
+ocaml (2.02-5) unstable; urgency=low
+
+  * Removed again the m68k native code compiler, since it was buggy.
+  * Fixed a bug in the thread library.
+
+ -- Sven Luther <luther@debian.org>  Wed, 30 Jun 1999 09:13:00 +0200
+
+ocaml (2.02-4) unstable; urgency=low
+
+  * Fixed a last bug with the m68k native code compiler.
+
+ -- Sven Luther <luther@debian.org>  Sat, 29 May 1999 20:43:41 +0200
+
+ocaml (2.02-3) unstable; urgency=low
+
+  * Enabled m68k native code compiler.
+
+ -- Sven Luther <luther@debian.org>  Fri,  7 May 1999 10:24:34 +0200
+
+ocaml (2.02-2) unstable; urgency=low
+
+  * Fixed m68k build, at least i hope so, didn't test it though ...
+
+  * Fixed emacs mode build and install.
+
+ -- Sven Luther <luther@debian.org>  Thu, 29 Apr 1999 20:05:35 +0100
+
+ocaml (2.02-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Sven Luther <luther@debian.org>  Mon, 08 Mar 1999 17:50:35 +0100
+
+ocaml (2.01-5) unstable; urgency=low
+
+  * fixed the ocamlmktop bug, by removing the $PREFIX stuff from
+    tools/Makefile. It is not needed there.
+
+ -- Sven Luther <luther@debian.org>  Wed, 26 Feb 1999 07:40:35 +0100
+
+ocaml (2.01-4) unstable; urgency=low
+
+  * fixed some stuff in the $PREFIX Makefile changes.
+
+ -- Sven Luther <luther@debian.org>  Tue, 16 Feb 1999 19:55:35 +0100
+
+ocaml (2.01-3) unstable; urgency=low
+
+  * added some Makefile stuff to help build packages when native code
+    compiler is not supported.
+  * html documentation is now another package (ocaml-doc) together with
+    documentation in another format.
+
+ -- Sven Luther <luther@debian.org>  Tue, 16 Feb 1999 19:55:35 +0100
+
+ocaml (2.01-2) unstable; urgency=low
+
+  * Removed the mli2html patch again, conforming to the wishes of
+    the upstream author. Due to licensing problems, if we want it, 
+    we have to have autorization of INRIA. Anyway, the mli2html patch
+    was buggy, creating different .mli files if -html was used or not.
+  * Fixed the configure script and Makefile so that you can use -prefix
+    option and change the install prefix by changing the PREFIX variable.
+
+ -- Sven Luther <luther@debian.org>  Tue, 16 Feb 1999 10:31:35 +0100
+
+ocaml (2.01-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Sven Luther <luther@debian.org>  Tue, 11 Feb 1999 13:51:35 +0100
+
+ocaml (2.00-2) unstable; urgency=low
+
+  * added mli2html patch to create html documents from .mli files
+
+ -- Sven Luther <luther@dpt-info.u-strasbg.fr>  Sun, 13 Sep 1998 09:08:05 +0200
+
+ocaml (2.00-1) unstable; urgency=low
+
+  * new upstream source
+
+ -- Sven Luther <luther@dpt-info.u-strasbg.fr>  Mon, 31 Aug 1998 10:08:05 +0200
+
+ocaml (1.07-1) unstable; urgency=low
+
+  * new upstream source
+
+ -- Sven Luther <luther@dpt-info.u-strasbg.fr>  Sat, 21 Feb 1998 10:36:26 +0800
+
+ocaml (1.05-2) unstable; urgency=low
+
+  * Build with libc6
+
+ -- Christophe Le Bars <clebars@debian.org>  Sun, 28 Sep 1997 16:45:02 +0200
+
+ocaml (1.05-1) non-free; urgency=low
+
+  * New upstream source
+
+ -- Christophe Le Bars <clebars@debian.org>  Fri, 22 Aug 1997 23:01:51 +0200
+
+ocaml (1.03-2) frozen-non-free non-free; urgency=low
+
+  * Added ocamlmktop manpage (Bug#6264)
+
+ -- Christophe Le Bars <clebars@debian.org>  Tue, 22 Apr 1997 23:44:12 +0200
+
+ocaml (1.03-1) non-free; urgency=low
+
+  * New upstream source
+  * Added html reference manual
+
+ -- Christophe Le Bars <clebars@debian.org>  Fri, 1 Nov 1996 15:51:00 +0100
+
+ocaml (1.02-1) non-free; urgency=low
+
+  * Initial release
+  * Added Debian GNU/Linux Linux package maintenance system files
+
+ -- Christophe Le Bars <clebars@debian.org>  Fri, 11 Oct 1996 22:25:01 +0200
+
+ocaml (3.06.99.beta2-2) experimental; urgency=low
+
+  * Fixed emacsen-install so that caml-xemacs and caml-emacs get installed
+    only for the corresponding emacs flavors. Thanks go to Jerome Marant.
+
+ -- Sven Luther <luther@debian.org>  Fri,  5 Sep 2003 15:34:48 +0200
+
+ocaml (3.06.99.beta2-1) experimental; urgency=low
+
+  * New ocaml 3.07 beta release.
+  * Integrated some of the debian patches :)))
+  * Disabled caml-xemacs.el as it seems broken.
+
+ -- Sven Luther <luther@debian.org>  Tue, 26 Aug 2003 21:10:27 +0200
+
+ocaml (3.06.99.beta1-1) experimental; urgency=low
+
+  * Ocaml 3.07 beta 1 release.
+  * Dpatchification.
 
  -- Sven Luther <luther@debian.org>  Wed,  6 Aug 2003 13:53:08 +0200
 

@@ -1,5 +1,2 @@
-10_versioned_libdir
-14_clean
-16_objinfo
-18_ocamlinit
-20_usr_bin
+versioned_libdir.dpatch
+objinfo.dpatch

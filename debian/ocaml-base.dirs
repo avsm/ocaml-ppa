@@ -4,3 +4,9 @@ usr/lib/ocaml/3.07
 usr/lib/ocaml/3.07/stublibs
 usr/share/lintian/overrides
 
+usr/bin
+usr/share/man/man1
+usr/lib/ocaml/3.07
+usr/lib/ocaml/3.07/stublibs
+usr/share/lintian/overrides
+

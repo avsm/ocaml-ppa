@@ -1,5 +1,5 @@
 #! /bin/sh -e 
-## 16_objinfo.dpatch by <luther@debian.org>
+## objinfo.dpatch by <luther@debian.org>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
 ## DP: Makefiles, configure scripts and other build stuff adapted for

@@ -7,3 +7,12 @@ rm -f /usr/share/man/man1/camlp4o.opt.1.gz
 
 #DEBHELPER#
 
+#!/bin/sh
+rm -f /usr/share/man/man1/ocamlc.opt.1.gz
+rm -f /usr/share/man/man1/ocamlopt.opt.1.gz
+rm -f /usr/share/man/man1/ocamllex.opt.1.gz
+rm -f /usr/share/man/man1/camlp4r.opt.1.gz
+rm -f /usr/share/man/man1/camlp4o.opt.1.gz
+
+#DEBHELPER#
+

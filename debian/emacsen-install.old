@@ -31,19 +31,8 @@ if test -x /usr/sbin/install-info-altdir; then
 fi
 
 install -m 755 -d ${ELCDIR}
-
 cd ${ELDIR}
-case "${FLAVOR}" in
-    emacs20 | emacs21)
-	FILES=`ls *.el | grep -v caml-xemacs`
-	;;
-
-    xemacs21)
-	FILES=`ls *.el | grep -v caml-emacs`
-	;;
-    *)
-	;;	
-esac
+FILES=`echo *.el`
 cp ${FILES} ${ELCDIR}
 cd ${ELCDIR}
 
@@ -87,19 +76,8 @@ if test -x /usr/sbin/install-info-altdir; then
 fi
 
 install -m 755 -d ${ELCDIR}
-
 cd ${ELDIR}
-case "${FLAVOR}" in
-    emacs20 | emacs21)
-	FILES=`ls *.el | grep -v caml-xemacs`
-	;;
-
-    xemacs21)
-	FILES=`ls *.el | grep -v caml-emacs`
-	;;
-    *)
-	;;	
-esac
+FILES=`echo *.el`
 cp ${FILES} ${ELCDIR}
 cd ${ELCDIR}
 

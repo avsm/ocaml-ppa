@@ -4,3 +4,9 @@
 /usr/bin/camlp4o.opt
 /usr/bin/camlp4r.opt
 /usr/bin/ocamldoc.opt
+/usr/bin/ocamlc.opt
+/usr/bin/ocamlopt.opt
+/usr/bin/ocamllex.opt
+/usr/bin/camlp4o.opt
+/usr/bin/camlp4r.opt
+/usr/bin/ocamldoc.opt

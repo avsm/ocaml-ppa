@@ -1,5 +1,5 @@
 #! /bin/sh -e 
-## 10_versionedlibdir.dpatch by  <luther@debian.org>
+## versioned_libdir.dpatch by  <luther@debian.org>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
 ## DP: Makefiles, configure scripts and other build stuff adapted for
@@ -19,10 +19,10 @@ esac
 
 exit 0
 @DPATCH@
-diff -ur ocaml-3.07beta1.orig/camlp4/config/configure_batch ocaml-3.07beta1/camlp4/config/configure_batch
---- ocaml-3.07beta1.orig/camlp4/config/configure_batch	2002-07-23 16:11:49.000000000 +0200
-+++ ocaml-3.07beta1/camlp4/config/configure_batch	2003-08-06 13:06:09.000000000 +0200
-@@ -92,13 +92,13 @@
+diff -ur ocaml-3.07.orig/camlp4/config/configure_batch ocaml-3.07/camlp4/config/configure_batch
+--- ocaml-3.07.orig/camlp4/config/configure_batch.orig	2003-09-30 18:11:57.000000000 +0200
++++ ocaml-3.07/camlp4/config/configure_batch	2003-09-30 18:12:51.000000000 +0200
+@@ -94,13 +94,13 @@
     *) echo "BINDIR=$bindir" >> Makefile.cnf;;
  esac
  case "$libdir" in
@@ -40,10 +40,10 @@ diff -ur ocaml-3.07beta1.orig/camlp4/config/configure_batch ocaml-3.07beta1/caml
     *) echo "MANDIR=$mandir" >> Makefile.cnf;;
  esac
  
-diff -ur ocaml-3.07beta1.orig/configure ocaml-3.07beta1/configure
---- ocaml-3.07beta1.orig/configure	2003-07-22 09:41:31.000000000 +0200
-+++ ocaml-3.07beta1/configure	2003-08-06 13:04:38.000000000 +0200
-@@ -143,8 +143,8 @@
+diff -ur ocaml-3.07.orig/configure ocaml-3.07/configure
+--- ocaml-3.07.orig/configure	2003-09-30 18:09:47.000000000 +0200
++++ ocaml-3.07/configure	2003-09-30 18:10:12.000000000 +0200
+@@ -149,8 +149,8 @@
     *) echo "BINDIR=$bindir" >> Makefile;;
  esac
  case "$libdir" in

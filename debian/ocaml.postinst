@@ -4,3 +4,9 @@ ln -sf /usr/lib/ocaml/3.07/caml /usr/include/caml
 
 #DEBHELPER#
 
+#!/bin/sh -e
+
+ln -sf /usr/lib/ocaml/3.07/caml /usr/include/caml
+
+#DEBHELPER#
+
