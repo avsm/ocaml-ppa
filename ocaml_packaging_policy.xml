@@ -7,6 +7,10 @@
  <!ENTITY ocaml-base-pkg "<application>ocaml-base-&ocaml-version;-&ocaml-compat;</application>">
  <!ENTITY ocaml-name     "<application>OCaml</application>">
  <!ENTITY ocaml-force    "The Debian OCaml Task Force">
+ <!ENTITY ocamlc         "<application>ocamlc</application>">
+ <!ENTITY ocamlopt       "<application>ocamlopt</application>">
+ <!ENTITY ocamldoc       "<application>ocamldoc</application>">
+ <!ENTITY ocamlfind      "<application>ocamlfind</application>">
  <!ENTITY debian-name    "Debian">
  <!ENTITY authors             SYSTEM "authors.xml">
  <!ENTITY legal               SYSTEM "legal.xml">

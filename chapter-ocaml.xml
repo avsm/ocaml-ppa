@@ -1,13 +1,13 @@
    <section id="versions">
     <title>Version</title>
     <para>
-    At any given time, the package <application>ocaml</application>
-    should represent the current stable upstream version of &ocaml-name; 
+    At any given time, the package &ocaml-pkg; should represent 
+    the current stable upstream version of &ocaml-name; 
     revision &ocaml-version;.
     </para>
 
     <para>
-    This package provides a virtual package called &ocaml-pkg;. 
+    This package provides a virtual package called &ocaml-vpkg;. 
     This will help to track incompatible changes made within the 
     same version of &ocaml-name;.
     </para>
@@ -18,13 +18,13 @@
     <title>Base Package</title>
     <para>
     In order to have a minimal installation, a virtual package 
-    <application>ocaml-base</application> exists. It enable to have
+    &ocaml-base-vpkg; exists. It enable to have
     a bare minimum install of &ocaml-name; library.
     </para>
 
     <para>
-    As for <application>ocaml</application> this package provides
-    a virtual package &ocaml-base-pkg;. This will help to track
+    As for &ocaml-pkg; this package provides
+    a virtual package &ocaml-base-vpkg;. This will help to track
     incompatible changes made within the same version of &ocaml-name;.
     </para>
 
@@ -37,31 +37,31 @@
      &ocaml-name; is a complete language allowing to create :
      <simplelist>
       <listitem>bytecoded executable</listitem>
-      <listitem>bytecoded library ( *.cma )</listitem>
+      <listitem>bytecoded library ( <filename>*.cma</filename> )</listitem>
       <listitem>native executable</listitem>
-      <listitem>native library ( *.cmxa )</listitem>
-      <listitem>shared library ( for C-binding ) ( dll*.so )</listitem>
-      <listitem>static library ( for C-binding ) ( lib*.a )</listitem>
-      <listitem>bytecoded object ( *.cmo )</listitem>
-      <listitem>native object ( *.cmx )</listitem>
-      <listitem>configuration file for handling library ( META )</listitem>
-      <listitem>ocamldoc generated documentation ( *.odoc )</listitem>
+      <listitem>native library ( <filename>*.cmxa</filename> )</listitem>
+      <listitem>shared library ( for C-binding ) ( <filename>dll*.so</filename> )</listitem>
+      <listitem>static library ( for C-binding ) ( <filename>lib*.a</filename> )</listitem>
+      <listitem>bytecoded object ( <filename>*.cmo</filename> )</listitem>
+      <listitem>native object ( <filename>*.cmx</filename> )</listitem>
+      <listitem>configuration file for handling library ( <filename>META</filename> )</listitem>
+      <listitem>&ocamldoc; generated documentation ( <filename>*.odoc</filename> )</listitem>
      </simplelist>
     </para>
    
     <para>
      There is a convention considering that native executable should be 
-     called <application>progname</application>.opt and bytecoded one 
-     <application>progname</application>.byte. When packaging, only 
+     called <application>progname.opt</application> and bytecoded one 
+     <application>progname.byte</application>. When packaging, only 
      <application>progname</application> is taken in account.
     </para>
 
     <para>
      For easying library management, &ocaml-force; used the 
-     <application>ocamlfind</application> library management scheme.
-     This scheme includes a file named <filename>META</filename> which holds
+     &ocamlfind; library management scheme. This scheme includes 
+     a file named <filename>META</filename> which holds
      all the library possibility. This is the configuration file for
-     handling library ( see XXX ).
+     handling library path and compile option.
     </para>
    </section>
  
@@ -78,56 +78,114 @@
     </simplelist>
     </para>
 
-    <para>This documentation should be browse by different mean, from the
+    <para>
+    This documentation should be browse by different mean, from the
     most simple to the most complex. At least, they could all be browsed with 
-    simple text editor. Specific and <application>ocamldoc</application>
-    generated documentation shoudl be browse by using different viewer ( like
-    <application>advi</application>, HTML browser ...). There is also at least two
+    simple text editor. Specific and &ocamldoc; generated documentation should 
+    be browse by using different viewer ( like <application>advi</application>, 
+    HTML browser ...). There is also at least two
     specific &ocaml-name; browser : <application>docbrowse</application> shipped
     with <application>cameleon</application> and <application>ocamlbrowser</application>
-    shipped with <application>ocaml</application> itself. The first one, need specific
-    <application>ocamldoc</application> generated documentation : this is in fact the
-    output of the intermediary stage of <application>ocamldoc</application> when 
-    generating any kind of output, this is file with ".odoco
-	
-	which is installed in 
-    <filename>/usr/lib/ocaml/&ocaml-version;/</filename> and his subdirectory.
-    You can also browse documentation with <application>ocamlbrowser</application>.
-    At last, for some package, a special scheme is used to handle documentation 
-    file : ocamldoc generated documentation. By this mean you can have different access
-    to library documentation : using <application>docbrowser</application> which is
-    shipped with <application>cameleon</application>, HTML pages registered under
-    the <application>doc-base</application> <organization>Debian</organization> package,
-    or manpages.
+    shipped with &ocaml-name; itself. The first one, need specific
+    &ocamldoc; generated documentation. The second one enables
+    the user to browse directly the prototype of each function shipped in the cmi gives
+    to the application.
+    </para>
+    
+    <para>
+    You can generate &ocamldoc; specific documentation by using
+    the <option>-dump</option> of this application. By using this, you dump the 
+    intermediary representation of the document that will be generated by ocamldoc.
+    This can be used to generate HTML documentation and manpages, by reloading this
+    file ( using <option>-load</load> ).
     </para>
 
-    <para>As of this date, there is no automatic way to generate manpages and HTML 
-    documentation with a debian package. For now, <filename>*.odoc</filename> files
-    will be stored in <filename>/usr/share/ocamldoc-base</filename>. A tools, to
-    auto-generate manpages and HTML documentation is under construction.
+    <para>
+    As of today, there is no way to post-process &ocamldoc;
+    specific documentation. A &debian-name; package is under construction to do this
+    task. It will be referred as &ocamldoc-base;.
     </para>
+
    </section>  
+
    <section id="path">
-    <title>Library paths</title>
+    <title>Path for all &ocaml-name; component</para>
+
     <para>
     Ocaml will search library in two different location, referred to
     as <varname>local</varname> which hold user installed library and as 
     <varname>core</varname> in which packaged modules stood.
     </para>
+ 
+    <subsection id="library-path">
+    <title>Library paths</title>
+
+     <para>
+     By default, &ocaml-name; will look for modules in this order :
+     <variablelist>
+      <varlistentry>
+       <term><varname>local</varname></term>
+       <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/</filename></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><varname>core</varname></term>
+       <listitem><filename>/usr/lib/ocaml/&ocaml-version;/</filename></listitem>
+      </varlistentry>
+     </variablelist>
+     </para>
+
+     <para>
+     When installing a library, packagers should use a subdirectory of the preceding
+     set of path. Subdirectory name is not mandatory. 
+     <para>
+     
+     <para>
+     If upstream developpers use already a subdirectory of the &ocaml-name; 
+     standard library path, this path should be preserved in the &debian-name; 
+     package, but made relative to the standard library path of the &ocaml-pkg;.
+     Before using the provided subdirectory, packagers should check if there is 
+     no subdirectory name clash with other &ocaml-name; library.
+     </para>
+
+     <para>
+     If upstream developpers don't use this scheme, packagers are encouraged not
+     to install this library in the standard library directory. They should create
+     at least a subdirectory per source package ( in order to avoid library 
+     name clash ). Packagers should also consider to do a larger separation by
+     creating a subdirectory per binary package ( in order to avoid META name
+     clash ).
+     </para>
+
+     <para>
+     A suggested rule to choose name for this subdirectory is to use either the package 
+     name provided by the META of the upstream, or the name of the library itself.
+     </para>
+     
+    </subsection>
+
+    <subsection id="ocamldoc-base-path">
+    <title>&ocamldoc; specific generated documentation</title>
 
     <para>
-    By default, &ocaml-name; will look for modules in this order :
-    <variablelist>
-     <varlistentry>
-      <term><varname>local</varname></term>
-      <para><filename>/usr/local/lib/ocaml/&ocaml-version;/</filename></para>
-     </varlistentry>
-     <varlistentry>
-      <term><varname>core</varname></term>
-      <para><filename>/usr/lib/ocaml/&ocaml-version;/</filename></para>
-     </varlistentry>
-    </variablelist>
+    Even if this way of producing documentation is not mandatory, packagers are
+    encouraged to use it, in order to ship lighter documentation, which could
+    be processed by &ocaml-name; tools.
     </para>
+    
+    <para>
+    By default, &ocamldoc-base; will look for <filename>*.odoc</filename> in this order :
+     <variablelist>
+      <varlistentry>
+       <term><varname>local</varname></term>
+       <listitem><filename>/usr/local/share/ocamldoc/&ocaml-version;/</filename></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><varname>core</varname></term>
+       <listitem><filename>/usr/share/ocamldoc/&ocaml-version;/</filename></listitem>
+      </varlistentry>
+     </variablelist>
+    </para>
+
    </section>
 
 
