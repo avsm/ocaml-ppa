@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pervasives.mli,v 1.93 2003/09/04 12:44:48 doligez Exp $ *)
+(* $Id: pervasives.mli,v 1.94 2003/10/08 13:13:33 weis Exp $ *)
 
 (** The initially opened module.
 
@@ -800,7 +800,7 @@ type ('a, 'b, 'c) format = ('a, 'b, 'c, 'c) format4
 
 external string_of_format :
   ('a, 'b, 'c, 'd) format4 -> string = "%identity"
-(** Converts a format string into a string.*)
+(** Converts a format string into a string. *)
 external format_of_string :
   ('a, 'b, 'c, 'd) format4 -> ('a, 'b, 'c, 'd) format4 = "%identity"
 (** [format_of_string s] returns a format string read from the string

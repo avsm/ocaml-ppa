@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: q_MLast.ml,v 1.51 2003/07/16 12:50:08 mauny Exp $ *)
+(* $Id: q_MLast.ml,v 1.53 2003/10/02 12:33:43 mauny Exp $ *)
 
 value gram = Grammar.gcreate (Plexer.gmake ());
 
@@ -127,7 +127,9 @@ value a_FLOAT = Grammar.Entry.create gram "a_FLOAT";
 value a_STRING = Grammar.Entry.create gram "a_STRING";
 value a_CHAR = Grammar.Entry.create gram "a_CHAR";
 value a_TILDEIDENT = Grammar.Entry.create gram "a_TILDEIDENT";
+value a_LABEL = Grammar.Entry.create gram "a_LABEL";
 value a_QUESTIONIDENT = Grammar.Entry.create gram "a_QUESTIONIDENT";
+value a_OPTLABEL = Grammar.Entry.create gram "a_OPTLABEL";
 
 value o2b =
   fun
@@ -793,6 +795,13 @@ EXTEND
           Qast.Node "TyPol" [Qast.Loc; pl; t] ]
     | "arrow" RIGHTA
       [ t1 = SELF; "->"; t2 = SELF -> Qast.Node "TyArr" [Qast.Loc; t1; t2] ]
+    | "label" NONA
+      [ i = a_TILDEIDENT; ":"; t = SELF -> Qast.Node "TyLab" [Qast.Loc; i; t]
+      | i = a_LABEL; t = SELF -> Qast.Node "TyLab" [Qast.Loc; i; t]
+      | i = a_QUESTIONIDENT; ":"; t = SELF ->
+          Qast.Node "TyOlb" [Qast.Loc; i; t]
+      | i = a_OPTLABEL; t = SELF ->
+          Qast.Node "TyOlb" [Qast.Loc; i; t] ]
     | LEFTA
       [ t1 = SELF; t2 = SELF -> Qast.Node "TyApp" [Qast.Loc; t1; t2] ]
     | LEFTA
@@ -1006,13 +1015,6 @@ EXTEND
     [ [ m = a_UIDENT; "."; l = SELF -> Qast.Cons m l
       | i = a_LIDENT -> Qast.List [i] ] ]
   ;
-  (* Labels *)
-  ctyp: AFTER "arrow"
-    [ NONA
-      [ i = a_TILDEIDENT; ":"; t = SELF -> Qast.Node "TyLab" [Qast.Loc; i; t]
-      | i = a_QUESTIONIDENT; ":"; t = SELF ->
-          Qast.Node "TyOlb" [Qast.Loc; i; t] ] ]
-  ;
   ctyp: LEVEL "simple"
     [ [ "["; "="; rfl = row_field_list; "]" ->
           Qast.Node "TyVrn" [Qast.Loc; rfl; Qast.Option None]
@@ -1044,9 +1046,14 @@ EXTEND
       | "#"; sl = mod_ident -> Qast.Node "PaTyp" [Qast.Loc; sl]
       | i = a_TILDEIDENT; ":"; p = SELF ->
           Qast.Node "PaLab" [Qast.Loc; i; Qast.Option (Some p)]
+      | i = a_LABEL; p = SELF ->
+          Qast.Node "PaLab" [Qast.Loc; i; Qast.Option (Some p)]
       | i = a_TILDEIDENT -> Qast.Node "PaLab" [Qast.Loc; i; Qast.Option None]
       | i = a_QUESTIONIDENT; ":"; "("; p = patt_tcon; eo = SOPT eq_expr;
         ")" ->
+          Qast.Node "PaOlb"
+            [Qast.Loc; i; Qast.Option (Some (Qast.Tuple [p; eo]))]
+      | i = a_OPTLABEL; "("; p = patt_tcon; eo = SOPT eq_expr; ")" ->
           Qast.Node "PaOlb"
             [Qast.Loc; i; Qast.Option (Some (Qast.Tuple [p; eo]))]
       | i = a_QUESTIONIDENT ->
@@ -1063,9 +1070,14 @@ EXTEND
   ipatt:
     [ [ i = a_TILDEIDENT; ":"; p = SELF ->
           Qast.Node "PaLab" [Qast.Loc; i; Qast.Option (Some p)]
+      | i = a_LABEL; p = SELF ->
+          Qast.Node "PaLab" [Qast.Loc; i; Qast.Option (Some p)]
       | i = a_TILDEIDENT -> Qast.Node "PaLab" [Qast.Loc; i; Qast.Option None]
       | i = a_QUESTIONIDENT; ":"; "("; p = ipatt_tcon; eo = SOPT eq_expr;
         ")" ->
+          Qast.Node "PaOlb"
+            [Qast.Loc; i; Qast.Option (Some (Qast.Tuple [p; eo]))]
+      | i = a_OPTLABEL; "("; p = ipatt_tcon; eo = SOPT eq_expr; ")" ->
           Qast.Node "PaOlb"
             [Qast.Loc; i; Qast.Option (Some (Qast.Tuple [p; eo]))]
       | i = a_QUESTIONIDENT ->
@@ -1086,8 +1098,12 @@ EXTEND
     [ "label" NONA
       [ i = a_TILDEIDENT; ":"; e = SELF ->
           Qast.Node "ExLab" [Qast.Loc; i; Qast.Option (Some e)]
+      | i = a_LABEL; e = SELF ->
+          Qast.Node "ExLab" [Qast.Loc; i; Qast.Option (Some e)]
       | i = a_TILDEIDENT -> Qast.Node "ExLab" [Qast.Loc; i; Qast.Option None]
       | i = a_QUESTIONIDENT; ":"; e = SELF ->
+          Qast.Node "ExOlb" [Qast.Loc; i; Qast.Option (Some e)]
+      | i = a_OPTLABEL; e = SELF ->
           Qast.Node "ExOlb" [Qast.Loc; i; Qast.Option (Some e)]
       | i = a_QUESTIONIDENT ->
           Qast.Node "ExOlb" [Qast.Loc; i; Qast.Option None] ] ]
@@ -1335,9 +1351,15 @@ EXTEND
     [ [ "~"; a = ANTIQUOT -> antiquot "" loc a
       | s = TILDEIDENT -> Qast.Str s ] ]
   ;
+  a_LABEL:
+    [ [ s = LABEL -> Qast.Str s ] ]
+  ;
   a_QUESTIONIDENT:
     [ [ "?"; a = ANTIQUOT -> antiquot "" loc a
       | s = QUESTIONIDENT -> Qast.Str s ] ]
+  ;
+  a_OPTLABEL:
+    [ [ s = OPTLABEL -> Qast.Str s ] ]
   ;
 END;
 

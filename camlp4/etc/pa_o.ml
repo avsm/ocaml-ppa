@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pa_o.ml,v 1.52 2003/09/25 12:05:05 mauny Exp $ *)
+(* $Id: pa_o.ml,v 1.54 2003/09/30 14:39:38 mauny Exp $ *)
 
 open Stdpp;
 open Pcaml;
@@ -1148,16 +1148,16 @@ EXTEND
       | i = LIDENT -> [i] ] ]
   ;
   (* Labels *)
-  ctyp: AFTER "arrow"
-    [ NONA
+  ctyp: LEVEL "arrow"
+    [ RIGHTA
       [ i = lident_colon; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
-          <:ctyp< ~ $i$ : $t1$ -> $t2$ >>
+          <:ctyp< ( ~ $i$ : $t1$ ) -> $t2$ >>
       | i = OPTLABEL; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
-          <:ctyp< ? $i$ : $t1$ -> $t2$ >>
+          <:ctyp< ( ? $i$ : $t1$ ) -> $t2$ >>
       | i = QUESTIONIDENT; ":"; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
-          <:ctyp< ? $i$ : $t1$ -> $t2$ >>
+          <:ctyp< ( ? $i$ : $t1$ ) -> $t2$ >>
       | "?"; i=lident_colon;t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
-          <:ctyp< ? $i$ : $t1$ -> $t2$ >> ] ]
+          <:ctyp< ( ? $i$ : $t1$ ) -> $t2$ >> ] ]
   ;
   ctyp: LEVEL "simple"
     [ [ "["; OPT "|"; rfl = LIST1 row_field SEP "|"; "]" ->
