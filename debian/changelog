@@ -1,3 +1,19 @@
+ocaml (3.07.2a-3) unstable; urgency=low
+
+  * Split out the ocaml interpreter and all required files into ocaml-interp
+  * Split out all of the tk/xlibs stuff from ocaml into ocaml-nox and from
+    ocaml-base into ocaml-base-nox
+  * Added a bunch of internal modules from the compiler into a new binary:
+    compiler-libs
+  * Changed 'Objectif' to 'Objective' in ocaml-source short description
+  * Cleaned up debian/rules.  It now uses stamp files a little more
+    intelligently so that it doesn't rebuild the whole thing every time
+  * Check to see if /usr/include/caml EXISTS and is a symblink thus 
+    eliminating a spurious warning message from ocaml-nox.preinst
+  * Removed 'num' library from ocaml-sources.files
+
+ -- Mike Furr <mfurr@debian.org>  Thu, 10 Jun 2004 22:44:34 -0400
+
 ocaml (3.07.2a-2) unstable; urgency=low
 
   * Now install the config/Makefile so that nat/bignum can be built as an

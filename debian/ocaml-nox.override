@@ -1,0 +1,11 @@
+ocaml-nox: binary-without-manpage ocaml-noxbrowser
+ocaml-nox: binary-without-manpage ocaml-noxdoc
+ocaml-nox: binary-without-manpage ocaml-noxdoc.opt
+ocaml-nox: binary-without-manpage ocaml-noxmklib
+ocaml-nox: binary-without-manpage ocaml-noxtags
+ocaml-nox: binary-without-manpage camlp4sch
+ocaml-nox: binary-without-manpage ocaml-noxdep.opt
+ocaml-nox: executable-not-elf-or-script ./usr/bin/ocaml-noxtags
+ocaml-nox: menu-icon-has-bad-colors /usr/X11R6/include/X11/pixmaps/JoeCaml.xpm: lime
+ocaml-nox: postinst-does-not-load-confmodule
+ocaml-nox: script-not-executable ./usr/lib/ocaml-nox/3.07/camlheader

@@ -1,4 +1,3 @@
-usr/bin/ocamlrun
-usr/share/man/man1/ocamlrun.1
-usr/lib/ocaml/3.07/stublibs
-usr/lib/ocaml/3.07/ld.conf
+usr/lib/ocaml/3.07/stublibs/dllgraphics.so
+usr/lib/ocaml/3.07/stublibs/dlllabltk.so
+usr/lib/ocaml/3.07/stublibs/dlltkanim.so

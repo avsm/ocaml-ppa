@@ -1,5 +1,5 @@
 #!/bin/sh -e
 
-ln -sf /usr/lib/ocaml/3.07/caml /usr/include/caml
-
-#DEBHELPER#
+ln -sf ../ocaml-base-nox/Changes.gz /usr/share/doc/ocaml-base
+ln -sf ../ocaml-base-nox/README.gz /usr/share/doc/ocaml-base
+ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz /usr/share/doc/ocaml-base

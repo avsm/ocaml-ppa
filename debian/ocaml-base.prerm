@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+rm -f /usr/share/doc/ocaml-base/Changes.gz
+rm -f /usr/share/doc/ocaml-base/README.gz
+rm -f /usr/share/doc/ocaml-base/ocaml_packaging_policy.gz
+
+

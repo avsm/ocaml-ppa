@@ -33,7 +33,7 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
-config.status: configure
+config-stamp: configure
 	dh_testdir
 	# Add here commands to configure the package.
 	./configure --with-pthread -prefix /usr				\
@@ -49,13 +49,14 @@ config.status: configure
 		echo "Aborting.";					\
 		exit 1;							\
 	fi
+	touch config-stamp
 
 
 #Architecture 
 build: build-arch build-indep
 
 build-arch: build-arch-stamp
-build-arch-stamp: patch-stamp config.status
+build-arch-stamp: patch-stamp config-stamp
 	
 	# Add here commands to compile the arch part of the package.
 	if test ! -d boot.debian; then 					\
@@ -67,9 +68,10 @@ build-arch-stamp: patch-stamp config.status
 		$(MAKE) opt opt.opt;					\
 		touch opt-built-stamp;					\
 	fi
+	touch build-arch-stamp
 
 build-indep: build-indep-stamp
-build-indep-stamp: patch-stamp config.status
+build-indep-stamp: patch-stamp config-stamp
 	
 	# Add here commands to compile the indep part of the package.
 	#$(MAKE) doc
@@ -125,33 +127,58 @@ install-arch:
 	#$(MAKE) install prefix=$(CURDIR)/debian/ocaml/usr
 
 	# Let's install ocaml first.
-	$(MAKE) install PREFIX=$(CURDIR)/debian/ocaml/usr
-	$(MAKE) -C emacs EMACSDIR=$(CURDIR)/debian/ocaml/usr/share/emacs/site-lisp/ocaml \
+	$(MAKE) install PREFIX=$(CURDIR)/debian/ocaml-nox/usr
+	$(MAKE) -C emacs EMACSDIR=$(CURDIR)/debian/ocaml-nox/usr/share/emacs/site-lisp/ocaml \
 		NOCOMPILE=true simple-install
-	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml/usr/bin install-ocamltags
+	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-nox/usr/bin install-ocamltags
 	install -m 644 debian/JoeCaml.xpm \
-		$(CURDIR)/debian/ocaml/usr/X11R6/include/X11/pixmaps
+		$(CURDIR)/debian/ocaml-nox/usr/X11R6/include/X11/pixmaps
+	install -m 644 debian/ocaml-nox.override \
+		$(CURDIR)/debian/ocaml-nox/usr/share/lintian/overrides/ocaml-nox
 	install -m 644 debian/ocaml.override \
-		$(CURDIR)/debian/ocaml/usr/share/lintian/overrides/ocaml
+		$(CURDIR)/debian/ocaml-nox/usr/share/lintian/overrides/ocaml
 	install -m 644 otherlibs/labltk/README \
 		$(CURDIR)/debian/README.labltk
 	install -m 644 config/Makefile \
-		$(CURDIR)/debian/ocaml/usr/lib/ocaml/$(VERSION)/config/Makefile
+		$(CURDIR)/debian/ocaml-nox/usr/lib/ocaml/$(VERSION)/config/Makefile
 
-	# Then move the ocaml-base package.
-	dh_movefiles -pocaml-base --sourcedir=debian/ocaml
+	# now move the graphics files over
+	if [ -e opt-built-stamp ]; then					\
+		dh_movefiles -pocaml					\
+			--sourcedir=debian/ocaml-nox;			\
+	else								\
+		dh_movefiles -pocaml					\
+			--sourcedir=debian/ocaml-nox			\
+			--exclude=*.cmx --exclude=*.cmxa;		\
+	fi
+
+
+	# Then move the ocaml-base-nox package.
+	dh_movefiles -pocaml-base-nox --sourcedir=debian/ocaml-nox
 	install -m 644 debian/ld.conf \
-		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(VERSION)
-	#install -m 644 debian/ocaml-base.override \
-		$(CURDIR)/debian/ocaml-base/usr/share/lintian/overrides/ocaml-base
+		$(CURDIR)/debian/ocaml-base-nox/usr/lib/ocaml/$(VERSION)
+
+	# and base's corresponding graphics stuff.
+	dh_movefiles -pocaml-base --sourcedir=debian/ocaml-nox
 
 	# The ocaml-native-compilers, if available.
 	if [ -e opt-built-stamp ]; then					\
 		dh_movefiles -pocaml-native-compilers			\
-			--sourcedir=debian/ocaml;			\
+			--sourcedir=debian/ocaml-nox;			\
 		install -m 644 debian/ocaml-native-compilers.override	\
 			$(CURDIR)/debian/ocaml-native-compilers/usr/share/lintian/overrides/ocaml-native-compilers; \
 	fi
+
+	# The interpreter files
+	dh_movefiles -pocaml-interp					\
+			--sourcedir=debian/ocaml-nox;			\
+
+	# Some extra stuff
+	install -m 644 utils/*.mli utils/*.cmi utils/*.cmo utils/*.cmx utils/*.o \
+		typing/*.mli typing/*.cmi typing/*.cmo typing/*.cmx typing/*.o \
+		parsing/*.mli parsing/*.cmi parsing/*.cmo parsing/*.cmx parsing/*.o \
+		$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/3.07/compiler-libs
+
 
 	dh_install -a
 
@@ -195,15 +222,19 @@ binary-arch: build-arch install-arch
 	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
 	dh_shlibdeps -s
 	if [ ! -e opt-built-stamp ]; then			\
-	  dh_gencontrol -pocaml					\
+	  dh_gencontrol -pocaml-nox				\
 		-u-VF:BestProvides=",ocaml-best-compilers";	\
 	else 							\
-	  dh_gencontrol -pocaml					\
+	  dh_gencontrol -pocaml-nox				\
 	  	-u-VF:BestProvides="";				\
 	  dh_gencontrol -pocaml-native-compilers;		\
 	fi
+	dh_gencontrol -pocaml
+	dh_gencontrol -pocaml-base-nox
 	dh_gencontrol -pocaml-base
 	dh_gencontrol -pocaml-source
+	dh_gencontrol -pocaml-interp
+	dh_gencontrol -pocaml-compiler-libs
 	dh_md5sums -s
 	dh_builddeb -s
 

@@ -13,8 +13,11 @@ ocaml for Debian
 
   1) The ocaml package has been split into different binary packages :
 
-  o ocaml-base : contains the rutime stuff (ocamlrun + dlls)
   o ocaml : contains the full ocaml suite
+  o ocaml-nox : the full suite except for the graphics(Tk) modules
+  o ocaml-base : contains the rutime stuff (ocamlrun + dlls + Tk)
+  o ocaml-base-nox : contains the rutime stuff (ocamlrun + dlls - Tk)
+
   o ocaml-native-compilers : contains the native built part of the ocaml suite
     (ocamlc.opt, ocamlopt.opt, ocamllex.opt, camlp4o.opt and camlp4r.opt)
   o ocaml-source : contains the full ocaml source for the (few) package which
@@ -44,4 +47,4 @@ ocaml for Debian
   /usr/lib/ocaml/<ocaml_version>/stublibs.
   The older method of using ocaml-ldconf is obsolet now.
 
- -- Sven Luther <luther@lambda.u-strasbg.fr>, Sat, 14 Dec 2002 22:27:22 +0100
+ -- Mike Furr <mfurr@debian.org>, Fri Jun 11 13:27:12 2004

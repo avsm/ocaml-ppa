@@ -1,0 +1,11 @@
+usr/bin/labltk
+usr/lib/ocaml/3.07/libgraphics.a
+usr/lib/ocaml/3.07/graphics.cma
+usr/lib/ocaml/3.07/graphics.cmi
+usr/lib/ocaml/3.07/graphicsX11.cmi
+usr/lib/ocaml/3.07/graphics.mli
+usr/lib/ocaml/3.07/graphicsX11.mli
+usr/lib/ocaml/3.07/labltk
+usr/lib/ocaml/3.07/graphics.cmx
+usr/lib/ocaml/3.07/graphics.cmxa
+usr/lib/ocaml/3.07/graphics.a

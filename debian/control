@@ -5,14 +5,14 @@ Maintainer: Sven Luther <luther@debian.org>
 Build-Depends: debhelper (>> 4.0.2), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2
 Standards-Version: 3.6.0
 
-Package: ocaml
+Package: ocaml-nox
 Architecture: any
-Depends: ${shlibs:Depends}, libncurses5-dev, ocaml-base (= ${Source-Version}), ocaml-base-3.07
-Suggests: xlibs-dev, tcl8.4-dev, tk8.4-dev, ocaml-doc, libgdbm-dev, emacsen
+Depends: libncurses5-dev, ocaml-base-nox (=${Source-Version}), ocaml-base-nox-3.07, ocaml-interp-3.07
+Suggests: ocaml-doc, libgdbm-dev, emacsen
 Recommends: ledit, file
-Provides: ocaml-3.07 ${F:BestProvides}
+Provides: ocaml-nox-3.07 ${F:BestProvides}
 Replaces: camlp4
-Conflicts: camlp4, camlidl (<< 1.04)
+Conflicts: camlp4, camlidl (<< 1.04), ocaml (<< 3.07-3)
 Description: ML language implementation with a class-based object system
  Objective Caml is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
@@ -32,11 +32,54 @@ Description: ML language implementation with a class-based object system
  the generated programs deliver excellent performance, while retaining
  the moderate memory requirements of the bytecode compiler. It is not
  available on all arches though.
+ .
+ This package contains everything needed to develop ocaml applications
+ that do not require the graphics library.
+
+Package: ocaml
+Architecture: any
+Depends: ocaml-base (= ${Source-Version}), ocaml-base-3.07, ocaml-nox-3.07
+Suggests: xlibs-dev, tcl8.4-dev, tk8.4-dev, 
+Provides: ocaml-3.07
+Description: ML language implementation with a class-based object system
+ Objective Caml is an implementation of the ML language, based on
+ the Caml Light dialect extended with a complete class-based object system
+ and a powerful module system in the style of Standard ML.
+ .
+ Objective Caml comprises two compilers. One generates bytecode
+ which is then interpreted by a C program. This compiler runs quickly,
+ generates compact code with moderate memory requirements, and is
+ portable to essentially any 32 or 64 bit Unix platform. Performance of
+ generated programs is quite good for a bytecoded implementation:
+ almost twice as fast as Caml Light 0.7. This compiler can be used
+ either as a standalone, batch-oriented compiler that produces
+ standalone programs, or as an interactive, toplevel-based system.
+ .
+ The other compiler generates high-performance native code for a number
+ of processors. Compilation takes longer and generates bigger code, but
+ the generated programs deliver excellent performance, while retaining
+ the moderate memory requirements of the bytecode compiler. It is not
+ available on all arches though.
+ .
+ This package includes the standard ocaml graphics library.
+
+Package: ocaml-base-nox
+Architecture: any
+Provides: ocaml-base-nox-3.07
+Depends: ${shlibs:Depends}
+Conflicts: ocaml (<< 3.04-2), ocaml-base (<< 3.07-3)
+Description: Runtime system for ocaml bytecode executables
+ Objective Caml is an implementation of the ML language, based on
+ the Caml Light dialect extended with a complete class-based object system
+ and a powerful module system in the style of Standard ML.
+ .
+ This package contains only the runtime system needed to run bytecode
+ executables that do not use the graphics library. The `ocaml' package
+ contains the full development suite of Objective Caml.
 
 Package: ocaml-base
 Architecture: any
-Depends: ${shlibs:Depends}
-Conflicts: ocaml (<< 3.04-2)
+Depends: ${shlibs:Depends}, ocaml-base-nox-3.07
 Provides: ocaml-base-3.07
 Description: Runtime system for ocaml bytecode executables
  Objective Caml is an implementation of the ML language, based on
@@ -45,11 +88,12 @@ Description: Runtime system for ocaml bytecode executables
  .
  This package contains only the runtime system needed to run bytecode
  executables. The `ocaml' package contains the full development suite of
- Objective Caml.
+ Objective Caml.  You may wish to install the 'ocaml-base-nox' package if
+ you do not require any graphical capilities for your runtime.
 
 Package: ocaml-native-compilers
 Architecture: arm alpha i386 ia64 powerpc sparc
-Depends: ocaml (= ${Source-Version}), ocaml-3.07, ${shlibs:Depends}
+Depends: ocaml-nox (= ${Source-Version}), ocaml-nox-3.07, ${shlibs:Depends}
 Provides: ocaml-best-compilers
 Description: Native code compilers of the ocaml suite (the .opt ones)
  Objective Caml is an implementation of the ML language, based on
@@ -65,7 +109,7 @@ Description: Native code compilers of the ocaml suite (the .opt ones)
 Package: ocaml-source
 Architecture: all
 Provides: ocaml-source-3.07
-Description: Sources for Objectif Caml
+Description: Sources for Objective Caml
  Objective Caml is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
  and a powerful module system in the style of Standard ML.
@@ -73,3 +117,29 @@ Description: Sources for Objectif Caml
  This package contains the sources needed to build some packages which build
  depend on the ocaml source. Notice that if you want to rebuild ocaml, these
  will not work, consider using the source package instead.
+
+Package: ocaml-interp
+Architecture: any
+Provides: ocaml-interp-3.07
+Depends: ocaml-base-nox-3.07
+Conflicts: ocaml-base (<< 3.07-3)
+Description: Ocaml interpreter and standard libraries
+ Objective Caml is an implementation of the ML language, based on
+ the Caml Light dialect extended with a complete class-based object system
+ and a powerful module system in the style of Standard ML.
+ .
+ This package contains the files required to run an ocaml shell from the
+ command line.
+
+Package: ocaml-compiler-libs
+Architecture: any
+Provides: ocaml-compiler-libs-3.07
+Depends: ocaml-nox-3.07
+Description: Ocaml interpreter and standard libraries
+ Objective Caml is an implementation of the ML language, based on
+ the Caml Light dialect extended with a complete class-based object system
+ and a powerful module system in the style of Standard ML.
+ .
+ This package contains several modules used internally by the ocaml
+ compilers.  They are not needed for normal ocaml development, but may
+ be helpful in the development of certain applications.
