@@ -87,7 +87,7 @@ clean: unpatch
 		rm -rf boot;		\
 		mv boot.debian boot;	\
 	fi
-	-$(MAKE) -C emacs clean
+	#-$(MAKE) -C emacs clean
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	cp -f /usr/share/misc/config.sub config/gnu/config.sub
 endif
@@ -128,15 +128,15 @@ install-arch:
 
 	# Let's install ocaml first.
 	$(MAKE) install PREFIX=$(CURDIR)/debian/ocaml-nox/usr
-	$(MAKE) -C emacs EMACSDIR=$(CURDIR)/debian/ocaml-nox/usr/share/emacs/site-lisp/ocaml \
+	#$(MAKE) -C emacs EMACSDIR=$(CURDIR)/debian/ocaml-nox/usr/share/emacs/site-lisp/ocaml \
 		NOCOMPILE=true simple-install
-	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-nox/usr/bin install-ocamltags
+	#$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-nox/usr/bin install-ocamltags
 	install -m 644 debian/JoeCaml.xpm \
 		$(CURDIR)/debian/ocaml-nox/usr/X11R6/include/X11/pixmaps
 	install -m 644 debian/ocaml-nox.override \
 		$(CURDIR)/debian/ocaml-nox/usr/share/lintian/overrides/ocaml-nox
-	install -m 644 debian/ocaml.override \
-		$(CURDIR)/debian/ocaml-nox/usr/share/lintian/overrides/ocaml
+	install -m 644 debian/ocaml-base.override \
+		$(CURDIR)/debian/ocaml-nox/usr/share/lintian/overrides/ocaml-base
 	install -m 644 otherlibs/labltk/README \
 		$(CURDIR)/debian/README.labltk
 	install -m 644 config/Makefile \
@@ -145,11 +145,11 @@ install-arch:
 	# now move the graphics files over
 	if [ -e opt-built-stamp ]; then					\
 		dh_movefiles -pocaml					\
-			--sourcedir=debian/ocaml-nox;			\
+			--sourcedir=debian/ocaml-nox			\
+			`cat ocaml-opt.files`;
 	else								\
 		dh_movefiles -pocaml					\
-			--sourcedir=debian/ocaml-nox			\
-			--exclude=*.cmx --exclude=*.cmxa;		\
+			--sourcedir=debian/ocaml-nox;			\
 	fi
 
 
@@ -165,8 +165,6 @@ install-arch:
 	if [ -e opt-built-stamp ]; then					\
 		dh_movefiles -pocaml-native-compilers			\
 			--sourcedir=debian/ocaml-nox;			\
-		install -m 644 debian/ocaml-native-compilers.override	\
-			$(CURDIR)/debian/ocaml-native-compilers/usr/share/lintian/overrides/ocaml-native-compilers; \
 	fi
 
 	# The interpreter files
@@ -194,7 +192,7 @@ binary-common:
 #	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate	
-	dh_installemacsen
+#	dh_installemacsen
 #	dh_installpam
 #	dh_installmime
 #	dh_installinit

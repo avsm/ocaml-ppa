@@ -1,12 +1,18 @@
 ocaml (3.08.0-1) unstable; urgency=low
 
   * New upstream release.
+  * Do not install the emacs files, until upstream gives a response about the
+    licencing issue. (Closes: #227159, #227163)
+  * Fix non-native compiler supporting arches build. (Closes: #259261)
+  * Added amd64 native code compilers build. (Closes: #248334)
+  * Now include the nums package again, since 3.08 include the new free
+    version. (Clsoes: #240902)
+  * Now include ocamldoc manpage. (Clsoes: #255239)
 
- -- Sven Luther <luther@debian.org>  Wed, 14 Jul 2004 15:09:32 +0200
+ -- Sven Luther <luther@debian.org>  Thu, 15 Jul 2004 09:21:55 +0200
 
 ocaml (3.07.2a-5) unstable; urgency=low
 
-  * Added amd64 native code compilers build.
 
  -- Sven Luther <luther@debian.org>  Mon, 12 Jul 2004 12:06:33 +0200
 
@@ -299,7 +305,7 @@ ocaml (3.06-4) unstable; urgency=high
 ocaml (3.06-3) unstable; urgency=high
 
   * Added a Provide: ocaml-source-3.06 to the ocaml-source control file.
-    (Asked by Jérôme Marant)
+    (Asked by Jerome Marant)
 
  -- Sven Luther <luther@debian.org>  Fri, 30 Aug 2002 09:39:25 +0200
 

@@ -4,4 +4,4 @@ rm -f /usr/share/doc/ocaml/Changes.gz
 rm -f /usr/share/doc/ocaml/README.gz
 rm -f /usr/share/doc/ocaml/ocaml_packaging_policy.gz
 
-
+#DEBHELPER#
