@@ -2,7 +2,3 @@
 mkdir -p /usr/local/lib/ocaml/3.07/stublibs || true
 
 #DEBHELPER#
-#!/bin/sh
-mkdir -p /usr/local/lib/ocaml/3.07/stublibs || true
-
-#DEBHELPER#

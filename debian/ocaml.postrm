@@ -3,10 +3,3 @@
 rm -f /usr/include/caml
 
 #DEBHELPER#
-
-#!/bin/sh -e
-
-rm -f /usr/include/caml
-
-#DEBHELPER#
-

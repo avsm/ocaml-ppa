@@ -11,16 +11,3 @@ ocaml: binary-or-shlib-defines-rpath ./usr/lib/ocaml/3.06/stublibs/dlllabltk.so 
 ocaml: binary-or-shlib-defines-rpath ./usr/lib/ocaml/3.06/stublibs/dlltkanim.so /usr/lib:/usr/X11R6/lib
 ocaml: menu-icon-has-bad-colors /usr/X11R6/include/X11/pixmaps/JoeCaml.xpm: lime
 ocaml: postinst-does-not-load-confmodule
-ocaml: binary-without-manpage labltk
-ocaml: binary-without-manpage ocamlbrowser
-ocaml: binary-without-manpage ocamldoc
-ocaml: binary-without-manpage ocamldoc.opt
-ocaml: binary-without-manpage ocamlmklib
-ocaml: binary-without-manpage ocamltags
-ocaml: cvsignore-file-in-package usr/share/doc/ocaml/examples_labltk/.cvsignore
-ocaml: executable-not-elf-or-script ./usr/bin/ocamltags
-ocaml: binary-or-shlib-defines-rpath ./usr/lib/ocaml/3.06/stublibs/dllgraphics.so /usr/X11R6/lib
-ocaml: binary-or-shlib-defines-rpath ./usr/lib/ocaml/3.06/stublibs/dlllabltk.so /usr/lib:/usr/X11R6/lib
-ocaml: binary-or-shlib-defines-rpath ./usr/lib/ocaml/3.06/stublibs/dlltkanim.so /usr/lib:/usr/X11R6/lib
-ocaml: menu-icon-has-bad-colors /usr/X11R6/include/X11/pixmaps/JoeCaml.xpm: lime
-ocaml: postinst-does-not-load-confmodule
