@@ -1,9 +1,9 @@
-ocaml (3.08.3-0.experimental.1) experimental; urgency=low
+ocaml (3.08.3-1) unstable; urgency=medium
 
   * New upstream stable point version.
     - breaks binary compatibility, we thus have to up the ABI version
       to 3.08.3.
-  * New features 
+  * New features
     - ignore unknown warning options for forward and backward compatibility
     - runtime: export caml_compare_unordered (PR#3479)
     - camlp4: install argl.* files (PR#3439)
@@ -39,7 +39,7 @@ ocaml (3.08.3-0.experimental.1) experimental; urgency=low
     - ocamldep: handle spaces in file names (PR#3370)
     - compiler: remove spurious warning in pattern-matching on variants (PR#3424)
 
- -- Sven Luther <luther@debian.org>  Thu, 17 Mar 2005 16:32:30 +0100
+ -- Sven Luther <luther@debian.org>  Mon, 21 Mar 2005 07:46:26 +0100
 
 ocaml (3.08.2-1) unstable; urgency=low
 
