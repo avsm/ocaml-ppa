@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: hashtbl.mli,v 1.35.4.1 2004/08/10 15:30:29 doligez Exp $ *)
+(* $Id: hashtbl.mli,v 1.35.4.2 2004/11/25 13:30:34 doligez Exp $ *)
 
 (** Hash tables and hash functions.
 
@@ -118,7 +118,7 @@ module type HashedType =
           for comparing objects by structure and handling {!Pervasives.nan}
           correctly, and
           ([(==)], {!Hashtbl.hash}) for comparing objects by addresses
-          (e.g. for or cyclic keys). *)
+          (e.g. for cyclic keys). *)
    end
 (** The input signature of the functor {!Hashtbl.Make}. *)
 

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: filename.ml,v 1.34 2004/05/30 09:41:53 xleroy Exp $ *)
+(* $Id: filename.ml,v 1.34.2.1 2005/01/31 17:01:02 doligez Exp $ *)
 
 let generic_quote quotequote s =
   let l = String.length s in
@@ -129,11 +129,14 @@ let concat dirname filename =
   else dirname ^ dir_sep ^ filename
 
 let basename name =
-  try
-    let p = rindex_dir_sep name + 1 in
-    String.sub name p (String.length name - p)
-  with Not_found ->
-    name
+  let raw_name =
+    try
+      let p = rindex_dir_sep name + 1 in
+      String.sub name p (String.length name - p)
+    with Not_found ->
+      name
+  in
+  if raw_name = "" then current_dir_name else raw_name
 
 let dirname name =
   try

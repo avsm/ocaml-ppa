@@ -11,14 +11,14 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: time.c,v 1.9 2001/12/07 13:40:36 xleroy Exp $ */
+/* $Id: time.c,v 1.9.6.1 2005/01/17 18:10:36 doligez Exp $ */
 
 #include <time.h>
 #include <mlvalues.h>
 #include <alloc.h>
 #include "unixsupport.h"
 
-CAMLprim value unix_time(void)
+CAMLprim value unix_time(value unit)
 {
   return copy_double((double) time((time_t *) NULL));
 }

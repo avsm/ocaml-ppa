@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: filename.mli,v 1.31 2004/05/30 09:41:53 xleroy Exp $ *)
+(* $Id: filename.mli,v 1.31.2.1 2005/01/31 17:01:02 doligez Exp $ *)
 
 (** Operations on file names. *)
 
@@ -60,7 +60,10 @@ val basename : string -> string
    which is equivalent to [name]. Moreover, after setting the
    current directory to [dirname name] (with {!Sys.chdir}),
    references to [basename name] (which is a relative file name)
-   designate the same file as [name] before the call to {!Sys.chdir}. *)
+   designate the same file as [name] before the call to {!Sys.chdir}.
+
+   The result is not specified if the argument is not a valid file name
+   (for example, under Unix if there is a NUL character in the string). *)
 
 val dirname : string -> string
 (** See {!Filename.basename}. *)

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getpeername.c,v 1.9 2002/04/30 15:00:46 xleroy Exp $ */
+/* $Id: getpeername.c,v 1.9.6.1 2005/02/02 15:40:14 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include "unixsupport.h"
@@ -31,5 +31,5 @@ CAMLprim value unix_getpeername(sock)
     win32_maperr(WSAGetLastError());
     uerror("getpeername", Nothing);
   }
-  return alloc_sockaddr(&addr, addr_len);
+  return alloc_sockaddr(&addr, addr_len, -1);
 }

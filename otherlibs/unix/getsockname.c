@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getsockname.c,v 1.9.6.1 2004/08/23 11:31:44 doligez Exp $ */
+/* $Id: getsockname.c,v 1.9.6.2 2005/01/12 15:08:56 doligez Exp $ */
 
 #include <fail.h>
 #include <mlvalues.h>
@@ -30,7 +30,7 @@ CAMLprim value unix_getsockname(value sock)
   addr_len = sizeof(addr);
   retcode = getsockname(Int_val(sock), &addr.s_gen, &addr_len);
   if (retcode == -1) uerror("getsockname", Nothing);
-  return alloc_sockaddr(&addr, addr_len);
+  return alloc_sockaddr(&addr, addr_len, -1);
 }
 
 #else

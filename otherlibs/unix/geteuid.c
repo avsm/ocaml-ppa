@@ -11,12 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: geteuid.c,v 1.8 2001/12/07 13:40:29 xleroy Exp $ */
+/* $Id: geteuid.c,v 1.8.6.1 2005/01/17 18:10:36 doligez Exp $ */
 
 #include <mlvalues.h>
 #include "unixsupport.h"
 
-CAMLprim value unix_geteuid(void)
+CAMLprim value unix_geteuid(value unit)
 {
   return Val_int(geteuid());
 }

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: times.c,v 1.14 2001/12/07 13:40:36 xleroy Exp $ */
+/* $Id: times.c,v 1.14.6.1 2005/01/17 18:10:36 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -29,7 +29,7 @@
 #endif
 #endif
 
-CAMLprim value unix_times(void)
+CAMLprim value unix_times(value unit)
 {
   value res;
   struct tms buffer;

@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt,v 1.17 2003/10/24 09:17:31 xleroy Exp $
+# $Id: Makefile.nt,v 1.17.4.1 2004/11/29 08:50:23 xleroy Exp $
 
 # Makefile for the "num" (exact rational arithmetic) library
 
@@ -65,7 +65,6 @@ partialclean:
 
 clean: partialclean
 	rm -f *.dll *.$(A) *.$(O)
-	cd bignum ; $(MAKEREC) scratch
 	cd test ; $(MAKEREC) clean
 
 .SUFFIXES: .ml .mli .cmi .cmo .cmx .$(DO) .$(SO)

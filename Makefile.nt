@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt,v 1.94 2003/09/25 08:19:17 xleroy Exp $
+# $Id: Makefile.nt,v 1.94.4.1 2004/11/29 08:50:45 xleroy Exp $
 
 # The main Makefile
 
@@ -228,8 +228,8 @@ installbyt:
 	for i in $(OTHERLIBRARIES); do $(MAKEREC) -C otherlibs/$$i install; done
 	cd win32caml ; $(MAKE) install
 	cd camlp4 ; make install
-	cp README $(DISTRIB)/Readme.gen
-	cp README.win32 $(DISTRIB)/Readme.win
+	cp README $(DISTRIB)/Readme.general.txt
+	cp README.win32 $(DISTRIB)/Readme.windows.txt
 	cp LICENSE $(DISTRIB)/License.txt
 	cp Changes $(DISTRIB)/Changes.txt
 

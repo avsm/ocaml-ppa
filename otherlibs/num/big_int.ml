@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: big_int.ml,v 1.18 2003/12/29 19:26:15 doligez Exp $ *)
+(* $Id: big_int.ml,v 1.18.4.1 2005/03/10 14:53:02 doligez Exp $ *)
 
 open Int_misc
 open Nat
@@ -352,6 +352,7 @@ let sys_big_int_of_string_aux s ofs len sgn =
 ;;
 
 let sys_big_int_of_string s ofs len =
+  if len < 1 then failwith "sys_big_int_of_string";
   match s.[ofs] with
   | '-' -> sys_big_int_of_string_aux s (ofs+1) (len-1) (-1)
   | '+' -> sys_big_int_of_string_aux s (ofs+1) (len-1) 1

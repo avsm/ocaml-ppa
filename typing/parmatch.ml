@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parmatch.ml,v 1.65 2004/01/16 14:09:30 maranget Exp $ *)
+(* $Id: parmatch.ml,v 1.65.8.1 2005/02/02 06:57:53 garrigue Exp $ *)
 
 (* Detection of partial matches and unused match cases. *)
 
@@ -601,11 +601,10 @@ let full_match closing env =  match env with
         row.row_fields
     else
       row.row_closed &&
-      let count =
-        List.fold_left
-          (fun n (_,f) -> if Btype.row_field_repr f = Rabsent then n else n+1)
-          0 row.row_fields in
-      List.length fields = count
+      List.for_all
+        (fun (tag,f) ->
+          Btype.row_field_repr f = Rabsent || List.mem tag fields)
+        row.row_fields
 | ({pat_desc = Tpat_constant(Const_char _)},_) :: _ ->
     List.length env = 256
 | ({pat_desc = Tpat_constant(_)},_) :: _ -> false

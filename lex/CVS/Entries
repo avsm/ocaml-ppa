@@ -1,0 +1,25 @@
+/.cvsignore/1.5/Mon Apr 22 10:06:01 2002//Tocaml3083
+/.depend/1.13.4.2/Tue Feb 22 14:33:36 2005//Tocaml3083
+/Makefile/1.17/Fri Nov  1 15:31:11 2002//Tocaml3083
+/Makefile.nt/1.9/Mon Jan  6 14:57:22 2003//Tocaml3083
+/common.ml/1.7/Fri Aug 29 17:33:44 2003//Tocaml3083
+/common.mli/1.4/Fri Aug 29 17:33:44 2003//Tocaml3083
+/compact.ml/1.7/Mon Oct 28 16:46:49 2002//Tocaml3083
+/compact.mli/1.4/Mon Oct 28 16:46:49 2002//Tocaml3083
+/cset.ml/1.3/Thu Apr 29 11:12:49 2004//Tocaml3083
+/cset.mli/1.3/Thu Apr 29 11:12:49 2004//Tocaml3083
+/lexer.mli/1.6/Wed Apr 21 23:26:05 2004//Tocaml3083
+/lexer.mll/1.21/Thu Apr 29 11:12:49 2004//Tocaml3083
+/lexgen.ml/1.17/Tue Mar 23 16:57:24 2004//Tocaml3083
+/lexgen.mli/1.5/Mon Oct 28 16:46:49 2002//Tocaml3083
+/main.ml/1.21.2.1/Thu Jul 22 11:00:35 2004//Tocaml3083
+/output.ml/1.25/Thu Feb 12 17:29:04 2004//Tocaml3083
+/output.mli/1.8/Mon Dec  9 10:44:46 2002//Tocaml3083
+/outputbis.ml/1.5/Sat Jul 26 21:06:21 2003//Tocaml3083
+/outputbis.mli/1.3/Mon Dec  9 10:44:46 2002//Tocaml3083
+/parser.mly/1.20/Thu Apr 29 11:12:49 2004//Tocaml3083
+/syntax.ml/1.8/Mon Dec  9 10:44:46 2002//Tocaml3083
+/syntax.mli/1.8/Mon Dec  9 10:44:46 2002//Tocaml3083
+/table.ml/1.1/Mon Oct 28 16:46:50 2002//Tocaml3083
+/table.mli/1.1/Mon Oct 28 16:46:50 2002//Tocaml3083
+D

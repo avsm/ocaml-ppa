@@ -11,9 +11,10 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: nat_stubs.c,v 1.14 2003/11/07 07:59:09 xleroy Exp $ */
+/* $Id: nat_stubs.c,v 1.14.4.1 2004/12/22 16:17:44 doligez Exp $ */
 
 #include "alloc.h"
+#include "config.h"
 #include "custom.h"
 #include "intext.h"
 #include "fail.h"

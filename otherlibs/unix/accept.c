@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: accept.c,v 1.12.6.1 2004/08/23 11:31:44 doligez Exp $ */
+/* $Id: accept.c,v 1.12.6.2 2005/01/12 15:08:56 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -37,7 +37,7 @@ CAMLprim value unix_accept(value sock)
   retcode = accept(Int_val(sock), &addr.s_gen, &addr_len);
   leave_blocking_section();
   if (retcode == -1) uerror("accept", Nothing);
-  a = alloc_sockaddr(&addr, addr_len);
+  a = alloc_sockaddr(&addr, addr_len, retcode);
   Begin_root (a);
     res = alloc_small(2, 0);
     Field(res, 0) = Val_int(retcode);

@@ -1,0 +1,19 @@
+/.cvsignore/1.4/Fri Jun 23 15:08:43 2000//Tocaml3083
+/asttypes.mli/1.9/Fri Apr 25 12:27:30 2003//Tocaml3083
+/lexer.mli/1.14/Fri Nov 21 16:01:13 2003//Tocaml3083
+/lexer.mll/1.69/Fri Jan 16 15:24:02 2004//Tocaml3083
+/linenum.mli/1.2/Wed Nov 17 18:58:17 1999//Tocaml3083
+/linenum.mll/1.7/Wed Nov 17 18:58:17 1999//Tocaml3083
+/location.ml/1.44.6.1/Wed Jan 12 17:01:58 2005//Tocaml3083
+/location.mli/1.15.10.1/Wed Jan 12 17:01:58 2005//Tocaml3083
+/longident.ml/1.4/Sat Mar 25 18:55:44 2000//Tocaml3083
+/longident.mli/1.7/Sat Mar 25 18:55:44 2000//Tocaml3083
+/parse.ml/1.15/Fri Nov  1 17:06:46 2002//Tocaml3083
+/parse.mli/1.6/Wed Nov 17 18:58:19 1999//Tocaml3083
+/parser.mly/1.120/Wed May 19 12:15:19 2004//Tocaml3083
+/parsetree.mli/1.40/Tue Nov 25 08:46:45 2003//Tocaml3083
+/printast.ml/1.26/Tue Nov 25 08:46:45 2003//Tocaml3083
+/printast.mli/1.2/Mon Mar  6 22:11:39 2000//Tocaml3083
+/syntaxerr.ml/1.8/Thu Apr 18 08:50:43 2002//Tocaml3083
+/syntaxerr.mli/1.4/Mon Mar  6 22:11:40 2000//Tocaml3083
+D

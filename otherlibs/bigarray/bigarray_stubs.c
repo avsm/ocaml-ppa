@@ -11,14 +11,13 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: bigarray_stubs.c,v 1.19 2003/12/15 18:10:50 doligez Exp $ */
+/* $Id: bigarray_stubs.c,v 1.19.4.1 2005/02/22 14:33:36 doligez Exp $ */
 
 #include <stddef.h>
 #include <stdarg.h>
 #include <string.h>
 #include "alloc.h"
 #include "bigarray.h"
-#include "compare.h"
 #include "custom.h"
 #include "fail.h"
 #include "intext.h"

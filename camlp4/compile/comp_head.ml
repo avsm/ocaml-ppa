@@ -1,5 +1,5 @@
 (* camlp4r q_MLast.cmo pa_extend.cmo *)
-(* $Id: comp_head.ml,v 1.3 2002/07/19 14:53:45 mauny Exp $ *)
+(* $Id: comp_head.ml,v 1.3.6.1 2005/02/18 09:11:13 mauny Exp $ *)
 
 module P =
   struct
@@ -62,7 +62,7 @@ let _ = do { Printf.eprintf "recovered or_zero at loc (%d, %d)\n" loc1 loc2; flu
       (if prev_symb = "" then "" else " after " ^ prev_symb) ^
       " (in [" ^ entry ^ "])"
     ;
-    value lexer = Plexer.gmake ();
+    value ((lexer,pos) as lexer_pos) = Plexer.make_lexer();
   end
 ;
 
