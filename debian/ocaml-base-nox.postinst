@@ -1,5 +1,5 @@
 #!/bin/sh
-mkdir -p /usr/local/lib/ocaml/3.08/stublibs || true
+mkdir -p /usr/local/lib/ocaml/3.08.3/stublibs || true
 
 for i in /usr/lib/ocaml/3.06 /etc/ocaml /var/lib/ocaml; do	\
 	if [ -e $i/ld.conf ]; then				\

@@ -1,3 +1,9 @@
+ocaml (3.08.3-2) unstable; urgency=medium
+
+  * Missed some 3.08 -> 3.08.3 migration for ld.conf files.
+
+ -- Sven Luther <luther@debian.org>  Tue, 22 Mar 2005 08:06:01 +0100
+
 ocaml (3.08.3-1) unstable; urgency=medium
 
   * New upstream stable point version.
