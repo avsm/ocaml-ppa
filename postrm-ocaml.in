@@ -1,0 +1,12 @@
+MD5SUMS_DIR="/var/lib/ocaml/md5sums"
+MD5SUMS_EXT=".md5sums"
+MD5SUMS_INDEX="$MD5SUMS_DIR/MD5SUMS"
+if [ "$1" = "remove" ]; then
+#include "update-md5sum.sh"
+  if [ ! -s $MD5SUMS_INDEX ]; then  # index is empty, remove it
+    rm -f $MD5SUMS_INDEX
+  fi
+  rmdir --ignore-fail-on-non-empty $MD5SUMS_DIR `dirname $MD5SUMS_DIR`
+fi
+
+# vim: set ft=wml:

@@ -1,0 +1,256 @@
+#!/usr/bin/perl -w
+#
+# dh_ocaml - debhelper which computes OCaml md5sums and calculates OCaml
+#	     dependencies
+#
+# Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
+#
+# Created:	  Fri, 01 Apr 2005 19:50:48 +0200 zack
+# Last-Modified:  Mon, 04 Apr 2005 20:52:23 +0200 zack
+#
+# This is free software, you can redistribute it and/or modify it under the
+# terms of the GNU General Public License version 2 as published by the Free
+# Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+# Place, Suite 330, Boston, MA  02111-1307  USA
+#
+
+# TODO ask Joey Hess about how much dh_ocaml follows debhelper guidelines
+# TODO check how dh_ocaml work when multiple binary packages are being built
+# TODO for libraries: add proper dependencies on ocaml (and findlib?)
+# TODO for binaries: check if package is shipping any bytecode binaries (head -1
+#	should be enough) and add proper dependencies on ocaml
+# TODO complete POD documentation
+# TODO add comment headers for uncommented subs
+
+=head1 NAME
+
+dh_ocaml - compute OCaml md5sums and calculate OCaml dependencies
+
+=cut
+
+use strict;
+use Debian::Debhelper::Dh_Lib;
+init();
+
+# dh_perl documentation follows, cut and pasted here since I don't know POD
+# syntax
+# -- Zack
+# 
+# =head1 SYNOPSIS
+# 
+# B<dh_ocaml> [S<I<debhelper options>>] [B<-d>] [S<I<library dirs ...>>]
+# 
+# =head1 DESCRIPTION
+# 
+# dh_perl is a debhelper program that is responsible for generating
+# the ${perl:Depends} substitutions and adding them to substvars files.
+# 
+# The program will look at perl scripts and modules in your package,
+# and will use this information to generate a dependency on perl or
+# perlapi. The dependency will be substituted into your package's control
+# file wherever you place the token "${perl:Depends}".
+# 
+# =head1 OPTIONS
+# 
+# =over 4
+# 
+# =item B<-d>
+# 
+# In some specific cases you may want to depend on perl-base rather than the
+# full perl package. If so, you can pass the -d option to make dh_perl generate
+# a dependency on the correct base package. This is only necessary for some
+# packages that are included in the base system.
+# 
+# Note that this flag may cause no dependency on perl-base to be generated at
+# all. perl-base is Essential, so its dependency can be left out, unless a
+# versioned dependency is needed.
+# 
+# =item B<-V>
+# 
+# By default, scripts and architecture independent modules don't depend
+# on any specific version of perl.  The -V option causes the current
+# version of the perl (or perl-base with -d) package to be specified.
+# 
+# =item I<library dirs>
+# 
+# If your package installs perl modules in non-standard
+# directories, you can make dh_perl check those directories by passing their
+# names on the command line. It will only check the vendorlib and vendorarch
+# directories by default.
+# 
+# =back
+# 
+# =head1 CONFORMS TO
+# 
+# Debian policy, version 3.0.1
+# 
+# Perl policy, version 1.18
+# 
+# =cut
+
+my $ocamlc = "/usr/bin/ocamlc";
+my $ocamlobjinfo = "/usr/bin/ocamlobjinfo";
+foreach my $bin ($ocamlc, $ocamlobjinfo) {
+  error "$bin does not exists or is not executable" unless -x $bin;
+}
+
+my $ocaml_version = `$ocamlc -version`;
+my $ocaml_lib_dir = `$ocamlc -where`;
+chomp ($ocaml_version, $ocaml_lib_dir);
+my $md5sums_dir = "/var/lib/ocaml/md5sums";
+my $md5sums_ext = ".md5sums";
+my $md5sums_registry_path = "$md5sums_dir/MD5SUMS";
+my $dep_substvar = "ocaml:Depends";
+
+# given as input a directory, returns a list of all ocaml objects installed (at
+# any depth) in that directory
+sub find_objects($) {
+  my ($dir) = @_;
+  my $cmd = "find $dir$ocaml_lib_dir -type f -name '*.cma'";
+  verbose_print $cmd;
+  my $out = `$cmd` or error "can't execute \"$cmd\" for pipe-reading";
+  my @objects = split /\n/, $out;
+  return @objects;
+}
+
+# globals
+my %defined_md5sums;  # (unit name -> md5sum) mappings for units _defined_ by
+		      # package's objects
+my %imported_md5sums; # same mappings for units _imported_ by package's objects
+my %md5sums_registry; # parsed version of local md5sums registry
+my $registry_parsed = 0;  # flag used for lazy registry parsing
+
+# given as input a list of ocaml object filenames, fills
+# %{defin,import}ed_md5sums. Use ocamlobjinfo to retrieve md5sum information
+sub compute_md5sums(@) {
+  my @objects = @_;
+  my %md5sums;
+  foreach my $object (@objects) {
+    my $cmd = "$ocamlobjinfo $object";
+    verbose_print "\"$cmd\"";
+    open OBJINFO, "$cmd |" or error "can't execute \"$cmd\" for pipe-reading";
+    my $unit_name = "";
+    while (my $line = <OBJINFO>) {
+      chomp $line;
+      if ($line =~ /^\s*Unit\s+name\s*:\s*(\w+)\s*$/) {
+	$unit_name = $1;
+# 	verbose_print "Unit $unit_name";
+      } elsif ($line =~ /^\s*([0-9A-Fa-f]{32})\s+(\w+)\s*$/) {
+	if ($2 eq $unit_name) {
+	  $defined_md5sums{$2} = $1;
+# 	  verbose_print "Defined $1 $2";
+	} else {
+	  $imported_md5sums{$2} = $1;
+# 	  verbose_print "Imported $1 $2";
+	}
+      }
+    }
+    close OBJINFO;
+  }
+}
+
+# create /var/lib/ocaml/md5sums/ entry and create post{inst,rm} scripts for
+# updating md5sums registry on users' machines
+sub add_md5sums_registry_entry($) {
+  my ($package) = @_;
+  my $tmpdir = tmpdir($package);
+  my $md5sums_fname = "$tmpdir$md5sums_dir/$package$md5sums_ext";
+  doit("mkdir -p " . dirname($md5sums_fname));
+  open MD5SUMS, "> $md5sums_fname";
+  foreach my $unit_name (sort (keys %defined_md5sums)) {
+    print MD5SUMS "$defined_md5sums{$unit_name} $unit_name\n";
+  }
+  close MD5SUMS;
+  if (! $dh{NOSCRIPTS}) {
+    my $sed = "s/#PACKAGE#/$package/; s/#VERSION#/$dh{VERSION}/";
+    autoscript($package, "postinst", "postinst-ocaml", $sed);
+    autoscript($package, "postrm", "postrm-ocaml", $sed);
+  }
+}
+
+# lazy parsing of md5sum registry /var/lib/ocaml/md5sums/MD5SUMS
+sub load_md5sum_registry() {
+  if (! $registry_parsed) {
+    open REGISTRY, $md5sums_registry_path;
+    my $lineno = 0;
+    while (my $line = <REGISTRY>) {
+      $lineno++;
+      chomp $line;
+      next if $line =~ /(^#)|(^\s*$)/;	# skip blank lines and comments
+      if ($line =~ /^([0-9A-Fa-f]{32})(\s+\S+){3}$/) {
+	my ($md5sum, $package, $version, $unit_name) = split /\s+/, $line;
+	# mappings like:
+	# "9b93712a344b3b9849a73ce19d8c72ce Foo_bar"->"libfoo-ocaml-dev 0.2.3-5"
+	my $key = "$md5sum $unit_name";
+	if (exists($md5sums_registry{$key})) {
+	  warning("multiple entries for $key in md5sums registry, "
+	    . "ocaml dependencies may be wrong");
+	}
+	$md5sums_registry{$key} = "$package $version";
+      } else {
+	warning
+	  "can't parse md5sums registry line ($md5sums_registry_path:$lineno)";
+	next;
+      }
+    }
+    close REGISTRY;
+    $registry_parsed = 1;
+  }
+}
+
+sub lookup_dep($$) {
+  my ($md5sum, $unit_name) = @_;
+  load_md5sum_registry();
+  my $dep = $md5sums_registry{"$md5sum $unit_name"};
+  if ($dep) {
+    my ($deppackage, $version) = split /\s+/, $dep;
+    return($deppackage, ">= $version");
+  } else {
+    return(0, 0);
+  }
+}
+
+# compute dependencies of package using md5sum registry installed on the machine
+# which is building the package
+sub fill_substvars($) {
+  my ($package) = @_;
+  my $tmpdir = tmpdir($package);
+  delsubstvar($package, $dep_substvar); # idempotency
+  foreach my $unit_name (sort (keys %imported_md5sums)) {
+    next if exists $defined_md5sums{$unit_name};
+    my ($deppackage, $verinfo) =
+      lookup_dep($imported_md5sums{$unit_name}, $unit_name);
+    addsubstvar($package, $dep_substvar, $deppackage, $verinfo) if $deppackage;
+  }
+}
+
+foreach my $package (@{$dh{DOPACKAGES}}) {
+  next unless $package =~ /^lib.*-ocaml-dev$/;
+  isnative($package);	# sets $dh{VERSION}
+  my $tmpdir = tmpdir($package);
+  my @objects = find_objects($tmpdir);
+  compute_md5sums(@objects);  # fills %{defined,imported}_md5sums globals
+  add_md5sums_registry_entry($package);
+  fill_substvars($package);
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>
+
+This program is a part of debhelper.
+
+=head1 AUTHOR
+
+Stefano Zacchiroli <zack@debian.org>
+
+=cut
+
