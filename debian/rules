@@ -146,7 +146,7 @@ install-arch:
 	if [ -e opt-built-stamp ]; then					\
 		dh_movefiles -pocaml					\
 			--sourcedir=debian/ocaml-nox			\
-			`cat ocaml-opt.files`;
+			`cat ocaml-opt.files`;				\
 	else								\
 		dh_movefiles -pocaml					\
 			--sourcedir=debian/ocaml-nox;			\
