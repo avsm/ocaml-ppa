@@ -1,8 +1,7 @@
-
-Policy for the packaging of ocaml libraries and programs (version 0.5)
+Policy for the packaging of ocaml libraries and programs (version 0.6)
 ----------------------------------------------------------------------
 
-  1) User installed libraries.
+  1) User installed libraries
 
      Debian package installed ocaml related stuff install per default under
      /usr/lib/ocaml/<ocaml_version> (that is /usr/lib/ocaml/3.08 for
@@ -27,11 +26,11 @@ Policy for the packaging of ocaml libraries and programs (version 0.5)
      /usr/lib/ocaml/<ocaml_version>/stublibs, as can be seen in the
      /usr/lib/ocaml/<ocaml_version>/ld.conf file.
 
-  2) dynamically loaded stub libraries and ld.conf handling.
+  2) Dynamically loaded stub libraries and ld.conf handling
   
      Starting from ocaml 3.05, ocaml now puts all dll.so files into a common
      stublibs directory, so the ocaml-ldconf tool for handling the ld.conf
-     file is not needed anymore, but we will still keep it aroung until all
+     file is not needed anymore, but we will still keep it around until all
      libraries are ported. Since ocaml 3.08, ocaml-ldconf is now deprecated
      and removed.
 
@@ -56,14 +55,13 @@ Policy for the packaging of ocaml libraries and programs (version 0.5)
      find it (easily checkable doing "ocamlfind list"), installing it in the
      library directory is usually a good solution, but others are possible.
      If the META file isn't available upstream, the maintainer should
-     write one, include it in the debian package and suggest the upstream to
+     write one, include it in the Debian package and suggest the upstream to
      include it in next release.
 
      Writing a META file is easy and usually takes a 5-minute-work, for more
      information have a look at the Findlib manual [4], at the several META
-     files provided by other packages (e.g. lablgtk, pxp, pcre, nestring,
+     files provided by other packages (e.g. lablgtk, pxp, pcre, netstring,
      lablgl, ...) or ask on the debian-ocaml-maint ML [1] for help.
-
 
   4) Ocaml library packages
 
@@ -73,10 +71,11 @@ Policy for the packaging of ocaml libraries and programs (version 0.5)
        - libxxx-ocaml will provide the shared library stubs, and all other
          stuff needed to run a dynamic loading ocaml bytecode executable that
 	 links into this library.
-	 It should depend on ocaml-base as well as any other library needed.
+	 It should depend on ocaml-base (or ocaml-base-nox, see section 8)
+	 as well as any other library needed.
 
        - libxxx-ocaml-dev will provide the rest of the library package, in
-	 fact anything needed to developp programs using the library.
+	 fact anything needed to develop programs using the library.
 
      Optionally, two other packages can be split :
 
@@ -96,8 +95,7 @@ Policy for the packaging of ocaml libraries and programs (version 0.5)
      the modules provided by the library into one module. I am not sure this
      really works right now for libraries, and i don't think upstream
      libraries will be moving to this scheme anytime soon (unless we actively
-     lobby for it) so this is just a recomendation for now.
-
+     lobby for it) so this is just a recommendation for now.
 
   5) Ocaml program packages
 
@@ -110,10 +108,10 @@ Policy for the packaging of ocaml libraries and programs (version 0.5)
      - the package debian/rules should build the native code executable if
        supported on the architecture it is built on, and fall back to building
        the bytecode version if no working native code compiler is available.
-       And exeption to this are the executables who are small or not time
+       And exception to this are the executables who are small or not time
        critical, which may be built only as bytecode executable. It is the
        decision of the individual maintainers to choose this, maybe guided by
-       the practic of the upstream author.
+       the practice of the upstream author.
 
      - all bytecode executables should be dynamic loading, so as to not bloat
        the archive. However, there may be special cases, were using statically
@@ -132,7 +130,7 @@ Policy for the packaging of ocaml libraries and programs (version 0.5)
 
   6) Caml C headers
 
-     On debian systems, the caml C headers are encoutnered under
+     On debian systems, the caml C headers are encountered under
      /usr/include/caml, as it should be. A /usr/lib/ocaml/<ocaml_version>/caml
      symlink is provided for backward compatibility of non debian maintained
      packages, but using them is considered broken for debian packages.
@@ -146,7 +144,7 @@ Policy for the packaging of ocaml libraries and programs (version 0.5)
      package, it cannot (yet) be a versioned dependency. The version
      dependency should thus be carried by the ocaml dependency.
 
-     Notice that it is only usefull to use the nativecode compilers when the
+     Notice that it is only useful to use the nativecode compilers when the
      package contains especially large source files or is very large. Mostly
      when this is the case, the upstream authors will recommend the use of
      nativecode compilers in these cases.
@@ -161,21 +159,35 @@ Policy for the packaging of ocaml libraries and programs (version 0.5)
      The ocaml libraries should always depend on the exact version of ocaml
      they were build with. Since ocaml 3.06-13, the ocaml and ocaml-base
      package now provide virtual packages called ocaml-3.08 and
-     ocaml-base-3.081 respectively.
+     ocaml-base-3.08 respectively.
+
+     Since ocaml 3.07.2a-3, ocaml is split in ocaml-nox and ocaml and
+     ocaml-base is split in ocaml-base-nox and ocaml-base. The -nox packages
+     contain all the files the packages used to contain except the files
+     related to the Graphics module and labltk. This has been done in order to
+     avoid unnecessary dependencies to X libraries. The -nox packages should
+     be used in the dependencies when neither Graphics nor labltk is used in the
+     program.
      
      Ocaml libraries should build depend on ocaml-3.08 :
      
        Build-Depends: ocaml-3.08
+
+     (or ocaml-nox-3.08 if the library does not require X stuff)
 
      Ocaml library runtime packages (the libxxx-ocaml)
      should depend on ocaml-base-3.08 :
 
        Depends: ocaml-base-3.08
 
-     And Ocaml library developpment packages (the libxxx-ocaml-dev)
+     (or ocaml-base-nox-3.08 if the library does not require X stuff)
+
+     And Ocaml library development packages (the libxxx-ocaml-dev)
      should depend on ocaml-3.08 :
      
        Depends: ocaml-3.08
+
+     (or ocaml-nox-3.08 if the library does not require X stuff)
      
      The old way of doing this (Depends: ocaml (>= 3.08), ocaml (<< 3.09)) is
      deprecated 
@@ -194,7 +206,7 @@ Policy for the packaging of ocaml libraries and programs (version 0.5)
      fellow maintainers, but this will probably be a post woody stuff.
 
      Finally, i strongly recommend that all packages containing ocaml
-     executables follow these same dependency rules, altough it may not be
+     executables follow these same dependency rules, although it may not be
      always necessary, but again this is something recommended by the upstream
      authors. As an exception, it is mandatory to add these dependencies for
      executables which do dynamic loading of bytecode files, for the same
@@ -226,5 +238,3 @@ Authors:
  -- Sven Luther <luther@lambda.u-strasbg.fr>, Sat, 14 Dec 2002 22:18:44 +0100
  findlib && META:
  -- Stefano Zacchiroli <zack@cs.unibo.it>, Thu, 13 Jun 2002 21:21:52 +0200
-
-
