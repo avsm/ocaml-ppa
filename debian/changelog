@@ -5,8 +5,10 @@ ocaml (3.07-7) unstable; urgency=low
     build with older versions of debhelper, like the one in woody.
     (Closes: #214967).
   * Removed leftover ocaml 3.06 ld.conf stuff. (Closes: #214772)
+  * Applied the ocaml-3.07-pl2 patch inplace of the previous camlp4 patch.
+    (Closes: #216152)
 
- -- Sven Luther <luther@debian.org>  Thu, 16 Oct 2003 16:18:51 +0200
+ -- Sven Luther <luther@debian.org>  Fri, 17 Oct 2003 00:48:39 +0200
 
 ocaml (3.07-6) unstable; urgency=low
 

@@ -140,7 +140,7 @@ install-arch:
 	dh_movefiles -pocaml-base --sourcedir=debian/ocaml
 	install -m 644 debian/ld.conf \
 		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(VERSION)
-	install -m 644 debian/ocaml-base.override \
+	#install -m 644 debian/ocaml-base.override \
 		$(CURDIR)/debian/ocaml-base/usr/share/lintian/overrides/ocaml-base
 
 	# The ocaml-native-compilers, if available.
