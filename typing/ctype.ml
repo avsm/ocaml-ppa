@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ctype.ml,v 1.179.2.1 2004/07/07 01:45:21 garrigue Exp $ *)
+(* $Id: ctype.ml,v 1.179.2.2 2004/12/09 07:36:31 garrigue Exp $ *)
 
 (* Operations on core types *)
 
@@ -404,6 +404,11 @@ let free_vars ty =
   let res = !free_variables in
   free_variables := [];
   res
+
+let free_variables ty =
+  let tl = List.map fst (free_vars ty) in
+  unmark_type ty;
+  tl
 
 let rec closed_type ty =
   match free_vars ty with

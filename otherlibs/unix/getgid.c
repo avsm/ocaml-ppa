@@ -11,12 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getgid.c,v 1.8 2001/12/07 13:40:29 xleroy Exp $ */
+/* $Id: getgid.c,v 1.8.6.1 2005/01/17 18:10:36 doligez Exp $ */
 
 #include <mlvalues.h>
 #include "unixsupport.h"
 
-CAMLprim value unix_getgid(void)
+CAMLprim value unix_getgid(value unit)
 {
   return Val_int(getgid());
 }

@@ -11,13 +11,13 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: pipe.c,v 1.9 2001/12/07 13:40:32 xleroy Exp $ */
+/* $Id: pipe.c,v 1.9.6.1 2005/01/17 18:10:36 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
 #include "unixsupport.h"
 
-CAMLprim value unix_pipe(void)
+CAMLprim value unix_pipe(value unit)
 {
   int fd[2];
   value res;

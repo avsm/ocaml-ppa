@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: socketaddr.h,v 1.7 2004/04/27 13:49:50 xleroy Exp $ */
+/* $Id: socketaddr.h,v 1.7.2.1 2005/02/02 15:40:14 xleroy Exp $ */
 
 #include <misc.h>
 
@@ -32,6 +32,6 @@ extern void get_sockaddr (value mladdr,
                           union sock_addr_union * addr /*out*/,
                           socklen_param_type * addr_len /*out*/);
 CAMLprim value alloc_sockaddr (union sock_addr_union * addr /*in*/,
-                      socklen_param_type addr_len);
+                      socklen_param_type addr_len, int close_on_error);
 CAMLprim value alloc_inet_addr (struct in_addr * inaddr);
 #define GET_INET_ADDR(v) (*((struct in_addr *) (v)))

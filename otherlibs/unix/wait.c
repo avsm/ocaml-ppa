@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: wait.c,v 1.17.6.2 2004/11/02 16:21:25 doligez Exp $ */
+/* $Id: wait.c,v 1.17.6.3 2005/01/17 18:10:36 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -61,7 +61,7 @@ static value alloc_process_status(int pid, int status)
   return res;
 }
 
-CAMLprim value unix_wait(void)
+CAMLprim value unix_wait(value unit)
 {
   int pid, status;
 

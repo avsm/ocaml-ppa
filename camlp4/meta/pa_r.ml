@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pa_r.ml,v 1.59.2.1 2004/10/07 09:18:13 mauny Exp $ *)
+(* $Id: pa_r.ml,v 1.59.2.2 2004/11/29 14:16:46 mauny Exp $ *)
 
 open Stdpp;
 open Pcaml;
@@ -37,13 +37,11 @@ To avoid compilation warning use the new syntax.
 Pcaml.add_option "-help_seq" (Arg.Unit help_sequences)
   "Print explanations about new sequences and exit.";
 
-value (lexer, pos) =
-  Plexer.make_lexer ()
-;
-
 do {
   let odfa = Plexer.dollar_for_antiquotation.val in
   Plexer.dollar_for_antiquotation.val := False;
+  let (lexer, pos) = Plexer.make_lexer () in
+  Pcaml.position.val := pos;
   Grammar.Unsafe.gram_reinit gram lexer;
   Plexer.dollar_for_antiquotation.val := odfa;
   Grammar.Unsafe.clear_entry interf;
@@ -67,7 +65,6 @@ do {
 
 Pcaml.parse_interf.val := Grammar.Entry.parse interf;
 Pcaml.parse_implem.val := Grammar.Entry.parse implem;
-Pcaml.position.val := pos;
 
 value o2b =
   fun

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: open.c,v 1.32 2004/05/30 10:25:08 xleroy Exp $ */
+/* $Id: open.c,v 1.32.2.1 2005/01/12 15:32:18 doligez Exp $ */
 
 #include <string.h>
 #include <fcntl.h>
@@ -219,6 +219,8 @@ value caml_gr_close_graph(void)
     XFreeGC(caml_gr_display, caml_gr_bstore.gc);
     XFreePixmap(caml_gr_display, caml_gr_bstore.win);
     XFlush(caml_gr_display);
+    XCloseDisplay (caml_gr_display);
+    caml_gr_display = NULL;
   }
   return Val_unit;
 }

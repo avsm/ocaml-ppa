@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ctype.mli,v 1.52 2003/11/25 09:20:41 garrigue Exp $ *)
+(* $Id: ctype.mli,v 1.52.8.1 2004/12/09 07:36:31 garrigue Exp $ *)
 
 (* Operations on core types *)
 
@@ -219,6 +219,7 @@ val closed_schema: type_expr -> bool
         (* Check whether the given type scheme contains no non-generic
            type variables *)
 
+val free_variables: type_expr -> type_expr list
 val closed_type_decl: type_declaration -> type_expr option
 type closed_class_failure =
     CC_Method of type_expr * bool * string * type_expr

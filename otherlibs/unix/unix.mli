@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unix.mli,v 1.79.2.3 2004/07/08 08:40:47 xleroy Exp $ *)
+(* $Id: unix.mli,v 1.79.2.4 2004/12/22 16:11:13 doligez Exp $ *)
 
 (** Interface to the Unix system *)
 
@@ -705,7 +705,7 @@ type process_times =
 (** The execution times (CPU times) of a process. *)
 
 type tm =
-  { tm_sec : int;               (** Seconds 0..59 *)
+  { tm_sec : int;               (** Seconds 0..60 *)
     tm_min : int;               (** Minutes 0..59 *)
     tm_hour : int;              (** Hours 0..23 *)
     tm_mday : int;              (** Day of month 1..31 *)

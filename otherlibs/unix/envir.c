@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: envir.c,v 1.9 2001/12/07 13:40:27 xleroy Exp $ */
+/* $Id: envir.c,v 1.9.6.1 2005/01/17 18:10:36 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -20,7 +20,7 @@
 extern char ** environ;
 #endif
 
-CAMLprim value unix_environment(void)
+CAMLprim value unix_environment(value unit)
 {
   return copy_string_array((const char**)environ);
 }

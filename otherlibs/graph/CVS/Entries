@@ -1,0 +1,22 @@
+/.cvsignore/1.3/Thu Oct 11 12:04:38 2001//Tocaml3083
+/.depend/1.19.4.3/Tue Feb 22 14:33:37 2005//Tocaml3083
+/Makefile/1.35/Tue Aug  5 13:39:33 2003//Tocaml3083
+/color.c/1.18/Mon May 17 17:10:00 2004//Tocaml3083
+/draw.c/1.19/Sun May 30 14:11:41 2004//Tocaml3083
+/dump_img.c/1.11/Wed Mar 24 15:02:04 2004//Tocaml3083
+/events.c/1.17/Sun May 30 10:25:08 2004//Tocaml3083
+/fill.c/1.14/Sun May 30 14:11:41 2004//Tocaml3083
+/graphics.ml/1.25/Wed Mar 24 15:02:06 2004//Tocaml3083
+/graphics.mli/1.36/Wed Mar 24 15:02:06 2004//Tocaml3083
+/graphicsX11.ml/1.3/Wed Mar 24 15:02:06 2004//Tocaml3083
+/graphicsX11.mli/1.4/Fri Dec  7 13:39:54 2001//Tocaml3083
+/image.c/1.13/Wed Mar 24 15:02:05 2004//Tocaml3083
+/image.h/1.8/Wed Mar 24 15:02:06 2004//Tocaml3083
+/libgraph.h/1.23/Sun May 30 10:25:08 2004//Tocaml3083
+/make_img.c/1.13/Wed Mar 24 15:02:05 2004//Tocaml3083
+/open.c/1.32.2.1/Wed Jan 12 15:32:18 2005//Tocaml3083
+/point_col.c/1.8/Wed Mar 24 15:02:05 2004//Tocaml3083
+/sound.c/1.9/Wed Mar 24 15:02:05 2004//Tocaml3083
+/subwindow.c/1.6/Wed Mar 24 15:02:05 2004//Tocaml3083
+/text.c/1.15/Wed Mar 24 15:02:06 2004//Tocaml3083
+D

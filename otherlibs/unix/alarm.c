@@ -11,13 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: alarm.c,v 1.7 2001/12/07 13:40:24 xleroy Exp $ */
+/* $Id: alarm.c,v 1.7.6.1 2005/01/17 18:10:36 doligez Exp $ */
 
 #include <mlvalues.h>
 #include "unixsupport.h"
 
-CAMLprim value unix_alarm(t)
-     value t;
+CAMLprim value unix_alarm(value t)
 {
   return Val_int(alarm((unsigned int) Long_val(t)));
 }

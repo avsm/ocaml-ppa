@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ccomp.ml,v 1.17 2004/06/16 16:58:46 doligez Exp $ *)
+(* $Id: ccomp.ml,v 1.17.2.1 2005/02/02 15:39:40 xleroy Exp $ *)
 
 (* Compiling C files and building C libraries *)
 
@@ -76,7 +76,7 @@ let create_archive archive file_list =
   let quoted_archive = Filename.quote archive in
   match Config.ccomp_type with
     "msvc" ->
-      command(Printf.sprintf "lib /nologo /debugtype:cv /out:%s %s"
+      command(Printf.sprintf "link /lib /nologo /debugtype:cv /out:%s %s"
                              quoted_archive (quote_files file_list))
   | _ ->
       let r1 =

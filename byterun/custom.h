@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: custom.h,v 1.11 2004/01/01 16:42:35 doligez Exp $ */
+/* $Id: custom.h,v 1.11.6.1 2005/02/22 14:33:36 doligez Exp $ */
 
 #ifndef CAML_CUSTOM_H
 #define CAML_CUSTOM_H
@@ -47,6 +47,9 @@ CAMLextern value caml_alloc_custom(struct custom_operations * ops,
                                    mlsize_t max  /*max resources*/);
 
 CAMLextern void caml_register_custom_operations(struct custom_operations * ops);
+
+CAMLextern int caml_compare_unordered;
+  /* Used by custom comparison to report unordered NaN-like cases. */
 
 /* <private> */
 extern struct custom_operations * caml_find_custom_operations(char * ident);

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pervasives.mli,v 1.99.2.2 2004/06/22 14:33:37 xleroy Exp $ *)
+(* $Id: pervasives.mli,v 1.99.2.3 2005/01/31 12:47:53 doligez Exp $ *)
 
 (** The initially opened module.
 
@@ -550,7 +550,7 @@ type open_flag =
   | Open_append      (** open for appending: always write at end of file. *)
   | Open_creat       (** create the file if it does not exist. *)
   | Open_trunc       (** empty the file if it already exists. *)
-  | Open_excl        (** fail if the file already exists. *)
+  | Open_excl        (** fail if Open_creat and the file already exists. *)
   | Open_binary      (** open in binary mode (no conversion). *)
   | Open_text        (** open in text mode (may perform conversions). *)
   | Open_nonblock    (** open in non-blocking mode. *)

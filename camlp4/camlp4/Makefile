@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.20.2.7 2004/07/28 13:43:16 mauny Exp $
+# $Id: Makefile,v 1.20.2.8 2005/01/31 10:38:53 mauny Exp $
 
 include ../config/Makefile
 
@@ -74,6 +74,12 @@ install:
 	cp $(CAMLP4) "$(BINDIR)/."
 	cp mLast.mli quotation.mli ast2pt.mli pcaml.mli spretty.mli "$(LIBDIR)/camlp4/."
 	cp mLast.cmi quotation.cmi ast2pt.cmi pcaml.cmi spretty.cmi "$(LIBDIR)/camlp4/."
+	cp  argl.cmi argl.cmo "$(LIBDIR)/camlp4/."
+	for f in argl.o argl.cmx; do \
+	  if test -r $$f ; then \
+		cp $$f "$(LIBDIR)/camlp4/." ; \
+	  fi ; \
+	done
 	cp camlp4.cma $(LIBDIR)/camlp4/.
 	for f in  camlp4.$(A)  camlp4.p.$(A) ; do \
 	  if test -f $$f ; then \

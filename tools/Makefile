@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.59 2004/06/20 15:26:06 xleroy Exp $
+# $Id: Makefile,v 1.59.2.1 2005/01/24 15:22:46 doligez Exp $
 
 include ../config/Makefile
 
@@ -111,6 +111,11 @@ beforedepend:: ocamlmklib.ml
 
 clean::
 	rm -f ocamlmklib.ml
+
+# ocamlopt -pack support for Mac OS X: objcopy emulator
+
+install::
+	$(BINUTILS_INSTALL_OBJCOPY) ocaml-objcopy-macosx $(BINUTILS_OBJCOPY)
 
 # Converter olabl/ocaml 2.99 to ocaml 3
 

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: socketaddr.h,v 1.15 2004/04/09 13:25:22 xleroy Exp $ */
+/* $Id: socketaddr.h,v 1.15.2.2 2005/01/17 18:10:36 doligez Exp $ */
 
 #include <misc.h>
 #include <sys/types.h>
@@ -38,12 +38,12 @@ typedef int socklen_param_type;
 extern void get_sockaddr (value mladdr,
                           union sock_addr_union * addr /*out*/,
                           socklen_param_type * addr_len /*out*/);
-CAMLprim value alloc_sockaddr (union sock_addr_union * addr /*in*/,
-                      socklen_param_type addr_len);
-CAMLprim value alloc_inet_addr (struct in_addr * inaddr);
+CAMLexport value alloc_sockaddr (union sock_addr_union * addr /*in*/,
+                      socklen_param_type addr_len, int close_on_error);
+CAMLexport value alloc_inet_addr (struct in_addr * inaddr);
 #define GET_INET_ADDR(v) (*((struct in_addr *) (v)))
 
 #ifdef HAS_IPV6
-CAMLprim value alloc_inet6_addr (struct in6_addr * inaddr);
+CAMLexport value alloc_inet6_addr (struct in6_addr * inaddr);
 #define GET_INET6_ADDR(v) (*((struct in6_addr *) (v)))
 #endif

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: accept.c,v 1.18 2003/01/06 16:44:21 xleroy Exp $ */
+/* $Id: accept.c,v 1.18.6.1 2005/02/02 15:40:14 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -57,7 +57,7 @@ CAMLprim value unix_accept(sock)
   }
   Begin_roots2 (fd, adr)
     fd = win_alloc_socket(snew);
-    adr = alloc_sockaddr(&addr, addr_len);
+    adr = alloc_sockaddr(&addr, addr_len, snew);
     res = alloc_small(2, 0);
     Field(res, 0) = fd;
     Field(res, 1) = adr;

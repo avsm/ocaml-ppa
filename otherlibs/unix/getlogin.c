@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getlogin.c,v 1.8 2001/12/07 13:40:29 xleroy Exp $ */
+/* $Id: getlogin.c,v 1.8.6.1 2005/01/17 18:10:36 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -20,7 +20,7 @@
 
 extern char * getlogin(void);
 
-CAMLprim value unix_getlogin(void)
+CAMLprim value unix_getlogin(value unit)
 {
   char * name;
   name = getlogin();

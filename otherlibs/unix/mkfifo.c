@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: mkfifo.c,v 1.10.6.1 2004/08/23 11:31:44 doligez Exp $ */
+/* $Id: mkfifo.c,v 1.10.6.2 2005/01/17 18:10:36 doligez Exp $ */
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -44,7 +44,10 @@ CAMLprim value unix_mkfifo(value path, value mode)
 
 #else
 
-CAMLprim value unix_mkfifo() { invalid_argument("mkfifo not implemented"); }
+CAMLprim value unix_mkfifo(value path, value mode)
+{
+  invalid_argument("mkfifo not implemented");
+}
 
 #endif
 #endif

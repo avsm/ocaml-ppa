@@ -11,9 +11,10 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: bng.c,v 1.2 2003/11/07 07:59:09 xleroy Exp $ */
+/* $Id: bng.c,v 1.2.6.1 2004/12/22 16:17:44 doligez Exp $ */
 
 #include "bng.h"
+#include "config.h"
 
 #if defined(__GNUC__) && BNG_ASM_LEVEL > 0
 #if defined(BNG_ARCH_ia32)

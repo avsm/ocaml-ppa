@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: location.mli,v 1.15 2002/12/12 10:48:49 doligez Exp $ *)
+(* $Id: location.mli,v 1.15.10.1 2005/01/12 17:01:58 doligez Exp $ *)
 
 (* Source code locations (ranges of positions), used in parsetree. *)
 
@@ -31,6 +31,8 @@ type t = {
 
 val none : t
 (** An arbitrary value of type [t]; describes an empty ghost range. *)
+val in_file : string -> t;;
+(** Return an empty ghost range located in a given file. *)
 val init : Lexing.lexbuf -> string -> unit
 (** Set the file name and line number of the [lexbuf] to be the start
     of the named file. *)

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asmpackager.ml,v 1.14.4.1 2004/08/10 12:16:47 xleroy Exp $ *)
+(* $Id: asmpackager.ml,v 1.14.4.2 2005/01/24 15:22:46 doligez Exp $ *)
 
 (* "Package" a set of .cmx/.o files into one .cmx/.o file having the
    original compilation units as sub-modules. *)
@@ -85,7 +85,8 @@ let extract_symbols units symbolfile =
       try
         let i = 3 + (try search_substring " T " l 0 with Not_found -> 
                      try search_substring " D " l 0 with Not_found ->
-                     search_substring " R " l 0) in
+                     try search_substring " R " l 0 with Not_found ->
+                     search_substring " S " l 0) in
         let j = try search_substring "__" l i
                 with Not_found -> String.length l in
         let k = if l.[i] = '_' then i + 1 else i in
