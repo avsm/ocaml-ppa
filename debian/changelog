@@ -1,7 +1,7 @@
 ocaml (3.08.0-2) unstable; urgency=low
 
   * Applied patch adding some missing .cmx to enable coq 3.08 to build.
-  * Enabled hppa native code compiler.
+  * Enabled hppa native code compiler. (Closes: #260711)
 
  -- Sven Luther <luther@debian.org>  Mon, 26 Jul 2004 14:08:42 +0200
 
