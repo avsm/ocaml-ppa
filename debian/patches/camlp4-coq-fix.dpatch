@@ -1,0 +1,33 @@
+#! /bin/sh -e 
+## camlp4-coq-fix.dpatch by Hugo Herbelin <hugo.herbelin@inria.fr>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Makefiles, configure scripts and other build stuff adapted for
+## DP: debian package creation
+
+if [ $# -ne 1 ]; then
+    echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+    exit 1
+fi
+case "$1" in
+    -patch) patch -f --no-backup-if-mismatch -p1 < $0;;
+    -unpatch) patch -f --no-backup-if-mismatch -R -p1 < $0;;	
+    *)
+	echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+	exit 1;;
+esac
+
+exit 0
+@DPATCH@
+diff -urN ocaml-3.08.0.orig/camlp4/lib/Makefile ocaml-3.08.0/camlp4/lib/Makefile
+--- ocaml-3.08.0.orig/camlp4/lib/Makefile	2004-07-09 17:09:46.000000000 +0200
++++ ocaml-3.08.0/camlp4/lib/Makefile	2004-07-21 18:00:43.180226344 +0200
+@@ -48,7 +48,7 @@
+ 	test -f $(TARGET:.cma=.cmxa) && $(MAKE) installopt LIBDIR="$(LIBDIR)" || true
+ 
+ installopt:
+-	for f in $(TARGET:.cma=.cmxa) $(TARGET:.cma=.p.cmxa) ; do \
++	for f in $(TARGET:.cma=.cmxa) *.cmx $(TARGET:.cma=.p.cmxa) ; do \
+ 		test -f $$f && cp $$f "$(LIBDIR)/camlp4/." || true ; \
+ 	done
+ 	# Special treatment for this one: some versions of make don't like $(A) in $(TARGET:.cma=.$(A)) 

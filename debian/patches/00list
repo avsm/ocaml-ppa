@@ -1,4 +1,5 @@
 versioned_libdir
 #objinfo
 #hppa
-#config_bignum
+camlp4-coq-fix
+

@@ -1,3 +1,9 @@
+ocaml (3.08.0-2) unstable; urgency=low
+
+  * Applied patch adding some missing .cmx to enable coq 3.08 to build.
+
+ -- Sven Luther <luther@debian.org>  Wed, 21 Jul 2004 17:57:10 +0200
+
 ocaml (3.08.0-1) unstable; urgency=low
 
   * New upstream release.
