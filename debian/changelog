@@ -1,3 +1,9 @@
+ocaml (3.07.99-1) unstable; urgency=low
+
+  * First tentative at packaging upcoming 3.08 release.
+
+ -- Sven Luther <luther@debian.org>  Mon, 12 Jul 2004 14:36:20 +0200
+
 ocaml (3.07.2a-5) unstable; urgency=low
 
   * Added amd64 native code compilers build.
