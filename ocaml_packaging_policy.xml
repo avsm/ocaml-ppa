@@ -1,21 +1,23 @@
 <?xml version="1.0"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
-     "dtd/docbook-xml/4.2/docbookx.dtd" [
-<!ENTITY ocaml-pkg "<application>ocaml-<var>upstream_version</var>-<var>package_compatibility</var></application>">
-<!ENTITY ocaml-base-pkg "<application>ocaml-base-<var>upstream_version</var>-<var>package_compatibility</var></application>">
-<!ENTITY authors             SYSTEM authors.xml>
-<!ENTITY legal               SYSTEM legal.xml>
-<!ENTITY chapter-ocaml       SYSTEM chapter-ocaml.xml>
-<!ENTITY chapter-liblocal    SYSTEM chapter-liblocal.xml>
-<!ENTITY chapter-libbpack    SYSTEM chapter-libpack.xml>
-<!ENTITY chapter-progpack    SYSTEM chapter-progpack.xml>
-<!ENTITY appendix-transition SYSTEM appendix-transition.xml>
-<!ENTITY appendix-resources  SYSTEM appendix-resources.xml>
+     "/usr/share/sgml/docbook/dtd/xml/4.2/docbookx.dtd" [
+ <!ENTITY ocaml-version "3.07">
+ <!ENTITY ocaml-compat  "1">
+ <!ENTITY ocaml-pkg      "<application>ocaml-&ocaml-version;-&ocaml-compat;</application>">
+ <!ENTITY ocaml-base-pkg "<application>ocaml-base-&ocaml-version;-&ocaml-compat;</application>">
+ <!ENTITY authors             SYSTEM "authors.xml">
+ <!ENTITY legal               SYSTEM "legal.xml">
+ <!ENTITY chapter-ocaml       SYSTEM "chapter-ocaml.xml">
+ <!ENTITY chapter-liblocal    SYSTEM "chapter-liblocal.xml">
+ <!ENTITY chapter-libpack     SYSTEM "chapter-libpack.xml">
+ <!ENTITY chapter-progpack    SYSTEM "chapter-progpack.xml">
+ <!ENTITY appendix-transition SYSTEM "appendix-transition.xml">
+ <!ENTITY appendix-resources  SYSTEM "appendix-resources.xml">
 ]>
 <article>
  <articleinfo>
   <title>Debian Ocaml Policy</title>
-  <subtitle>For Objective Caml version 3.06</subtitle>
+  <subtitle>For Objective Caml version &ocaml-version;</subtitle>
   <releaseinfo>Revision 0.1</releaseinfo>
   &authors;
   &legal;

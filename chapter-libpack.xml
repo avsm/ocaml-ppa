@@ -1,6 +1,3 @@
-<?xml version="1.0"?>
- 
-   <sect id="libpack-camlp4">
+   <section id="libpack-camlp4">
     <title>Camlp4 files</title>
-   </sect>
-
+   </section>

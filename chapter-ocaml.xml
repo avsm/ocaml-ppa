@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-   <sect id="versions">
+   <section id="versions">
     <title>Version</title>
     <para>
     At any given time, the package <application>ocaml</application>
@@ -13,9 +12,9 @@
     same version of Ocaml.
     </para>
     
-   </sect>
+   </section>
    
-   <sect id="base">
+   <section id="base">
     <title>Base Package</title>
     <para>
     In order to have a minimal installation, a virtual package 
@@ -29,9 +28,9 @@
     incompatible changes made within the same version of Ocaml.
     </para>
 
-   </sect>
+   </section>
    
-   <sect id="files">
+   <section id="files">
     <title>File terminology for Ocaml packaging</title>
 
     <para>
@@ -51,41 +50,44 @@
    
     <para>
      There is a convention considering that native executable should be 
-     called <var>progname</var>.opt and bytecoded one 
-     <var>progname</var>.byte. When packaging, only <var>progname</var> is 
-     taken in account.
+     called <application>progname</application>.opt and bytecoded one 
+     <application>progname</application>.byte. When packaging, only 
+     <application>progname</application> is taken in account.
     </para>
 
     <para>
      For easying library management, the Ocaml Task Force used the 
      <application>ocamlfind</application> library management scheme.
-     This scheme includes a file named <emph>META</emph> which holds
+     This scheme includes a file named <filename>META</filename> which holds
      all the library possibility. This is the configuration file for
      handling library ( see XXX ).
     </para>
-   </sect>
+   </section>
    
-   <sect id="path">
+   <section id="path">
     <title>Library paths</title>
     <para>
     Ocaml will search library in two different location, referred to
-    as <var>local</var> which hold user installed library and as 
-    <var>core</var> in which packaged modules stood.
+    as <varname>local</varname> which hold user installed library and as 
+    <varname>core</varname> in which packaged modules stood.
     </para>
 
     <para>
     By default, ocaml will look for modules in this order :
     <variablelist>
      <varlistentry>
-      <term><var>local</var></term>
-      <listitem>
-      /usr/local/lib/ocaml/<var>ocaml_version</var>/
-      /usr/local/lib/ocaml/<var>ocaml_version</var>/
-      </listitem>
-   </sect>
+      <term><varname>local</varname></term>
+      <simplelist>
+	      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/</filename></listitem>
+	      <listitem><filename>/usr/local/lib/ocaml/&ocaml-version;/</filename></listitem>
+      </simplelist>
+     </varlistentry>
+    </variablelist>
+    </para>
+   </section>
 
-    <sect id="documentation">
+    <section id="documentation">
     <title>Documentation</title>
     <para>
     </para>
-   </sect>
+   </section>
