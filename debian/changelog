@@ -1,3 +1,12 @@
+ocaml (3.07.2a-4) unstable; urgency=low
+
+  * *-nox and -interp now conflict with the package which previously
+    distributed their files as suggested in policy 7.5.1
+  * Fixed the Conflicts entries to use the proper version of ocaml:
+    3.07.2a instead of 3.07.
+
+ -- Mike Furr <mfurr@debian.org>  Mon,  5 Jul 2004 14:13:55 -0400
+
 ocaml (3.07.2a-3) unstable; urgency=low
 
   * Split out the ocaml interpreter and all required files into ocaml-interp
