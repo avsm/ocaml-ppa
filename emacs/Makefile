@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.15 2003/08/29 15:38:28 doligez Exp $
+# $Id: Makefile,v 1.16 2003/10/10 13:25:38 remy Exp $
 
 include ../config/Makefile
 
@@ -24,6 +24,7 @@ COMPILECMD=(progn \
               (byte-compile-file "caml.el") \
               (byte-compile-file "inf-caml.el") \
               (byte-compile-file "caml-help.el") \
+              (byte-compile-file "caml-types.el") \
               (byte-compile-file "camldebug.el"))
 
 install:

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ast2pt.ml,v 1.25 2003/07/16 18:59:12 mauny Exp $ *)
+(* $Id: ast2pt.ml,v 1.26 2003/09/30 14:39:26 mauny Exp $ *)
 
 open Stdpp;
 open MLast;
@@ -177,10 +177,10 @@ value rec ctyp =
   | TyObj loc fl v -> mktyp loc (Ptyp_object (meth_list loc fl v))
   | TyCls loc id ->
       mktyp loc (Ptyp_class (long_id_of_string_list loc id) [] [])
-  | TyLab loc _ _ -> error loc "labeled type not allowed here"
+  | TyLab loc _ _ -> error loc "labelled type not allowed here"
   | TyLid loc s -> mktyp loc (Ptyp_constr (lident s) [])
-  | TyMan loc _ _ -> error loc "type manifest not allowed here"
-  | TyOlb loc lab _ -> error loc "labeled type not allowed here"
+  | TyMan loc _ _ -> error loc "manifest type not allowed here"
+  | TyOlb loc lab _ -> error loc "labelled type not allowed here"
   | TyPol loc pl t -> mktyp loc (Ptyp_poly pl (ctyp t))
   | TyQuo loc s -> mktyp loc (Ptyp_var s)
   | TyRec loc _ _ -> error loc "record type not allowed here"
