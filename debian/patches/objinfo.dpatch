@@ -19,9 +19,22 @@ esac
 
 exit 0
 @DPATCH@
-diff -urN ocaml-3.07.orig/man/ocamlobjinfo.m ocaml-3.07/man/ocamlobjinfo.m
---- ocaml-3.07.orig/man/ocamlobjinfo.m	1970-01-01 01:00:00.000000000 +0100
-+++ ocaml-3.07/man/ocamlobjinfo.m	2003-10-03 17:00:19.000000000 +0200
+diff -urN ocaml-3.08.0.orig/man/ocamlc.m ocaml-3.08.0/man/ocamlc.m
+--- ocaml-3.08.0.orig/man/ocamlc.m	2004-06-24 16:53:42.000000000 +0200
++++ ocaml-3.08.0/man/ocamlc.m	2004-07-26 14:28:30.816216392 +0200
+@@ -242,7 +242,8 @@
+ 
+ .SH SEE ALSO
+ .BR ocaml (1),
+-.BR ocamlrun (1).
++.BR ocamlrun (1),
++.BR ocamlobjinfo (1).
+ .br
+ .I The Objective Caml user's manual,
+ chapter "Batch compilation".
+diff -urN ocaml-3.08.0.orig/man/ocamlobjinfo.m ocaml-3.08.0/man/ocamlobjinfo.m
+--- ocaml-3.08.0.orig/man/ocamlobjinfo.m	1970-01-01 01:00:00.000000000 +0100
++++ ocaml-3.08.0/man/ocamlobjinfo.m	2004-07-26 14:30:06.561660872 +0200
 @@ -0,0 +1,40 @@
 +.TH OCAML-SOAP 1 "October 26, 2002"
 +.SH NAME
@@ -63,23 +76,10 @@ diff -urN ocaml-3.07.orig/man/ocamlobjinfo.m ocaml-3.07/man/ocamlobjinfo.m
 +.SH AUTHOR
 +This manual page was written by Stefano Zacchiroli <zack@debian.org>,
 +for the Debian GNU/Linux system (but may be used by others).
-diff -urN ocaml-3.07.orig/man/ocamlc.m ocaml-3.07/man/ocamlc.m
---- ocaml-3.07.orig/man/ocamlc.m	2001-12-20 05:18:10.000000000 +0100
-+++ ocaml-3.07/man/ocamlc.m	2003-10-03 17:00:19.000000000 +0200
-@@ -241,7 +241,8 @@
- 
- .SH SEE ALSO
- .BR ocaml (1),
--.BR ocamlrun (1).
-+.BR ocamlrun (1),
-+.BR ocamlobjinfo (1).
- .br
- .I The Objective Caml user's manual,
- chapter "Batch compilation".
-diff -urN ocaml-3.07.orig/man/ocamlopt.m ocaml-3.07/man/ocamlopt.m
---- ocaml-3.07.orig/man/ocamlopt.m	2002-08-06 10:22:45.000000000 +0200
-+++ ocaml-3.07/man/ocamlopt.m	2003-10-03 17:00:19.000000000 +0200
-@@ -224,7 +224,8 @@
+diff -urN ocaml-3.08.0.orig/man/ocamlopt.m ocaml-3.08.0/man/ocamlopt.m
+--- ocaml-3.08.0.orig/man/ocamlopt.m	2004-06-24 15:55:21.000000000 +0200
++++ ocaml-3.08.0/man/ocamlopt.m	2004-07-26 14:28:50.160275648 +0200
+@@ -225,7 +225,8 @@
  array or string outside of its bounds.
  
  .SH SEE ALSO
@@ -89,14 +89,14 @@ diff -urN ocaml-3.07.orig/man/ocamlopt.m ocaml-3.07/man/ocamlopt.m
  .br
  .I The Objective Caml user's manual,
  chapter "Native-code compilation".
-diff -urN ocaml-3.07.orig/tools/Makefile ocaml-3.07/tools/Makefile
---- ocaml-3.07.orig/tools/Makefile	2003-04-02 03:17:58.000000000 +0200
-+++ ocaml-3.07/tools/Makefile	2003-10-03 17:01:04.000000000 +0200
+diff -urN ocaml-3.08.0.orig/tools/Makefile ocaml-3.08.0/tools/Makefile
+--- ocaml-3.08.0.orig/tools/Makefile	2004-06-20 17:26:06.000000000 +0200
++++ ocaml-3.08.0/tools/Makefile	2004-07-26 14:27:54.000000000 +0200
 @@ -23,7 +23,8 @@
  COMPFLAGS= -warn-error A $(INCLUDES)
  LINKFLAGS=$(INCLUDES)
  
--all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels
+-all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels 
 +all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels \
 +	objinfo
  

@@ -172,10 +172,15 @@ install-arch:
 			--sourcedir=debian/ocaml-nox;			\
 
 	# Some extra stuff
-	install -m 644 utils/*.mli utils/*.cmi utils/*.cmo utils/*.cmx utils/*.o \
-		typing/*.mli typing/*.cmi typing/*.cmo typing/*.cmx typing/*.o \
-		parsing/*.mli parsing/*.cmi parsing/*.cmo parsing/*.cmx parsing/*.o \
+	install -m 644 utils/*.mli utils/*.cmi utils/*.cmo		\
+		typing/*.mli typing/*.cmi typing/*.cmo			\
+		parsing/*.mli parsing/*.cmi parsing/*.cmo		\
 		$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/3.08/compiler-libs
+	if [ -e opt-built-stamp ]; then					\
+		install -m 644 utils/*.cmx utils/*.o typing/*.cmx	\
+			typing/*.o parsing/*.cmx parsing/*.o		\
+			$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/3.08/compiler-libs \
+	fi
 
 
 	dh_install -a

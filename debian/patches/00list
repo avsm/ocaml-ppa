@@ -1,5 +1,3 @@
 versioned_libdir
-#objinfo
-#hppa
+objinfo
 camlp4-coq-fix
-
