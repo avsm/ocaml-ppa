@@ -1,0 +1,5 @@
+strstubs.o: strstubs.c ../../config/s.h ../../byterun/misc.h \
+  ../../byterun/gc.h ../../byterun/major_gc.h ../../byterun/freelist.h \
+  ../../byterun/minor_gc.h
+str.cmo: str.cmi 
+str.cmx: str.cmi 
