@@ -2,7 +2,7 @@ Source: ocaml
 Section: devel
 Priority: optional
 Maintainer: Sven Luther <luther@debian.org>
-Build-Depends: debhelper (>> 4.1.0), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2
+Build-Depends: debhelper (>> 4.0.2), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2
 Standards-Version: 3.6.0
 
 Package: ocaml

@@ -1,3 +1,4 @@
-versioned_libdir.dpatch
-objinfo.dpatch
-camlp4_optional.dpatch
+versioned_libdir
+objinfo
+camlp4_optional
+hppa

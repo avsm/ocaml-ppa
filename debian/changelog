@@ -1,3 +1,13 @@
+ocaml (3.07-7) unstable; urgency=low
+
+  * Fixed hppa build problem : hppa needs doubleword aligned doubles.
+  * Removed .dpatch extensions for debian/patches/00list, should enable to
+    build with older versions of debhelper, like the one in woody.
+    (Closes: #214967).
+  * Removed leftover ocaml 3.06 ld.conf stuff. (Closes: #214772)
+
+ -- Sven Luther <luther@debian.org>  Thu, 16 Oct 2003 16:18:51 +0200
+
 ocaml (3.07-6) unstable; urgency=low
 
   * Changed from the -a to the -s option in debhelper functions. Fixed FTBFS
