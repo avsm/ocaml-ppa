@@ -87,7 +87,7 @@ clean: unpatch
 		rm -rf boot;		\
 		mv boot.debian boot;	\
 	fi
-	#-$(MAKE) -C emacs clean
+	-$(MAKE) -C emacs clean
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	cp -f /usr/share/misc/config.sub config/gnu/config.sub
 endif
@@ -128,9 +128,9 @@ install-arch:
 
 	# Let's install ocaml first.
 	$(MAKE) install PREFIX=$(CURDIR)/debian/ocaml-nox/usr
-	#$(MAKE) -C emacs EMACSDIR=$(CURDIR)/debian/ocaml-nox/usr/share/emacs/site-lisp/ocaml \
+	$(MAKE) -C emacs EMACSDIR=$(CURDIR)/debian/ocaml-nox/usr/share/emacs/site-lisp/ocaml \
 		NOCOMPILE=true simple-install
-	#$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-nox/usr/bin install-ocamltags
+	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-nox/usr/bin install-ocamltags
 	install -m 644 debian/JoeCaml.xpm \
 		$(CURDIR)/debian/ocaml-nox/usr/X11R6/include/X11/pixmaps
 	install -m 644 debian/ocaml-nox.override \
@@ -197,7 +197,7 @@ binary-common:
 #	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate	
-#	dh_installemacsen
+	dh_installemacsen
 #	dh_installpam
 #	dh_installmime
 #	dh_installinit
