@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_analyse.ml,v 1.8 2003/11/24 10:39:28 starynke Exp $ *)
 
 (** Analysis of source files. This module is strongly inspired from driver/main.ml :-) *)
 
@@ -444,3 +445,4 @@ let load_modules file =
       raise (Failure s)
 
 
+(* eof $Id: odoc_analyse.ml,v 1.8 2003/11/24 10:39:28 starynke Exp $ *)

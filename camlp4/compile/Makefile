@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 2003/08/29 12:15:14 xleroy Exp $
+# $Id: Makefile,v 1.8.4.1 2004/06/23 11:54:57 mauny Exp $
 
 include ../config/Makefile
 
@@ -29,7 +29,8 @@ $D_fast.ml: compile.cmo $(SRC)
 	OTOP=$(OTOP) EXE=$(EXE) ./compile.sh $(COMP_OPT) $(SRC) > $D_fast.ml
 
 install:
-	if test -f camlp4o.fast.opt; then cp camlp4o.fast.opt $(BINDIR)/camlp4o.opt$(EXE); fi
+	if test -f camlp4$D.fast.opt; then cp camlp4$D.fast.opt $(BINDIR)/camlp4$D.opt$(EXE); fi
+	for TARG in  pa_$D_fast.cmi  pa_$D_fast.cmo pa_$D_fast.cmx ; do if test -f $$TARG; then cp $$TARG "$(LIBDIR)/camlp4/."; fi; done
 
 clean::
 	rm -f *.cm* *.pp[io] *.o *.bak .*.bak *.out *.opt

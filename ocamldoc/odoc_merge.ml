@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_merge.ml,v 1.10 2004/01/18 14:26:14 guesdon Exp $ *)
 
 (** Merge of information from [.ml] and [.mli] for a module.*)
 
@@ -683,6 +684,28 @@ and merge_modules merge_options mli ml =
   mli.m_loc <- { mli.m_loc with loc_impl = ml.m_loc.loc_impl } ;
   (* More dependencies in the .ml file. *)
   mli.m_top_deps <- ml.m_top_deps ;
+  
+  let code = 
+    if !Odoc_args.keep_code then
+      match mli.m_code, ml.m_code with
+	Some s, _ -> Some s
+      |	_, Some s -> Some s
+      |	_ -> None
+    else
+      None
+  in
+  let code_intf = 
+    if !Odoc_args.keep_code then
+      match mli.m_code_intf, ml.m_code_intf with
+	Some s, _ -> Some s
+      |	_, Some s -> Some s
+      |	_ -> None
+    else
+      None
+  in
+  mli.m_code <- code;
+  mli.m_code_intf <- code_intf;
+
   (* merge exceptions *)
   List.iter
     (fun ex ->
@@ -937,3 +960,4 @@ let merge merge_options modules_list =
   in
   iter modules_list
   
+(* eof $Id: odoc_merge.ml,v 1.10 2004/01/18 14:26:14 guesdon Exp $ *)

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printinstr.ml,v 1.21 2002/11/02 22:36:42 doligez Exp $ *)
+(* $Id: printinstr.ml,v 1.22 2004/05/26 11:10:50 garrigue Exp $ *)
 
 (* Pretty-print lists of instructions *)
 
@@ -96,6 +96,8 @@ let instruction ppf = function
   | Kisint -> fprintf ppf "\tisint"
   | Kisout -> fprintf ppf "\tisout"
   | Kgetmethod -> fprintf ppf "\tgetmethod"
+  | Kgetpubmet n -> fprintf ppf "\tgetpubmet %i" n
+  | Kgetdynmet -> fprintf ppf "\tgetdynmet"
   | Kstop -> fprintf ppf "\tstop"
   | Kevent ev -> fprintf ppf "\tevent \"%s\" %i" ev.ev_char.Lexing.pos_fname
                                                  ev.ev_char.Lexing.pos_cnum

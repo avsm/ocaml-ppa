@@ -10,7 +10,7 @@ CAMLP4RM=pa_r.cmo pa_rp.cmo pr_dump.cmo
 CAMLP4RMX=$(CAMLP4RM:.cmo=.cmx)
 SHELL=/bin/sh
 COUT=$(OBJS) camlp4r$(EXE)
-COPT=camlp4r.opt
+COPT=$(OBJSX) camlp4r.opt
 
 all: $(COUT)
 opt: $(COPT)
@@ -49,11 +49,7 @@ install:
 	cp camlp4r$(EXE) "$(BINDIR)/."
 	if test -f camlp4r.opt; then \
 	  cp camlp4r.opt "$(BINDIR)/camlp4r.opt$(EXE)" ;\
-	  for target in $(OBJSX) $(OBJSX:.cmx=.$(O)) ; do \
-	    if test -f $$target; then \
-	      cp $$target "$(LIBDIR)/camlp4/."; \
-	    fi; \
-	  done; \
+	  cp $(OBJSX) $(OBJSX:.cmx=.$(O)) "$(LIBDIR)/camlp4/."; \
 	fi
 
 include .depend

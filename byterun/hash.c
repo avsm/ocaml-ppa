@@ -11,9 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: hash.c,v 1.19 2002/01/20 17:39:05 doligez Exp $ */
+/* $Id: hash.c,v 1.22 2004/01/02 19:23:22 doligez Exp $ */
 
 /* The generic hashing primitive */
+
+/* The interface of this file is in "mlvalues.h" */
 
 #include "mlvalues.h"
 #include "custom.h"
@@ -24,7 +26,7 @@ static long hash_univ_limit, hash_univ_count;
 
 static void hash_aux(value obj);
 
-CAMLprim value hash_univ_param(value count, value limit, value obj)
+CAMLprim value caml_hash_univ_param(value count, value limit, value obj)
 {
   hash_univ_limit = Long_val(limit);
   hash_univ_count = Long_val(count);
@@ -65,7 +67,7 @@ static void hash_aux(value obj)
     switch (tag) {
     case String_tag:
       hash_univ_count--;
-      i = string_length(obj);
+      i = caml_string_length(obj);
       for (p = &Byte_u(obj, 0); i > 0; i--, p++)
         Combine_small(*p);
       break;
@@ -140,7 +142,7 @@ static void hash_aux(value obj)
 
 /* Hashing variant tags */
 
-CAMLexport value hash_variant(char * tag)
+CAMLexport value caml_hash_variant(char * tag)
 {
   value accu;
   /* Same hashing algorithm as in ../typing/btype.ml, function hash_variant */
@@ -153,4 +155,3 @@ CAMLexport value hash_variant(char * tag)
      platforms */
   return (int32) accu;
 }
-

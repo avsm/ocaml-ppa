@@ -11,12 +11,13 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.49 2002/03/11 10:12:43 xleroy Exp $
+# $Id: Makefile,v 1.51 2004/05/09 15:19:16 xleroy Exp $
 
 include ../config/Makefile
 
 CC=$(NATIVECC)
-FLAGS=-I../byterun -DNATIVE_CODE -DTARGET_$(ARCH) -DSYS_$(SYSTEM) 
+FLAGS=-I../byterun -DCAML_NAME_SPACE -DNATIVE_CODE \
+      -DTARGET_$(ARCH) -DSYS_$(SYSTEM) 
 CFLAGS=$(FLAGS) -O $(NATIVECCCOMPOPTS)
 DFLAGS=$(FLAGS) -g -DDEBUG $(NATIVECCCOMPOPTS)
 PFLAGS=$(FLAGS) -pg -O -DPROFILING $(NATIVECCPROFOPTS)
@@ -148,13 +149,6 @@ LINKEDFILES=misc.c freelist.c major_gc.c minor_gc.c memory.c alloc.c array.c \
 
 clean::
 	rm -f $(LINKEDFILES)
-
-# For HPUX, we can't use gcc as ASPP because it may have been configured with
-# the vendor's assembler
-hppa.o: hppa.S
-	gcc -traditional -E -DSYS_$(SYSTEM) -o hppa.s hppa.S
-	gas -o hppa.o hppa.s || { rm -f hppa.s; exit 2; }
-	rm -f hppa.s
 
 .SUFFIXES: .S .d.o .p.o
 

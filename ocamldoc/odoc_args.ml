@@ -9,8 +9,10 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* cvsid $Id: odoc_args.ml,v 1.15.6.1 2004/07/09 14:32:42 guesdon Exp $ *)
 
 (** Command-line arguments. *)
+
 open Clflags
 
 module M = Odoc_messages
@@ -36,7 +38,7 @@ let dot_types = ref false
 
 let dot_reduce = ref false
 
-let dot_colors  = ref M.default_dot_colors
+let dot_colors  = ref (List.flatten M.default_dot_colors)
 
 let man_suffix = ref M.default_man_suffix
 
@@ -101,6 +103,8 @@ let keep_code = ref false
 let inverse_merge_ml_mli = ref false
 
 let title = ref (None : string option)
+
+let intro_file = ref (None : string option)
 
 let with_parameter_list = ref false
 
@@ -219,8 +223,11 @@ let options = ref [
   "-load", Arg.String (fun s -> load := !load @ [s]), M.load^"\n" ;
 
   "-t", Arg.String (fun s -> title := Some s), M.option_title ;
+  "-intro", Arg.String (fun s -> intro_file := Some s), M.option_intro ;
   "-hide", Arg.String add_hidden_modules, M.hide_modules ;
-  "-m", Arg.String (fun s -> merge_options := !merge_options @ (analyse_merge_options s)), M.merge_options^"\n" ;
+  "-m", Arg.String (fun s -> merge_options := !merge_options @ (analyse_merge_options s)), 
+  M.merge_options ^
+  "\n\n *** choosing a generator ***\n";
 
 (* generators *)
   "-html", Arg.Unit (fun () -> set_doc_generator !default_html_generator), M.generate_html ;
@@ -228,14 +235,20 @@ let options = ref [
   "-texi", Arg.Unit (fun () -> set_doc_generator !default_texi_generator), M.generate_texinfo ;
   "-man", Arg.Unit (fun () -> set_doc_generator !default_man_generator), M.generate_man ;    
   "-dot", Arg.Unit (fun () -> set_doc_generator !default_dot_generator), M.generate_dot ;
+  "-customdir", Arg.Unit (fun () -> Printf.printf "%s\n" Odoc_config.custom_generators_path; exit 0),
+  M.display_custom_generators_dir ;
+  "-i", Arg.String (fun s -> if !bytecode_mode then () else (prerr_endline (M.option_not_in_native_code "-i"); exit 1)),
+  M.add_load_dir ;
   "-g", Arg.String (fun s -> if !bytecode_mode then () else (prerr_endline (M.option_not_in_native_code "-g"); exit 1)),
-        M.load_file^"\n" ;
+  M.load_file ^
+  "\n\n *** HTML options ***\n";
 
 (* html only options *)
   "-all-params", Arg.Set with_parameter_list, M.with_parameter_list ;
   "-css-style", Arg.String (fun s -> css_style := Some s), M.css_style ;
   "-index-only", Arg.Set index_only, M.index_only ;
-  "-colorize-code", Arg.Set colorize_code, M.colorize_code^"\n" ;
+  "-colorize-code", Arg.Set colorize_code, M.colorize_code ^
+  "\n\n *** LaTeX options ***\n";
 
 (* latex only options *)
   "-noheader", Arg.Unit (fun () -> with_header := false), M.no_header ;
@@ -251,19 +264,24 @@ let options = ref [
   "-latex-module-type-prefix", Arg.String (fun s -> latex_module_type_prefix := s), M.latex_module_type_prefix ;
   "-latex-class-prefix", Arg.String (fun s -> latex_class_prefix := s), M.latex_class_prefix ;
   "-latex-class-type-prefix", Arg.String (fun s -> latex_class_type_prefix := s), M.latex_class_type_prefix ;
-  "-notoc", Arg.Unit (fun () -> with_toc := false), M.no_toc^"\n" ;
+  "-notoc", Arg.Unit (fun () -> with_toc := false), 
+  M.no_toc ^
+  "\n\n *** texinfo options ***\n";
 
 (* tex only options *)
   "-noindex", Arg.Clear with_index, M.no_index ;
   "-esc8", Arg.Set esc_8bits, M.esc_8bits ;
   "-info-section", Arg.String ((:=) info_section), M.info_section ;
-  "-info-entry", Arg.String (fun s -> info_entry := !info_entry @ [ s ]), M.info_entry ;
+  "-info-entry", Arg.String (fun s -> info_entry := !info_entry @ [ s ]), 
+  M.info_entry ^ 
+  "\n\n *** dot options ***\n";
 
 (* dot only options *)
   "-dot-colors", Arg.String (fun s -> dot_colors := Str.split (Str.regexp_string ",") s), M.dot_colors ;
   "-dot-include-all", Arg.Set dot_include_all, M.dot_include_all ;
   "-dot-types", Arg.Set dot_types, M.dot_types ;
-  "-dot-reduce", Arg.Set dot_reduce, M.dot_reduce ;
+  "-dot-reduce", Arg.Set dot_reduce, M.dot_reduce^
+  "\n\n *** man pages options ***\n";
 
 (* man only options *)
   "-man-mini", Arg.Set man_mini, M.man_mini ;
@@ -299,3 +317,4 @@ let parse ~html_generator ~latex_generator ~texi_generator ~man_generator ~dot_g
   hidden_modules := List.sort (fun a -> fun b -> - (compare a b)) !hidden_modules
 
 
+(* eof $Id: odoc_args.ml,v 1.15.6.1 2004/07/09 14:32:42 guesdon Exp $ *)

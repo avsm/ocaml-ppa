@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: env.mli,v 1.27 2002/11/17 16:42:11 xleroy Exp $ *)
+(* $Id: env.mli,v 1.28 2003/11/25 09:20:42 garrigue Exp $ *)
 
 (* Environment handling *)
 
@@ -20,6 +20,7 @@ type t
 
 val empty: t
 val initial: t
+val diff: t -> t -> Ident.t list
 
 (* Lookup by paths *)
 

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc.ml,v 1.10 2003/07/17 15:11:02 xleroy Exp $ *)
+(* $Id: proc.ml,v 1.12 2004/06/19 17:39:35 xleroy Exp $ *)
 
 (* Description of the Power PC *)
 
@@ -128,11 +128,8 @@ let calling_conventions
           ofs := !ofs + size_float
         end
   done;
-  let final_ofs = if toc && !ofs > 0 then !ofs + 32 else !ofs in
-  (loc, Misc.align final_ofs 16)
-  (* Keep stack 16-aligned. 
-     Under PowerOpen, keep a free 32 byte linkage area at the bottom
-     if we need to stack-allocate some arguments. *)
+  (loc, Misc.align !ofs 16)
+  (* Keep stack 16-aligned. *)
 
 let incoming ofs = Incoming ofs
 let outgoing ofs = Outgoing ofs
@@ -189,7 +186,7 @@ let poweropen_external_conventions first_int last_int
 
 let loc_external_arguments =
   match Config.system with
-    "aix" | "rhapsody" -> poweropen_external_conventions 0 7 100 112
+  | "rhapsody" -> poweropen_external_conventions 0 7 100 112
   | "elf" | "bsd" -> calling_conventions 0 7 100 107 outgoing 8
   | _ -> assert false
 
@@ -239,9 +236,6 @@ let assemble_file infile outfile =
   let infile = Filename.quote infile
   and outfile = Filename.quote outfile in
   match Config.system with
-    "aix" ->
-      let proc = if powerpc then "ppc" else "pwr" in
-      Ccomp.command ("as -u -m " ^ proc ^ " -o " ^ outfile ^ " " ^ infile)
   | "elf" ->
       Ccomp.command ("as -u -m ppc -o " ^ outfile ^ " " ^ infile)
   | "rhapsody" | "bsd" ->

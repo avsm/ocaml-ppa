@@ -14,7 +14,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: cltkEval.c,v 1.13 2003/07/10 09:18:02 xleroy Exp $ */
+/* $Id: cltkEval.c,v 1.14 2004/05/17 17:10:00 doligez Exp $ */
 
 #include <stdlib.h>
 #include <string.h>
@@ -199,7 +199,6 @@ CAMLprim value camltk_tcl_direct_eval(value v)
      */
     if (info.proc == NULL) {
       Tcl_DString buf;
-      char *string;
       Tcl_DStringInit(&buf);
       Tcl_DStringAppend(&buf, argv[0], -1);
       for (i=1; i<size; i++) {

@@ -9,6 +9,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_types.mli,v 1.5 2004/05/23 10:41:51 guesdon Exp $ *)
+
 (** Types for the information collected in comments. *)
 
 (** The differents kinds of element references. *)
@@ -47,6 +49,9 @@ and text_element =
        (** A reference to an element. Complete name and kind. *)
   | Superscript of text (** Superscripts. *)
   | Subscript of text (** Subscripts. *)
+  | Module_list of string list 
+       (** The table of the given modules with their abstract; *)
+  | Index_list (** The links to the various indexes (values, types, ...) *)
 
 (** [text] is a list of text_elements. The order matters. *)
 and text = text_element list

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: compilenv.ml,v 1.18 2002/06/07 07:35:25 xleroy Exp $ *)
+(* $Id: compilenv.ml,v 1.21 2004/05/26 11:10:28 garrigue Exp $ *)
 
 (* Compilation environments for compilation units *)
 
@@ -43,6 +43,7 @@ type unit_infos =
     mutable ui_approx: value_approximation;     (* Approx of the structure *)
     mutable ui_curry_fun: int list;             (* Currying functions needed *)
     mutable ui_apply_fun: int list;             (* Apply functions needed *)
+    mutable ui_send_fun: int list;              (* Send functions needed *)
     mutable ui_force_link: bool }               (* Always linked *)
 
 (* Each .a library has a matching .cmxa file that provides the following
@@ -64,6 +65,7 @@ let current_unit =
     ui_approx = Value_unknown;
     ui_curry_fun = [];
     ui_apply_fun = [];
+    ui_send_fun = [];
     ui_force_link = false }
 
 let reset name =
@@ -74,10 +76,17 @@ let reset name =
   current_unit.ui_imports_cmx <- [];
   current_unit.ui_curry_fun <- [];
   current_unit.ui_apply_fun <- [];
+  current_unit.ui_send_fun <- [];
   current_unit.ui_force_link <- false
 
 let current_unit_name () =
   current_unit.ui_name
+
+let make_symbol ?(unitname = current_unit.ui_name) idopt =
+  let prefix = "caml" ^ unitname in
+  match idopt with
+  | None -> prefix
+  | Some id -> prefix ^ "__" ^ id
 
 let read_unit_info filename =
   let ic = open_in_bin filename in
@@ -139,6 +148,10 @@ let need_curry_fun n =
 let need_apply_fun n =
   if not (List.mem n current_unit.ui_apply_fun) then
     current_unit.ui_apply_fun <- n :: current_unit.ui_apply_fun
+
+let need_send_fun n =
+  if not (List.mem n current_unit.ui_send_fun) then
+    current_unit.ui_send_fun <- n :: current_unit.ui_send_fun
 
 (* Write the description of the current unit *)
 

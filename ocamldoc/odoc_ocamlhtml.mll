@@ -11,6 +11,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_ocamlhtml.mll,v 1.9 2004/03/14 13:52:01 guesdon Exp $ *)
+
 (** Generation of html code to display OCaml code. *)
 open Lexing 
 
@@ -203,25 +205,12 @@ let get_stored_string () =
 
 (** To translate escape sequences *)
 
-let char_for_backslash =
-  match Sys.os_type with
-  | "Unix" | "Win32" | "Cygwin" ->
-      begin function
-      | 'n' -> '\010'
-      | 'r' -> '\013'
-      | 'b' -> '\008'
-      | 't' -> '\009'
-      | c   -> c
-      end
-  | "MacOS" ->
-      begin function
-      | 'n' -> '\013'
-      | 'r' -> '\010'
-      | 'b' -> '\008'
-      | 't' -> '\009'
-      | c   -> c
-      end
-  | x -> fatal_error "Lexer: unknown system type"
+let char_for_backslash = function
+  | 'n' -> '\010'
+  | 'r' -> '\013'
+  | 'b' -> '\008'
+  | 't' -> '\009'
+  | c   -> c
 
 let char_for_decimal_code lexbuf i =
   let c = 100 * (Char.code(Lexing.lexeme_char lexbuf i) - 48) +
@@ -498,7 +487,7 @@ and string = parse
         string lexbuf }
 {
 
-let html_of_code ?(with_pre=true) code =
+let html_of_code b ?(with_pre=true) code =
   let old_pre = !pre in
   let old_margin = !margin in
   let old_comment_buffer = Buffer.contents comment_buffer in
@@ -509,7 +498,6 @@ let html_of_code ?(with_pre=true) code =
   pre := with_pre;
   margin := 0;
   
-
   let start = "<code class=\""^code_class^"\">" in
   let ending = "</code>" in
   let html = 
@@ -537,6 +525,6 @@ let html_of_code ?(with_pre=true) code =
   Buffer.add_string string_buffer old_string_buffer ;
   fmt := old_fmt ;
 
-  html
+  Buffer.add_string b html
 
 } 

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexer.mli,v 1.13 2002/11/01 17:06:46 doligez Exp $ *)
+(* $Id: lexer.mli,v 1.14 2003/11/21 16:01:13 xleroy Exp $ *)
 
 (* The lexical analyzer *)
 
@@ -24,6 +24,7 @@ type error =
   | Unterminated_string
   | Unterminated_string_in_comment
   | Keyword_as_label of string
+  | Literal_overflow of string
 ;;
 
 exception Error of error * Location.t

@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.184 2003/07/03 15:13:21 xleroy Exp $
+# $Id: Makefile,v 1.186.2.3 2004/07/02 12:19:18 mauny Exp $
 
 # The main Makefile
 
@@ -107,7 +107,7 @@ EXPUNGEOBJS=utils/misc.cmo utils/tbl.cmo \
   utils/config.cmo utils/clflags.cmo \
   typing/ident.cmo typing/path.cmo typing/types.cmo typing/btype.cmo \
   typing/predef.cmo bytecomp/runtimedef.cmo bytecomp/bytesections.cmo \
-  bytecomp/dll.cmo bytecomp/symtable.cmo toplevel/expunge.cmo
+  bytecomp/dll.cmo bytecomp/meta.cmo bytecomp/symtable.cmo toplevel/expunge.cmo
 
 PERVASIVES=$(STDLIB_MODULES) outcometree topdirs toploop
 
@@ -627,7 +627,9 @@ checkstack:
 
 # Make MacOS X package
 
-package-macosx: FORCE
+.PHONY: package-macosx
+
+package-macosx:
 	make BINDIR="`pwd`"/package-macosx/root$(BINDIR) \
 	     LIBDIR="`pwd`"/package-macosx/root$(LIBDIR) \
 	     MANDIR="`pwd`"/package-macosx/root$(MANDIR) install

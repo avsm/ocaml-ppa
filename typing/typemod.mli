@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typemod.mli,v 1.22 2003/03/06 15:59:55 xleroy Exp $ *)
+(* $Id: typemod.mli,v 1.24 2004/06/13 12:48:01 xleroy Exp $ *)
 
 (* Type-checking of the module language *)
 
@@ -48,6 +48,8 @@ type error =
   | Non_generalizable of type_expr
   | Non_generalizable_class of Ident.t * class_declaration
   | Non_generalizable_module of module_type
+  | Implementation_is_required of string
+  | Interface_not_compiled of string
 
 exception Error of Location.t * error
 

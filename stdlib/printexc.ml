@@ -11,17 +11,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printexc.ml,v 1.17 2003/01/21 12:57:33 doligez Exp $ *)
+(* $Id: printexc.ml,v 1.18 2004/01/16 15:24:02 doligez Exp $ *)
 
 open Printf;;
 
-let locfmt =
-  match Sys.os_type with
-  | "MacOS" ->
-      format_of_string "File \"%s\"; line %d; characters %d to %d ### %s"
-  | _ ->
-      format_of_string "File \"%s\", line %d, characters %d-%d: %s"
-;;
+let locfmt = format_of_string "File \"%s\", line %d, characters %d-%d: %s";;
 
 let field x i =
   let f = Obj.field x i in

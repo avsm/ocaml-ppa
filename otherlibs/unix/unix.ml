@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unix.ml,v 1.56 2002/07/12 09:47:54 xleroy Exp $ *)
+(* $Id: unix.ml,v 1.60.2.2 2004/07/02 09:37:17 doligez Exp $ *)
 
 type error =
     E2BIG
@@ -109,7 +109,7 @@ let handle_unix_error f arg =
     exit 2
 
 external environment : unit -> string array = "unix_environment"
-external getenv: string -> string = "sys_getenv"
+external getenv: string -> string = "caml_sys_getenv"
 external putenv: string -> string -> unit = "unix_putenv"
 
 type process_status =
@@ -161,6 +161,7 @@ external openfile : string -> open_flag list -> file_perm -> file_descr
 external close : file_descr -> unit = "unix_close"
 external unsafe_read : file_descr -> string -> int -> int -> int = "unix_read"
 external unsafe_write : file_descr -> string -> int -> int -> int = "unix_write"
+external unsafe_single_write : file_descr -> string -> int -> int -> int = "unix_single_write"
 
 let read fd buf ofs len =
   if ofs < 0 || len < 0 || ofs > String.length buf - len
@@ -170,14 +171,22 @@ let write fd buf ofs len =
   if ofs < 0 || len < 0 || ofs > String.length buf - len
   then invalid_arg "Unix.write"
   else unsafe_write fd buf ofs len
+(* write misbehaves because it attempts to write all data by making repeated
+   calls to the Unix write function (see comment in write.c and unix.mli).
+   partial_write fixes this by never calling write twice. *)
+let single_write fd buf ofs len =
+  if ofs < 0 || len < 0 || ofs > String.length buf - len
+  then invalid_arg "Unix.single_write"
+  else unsafe_single_write fd buf ofs len
 
 external in_channel_of_descr : file_descr -> in_channel
-                             = "caml_open_descriptor_in"
+                             = "caml_ml_open_descriptor_in"
 external out_channel_of_descr : file_descr -> out_channel
-                              = "caml_open_descriptor_out"
-external descr_of_in_channel : in_channel -> file_descr = "channel_descriptor"
+                              = "caml_ml_open_descriptor_out"
+external descr_of_in_channel : in_channel -> file_descr
+                             = "caml_channel_descriptor"
 external descr_of_out_channel : out_channel -> file_descr
-                              = "channel_descriptor"
+                              = "caml_channel_descriptor"
 
 type seek_command =
     SEEK_SET
@@ -261,6 +270,11 @@ external set_nonblock : file_descr -> unit = "unix_set_nonblock"
 external clear_nonblock : file_descr -> unit = "unix_clear_nonblock"
 external set_close_on_exec : file_descr -> unit = "unix_set_close_on_exec"
 external clear_close_on_exec : file_descr -> unit = "unix_clear_close_on_exec"
+
+(* FD_CLOEXEC should be supported on all Unix systems these days,
+   but just in case... *)
+let try_set_close_on_exec fd =
+  try set_close_on_exec fd; true with Invalid_argument _ -> false
 
 external mkdir : string -> file_perm -> unit = "unix_mkdir"
 external rmdir : string -> unit = "unix_rmdir"
@@ -373,7 +387,9 @@ external getgrnam : string -> group_entry = "unix_getgrnam"
 external getpwuid : int -> passwd_entry = "unix_getpwuid"
 external getgrgid : int -> group_entry = "unix_getgrgid"
 
-type inet_addr
+type inet_addr = string
+
+let is_inet6_addr s = String.length s = 16
 
 external inet_addr_of_string : string -> inet_addr
                                     = "unix_inet_addr_of_string"
@@ -381,10 +397,16 @@ external string_of_inet_addr : inet_addr -> string
                                     = "unix_string_of_inet_addr"
 
 let inet_addr_any = inet_addr_of_string "0.0.0.0"
+let inet_addr_loopback = inet_addr_of_string "127.0.0.1"
+let inet6_addr_any =
+  try inet_addr_of_string "::" with Failure _ -> inet_addr_any
+let inet6_addr_loopback =
+  try inet_addr_of_string "::1" with Failure _ -> inet_addr_loopback
 
 type socket_domain =
     PF_UNIX
   | PF_INET
+  | PF_INET6
 
 type socket_type =
     SOCK_STREAM
@@ -395,6 +417,10 @@ type socket_type =
 type sockaddr =
     ADDR_UNIX of string
   | ADDR_INET of inet_addr * int
+
+let domain_of_sockaddr = function
+    ADDR_UNIX _ -> PF_UNIX
+  | ADDR_INET(a, _) -> if is_inet6_addr a then PF_INET6 else PF_INET
 
 type shutdown_command =
     SHUTDOWN_RECEIVE
@@ -517,6 +543,136 @@ external getservbyname : string -> string -> service_entry
                                          = "unix_getservbyname"
 external getservbyport : int -> string -> service_entry
                                          = "unix_getservbyport"
+
+type addr_info =
+  { ai_family : socket_domain;
+    ai_socktype : socket_type;
+    ai_protocol : int;
+    ai_addr : sockaddr;
+    ai_canonname : string }
+
+type getaddrinfo_option =
+    AI_FAMILY of socket_domain
+  | AI_SOCKTYPE of socket_type
+  | AI_PROTOCOL of int
+  | AI_NUMERICHOST
+  | AI_CANONNAME
+  | AI_PASSIVE
+
+external getaddrinfo_system
+  : string -> string -> getaddrinfo_option list -> addr_info list
+  = "unix_getaddrinfo"
+
+let getaddrinfo_emulation node service opts =
+  (* Parse options *)
+  let opt_socktype = ref None
+  and opt_protocol = ref 0
+  and opt_passive = ref false in
+  List.iter
+    (function AI_SOCKTYPE s -> opt_socktype := Some s
+            | AI_PROTOCOL p -> opt_protocol := p
+            | AI_PASSIVE -> opt_passive := true
+            | _ -> ())
+    opts;
+  (* Determine socket types and port numbers *)
+  let get_port ty kind =
+    if service = "" then [ty, 0] else
+      try
+        [ty, int_of_string service]
+      with Failure _ ->
+      try
+        [ty, (getservbyname service kind).s_port]
+      with Not_found -> [] 
+  in
+  let ports =
+    match !opt_socktype with
+    | None ->
+        get_port SOCK_STREAM "tcp" @ get_port SOCK_DGRAM "udp"
+    | Some SOCK_STREAM ->
+        get_port SOCK_STREAM "tcp"
+    | Some SOCK_DGRAM ->
+        get_port SOCK_DGRAM "udp"
+    | Some ty ->
+        if service = "" then [ty, 0] else [] in
+  (* Determine IP addresses *)
+  let addresses =
+    if node = "" then
+      if List.mem AI_PASSIVE opts
+      then [inet_addr_any, "0.0.0.0"]
+      else [inet_addr_loopback, "127.0.0.1"]
+    else
+      try
+        [inet_addr_of_string node, node]
+      with Failure _ ->
+      try
+        let he = gethostbyname node in
+        List.map
+          (fun a -> (a, he.h_name))
+          (Array.to_list he.h_addr_list)
+      with Not_found ->
+        [] in
+  (* Cross-product of addresses and ports *)
+  List.flatten
+    (List.map 
+      (fun (ty, port) ->
+        List.map
+          (fun (addr, name) ->
+            { ai_family = PF_INET;
+              ai_socktype = ty;
+              ai_protocol = !opt_protocol;
+              ai_addr = ADDR_INET(addr, port);
+              ai_canonname = name })
+          addresses)
+      ports)
+
+let getaddrinfo node service opts =
+  try
+    List.rev(getaddrinfo_system node service opts)
+  with Invalid_argument _ ->
+    getaddrinfo_emulation node service opts
+
+type name_info =
+  { ni_hostname : string;
+    ni_service : string }
+
+type getnameinfo_option =
+    NI_NOFQDN
+  | NI_NUMERICHOST
+  | NI_NAMEREQD
+  | NI_NUMERICSERV
+  | NI_DGRAM
+
+external getnameinfo_system
+  : sockaddr -> getnameinfo_option list -> name_info
+  = "unix_getnameinfo"
+
+let getnameinfo_emulation addr opts =
+  match addr with
+  | ADDR_UNIX f ->
+      { ni_hostname = ""; ni_service = f } (* why not? *)
+  | ADDR_INET(a, p) ->
+      let hostname =
+        try
+          if List.mem NI_NUMERICHOST opts then raise Not_found;
+          (gethostbyaddr a).h_name
+        with Not_found ->
+          if List.mem NI_NAMEREQD opts then raise Not_found;
+          string_of_inet_addr a in
+      let service =
+        try
+          if List.mem NI_NUMERICSERV opts then raise Not_found;
+          let kind = if List.mem NI_DGRAM opts then "udp" else "tcp" in
+          (getservbyport p kind).s_name
+        with Not_found ->
+          string_of_int p in
+      { ni_hostname = hostname; ni_service = service }
+
+let getnameinfo addr opts =
+  try
+    getnameinfo_system addr opts
+  with Invalid_argument _ ->
+    getnameinfo_emulation addr opts
+
 type terminal_io = {
     mutable c_ignbrk: bool;
     mutable c_brkint: bool;
@@ -643,10 +799,11 @@ type popen_process =
 let popen_processes = (Hashtbl.create 7 : (popen_process, int) Hashtbl.t)
 
 let open_proc cmd proc input output toclose =
+  let cloexec = List.for_all try_set_close_on_exec toclose in
   match fork() with
      0 -> if input <> stdin then begin dup2 input stdin; close input end;
           if output <> stdout then begin dup2 output stdout; close output end;
-          List.iter close toclose;
+          if not cloexec then List.iter close toclose;
           execv "/bin/sh" [| "/bin/sh"; "-c"; cmd |];
           exit 127
   | id -> Hashtbl.add popen_processes proc id
@@ -677,11 +834,12 @@ let open_process cmd =
   (inchan, outchan)
 
 let open_proc_full cmd env proc input output error toclose =
+  let cloexec = List.for_all try_set_close_on_exec toclose in
   match fork() with
      0 -> dup2 input stdin; close input;
           dup2 output stdout; close output;
           dup2 error stderr; close error;
-          List.iter close toclose;
+          if not cloexec then List.iter close toclose;
           execve "/bin/sh" [| "/bin/sh"; "-c"; cmd |] env;
           exit 127
   | id -> Hashtbl.add popen_processes proc id
@@ -736,12 +894,11 @@ let close_process_full (inchan, outchan, errchan) =
 (* High-level network functions *)
 
 let open_connection sockaddr =
-  let domain =
-    match sockaddr with ADDR_UNIX _ -> PF_UNIX | ADDR_INET(_,_) -> PF_INET in
   let sock =
-    socket domain SOCK_STREAM 0 in
+    socket (domain_of_sockaddr sockaddr) SOCK_STREAM 0 in
   try
     connect sock sockaddr;
+    ignore(try_set_close_on_exec sock);
     (in_channel_of_descr sock, out_channel_of_descr sock)
   with exn ->
     close sock; raise exn
@@ -750,10 +907,8 @@ let shutdown_connection inchan =
   shutdown (descr_of_in_channel inchan) SHUTDOWN_SEND
 
 let establish_server server_fun sockaddr =
-  let domain =
-    match sockaddr with ADDR_UNIX _ -> PF_UNIX | ADDR_INET(_,_) -> PF_INET in
   let sock =
-    socket domain SOCK_STREAM 0 in
+    socket (domain_of_sockaddr sockaddr) SOCK_STREAM 0 in
   setsockopt sock SO_REUSEADDR true;
   bind sock sockaddr;
   listen sock 5;
@@ -763,6 +918,7 @@ let establish_server server_fun sockaddr =
        leave a zombie process *)
     match fork() with
        0 -> if fork() <> 0 then exit 0; (* The son exits, the grandson works *)
+            ignore(try_set_close_on_exec s);
             let inchan = in_channel_of_descr s in
             let outchan = out_channel_of_descr s in
             server_fun inchan outchan;

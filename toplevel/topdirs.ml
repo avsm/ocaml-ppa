@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: topdirs.ml,v 1.60 2002/11/18 13:49:44 xleroy Exp $ *)
+(* $Id: topdirs.ml,v 1.62.2.1 2004/06/23 12:10:02 garrigue Exp $ *)
 
 (* Toplevel directives *)
 
@@ -102,12 +102,16 @@ let load_file ppf name =
         let toc_pos = input_binary_int ic in  (* Go to table of contents *)
         seek_in ic toc_pos;
         let lib = (input_value ic : library) in
-        begin try
-          Dll.open_dlls (List.map Dll.extract_dll_name lib.lib_dllibs)
-        with Failure reason ->
-          fprintf ppf "Cannot load required shared library: %s.@." reason;
-          raise Load_failed
-        end;
+        List.iter
+          (fun dllib ->
+            let name = Dll.extract_dll_name dllib in
+            try Dll.open_dlls [name]
+            with Failure reason ->
+              fprintf ppf
+                "Cannot load required shared library %s.@.Reason: %s.@."
+                name reason;
+              raise Load_failed)
+          lib.lib_dllibs;
         List.iter (load_compunit ic filename ppf) lib.lib_units;
         true
       end else begin
@@ -198,7 +202,7 @@ let _ = Hashtbl.add directive_table "remove_printer"
 
 (* The trace *)
 
-external current_environment: unit -> Obj.t = "get_current_environment"
+external current_environment: unit -> Obj.t = "caml_get_current_environment"
 
 let tracing_function_ptr =
   get_code_pointer
@@ -249,7 +253,7 @@ let dir_untrace ppf lid =
         []
     | f :: rem ->
         if Path.same f.path path then begin
-          set_code_pointer (eval_path path) f.actual_code;
+          set_code_pointer f.closure f.actual_code;
           fprintf ppf "%a is no longer traced.@." Printtyp.longident lid;
           rem
         end else f :: remove rem in
@@ -260,7 +264,7 @@ let dir_untrace ppf lid =
 let dir_untrace_all ppf () =
   List.iter
     (fun f ->
-      set_code_pointer (eval_path f.path) f.actual_code;
+      set_code_pointer f.closure f.actual_code;
       fprintf ppf "%a is no longer traced.@." Printtyp.path f.path)
     !traced_functions;
   traced_functions := []

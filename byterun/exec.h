@@ -11,12 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: exec.h,v 1.12 2001/12/07 13:39:26 xleroy Exp $ */
+/* $Id: exec.h,v 1.14 2004/06/01 12:36:34 xleroy Exp $ */
 
 /* exec.h : format of executable bytecode files */
 
-#ifndef _exec_
-#define _exec_
+#ifndef CAML_EXEC_H
+#define CAML_EXEC_H
 
 /* Executable bytecode files are composed of a number of sections,
    identified by 4-character names.  A table of contents at the
@@ -56,7 +56,7 @@ struct exec_trailer {
 
 /* Magic number for this release */
 
-#define EXEC_MAGIC "Caml1999X007"
+#define EXEC_MAGIC "Caml1999X008"
 
 
-#endif
+#endif /* CAML_EXEC_H */

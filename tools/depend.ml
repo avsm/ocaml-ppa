@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: depend.ml,v 1.6 2003/07/02 09:14:31 xleroy Exp $ *)
+(* $Id: depend.ml,v 1.7 2003/11/25 09:20:45 garrigue Exp $ *)
 
 open Format
 open Location
@@ -154,7 +154,8 @@ let rec add_expr bv exp =
   | Pexp_assertfalse -> ()
   | Pexp_lazy (e) -> add_expr bv e
   | Pexp_poly (e, t) -> add_expr bv e; add_opt add_type bv t
-
+  | Pexp_object (pat, fieldl) ->
+      add_pattern bv pat; List.iter (add_class_field bv) fieldl
 and add_pat_expr_list bv pel =
   List.iter (fun (p, e) -> add_pattern bv p; add_expr bv e) pel
 

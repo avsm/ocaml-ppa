@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: compilenv.mli,v 1.12 2002/02/08 16:55:30 xleroy Exp $ *)
+(* $Id: compilenv.mli,v 1.14 2004/05/26 11:10:28 garrigue Exp $ *)
 
 (* Compilation environments for compilation units *)
 
@@ -34,6 +34,7 @@ type unit_infos =
     mutable ui_approx: value_approximation;     (* Approx of the structure *)
     mutable ui_curry_fun: int list;             (* Currying functions needed *)
     mutable ui_apply_fun: int list;             (* Apply functions needed *)
+    mutable ui_send_fun: int list;              (* Send functions needed *)
     mutable ui_force_link: bool }               (* Always linked *)
 
 (* Each .a library has a matching .cmxa file that provides the following
@@ -51,6 +52,13 @@ val reset: string -> unit
 val current_unit_name: unit -> string
         (* Return the name of the unit being compiled *)
 
+val make_symbol: ?unitname:string -> string option -> string
+        (* [make_symbol ~unitname:u None] returns the asm symbol that
+           corresponds to the compilation unit [u] (default: the current unit).
+           [make_symbol ~unitname:u (Some id)] returns the asm symbol that
+           corresponds to symbol [id] in the compilation unit [u]
+           (or the current unit). *)
+
 val global_approx: Ident.t -> Clambda.value_approximation
         (* Return the approximation for the given global identifier *)
 val set_global_approx: Clambda.value_approximation -> unit
@@ -58,8 +66,9 @@ val set_global_approx: Clambda.value_approximation -> unit
 
 val need_curry_fun: int -> unit
 val need_apply_fun: int -> unit
-        (* Record the need of a currying (resp. application) function
-           with the given arity *)
+val need_send_fun: int -> unit
+        (* Record the need of a currying (resp. application,
+           message sending) function with the given arity *)
 
 val read_unit_info: string -> unit_infos * Digest.t
         (* Read infos and CRC from a [.cmx] file. *)

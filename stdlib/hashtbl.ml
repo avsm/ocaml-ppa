@@ -11,11 +11,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: hashtbl.ml,v 1.23 2002/01/23 17:52:46 doligez Exp $ *)
+(* $Id: hashtbl.ml,v 1.26 2004/03/23 12:37:19 starynke Exp $ *)
 
 (* Hash tables *)
 
-external hash_param : int -> int -> 'a -> int = "hash_univ_param" "noalloc"
+external hash_param : int -> int -> 'a -> int = "caml_hash_univ_param" "noalloc"
 
 let hash x = hash_param 10 100 x
 
@@ -43,6 +43,8 @@ let clear h =
 let copy h =
   { size = h.size;
     data = Array.copy h.data }
+
+let length h = h.size
 
 let resize hashfun tbl =
   let odata = tbl.data in
@@ -74,7 +76,7 @@ let remove h key =
       Empty ->
         Empty
     | Cons(k, i, next) ->
-        if k = key
+        if compare k key = 0
         then begin h.size <- pred h.size; next end
         else Cons(k, i, remove_bucket next) in
   let i = (hash key) mod (Array.length h.data) in
@@ -84,28 +86,30 @@ let rec find_rec key = function
     Empty ->
       raise Not_found
   | Cons(k, d, rest) ->
-      if key = k then d else find_rec key rest
+      if compare key k = 0 then d else find_rec key rest
 
 let find h key =
   match h.data.((hash key) mod (Array.length h.data)) with
     Empty -> raise Not_found
   | Cons(k1, d1, rest1) ->
-      if key = k1 then d1 else
+      if compare key k1 = 0 then d1 else
       match rest1 with
         Empty -> raise Not_found
       | Cons(k2, d2, rest2) ->
-          if key = k2 then d2 else
+          if compare key k2 = 0 then d2 else
           match rest2 with
             Empty -> raise Not_found
           | Cons(k3, d3, rest3) ->
-              if key = k3 then d3 else find_rec key rest3
+              if compare key k3 = 0 then d3 else find_rec key rest3
 
 let find_all h key =
   let rec find_in_bucket = function
     Empty ->
       []
   | Cons(k, d, rest) ->
-      if k = key then d :: find_in_bucket rest else find_in_bucket rest in
+      if compare k key = 0
+      then d :: find_in_bucket rest
+      else find_in_bucket rest in
   find_in_bucket h.data.((hash key) mod (Array.length h.data))
 
 let replace h key info =
@@ -113,7 +117,7 @@ let replace h key info =
       Empty ->
         raise Not_found
     | Cons(k, i, next) ->
-        if k = key
+        if compare k key = 0
         then Cons(k, info, next)
         else Cons(k, i, replace_bucket next) in
   let i = (hash key) mod (Array.length h.data) in
@@ -130,7 +134,7 @@ let mem h key =
   | Empty ->
       false
   | Cons(k, d, rest) ->
-      k = key || mem_in_bucket rest in
+      compare k key = 0 || mem_in_bucket rest in
   mem_in_bucket h.data.((hash key) mod (Array.length h.data))
 
 let iter f h =
@@ -182,6 +186,7 @@ module type S =
     val mem : 'a t -> key -> bool
     val iter: (key -> 'a -> unit) -> 'a t -> unit
     val fold: (key -> 'a -> 'b -> 'b) -> 'a t -> 'b -> 'b
+    val length: 'a t -> int
   end
 
 module Make(H: HashedType): (S with type key = H.t) =
@@ -270,4 +275,7 @@ module Make(H: HashedType): (S with type key = H.t) =
 
     let iter = iter
     let fold = fold
+    let length = length
   end
+
+(* eof $Id: hashtbl.ml,v 1.26 2004/03/23 12:37:19 starynke Exp $ *)

@@ -9,6 +9,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_scan.ml,v 1.3 2003/11/24 10:43:11 starynke Exp $ *)
+
 (** Scanning of modules and elements.
 
    The class scanner defined in this module can be used to

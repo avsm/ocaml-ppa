@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_search.ml,v 1.6 2004/05/23 10:41:50 guesdon Exp $ *)
 
 (** Research of elements through modules. *)
 
@@ -78,7 +79,9 @@ module Search =
       | T.Link (_, t) -> search_text root t v
       | T.List l 
       | T.Enum l -> List.flatten (List.map (fun t -> search_text root t v) l)
-      | T.Newline -> []
+      | T.Newline 
+      |	T.Module_list _
+      |	T.Index_list -> []
       | T.Title (n, l_opt, t) -> 
           (match l_opt with
             None -> []
@@ -627,3 +630,5 @@ let find_section mods regexp =
   with
     Res_section (_,t) -> t
   | _ -> assert false
+
+(* eof $Id: odoc_search.ml,v 1.6 2004/05/23 10:41:50 guesdon Exp $ *)

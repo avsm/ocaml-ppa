@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: list.mli,v 1.43 2003/07/25 21:40:06 doligez Exp $ *)
+(* $Id: list.mli,v 1.44 2003/11/21 16:06:08 xleroy Exp $ *)
 
 (** List operations.
 
@@ -242,8 +242,7 @@ val sort : ('a -> 'a -> int) -> 'a list -> 'a list
    compare as equal, a positive integer if the first is greater,
    and a negative integer if the first is smaller (see Array.sort for
    a complete specification).  For example,
-   {!Pervasives.compare} is a suitable comparison function, provided
-   there are no floating-point NaN values in the data.
+   {!Pervasives.compare} is a suitable comparison function.
    The resulting list is sorted in increasing order.
    [List.sort] is guaranteed to run in constant heap space
    (in addition to the size of the result list) and logarithmic

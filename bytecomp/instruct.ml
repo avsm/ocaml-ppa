@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: instruct.ml,v 1.20 2002/11/02 22:36:41 doligez Exp $ *)
+(* $Id: instruct.ml,v 1.21 2004/05/26 11:10:50 garrigue Exp $ *)
 
 open Lambda
 
@@ -97,6 +97,8 @@ type instruction =
   | Kisint
   | Kisout
   | Kgetmethod
+  | Kgetpubmet of int
+  | Kgetdynmet
   | Kevent of debug_event
   | Kstop
 

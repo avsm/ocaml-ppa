@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-
+(* $Id: odoc_misc.ml,v 1.17 2004/05/23 10:41:50 guesdon Exp $ *)
 
 let input_file_as_string nom =
   let chanin = open_in_bin nom in
@@ -33,62 +33,34 @@ let input_file_as_string nom =
   close_in chanin;
   Buffer.contents buf
 
+let split_string s chars =
+  let len = String.length s in
+  let rec iter acc pos =
+    if pos >= len then
+      match acc with
+	"" -> []
+      |	_ -> [acc]
+    else
+      if List.mem s.[pos] chars then
+	match acc with
+	  "" -> iter "" (pos + 1)
+	| _ -> acc :: (iter "" (pos + 1))
+      else
+	iter (Printf.sprintf "%s%c" acc s.[pos]) (pos + 1)
+  in
+  iter "" 0
+
+let split_with_blanks s = split_string s [' ' ; '\n' ; '\r' ; '\t' ]
+
+let list_concat sep =
+  let rec iter = function
+      [] -> []
+    | [h] -> [h]
+    | h :: q -> h :: sep :: q
+  in
+  iter
+
 let string_of_longident li = String.concat "." (Longident.flatten li)
-
-let string_of_type_expr t =
-  let b = Buffer.create 256 in
-  let fmt = Format.formatter_of_buffer b in
-  Printtyp.mark_loops t;
-  Printtyp.type_scheme_max ~b_reset_names: false fmt t;
-  Format.pp_print_flush fmt () ;
-  Buffer.contents b
-
-(** Return the given module type where methods and vals have been removed
-   from the signatures. Used when we don't want to print a too long module type.*)
-let simpl_module_type t =
-  let rec iter t =
-    match t with
-      Types.Tmty_ident p -> t
-    | Types.Tmty_signature _ -> Types.Tmty_signature []
-    | Types.Tmty_functor (id, mt1, mt2) ->
-        Types.Tmty_functor (id, iter mt1, iter mt2)
-  in
-  iter t
-
-let string_of_module_type ?(complete=false) t =
-  let t2 = if complete then t else simpl_module_type t in
-  Printtyp.modtype Format.str_formatter t2;
-  let s = Format.flush_str_formatter () in
-  s
-
-
-(** Return the given class type where methods and vals have been removed
-   from the signatures. Used when we don't want to print a too long class type.*)
-let simpl_class_type t =
-  let rec iter t =
-    match t with
-      Types.Tcty_constr (p,texp_list,ct) -> t
-    | Types.Tcty_signature cs ->
-        (* on vire les vals et methods pour ne pas qu'elles soient imprimées
-           quand on affichera le type *)
-        let tnil = { Types.desc = Types.Tnil ; Types.level = 0; Types.id = 0 } in
-        Types.Tcty_signature { Types.cty_self = { cs.Types.cty_self with 
-                                                  Types.desc = Types.Tobject (tnil, ref None) };
-                               Types.cty_vars = Types.Vars.empty ;
-                               Types.cty_concr = Types.Concr.empty ;
-                             }
-    | Types.Tcty_fun (l, texp, ct) ->
-        let new_ct = iter ct in
-        Types.Tcty_fun (l, texp, new_ct)
-  in
-  iter t
-
-let string_of_class_type ?(complete=false) t = 
-  let t2 = if complete then t else simpl_class_type t in
-  (* A VOIR : ma propre version de Printtyp.class_type pour ne pas faire reset_names *)
-  Printtyp.class_type Format.str_formatter t2;
-  let s = Format.flush_str_formatter () in
-  s
 
 let get_fields type_expr =
   let (fields, _) = Ctype.flatten_fields (Ctype.object_fields type_expr) in
@@ -143,6 +115,13 @@ let rec string_of_text t =
           "^{"^(string_of_text t)^"}"
       | Odoc_types.Subscript t ->
           "^{"^(string_of_text t)^"}"
+      |	Odoc_types.Module_list l ->
+	  string_of_text
+	    (list_concat (Odoc_types.Raw ", ")
+	       (List.map (fun s -> Odoc_types.Code s) l)
+	    )
+      |	Odoc_types.Index_list ->
+	  "" 
   in
   String.concat "" (List.map iter t)
 
@@ -276,6 +255,13 @@ let rec text_no_title_no_list t =
     | Odoc_types.Link (s, t) -> [Odoc_types.Link (s, (text_no_title_no_list t))]
     | Odoc_types.Superscript t -> [Odoc_types.Superscript (text_no_title_no_list t)]
     | Odoc_types.Subscript t -> [Odoc_types.Subscript (text_no_title_no_list t)]
+    | Odoc_types.Module_list l ->
+	list_concat (Odoc_types.Raw ", ") 
+	  (List.map
+	     (fun s -> Odoc_types.Ref (s, Some Odoc_types.RK_module))
+	     l
+	  )
+    | Odoc_types.Index_list -> []
   in
   List.flatten (List.map iter t)
 
@@ -303,6 +289,8 @@ let get_titles_in_text t =
     | Odoc_types.Link (_, t)
     | Odoc_types.Superscript t 
     | Odoc_types.Subscript t  -> iter_text t
+    | Odoc_types.Module_list _ -> ()
+    | Odoc_types.Index_list -> ()
   and iter_text te = 
     List.iter iter_ele te
   in
@@ -384,8 +372,9 @@ and first_sentence_text_ele text_ele =
   | Odoc_types.Link _ 
   | Odoc_types.Ref _ 
   | Odoc_types.Superscript _ 
-  | Odoc_types.Subscript _ -> (false, text_ele, None)
-
+  | Odoc_types.Subscript _ 
+  | Odoc_types.Module_list _ 
+  | Odoc_types.Index_list -> (false, text_ele, None)
 
 let first_sentence_of_text t = 
   let (_,t2,_) = first_sentence_text t in 
@@ -450,3 +439,5 @@ let remove_option typ =
     | Types.Tsubst t2 -> iter t2.Types.desc
   in
   { typ with Types.desc = iter typ.Types.desc }
+
+(* eof $Id: odoc_misc.ml,v 1.17 2004/05/23 10:41:50 guesdon Exp $ *)

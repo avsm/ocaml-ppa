@@ -10,14 +10,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: compile.mli,v 1.7 2000/03/06 22:11:30 weis Exp $ *)
+(* $Id: compile.mli,v 1.8 2004/06/13 12:46:41 xleroy Exp $ *)
 
 (* Compile a .ml or .mli file *)
 
 open Format
 
-val interface: formatter -> string -> unit
-val implementation: formatter -> string -> unit
+val interface: formatter -> string -> string -> unit
+val implementation: formatter -> string -> string -> unit
 val c_file: string -> unit
 
 val initial_env: unit -> Env.t

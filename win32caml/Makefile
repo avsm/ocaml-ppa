@@ -11,14 +11,15 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.8 2003/08/29 14:30:15 xleroy Exp $
+# $Id: Makefile,v 1.9 2004/06/17 07:33:44 xleroy Exp $
 
 include ../config/Makefile
 
 CC=$(BYTECC)
 CFLAGS=$(BYTECCCOMPOPTS)
 
-OBJS=startocaml.$(O) ocamlres.$(O) ocaml.$(O) menu.$(O)
+OBJS=startocaml.$(O) ocamlres.$(O) ocaml.$(O) menu.$(O) \
+  history.$(O) editbuffer.$(O)
 
 LIBS=$(call SYSLIB,kernel32) $(call SYSLIB,advapi32) $(call SYSLIB,gdi32) \
      $(call SYSLIB,user32) $(call SYSLIB,comdlg32) $(call SYSLIB,comctl32)
@@ -38,7 +39,7 @@ ifeq ($(TOOLCHAIN),mingw)
 	windres -i ocaml.rc -o $@
 endif
 
-$(OBJS): inria.h inriares.h
+$(OBJS): inria.h inriares.h history.h editbuffer.h
 
 clean:
 	rm -f ocamlwin.exe *.$(O) *.pdb ocamlwin.ilk

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arg.ml,v 1.30 2003/07/24 18:23:54 doligez Exp $ *)
+(* $Id: arg.ml,v 1.33.2.1 2004/07/02 09:01:16 doligez Exp $ *)
 
 type key = string
 type doc = string
@@ -46,6 +46,8 @@ type error =
   | Missing of string
   | Message of string
 
+exception Stop of error;; (* used internally *)
+
 open Printf
 
 let rec assoc3 x l =
@@ -68,13 +70,24 @@ let print_spec buf (key, spec, doc) =
   | _ -> bprintf buf "  %s %s\n" key doc
 ;;
 
+let help_action () = raise (Stop (Unknown "-help"));;
+
+let add_help speclist =
+  let add1 =
+    try ignore (assoc3 "-help" speclist); []
+    with Not_found ->
+            ["-help", Unit help_action, " Display this list of options"]
+  and add2 =
+    try ignore (assoc3 "--help" speclist); []
+    with Not_found ->
+            ["--help", Unit help_action, " Display this list of options"]
+  in
+  speclist @ (add1 @ add2)
+;;
+
 let usage_b buf speclist errmsg =
   bprintf buf "%s\n" errmsg;
-  List.iter (print_spec buf) speclist;
-  try ignore (assoc3 "-help" speclist)
-  with Not_found -> bprintf buf "  -help   Display this list of options\n";
-  try ignore (assoc3 "--help" speclist)
-  with Not_found -> bprintf buf "  --help  Display this list of options\n";
+  List.iter (print_spec buf) (add_help speclist);
 ;;
 
 let usage speclist errmsg =
@@ -120,11 +133,11 @@ let parse_argv ?(current=current) argv speclist anonfun errmsg =
       begin try
         let rec treat_action = function
         | Unit f -> f ();
-        | Bool f ->
+        | Bool f when !current + 1 < l ->
             let arg = argv.(!current + 1) in
             begin try f (bool_of_string arg)
             with Invalid_argument "bool_of_string" ->
-                   stop (Wrong (s, arg, "a boolean"))
+                   raise (Stop (Wrong (s, arg, "a boolean")))
             end;
             incr current;
         | Set r -> r := true;
@@ -138,7 +151,8 @@ let parse_argv ?(current=current) argv speclist anonfun errmsg =
               f argv.(!current + 1);
               incr current;
             end else begin
-              stop (Wrong (s, arg, "one of: " ^ (make_symlist "" " " "" symb)))
+              raise (Stop (Wrong (s, arg, "one of: "
+                                          ^ (make_symlist "" " " "" symb))))
             end
         | Set_string r when !current + 1 < l ->
             r := argv.(!current + 1);
@@ -146,25 +160,29 @@ let parse_argv ?(current=current) argv speclist anonfun errmsg =
         | Int f when !current + 1 < l ->
             let arg = argv.(!current + 1) in
             begin try f (int_of_string arg)
-            with Failure "int_of_string" -> stop (Wrong (s, arg, "an integer"))
+            with Failure "int_of_string" ->
+                   raise (Stop (Wrong (s, arg, "an integer")))
             end;
             incr current;
         | Set_int r when !current + 1 < l ->
             let arg = argv.(!current + 1) in
             begin try r := (int_of_string arg)
-            with Failure "int_of_string" -> stop (Wrong (s, arg, "an integer"))
+            with Failure "int_of_string" ->
+                   raise (Stop (Wrong (s, arg, "an integer")))
             end;
             incr current;
         | Float f when !current + 1 < l ->
             let arg = argv.(!current + 1) in
             begin try f (float_of_string arg);
-            with Failure "float_of_string" -> stop (Wrong (s, arg, "a float"))
+            with Failure "float_of_string" ->
+                   raise (Stop (Wrong (s, arg, "a float")))
             end;
             incr current;
         | Set_float r when !current + 1 < l ->
             let arg = argv.(!current + 1) in
             begin try r := (float_of_string arg);
-            with Failure "float_of_string" -> stop (Wrong (s, arg, "a float"))
+            with Failure "float_of_string" ->
+                   raise (Stop (Wrong (s, arg, "a float")))
             end;
             incr current;
         | Tuple specs ->
@@ -174,9 +192,11 @@ let parse_argv ?(current=current) argv speclist anonfun errmsg =
               f argv.(!current + 1);
               incr current;
             done;
-        | _ -> stop (Missing s) in
+        | _ -> raise (Stop (Missing s))
+        in
         treat_action action
       with Bad m -> stop (Message m);
+         | Stop e -> stop e;
       end;
       incr current;
     end else begin
@@ -190,6 +210,38 @@ let parse l f msg =
   try
     parse_argv Sys.argv l f msg;
   with
-  | Bad msg -> eprintf "%s" msg; exit 0;
-  | Help msg -> eprintf "%s" msg; exit 2;
+  | Bad msg -> eprintf "%s" msg; exit 2;
+  | Help msg -> printf "%s" msg; exit 0;
+;;
+
+let rec second_word s =
+  let len = String.length s in
+  let rec loop n =
+    if n >= len then len
+    else if s.[n] = ' ' then loop (n+1)
+    else n
+  in
+  try loop (String.index s ' ')
+  with Not_found -> len
+;;
+
+let max_arg_len cur (kwd, _, doc) =
+  max cur (String.length kwd + second_word doc)
+;;
+
+let add_padding len ksd =
+  match ksd with
+  | (_, Symbol _, _) -> ksd
+  | (kwd, spec, msg) ->
+      let cutcol = second_word msg in
+      let spaces = String.make (len - String.length kwd - cutcol) ' ' in
+      let prefix = String.sub msg 0 cutcol in
+      let suffix = String.sub msg cutcol (String.length msg - cutcol) in
+      (kwd, spec, prefix ^ spaces ^ suffix)
+;;
+
+let align speclist =
+  let completed = add_help speclist in
+  let len = List.fold_left max_arg_len 0 completed in
+  List.map (add_padding len) completed
 ;;

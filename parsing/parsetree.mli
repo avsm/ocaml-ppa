@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parsetree.mli,v 1.39 2003/07/02 09:14:31 xleroy Exp $ *)
+(* $Id: parsetree.mli,v 1.40 2003/11/25 08:46:45 garrigue Exp $ *)
 
 (* Abstract syntax tree produced by parsing *)
 
@@ -110,6 +110,7 @@ and expression_desc =
   | Pexp_assertfalse
   | Pexp_lazy of expression
   | Pexp_poly of expression * core_type option
+  | Pexp_object of class_structure
 
 (* Value descriptions *)
 

@@ -11,21 +11,21 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: marshal.ml,v 1.7 2002/10/26 13:33:43 xleroy Exp $ *)
+(* $Id: marshal.ml,v 1.9 2004/05/27 15:28:05 doligez Exp $ *)
 
 type extern_flags =
     No_sharing
   | Closures
 
 external to_string: 'a -> extern_flags list -> string
-    = "output_value_to_string"
+    = "caml_output_value_to_string"
 
 let to_channel chan v flags =
   output_string chan (to_string v flags)
 
 external to_buffer_unsafe:
       string -> int -> int -> 'a -> extern_flags list -> int
-    = "output_value_to_buffer"
+    = "caml_output_value_to_buffer"
 
 let to_buffer buff ofs len v flags =
   if ofs < 0 || len < 0 || ofs + len > String.length buff
@@ -34,8 +34,9 @@ let to_buffer buff ofs len v flags =
 
 let to_buffer' ~buf ~pos ~len v ~mode = to_buffer buf pos len v mode
 
-external from_string_unsafe: string -> int -> 'a = "input_value_from_string"
-external data_size_unsafe: string -> int -> int = "marshal_data_size"
+external from_string_unsafe: string -> int -> 'a
+         = "caml_input_value_from_string"
+external data_size_unsafe: string -> int -> int = "caml_marshal_data_size"
 
 let header_size = 20
 let data_size buff ofs =

@@ -17,9 +17,22 @@ type pattern = string * string;;
 
 exception Error of string;;
 
-type location = int * int;;
-type location_function = int -> int * int;;
-type 'te lexer_func = char Stream.t -> 'te Stream.t * location_function;;
+let make_loc (bp, ep) =
+  {(Lexing.dummy_pos) with Lexing.pos_cnum = bp; Lexing.pos_lnum = 1},
+  {(Lexing.dummy_pos) with Lexing.pos_cnum = ep; Lexing.pos_lnum = 1}
+;;
+
+let nowhere = {(Lexing.dummy_pos) with Lexing.pos_cnum = 0};;
+
+let dummy_loc = Lexing.dummy_pos, Lexing.dummy_pos;;
+
+let succ_pos p = {p with Lexing.pos_cnum = p.Lexing.pos_cnum + 1};;
+let lt_pos p1 p2 = p1.Lexing.pos_cnum < p2.Lexing.pos_cnum;;
+
+type flocation = Lexing.position * Lexing.position;;
+
+type flocation_function = int -> flocation;;
+type 'te lexer_func = char Stream.t -> 'te Stream.t * flocation_function;;
 
 type 'te glexer =
   { tok_func : 'te lexer_func;
@@ -27,7 +40,7 @@ type 'te glexer =
     tok_removing : pattern -> unit;
     tok_match : pattern -> 'te -> string;
     tok_text : pattern -> string;
-    mutable tok_comm : location list option }
+    mutable tok_comm : flocation list option }
 ;;
 type lexer =
   { func : t lexer_func;
@@ -43,29 +56,39 @@ let lexer_text (con, prm) =
   else con ^ " '" ^ prm ^ "'"
 ;;
 
-let locerr () = invalid_arg "Lexer: location function";;
-let loct_create () = ref (Array.create 1024 None), ref false;;
+let locerr () = invalid_arg "Lexer: flocation function";;
+
+let tsz = 256;; (* up to 2^29 entries on a 32-bit machine, 2^61 on 64-bit *)
+
+let loct_create () = ref [| |], ref false;;
+
 let loct_func (loct, ov) i =
   match
-    if i < 0 || i >= Array.length !loct then if !ov then Some (0, 0) else None
-    else Array.unsafe_get !loct i
+    if i < 0 || i / tsz >= Array.length !loct then None
+    else if !loct.(i / tsz) = [| |] then
+      if !ov then Some (nowhere, nowhere) else None
+    else Array.unsafe_get (Array.unsafe_get !loct (i / tsz)) (i mod tsz)
   with
     Some loc -> loc
   | _ -> locerr ()
 ;;
+
 let loct_add (loct, ov) i loc =
-  if i >= Array.length !loct then
-    let new_tmax = Array.length !loct * 2 in
+  while i / tsz >= Array.length !loct && not !ov do
+    let new_tmax = Array.length !loct * 2 + 1 in
     if new_tmax < Sys.max_array_length then
-      let new_loct = Array.create new_tmax None in
-      Array.blit !loct 0 new_loct 0 (Array.length !loct);
-      loct := new_loct;
-      !loct.(i) <- Some loc
+      let new_loct = Array.make new_tmax [| |] in
+      Array.blit !loct 0 new_loct 0 (Array.length !loct); loct := new_loct
     else ov := true
-  else !loct.(i) <- Some loc
+  done;
+  if not !ov then
+    begin
+      if !loct.(i / tsz) = [| |] then !loct.(i / tsz) <- Array.make tsz None;
+      !loct.(i / tsz).(i mod tsz) <- Some loc
+    end
 ;;
 
-let make_stream_and_location next_token_loc =
+let make_stream_and_flocation next_token_loc =
   let loct = loct_create () in
   let ts =
     Stream.from
@@ -76,7 +99,7 @@ let make_stream_and_location next_token_loc =
 ;;
 
 let lexer_func_of_parser next_token_loc cs =
-  make_stream_and_location (fun () -> next_token_loc cs)
+  make_stream_and_flocation (fun () -> next_token_loc cs)
 ;;
 
 let lexer_func_of_ocamllex lexfun cs =
@@ -88,9 +111,9 @@ let lexer_func_of_ocamllex lexfun cs =
   in
   let next_token_loc _ =
     let tok = lexfun lb in
-    let loc = Lexing.lexeme_start lb, Lexing.lexeme_end lb in tok, loc
+    let loc = Lexing.lexeme_start_p lb, Lexing.lexeme_end_p lb in tok, loc
   in
-  make_stream_and_location next_token_loc
+  make_stream_and_flocation next_token_loc
 ;;
 
 (* Char and string tokens to real chars and string *)
@@ -129,25 +152,25 @@ let rec backslash s i =
     | 'x' -> backslash1h s (i + 1)
     | _ -> raise Not_found
 and backslash1 cod s i =
-  if i = String.length s then '\\', i - 1
+  if i = String.length s then raise Not_found
   else
     match s.[i] with
       '0'..'9' as c -> backslash2 (10 * cod + valch c) s (i + 1)
-    | _ -> '\\', i - 1
+    | _ -> raise Not_found
 and backslash2 cod s i =
-  if i = String.length s then '\\', i - 2
+  if i = String.length s then raise Not_found
   else
     match s.[i] with
       '0'..'9' as c -> Char.chr (10 * cod + valch c), i + 1
-    | _ -> '\\', i - 2
+    | _ -> raise Not_found
 and backslash1h s i =
-  if i = String.length s then '\\', i - 1
+  if i = String.length s then raise Not_found
   else
     match s.[i] with
       '0'..'9' as c -> backslash2h (valch c) s (i + 1)
     | 'a'..'f' as c -> backslash2h (valch_a c) s (i + 1)
     | 'A'..'F' as c -> backslash2h (valch_A c) s (i + 1)
-    | _ -> '\\', i - 1
+    | _ -> raise Not_found
 and backslash2h cod s i =
   if i = String.length s then '\\', i - 2
   else
@@ -155,7 +178,7 @@ and backslash2h cod s i =
       '0'..'9' as c -> Char.chr (16 * cod + valch c), i + 1
     | 'a'..'f' as c -> Char.chr (16 * cod + valch_a c), i + 1
     | 'A'..'F' as c -> Char.chr (16 * cod + valch_A c), i + 1
-    | _ -> '\\', i - 2
+    | _ -> raise Not_found
 ;;
 
 let rec skip_indent s i =
@@ -184,7 +207,7 @@ let eval_char s =
   else failwith "invalid char token"
 ;;
 
-let eval_string s =
+let eval_string (bp, ep) s =
   let rec loop len i =
     if i = String.length s then get_buff len
     else
@@ -199,7 +222,18 @@ let eval_string s =
             | '\013' -> len, skip_indent s (skip_opt_linefeed s (i + 1))
             | c ->
                 try let (c, i) = backslash s i in store len c, i with
-                  Not_found -> store (store len '\\') c, i + 1
+                  Not_found ->
+                    let txt = "Invalid backslash escape in string" in
+                    let pos = bp.Lexing.pos_cnum - bp.Lexing.pos_bol + i in
+                    if bp.Lexing.pos_fname = "" then
+                      Printf.eprintf "Warning: line %d, chars %d-%d: %s\n"
+                        bp.Lexing.pos_lnum pos (pos + 1) txt
+                    else
+                      Printf.eprintf
+                        "Warning: File \"%s\", line %d, chars %d-%d: %s\n"
+                        bp.Lexing.pos_fname bp.Lexing.pos_lnum pos (pos + 1)
+                        txt;
+                    store (store len '\\') c, i + 1
         else store len s.[i], i + 1
       in
       loop len i

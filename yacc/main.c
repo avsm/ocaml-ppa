@@ -12,7 +12,7 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: main.c,v 1.17 2003/09/03 13:26:10 doligez Exp $ */
+/* $Id: main.c,v 1.18 2004/04/21 23:26:05 doligez Exp $ */
 
 #include <signal.h>
 #include <string.h>
@@ -39,6 +39,7 @@ char temp_form[] = "yacc.XXXXXXX";
 #endif
 
 int lineno;
+char *virtual_input_file_name = NULL;
 int outline;
 
 char *action_file_name;

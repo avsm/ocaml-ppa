@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odyl_main.ml,v 1.4 2003/07/10 12:28:34 michel Exp $ *)
+(* $Id: odyl_main.ml,v 1.4.4.1 2004/06/23 14:43:58 mauny Exp $ *)
 
 value go = ref (fun () -> ());
 value name = ref "odyl";
@@ -20,12 +20,12 @@ value first_arg_no_load () =
     if i < Array.length Sys.argv then
       match Sys.argv.(i) with
       [ "-I" -> loop (i + 2)
-      | "-nolib" -> loop (i + 1)
-      | "-where" -> loop (i + 1)
+      | ("-nolib" | "-where" | "-version") -> loop (i + 1)
       | "--" -> i + 1
       | s ->
           if Filename.check_suffix s ".cmo"
-          || Filename.check_suffix s ".cma" then loop (i + 1)
+          || Filename.check_suffix s ".cma"
+          then loop (i + 1)
           else i ]
     else i
 ;

@@ -1,3 +1,105 @@
+Objective Caml 3.08:
+--------------------
+
+(Changes that can break existing programs are marked with a "*"  )
+
+Language features:
+- Support for immediate objects, i.e. objects defined without going
+  through a class.  (Syntax is "object <fields and methods> end".)
+
+Type-checking:
+- When typing record construction and record patterns, can omit
+  the module qualification on all labels except one.  I.e.
+  { M.l1 = ...; l2 = ... } is interpreted as { M.l1 = ...; M.l2 = ... }
+
+Both compilers:
+- More compact compilation of classes.
+- Much more efficient handling of class definitions inside functors
+  or local modules.
+- Simpler representation for method tables. Objects can now be marshaled
+  between identical programs with the flag Marshal.Closures.
+- Improved error messages for objects and variants.
+- Improved printing of inferred module signatures (toplevel and ocamlc -i).
+  Recursion between type, class, class type and module definitions is now
+  correctly printed.
+- The -pack option now accepts compiled interfaces (.cmi files) in addition
+  to compiled implementations (.cmo or .cmx).
+* A compile-time error is signaled if an integer literal exceeds the
+  range of representable integers.
+- Fixed code generation error for "module rec" definitions.
+- The combination of options -c -o sets the name of the generated
+  .cmi / .cmo / .cmx files.
+
+Bytecode compiler:
+- Option -output-obj is now compatible with Dynlink and 
+  with embedded toplevels.
+
+Native-code compiler:
+- Division and modulus by zero correctly raise exception Division_by_zero
+  (instead of causing a hardware trap).
+- Improved compilation time for the register allocation phase.
+- The float constant -0.0 was incorrectly treated as +0.0 on some processors.
+- AMD64: fixed bugs in asm glue code for GC invocation and exception raising
+  from C.
+- IA64: fixed incorrect code generated for "expr mod 1".
+- PowerPC: minor performance tweaks for the G4 and G5 processors.
+
+Standard library:
+* Revised handling of NaN floats in polymorphic comparisons.
+  The polymorphic boolean-valued comparisons (=, <, >, etc) now treat
+  NaN as uncomparable, as specified by the IEEE standard.
+  The 3-valued comparison (compare) treats NaN as equal to itself
+  and smaller than all other floats.  As a consequence, x == y
+  no longer implies x = y but still implies compare x y = 0.
+* String-to-integer conversions now fail if the result overflows
+  the range of integers representable in the result type.
+* All array and string access functions now raise
+  Invalid_argument("index out of bounds") when a bounds check fails.
+  In earlier releases, different exceptions were raised
+  in bytecode and native-code.
+- Module Buffer: new functions Buffer.sub, Buffer.nth
+- Module Int32: new functions Int32.bits_of_float, Int32.float_of_bits.
+- Module Map: new functions is_empty, compare, equal.
+- Module Set: new function split.
+* Module Gc: in-order finalisation, new function finalise_release.
+
+Other libraries:
+- The Num library: complete reimplementation of the C/asm lowest
+  layer to work around potential licensing problems.
+  Improved speed on the PowerPC and AMD64 architectures.
+- The Graphics library: improved event handling under MS Windows.
+- The Str library: fixed bug in "split" functions with nullable regexps.
+- The Unix library:
+   . Added Unix.single_write.
+   . Added support for IPv6.
+   . Bug fixes in Unix.closedir.
+   . Allow thread switching on Unix.lockf.
+
+Runtime System:
+* Name space depollution: all global C identifiers are now prefixed
+  with "caml" to avoid name clashes with other libraries.  This
+  includes the "external" primitives of the standard runtime.
+
+Ports:
+- Windows ports: many improvements in the OCamlWin toplevel application
+  (history, save inputs to file, etc).  Contributed by Christopher A. Watford.
+- Native-code compilation supported for HPPA/Linux. Contributed by Guy Martin.
+- Removed support for MacOS9.  Mac OS 9 is obsolete and the port was not
+  updated since 3.05.
+- Removed ocamlopt support for HPPA/Nextstep and Power/AIX.
+
+Ocamllex:
+- #line directives in the input file are now accepted.
+- Added character set concatenation operator "cset1 # cset2".
+
+Ocamlyacc:
+- #line directives in the input file are now accepted.
+
+Camlp4:
+* Support for new-style locations (line numbers, not just character numbers).
+- See camlp4/CHANGES and camlp4/ICHANGES for more info.
+
+
 Objective Caml 3.07:
 --------------------
 
@@ -30,7 +132,7 @@ Type-checking:
   type of any subexpression in the source file.  Works even in the case
   of a type error (all the types computed up to the error are available).
   This new feature is also supported by ocamlbrowser.
-- Disable "method is overriden" warning when the method was explicitely
+- Disable "method is overriden" warning when the method was explicitly
   redefined as virtual beforehand (i.e. not through inheritance). Typing
   and semantics are unchanged.
 
@@ -1655,3 +1757,5 @@ Caml Special Light 1.06:
 ------------------------
 
 * First public release.
+
+$Id: Changes,v 1.140.2.3 2004/07/05 07:24:00 xleroy Exp $

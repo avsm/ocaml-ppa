@@ -11,17 +11,17 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: printexc.h,v 1.3 2001/12/07 13:39:34 xleroy Exp $ */
+/* $Id: printexc.h,v 1.5 2004/01/01 16:42:37 doligez Exp $ */
 
-#ifndef _printexc_
-#define _printexc_
+#ifndef CAML_PRINTEXC_H
+#define CAML_PRINTEXC_H
 
 
 #include "misc.h"
 #include "mlvalues.h"
 
-CAMLextern char * format_caml_exception (value);
-void fatal_uncaught_exception (value) Noreturn;
+CAMLextern char * caml_format_exception (value);
+void caml_fatal_uncaught_exception (value) Noreturn;
 
 
-#endif /* _printexc_ */
+#endif /* CAML_PRINTEXC_H */

@@ -10,6 +10,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_lexer.mll,v 1.4 2003/11/24 10:41:04 starynke Exp $ *)
+
 (** The lexer for special comments. *)
 
 open Lexing

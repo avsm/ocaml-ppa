@@ -103,8 +103,7 @@ You will need the following software components to perform the recompilation:
 - Windows NT, 2000, or XP (we advise against compiling under Windows 95/98/ME)
 - Visual C++ version 6 or 7
 - MASM version 6.11 (see above)
-- The CygWin port of GNU tools, available from
-      http://sourceware.cygnus.com/cygwin/
+- The Cygwin port of GNU tools, available from http://cygwin.com/
 - TCL/TK version 8.3 (for the LablTK GUI) (see above).
 
 Remember to add the directory where the libraries tk83.lib and
@@ -149,7 +148,8 @@ The initial port of Caml Special Light (the ancestor of Objective Caml)
 to Windows NT was done by Kevin Gallo at Microsoft Research, who
 kindly contributed his changes to the Caml project.
 
-The graphical user interface for the toplevel is due to Jacob Navia.
+The graphical user interface for the toplevel was initially developed
+by Jacob Navia, then significantly improved by Christopher A. Watford.
 
 ------------------------------------------------------------------------------
 
@@ -185,6 +185,10 @@ You will need the following software components to perform the recompilation:
 - Windows NT, 2000, or XP (we advise against compiling under Windows 95/98/ME)
 - Cygwin: http://sourceware.cygnus.com/cygwin/
 - TCL/TK version 8.3 (see above).
+
+Do *not* install the standalone distribution of MinGW, nor the
+companion MSYS tools: these have problems with long command lines.
+Instead, use the version of MinGW that is installed along with Cygwin.
 
 Start a Cygwin shell and unpack the source distribution
 (ocaml-X.YZ.tar.gz) with "tar xzf".  Change to the top-level

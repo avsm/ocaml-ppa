@@ -11,20 +11,20 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: string.ml,v 1.24 2002/07/12 09:47:54 xleroy Exp $ *)
+(* $Id: string.ml,v 1.25 2003/12/16 18:09:43 doligez Exp $ *)
 
 (* String operations *)
 
 external length : string -> int = "%string_length"
 external get : string -> int -> char = "%string_safe_get"
 external set : string -> int -> char -> unit = "%string_safe_set"
-external create : int -> string = "create_string"
+external create : int -> string = "caml_create_string"
 external unsafe_get : string -> int -> char = "%string_unsafe_get"
 external unsafe_set : string -> int -> char -> unit = "%string_unsafe_set"
 external unsafe_blit : string -> int -> string -> int -> int -> unit
-                     = "blit_string" "noalloc"
+                     = "caml_blit_string" "noalloc"
 external unsafe_fill : string -> int -> int -> char -> unit
-                     = "fill_string" "noalloc"
+                     = "caml_fill_string" "noalloc"
 
 let make n c =
   let s = create n in
@@ -78,7 +78,7 @@ let concat sep l =
         tl;
       r
 
-external is_printable: char -> bool = "is_printable"
+external is_printable: char -> bool = "caml_is_printable"
 external char_code: char -> int = "%identity"
 external char_chr: int -> char = "%identity"
 

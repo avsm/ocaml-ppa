@@ -11,14 +11,16 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: misc.h,v 1.24 2003/05/12 14:21:52 xleroy Exp $ */
+/* $Id: misc.h,v 1.30 2004/05/17 17:09:59 doligez Exp $ */
 
 /* Miscellaneous macros and variables. */
 
-#ifndef _misc_
-#define _misc_
+#ifndef CAML_MISC_H
+#define CAML_MISC_H
 
-
+#ifndef CAML_NAME_SPACE
+#include "compatibility.h"
+#endif
 #include "config.h"
 
 /* Standard definitions */
@@ -39,10 +41,10 @@ typedef char * addr;
 /* </private> */
 
 #ifdef __GNUC__
-/* Works only in GCC 2.5 and later */
-#define Noreturn __attribute ((noreturn))
+  /* Works only in GCC 2.5 and later */
+  #define Noreturn __attribute__ ((noreturn))
 #else
-#define Noreturn
+  #define Noreturn
 #endif
 
 /* Export control (to mark primitives and to handle Windows DLL) */
@@ -67,15 +69,15 @@ typedef char * addr;
 
 #ifdef DEBUG
 #define CAMLassert(x) ((x) ? 0 : caml_failed_assert ( #x , __FILE__, __LINE__))
-int caml_failed_assert (char *, char *, int);
+CAMLextern int caml_failed_assert (char *, char *, int);
 #else
-#define CAMLassert(x) 0
+#define CAMLassert(x) ((void) 0)
 #endif
 
-void fatal_error (char *msg) Noreturn;
-void fatal_error_arg (char *fmt, char *arg) Noreturn;
-void fatal_error_arg2 (char *fmt1, char *arg1, 
-                       char *fmt2, char *arg2) Noreturn;
+CAMLextern void caml_fatal_error (char *msg) Noreturn;
+CAMLextern void caml_fatal_error_arg (char *fmt, char *arg) Noreturn;
+CAMLextern void caml_fatal_error_arg2 (char *fmt1, char *arg1, 
+				       char *fmt2, char *arg2) Noreturn;
 
 /* Data structures */
 
@@ -85,18 +87,18 @@ struct ext_table {
   void ** contents;
 };
 
-extern void ext_table_init(struct ext_table * tbl, int init_capa);
-extern int ext_table_add(struct ext_table * tbl, void * data);
-extern void ext_table_free(struct ext_table * tbl, int free_entries);
+extern void caml_ext_table_init(struct ext_table * tbl, int init_capa);
+extern int caml_ext_table_add(struct ext_table * tbl, void * data);
+extern void caml_ext_table_free(struct ext_table * tbl, int free_entries);
 
 /* GC flags and messages */
 
-extern unsigned long verb_gc;
-void gc_message (int, char *, unsigned long);
+extern unsigned long caml_verb_gc;
+void caml_gc_message (int, char *, unsigned long);
 
 /* Memory routines */
 
-char *aligned_malloc (asize_t, int, void **);
+char *caml_aligned_malloc (asize_t, int, void **);
 
 #ifdef DEBUG
 #ifdef ARCH_SIXTYFOUR
@@ -111,14 +113,14 @@ char *aligned_malloc (asize_t, int, void **);
   00 -> free words in minor heap
   01 -> fields of free list blocks in major heap
   03 -> heap chunks deallocated by heap shrinking
-  04 -> fields deallocated by obj_truncate
+  04 -> fields deallocated by [caml_obj_truncate]
   10 -> uninitialised fields of minor objects
   11 -> uninitialised fields of major objects
-  15 -> uninitialised words of aligned_malloc blocks
-  85 -> filler bytes of aligned_malloc
+  15 -> uninitialised words of [caml_aligned_malloc] blocks
+  85 -> filler bytes of [caml_aligned_malloc]
 
   special case (byte by byte):
-  D7 -> uninitialised words of stat_alloc blocks
+  D7 -> uninitialised words of [caml_stat_alloc] blocks
 */
 #define Debug_free_minor     Debug_tag (0x00)
 #define Debug_free_major     Debug_tag (0x01)
@@ -139,4 +141,4 @@ char *aligned_malloc (asize_t, int, void **);
 
 /* </private> */
 
-#endif /* _misc_ */
+#endif /* CAML_MISC_H */

@@ -9,6 +9,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_dot.ml,v 1.6 2003/11/24 10:39:31 starynke Exp $ *)
+
 (** Definition of a class which outputs a dot file showing 
    top modules dependencies.*)
 

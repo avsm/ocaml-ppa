@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.55 2003/04/02 01:17:58 doligez Exp $
+# $Id: Makefile,v 1.59 2004/06/20 15:26:06 xleroy Exp $
 
 include ../config/Makefile
 
@@ -23,7 +23,7 @@ INCLUDES=-I ../utils -I ../parsing -I ../typing -I ../bytecomp -I ../asmcomp \
 COMPFLAGS= -warn-error A $(INCLUDES)
 LINKFLAGS=$(INCLUDES)
 
-all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels
+all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels 
 
 opt.opt: ocamldep.opt
 
@@ -97,6 +97,7 @@ clean::
 	rm -f ocamlmklib
 
 ocamlmklib.ml: ocamlmklib.mlp ../config/Makefile
+	echo '(* THIS FILE IS GENERATED FROM ocamlmklib.mlp *)' >ocamlmklib.ml
 	sed -e "s|%%BINDIR%%|$(BINDIR)|" \
             -e "s|%%SUPPORTS_SHARED_LIBRARIES%%|$(SUPPORTS_SHARED_LIBRARIES)|" \
             -e "s|%%MKSHAREDLIB%%|$(MKSHAREDLIB)|" \
@@ -104,7 +105,7 @@ ocamlmklib.ml: ocamlmklib.mlp ../config/Makefile
             -e "s|%%NATIVECCRPATH%%|$(NATIVECCRPATH)|" \
             -e "s|%%MKSHAREDLIBRPATH%%|$(MKSHAREDLIBRPATH)|" \
             -e "s|%%RANLIB%%|$(RANLIB)|" \
-          ocamlmklib.mlp > ocamlmklib.ml
+          ocamlmklib.mlp >> ocamlmklib.ml
 
 beforedepend:: ocamlmklib.ml
 
@@ -222,14 +223,6 @@ objinfo: objinfo.cmo
 
 clean::
 	rm -f objinfo
-
-# Print imported interfaces for .cmi files
-
-intfinfo: intfinfo.cmo
-	$(CAMLC) $(LINKFLAGS) -o intfinfo config.cmo intfinfo.cmo
-
-clean::
-	rm -f intfinfo
 
 # Scan object files for required primitives
 

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: types.ml,v 1.21 2003/07/02 09:14:35 xleroy Exp $ *)
+(* $Id: types.ml,v 1.24 2004/06/12 08:55:49 xleroy Exp $ *)
 
 (* Representation of types and declarations *)
 
@@ -91,7 +91,7 @@ and value_kind =
   | Val_ivar of mutable_flag * string   (* Instance variable (mutable ?) *)
   | Val_self of (Ident.t * type_expr) Meths.t ref *
                 (Ident.t * Asttypes.mutable_flag * type_expr) Vars.t ref *
-                string
+                string * type_expr
                                         (* Self *)
   | Val_anc of (string * Ident.t) list * string
                                         (* Ancestor *)
@@ -157,7 +157,8 @@ type class_type =
 and class_signature =
   { cty_self: type_expr;
     cty_vars: (Asttypes.mutable_flag * type_expr) Vars.t;
-    cty_concr: Concr.t }
+    cty_concr: Concr.t;
+    cty_inher: (Path.t * type_expr list) list }
 
 type class_declaration =
   { cty_params: type_expr list;
@@ -181,13 +182,18 @@ and signature = signature_item list
 
 and signature_item =
     Tsig_value of Ident.t * value_description
-  | Tsig_type of Ident.t * type_declaration
+  | Tsig_type of Ident.t * type_declaration * rec_status
   | Tsig_exception of Ident.t * exception_declaration
-  | Tsig_module of Ident.t * module_type
+  | Tsig_module of Ident.t * module_type * rec_status
   | Tsig_modtype of Ident.t * modtype_declaration
-  | Tsig_class of Ident.t * class_declaration
-  | Tsig_cltype of Ident.t * cltype_declaration
+  | Tsig_class of Ident.t * class_declaration * rec_status
+  | Tsig_cltype of Ident.t * cltype_declaration * rec_status
 
 and modtype_declaration =
     Tmodtype_abstract
   | Tmodtype_manifest of module_type
+
+and rec_status =
+    Trec_not
+  | Trec_first
+  | Trec_next

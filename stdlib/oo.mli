@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: oo.mli,v 1.27 2002/06/26 09:12:49 xleroy Exp $ *)
+(* $Id: oo.mli,v 1.28 2004/05/26 11:10:52 garrigue Exp $ *)
 
 (** Operations on objects *)
 
@@ -25,5 +25,5 @@ external id : < .. > -> int = "%field1"
 
 (**/**)
 (** For internal use (CamlIDL) *)
-val new_method : string -> CamlinternalOO.label
-val public_method_label : string -> CamlinternalOO.label
+val new_method : string -> CamlinternalOO.tag
+val public_method_label : string -> CamlinternalOO.tag

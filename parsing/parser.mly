@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: parser.mly,v 1.117 2003/08/25 13:15:47 doligez Exp $ */
+/* $Id: parser.mly,v 1.120 2004/05/19 12:15:19 doligez Exp $ */
 
 /* The parser definition */
 
@@ -245,6 +245,7 @@ let bigarray_set arr arg newval =
 %token LBRACKET
 %token LBRACKETBAR
 %token LBRACKETLESS
+%token LBRACKETGREATER
 %token LESS
 %token LESSMINUS
 %token LET
@@ -595,7 +596,7 @@ class_simple_expr:
   | OBJECT class_structure END
       { mkclass(Pcl_structure($2)) }
   | OBJECT class_structure error
-      { unclosed "class" 1 "end" 3 }
+      { unclosed "object" 1 "end" 3 }
   | LPAREN class_expr COLON class_type RPAREN
       { mkclass(Pcl_constraint($2, $4)) }
   | LPAREN class_expr COLON class_type error
@@ -689,7 +690,7 @@ class_signature:
   | OBJECT class_sig_body END
       { mkcty(Pcty_signature $2) }
   | OBJECT class_sig_body error
-      { unclosed "sig" 1 "end" 3 }
+      { unclosed "object" 1 "end" 3 }
 ;
 class_sig_body:
     class_self_type class_sig_fields
@@ -879,6 +880,10 @@ expr:
       { mkassert $2 }
   | LAZY simple_expr %prec below_SHARP
       { mkexp (Pexp_lazy ($2)) }
+  | OBJECT class_structure END
+      { mkexp (Pexp_object($2)) }
+  | OBJECT class_structure error
+      { unclosed "object" 1 "end" 3 }
 ;
 simple_expr:
     val_longident
@@ -920,7 +925,7 @@ simple_expr:
   | LBRACE record_expr RBRACE
       { let (exten, fields) = $2 in mkexp(Pexp_record(fields, exten)) }
   | LBRACE record_expr error
-      { unclosed "{" 1 "}" 5 }
+      { unclosed "{" 1 "}" 3 }
   | LBRACKETBAR expr_semi_list opt_semi BARRBRACKET
       { mkexp(Pexp_array(List.rev $2)) }
   | LBRACKETBAR expr_semi_list opt_semi error
@@ -1282,9 +1287,9 @@ simple_core_type2:
       { mktyp(Ptyp_variant(List.rev $3, true, None)) }
   | LBRACKET row_field BAR row_field_list RBRACKET
       { mktyp(Ptyp_variant($2 :: List.rev $4, true, None)) }
-  | LBRACKET GREATER opt_bar row_field_list RBRACKET
-      { mktyp(Ptyp_variant(List.rev $4, false, None)) }
-  | LBRACKET GREATER RBRACKET
+  | LBRACKETGREATER opt_bar row_field_list RBRACKET
+      { mktyp(Ptyp_variant(List.rev $3, false, None)) }
+  | LBRACKETGREATER RBRACKET
       { mktyp(Ptyp_variant([], false, None)) }
   | LBRACKETLESS opt_bar row_field_list RBRACKET
       { mktyp(Ptyp_variant(List.rev $3, true, Some [])) }
@@ -1314,7 +1319,7 @@ amper_type_list:
   | amper_type_list AMPERSAND core_type         { $3 :: $1 }
 ;
 opt_present:
-    LBRACKET GREATER name_tag_list RBRACKET     { List.rev $3 }
+    LBRACKETGREATER name_tag_list RBRACKET      { List.rev $2 }
   | /* empty */                                 { [] }
 ;
 name_tag_list:

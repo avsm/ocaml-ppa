@@ -11,22 +11,21 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: config.h,v 1.32 2002/12/15 23:27:06 doligez Exp $ */
+/* $Id: config.h,v 1.36 2004/04/19 07:55:28 starynke Exp $ */
 
-#ifndef _config_
-#define _config_
+#ifndef CAML_CONFIG_H
+#define CAML_CONFIG_H
 
 /* <include ../config/m.h> */
 /* <include ../config/s.h> */
 /* <private> */
-#if !macintosh
 #include "../config/m.h"
 #include "../config/s.h"
-#else
-#include <m.h>
-#include <s.h>
-#endif
 /* </private> */
+
+#ifndef CAML_NAME_SPACE
+#include "compatibility.h"
+#endif
 
 /* Types for signed chars, 16-bit integers, 32-bit integers, 64-bit integers */
 
@@ -75,7 +74,7 @@ typedef struct { uint32 l, h; } uint64, int64;
 /* We use threaded code interpretation if the compiler provides labels
    as first-class values (GCC 2.x). */
 
-#if defined(__GNUC__) && __GNUC__ >= 2 && !defined(DEBUG) && !defined (SHRINKED_GNUC)
+#if defined(__GNUC__) && __GNUC__ >= 2 && !defined(DEBUG) && !defined (SHRINKED_GNUC) && !defined(CAML_JIT)
 #define THREADED_CODE
 #endif
 
@@ -143,4 +142,4 @@ typedef struct { uint32 l, h; } uint64, int64;
 #define Max_percent_free_def 500
 
 
-#endif /* _config_ */
+#endif /* CAML_CONFIG_H */

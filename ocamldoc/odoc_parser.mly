@@ -10,6 +10,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_parser.mly,v 1.3 2003/11/24 10:43:11 starynke Exp $ *)
+
 open Odoc_types
 open Odoc_comments_global
 

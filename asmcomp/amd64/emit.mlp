@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit.mlp,v 1.2 2003/06/30 11:29:26 xleroy Exp $ *)
+(* $Id: emit.mlp,v 1.6.6.1 2004/07/01 16:09:03 xleroy Exp $ *)
 
 (* Emission of Intel 386 assembly code *)
 
@@ -299,10 +299,10 @@ let emit_instr fallthrough i =
         else
           `	movabsq	${emit_nativeint n}, {emit_reg i.res.(0)}\n`
     | Lop(Iconst_float s) ->
-        let f = float_of_string s in
-        if f = 0.0 then
+        begin match Int64.bits_of_float (float_of_string s) with
+        | 0x0000_0000_0000_0000L ->       (* +0.0 *)
           `	xorpd	{emit_reg i.res.(0)}, {emit_reg i.res.(0)}\n`
-        else begin
+        | _ ->
           let lbl = new_label() in
           float_constants := (lbl, s) :: !float_constants;
           `	movlpd	{emit_label lbl}(%rip), {emit_reg i.res.(0)}\n`
@@ -380,7 +380,7 @@ let emit_instr fallthrough i =
         if !fastcode_flag then begin
           let lbl_redo = new_label() in
           `{emit_label lbl_redo}:	subq	${emit_int n}, %r15\n`;
-          `	cmpq	{emit_symbol "young_limit"}(%rip), %r15\n`;
+          `	cmpq	{emit_symbol "caml_young_limit"}(%rip), %r15\n`;
           let lbl_call_gc = new_label() in
           let lbl_frame = record_frame_label i.live in
           `	jb	{emit_label lbl_call_gc}\n`;
@@ -395,7 +395,7 @@ let emit_instr fallthrough i =
           | 24 -> `	call	{emit_symbol "caml_alloc2"}\n`
           | 32 -> `	call	{emit_symbol "caml_alloc3"}\n`
           | _  -> `	movq	${emit_int n}, %rax\n`;
-                  `	call	{emit_symbol "caml_alloc"}\n`
+                  `	call	{emit_symbol "caml_allocN"}\n`
           end;
           `{record_frame i.live}	leaq	8(%r15), {emit_reg i.res.(0)}\n`
         end
@@ -562,29 +562,23 @@ let rec emit_all fallthrough i =
 let emit_float_constant (lbl, cst) =
   `{emit_label lbl}:	.double	{emit_string cst}\n`
 
-(* Emission of the profiling prelude -- FIXME *)
+(* Emission of the profiling prelude *)
 
 let emit_profile () =
   match Config.system with
-    "linux_elf" ->
-      `	pushl	%eax\n`;
-      `	movl	%esp, %ebp\n`;
-      `	pushl	%ecx\n`;
-      `	pushl	%edx\n`;
+  | "linux" ->
+      (* mcount preserves rax, rcx, rdx, rsi, rdi, r8, r9 explicitly
+         and rbx, rbp, r12-r15 like all C functions.
+         We need to preserve r10 and r11 ourselves, since Caml can
+	 use them for argument passing. *)
+      `	pushq	%r10\n`;
+      `	movq	%rsp, %rbp\n`;
+      `	pushq	%r11\n`;
       `	call	{emit_symbol "mcount"}\n`;
-      `	popl	%edx\n`;
-      `	popl	%ecx\n`;
-      `	popl	%eax\n`
-  | "bsd_elf" ->
-      `	pushl	%eax\n`;
-      `	movl	%esp, %ebp\n`;
-      `	pushl	%ecx\n`;
-      `	pushl	%edx\n`;
-      `	call	.mcount\n`;
-      `	popl	%edx\n`;
-      `	popl	%ecx\n`;
-      `	popl	%eax\n`
-  | _ -> () (*unsupported yet*)
+      `	popq	%r11\n`;
+      `	popq	%r10\n`
+  | _ ->
+      () (*unsupported yet*)
 
 (* Emission of a function declaration *)
 
@@ -609,10 +603,10 @@ let fundecl fundecl =
   emit_all true fundecl.fun_body;
   List.iter emit_call_gc !call_gc_sites;
   if !range_check_trap > 0 then
-    `{emit_label !range_check_trap}:	call	{emit_symbol "caml_array_bound_error"}\n`;
+    `{emit_label !range_check_trap}:	call	{emit_symbol "caml_ml_array_bound_error"}\n`;
     (* Never returns, but useful to have retaddr on stack for debugging *)
   if !float_constants <> [] then begin
-    `	.section	.rodata.cst8,\"aM\",@progbits,8\n`;
+    `	.section	.rodata.cst8,\"a\",@progbits\n`;
     List.iter emit_float_constant !float_constants
   end
 
@@ -655,26 +649,26 @@ let data l =
 (* Beginning / end of an assembly file *)
 
 let begin_assembly() =
-  let lbl_begin = Compilenv.current_unit_name() ^ "__data_begin" in
+  let lbl_begin = Compilenv.make_symbol (Some "data_begin") in
   `	.data\n`;
   `	.globl	{emit_symbol lbl_begin}\n`;
   `{emit_symbol lbl_begin}:\n`;
-  let lbl_begin = Compilenv.current_unit_name() ^ "__code_begin" in
+  let lbl_begin = Compilenv.make_symbol (Some "code_begin") in
   `	.text\n`;
   `	.globl	{emit_symbol lbl_begin}\n`;
   `{emit_symbol lbl_begin}:\n`
 
 let end_assembly() =
-  let lbl_end = Compilenv.current_unit_name() ^ "__code_end" in
+  let lbl_end = Compilenv.make_symbol (Some "code_end") in
   `	.text\n`;
   `	.globl	{emit_symbol lbl_end}\n`;
   `{emit_symbol lbl_end}:\n`;
   `	.data\n`;
-  let lbl_end = Compilenv.current_unit_name() ^ "__data_end" in
+  let lbl_end = Compilenv.make_symbol (Some "data_end") in
   `	.globl	{emit_symbol lbl_end}\n`;
   `{emit_symbol lbl_end}:\n`;
   `	.long	0\n`;
-  let lbl = Compilenv.current_unit_name() ^ "__frametable" in
+  let lbl = Compilenv.make_symbol (Some "frametable") in
   `	.globl	{emit_symbol lbl}\n`;
   `{emit_symbol lbl}:\n`;
   `	.quad	{emit_int (List.length !frame_descriptors)}\n`;

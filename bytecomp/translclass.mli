@@ -10,17 +10,16 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: translclass.mli,v 1.8 2003/06/19 15:53:48 xleroy Exp $ *)
+(* $Id: translclass.mli,v 1.10 2004/05/26 11:10:50 garrigue Exp $ *)
 
 open Typedtree
 open Lambda
 
-val class_stub : lambda
 val dummy_class : lambda -> lambda
 val transl_class :
   Ident.t list -> Ident.t -> int -> string list -> class_expr -> lambda;;
 
-type error = Illegal_class_expr
+type error = Illegal_class_expr | Tags of string * string
 
 exception Error of Location.t * error
 

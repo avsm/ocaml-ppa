@@ -10,28 +10,42 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml,v 1.64 2003/07/17 08:38:27 xleroy Exp $ *)
+(* $Id: main.ml,v 1.67 2004/06/13 12:46:41 xleroy Exp $ *)
 
 open Config
 open Clflags
 
+let output_prefix name =
+  let oname =
+    match !output_name with
+    | None -> name
+    | Some n -> if !compile_only then (output_name := None; n) else name in
+  Misc.chop_extension_if_any oname
+
 let process_interface_file ppf name =
-  Compile.interface ppf name
+  Compile.interface ppf name (output_prefix name)
 
 let process_implementation_file ppf name =
-  Compile.implementation ppf name;
-  objfiles := (Misc.chop_extension_if_any name ^ ".cmo") :: !objfiles
+  let opref = output_prefix name in
+  Compile.implementation ppf name opref;
+  objfiles := (opref ^ ".cmo") :: !objfiles
 
 let process_file ppf name =
   if Filename.check_suffix name ".ml"
   || Filename.check_suffix name ".mlt" then begin
-    Compile.implementation ppf name;
-    objfiles := (Misc.chop_extension_if_any name ^ ".cmo") :: !objfiles
+    let opref = output_prefix name in
+    Compile.implementation ppf name opref;
+    objfiles := (opref ^ ".cmo") :: !objfiles
   end
-  else if Filename.check_suffix name !Config.interface_suffix then
-    Compile.interface ppf name
+  else if Filename.check_suffix name !Config.interface_suffix then begin
+    let opref = output_prefix name in
+    Compile.interface ppf name opref;
+    if !make_package then objfiles := (opref ^ ".cmi") :: !objfiles
+  end
   else if Filename.check_suffix name ".cmo"
        || Filename.check_suffix name ".cma" then
+    objfiles := name :: !objfiles
+  else if Filename.check_suffix name ".cmi" && !make_package then
     objfiles := name :: !objfiles
   else if Filename.check_suffix name ext_obj
        || Filename.check_suffix name ext_lib then
@@ -40,11 +54,8 @@ let process_file ppf name =
     dllibs := name :: !dllibs
   else if Filename.check_suffix name ".c" then begin
     Compile.c_file name;
-    match Sys.os_type with
-    | "MacOS" -> ccobjs := (name ^ ".o") :: (name ^ ".x") :: !ccobjs
-    | _ ->
-       ccobjs := (Filename.chop_suffix (Filename.basename name) ".c" ^ ext_obj)
-                 :: !ccobjs
+    ccobjs := (Filename.chop_suffix (Filename.basename name) ".c" ^ ext_obj)
+              :: !ccobjs
   end
   else
     raise(Arg.Bad("don't know what to do with " ^ name))

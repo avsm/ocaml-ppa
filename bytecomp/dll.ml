@@ -10,20 +10,21 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: dll.ml,v 1.10 2002/07/02 16:13:12 weis Exp $ *)
+(* $Id: dll.ml,v 1.12 2004/01/16 15:24:02 doligez Exp $ *)
 
 (* Handling of dynamically-linked libraries *)
 
 type dll_handle
 type dll_address
 
-external dll_open: string -> dll_handle = "dynlink_open_lib"
-external dll_close: dll_handle -> unit = "dynlink_close_lib"
-external dll_sym: dll_handle -> string -> dll_address = "dynlink_lookup_symbol"
+external dll_open: string -> dll_handle = "caml_dynlink_open_lib"
+external dll_close: dll_handle -> unit = "caml_dynlink_close_lib"
+external dll_sym: dll_handle -> string -> dll_address
+                = "caml_dynlink_lookup_symbol"
          (* returned dll_address may be Val_unit *)
-external add_primitive: dll_address -> int = "dynlink_add_primitive"
+external add_primitive: dll_address -> int = "caml_dynlink_add_primitive"
 external get_current_dlls: unit -> dll_handle array
-                                           = "dynlink_get_current_libs"
+                                           = "caml_dynlink_get_current_libs"
 
 (* Current search path for DLLs *)
 let search_path = ref ([] : string list)
@@ -138,7 +139,6 @@ let ld_library_path_contents () =
     match Sys.os_type with
     | "Unix" | "Cygwin" -> ':'
     | "Win32" -> ';'
-    | "MacOS" -> ','
     | _ -> assert false in
   try
     split (Sys.getenv "CAML_LD_LIBRARY_PATH") path_separator

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: digest.mli,v 1.15 2002/04/18 07:27:42 garrigue Exp $ *)
+(* $Id: digest.mli,v 1.16 2003/12/31 14:20:39 doligez Exp $ *)
 
 (** MD5 message digest.
 
@@ -32,7 +32,7 @@ val substring : string -> int -> int -> t
    of [s] starting at character number [ofs] and containing [len]
    characters. *)
 
-external channel : in_channel -> int -> t = "md5_chan"
+external channel : in_channel -> int -> t = "caml_md5_chan"
 (** If [len] is nonnegative, [Digest.channel ic len] reads [len]
    characters from channel [ic] and returns their digest, or raises
    [End_of_file] if end-of-file is reached before [len] characters

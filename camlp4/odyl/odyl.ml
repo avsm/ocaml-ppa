@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odyl.ml,v 1.2 2002/07/19 14:53:56 mauny Exp $ *)
+(* $Id: odyl.ml,v 1.2.6.1 2004/06/23 13:31:38 mauny Exp $ *)
 
 value apply_load () =
   let i = ref 1 in
@@ -24,6 +24,12 @@ value apply_load () =
     else if s = "-nolib" then do { Odyl_main.nolib.val := True; incr i }
     else if s = "-where" then do {
       print_string Odyl_config.standard_library;
+      print_newline ();
+      flush stdout;
+      exit 0
+    }
+    else if s = "-version" then do {
+      print_string Sys.ocaml_version;
       print_newline ();
       flush stdout;
       exit 0

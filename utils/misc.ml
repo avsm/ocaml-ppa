@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: misc.ml,v 1.32 2003/04/02 01:32:09 doligez Exp $ *)
+(* $Id: misc.ml,v 1.33.2.1 2004/07/07 16:47:27 xleroy Exp $ *)
 
 (* Errors *)
 
@@ -60,6 +60,12 @@ let rec split_last = function
   | hd :: tl ->
       let (lst, last) = split_last tl in
       (hd :: lst, last)
+
+let rec samelist pred l1 l2 =
+  match (l1, l2) with
+  | ([], []) -> true
+  | (hd1 :: tl1, hd2 :: tl2) -> pred hd1 hd2 && samelist pred tl1 tl2
+  | (_, _) -> false
 
 (* Options *)
 
@@ -154,10 +160,7 @@ let no_overflow_lsl a = min_int asr 1 <= a && a <= max_int asr 1
 (* String operations *)
 
 let chop_extension_if_any fname =
-  try
-    ignore(String.index (Filename.basename fname) '.');
-    Filename.chop_extension fname
-  with Not_found -> fname
+  try Filename.chop_extension fname with Invalid_argument _ -> fname
 
 let search_substring pat str start =
   let rec search i j =

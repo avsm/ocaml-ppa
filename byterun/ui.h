@@ -11,9 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: ui.h,v 1.4 2001/12/07 13:39:38 xleroy Exp $ */
+/* $Id: ui.h,v 1.5 2003/12/15 18:10:49 doligez Exp $ */
 
 /* Function declarations for non-Unix user interfaces */
+
+#ifndef CAML_UI_H
+#define CAML_UI_H
 
 #include "config.h"
 
@@ -21,3 +24,5 @@ void ui_exit (int return_code);
 int ui_read (int file_desc, char *buf, unsigned int length);
 int ui_write (int file_desc, char *buf, unsigned int length);
 void ui_print_stderr (char *format, void *arg);
+
+#endif /* CAML_UI_H */

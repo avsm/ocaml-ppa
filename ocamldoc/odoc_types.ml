@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_types.ml,v 1.7 2004/05/23 10:41:51 guesdon Exp $ *)
 
 type ref_kind = 
     RK_module
@@ -43,6 +44,8 @@ and text_element =
   | Ref of string * ref_kind option
   | Superscript of text
   | Subscript of text
+  | Module_list of string list
+  | Index_list
 
 and text = text_element list
 

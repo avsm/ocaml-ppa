@@ -11,10 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: cst2constr.h,v 1.6 2001/12/07 13:40:26 xleroy Exp $ */
+/* $Id: cst2constr.h,v 1.7 2004/04/09 13:25:21 xleroy Exp $ */
 
-#ifdef __STDC__
-value cst_to_constr(int, int *, int, int);
-#else
-value cst_to_constr();
-#endif
+extern value cst_to_constr(int n, int * tbl, int size, int deflt);

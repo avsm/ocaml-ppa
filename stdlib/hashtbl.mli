@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: hashtbl.mli,v 1.32 2003/06/23 13:19:35 xleroy Exp $ *)
+(* $Id: hashtbl.mli,v 1.35 2004/03/23 12:37:06 starynke Exp $ *)
 
 (** Hash tables and hash functions.
 
@@ -34,6 +34,7 @@ val create : int -> ('a, 'b) t
 
 val clear : ('a, 'b) t -> unit
 (** Empty a hash table. *)
+
 
 val add : ('a, 'b) t -> 'a -> 'b -> unit
 (** [Hashtbl.add tbl x y] adds a binding of [x] to [y] in table [tbl].
@@ -91,6 +92,12 @@ val fold : ('a -> 'b -> 'c -> 'c) -> ('a, 'b) t -> 'c -> 'c
    the most recent binding is passed first. *)
 
 
+val length : ('a, 'b) t -> int
+(** [Hashtbl.length tbl] returns the number of bindings in [tbl]. 
+   Multiple bindings are counted multiply, so [Hashtbl.length] 
+   gives the number of times [Hashtbl.iter] calls it first argument. *)
+
+
 (** {6 Functorial interface} *)
 
 
@@ -106,7 +113,10 @@ module type HashedType =
           as computed by [hash].
           Examples: suitable ([equal], [hash]) pairs for arbitrary key
           types include
-          ([(=)], {!Hashtbl.hash}) for comparing objects by structure, and
+          ([(=)], {!Hashtbl.hash}) for comparing objects by structure,
+          ([(fun x y -> compare x y = 0)], {!Hashtbl.hash})
+          for comparing objects by structure and handling {!Pervasives.nan}
+          correctly, and
           ([(==)], {!Hashtbl.hash}) for comparing objects by addresses
           (e.g. for mutable or cyclic keys). *)
    end
@@ -127,6 +137,7 @@ module type S =
     val mem : 'a t -> key -> bool
     val iter : (key -> 'a -> unit) -> 'a t -> unit
     val fold : (key -> 'a -> 'b -> 'b) -> 'a t -> 'b -> 'b
+    val length : 'a t -> int
   end
 (** The output signature of the functor {!Hashtbl.Make}. *)
 
@@ -147,11 +158,11 @@ module Make (H : HashedType) : S with type key = H.t
 val hash : 'a -> int
 (** [Hashtbl.hash x] associates a positive integer to any value of
    any type. It is guaranteed that
-   if [x = y], then [hash x = hash y]. 
+   if [x = y] or [Pervasives.compare x y = 0], then [hash x = hash y]. 
    Moreover, [hash] always terminates, even on cyclic
    structures. *)
 
-external hash_param : int -> int -> 'a -> int = "hash_univ_param" "noalloc"
+external hash_param : int -> int -> 'a -> int = "caml_hash_univ_param" "noalloc"
 (** [Hashtbl.hash_param n m x] computes a hash value for [x], with the
    same properties as for [hash]. The two extra parameters [n] and
    [m] give more precise control over hashing. Hashing performs a

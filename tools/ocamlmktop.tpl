@@ -11,16 +11,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: ocamlmktop.tpl,v 1.4 2002/04/24 09:40:19 xleroy Exp $
+# $Id: ocamlmktop.tpl,v 1.5 2004/02/22 14:52:50 xleroy Exp $
 
-
-# Multi-shell script.  Works under Bourne Shell, MPW Shell, zsh.
-
-if : == x
-then # Bourne Shell or zsh
-     exec %%BINDIR%%/ocamlc -linkall toplevellib.cma "$@" topstart.cmo
-else # MPW Shell
-     ocamlc -linkall toplevellib.cma {"parameters"} topstart.cmo
-     exit {status}
-End # uppercase E because "end" is a keyword in zsh
-fi
+exec %%BINDIR%%/ocamlc -linkall toplevellib.cma "$@" topstart.cmo

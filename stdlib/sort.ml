@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: sort.ml,v 1.8 2001/12/07 13:40:58 xleroy Exp $ *)
+(* $Id: sort.ml,v 1.9 2004/01/14 17:20:56 doligez Exp $ *)
 
 (* Merging and sorting *)
 
@@ -48,6 +48,9 @@ let swap arr i j =
   unsafe_set arr i (unsafe_get arr j);
   unsafe_set arr j tmp
 
+(* There is a known performance bug in the code below.  If you find
+   it, don't bother reporting it.  You're not supposed to use this
+   module anyway. *)
 let array cmp arr =
   let rec qsort lo hi =
     if hi - lo >= 6 then begin

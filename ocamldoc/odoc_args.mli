@@ -9,6 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_args.mli,v 1.12 2003/11/24 10:39:29 starynke Exp $ *)
 
 (** Analysis of the command line arguments. *)
 
@@ -65,6 +66,9 @@ val inverse_merge_ml_mli : bool ref
 (** The optional title to use in the generated documentation. *)
 val title : string option ref
     
+(** The optional file whose content can be used as intro text. *)
+val intro_file : string option ref
+
 (** Flag to indicate whether we must display the complete list of parameters
    for functions and methods. *)
 val with_parameter_list : bool ref

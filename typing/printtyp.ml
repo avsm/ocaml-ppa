@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printtyp.ml,v 1.125 2003/07/02 09:14:34 xleroy Exp $ *)
+(* $Id: printtyp.ml,v 1.130.2.1 2004/07/07 01:45:21 garrigue Exp $ *)
 
 (* Printing functions *)
 
@@ -23,16 +23,6 @@ open Asttypes
 open Types
 open Btype
 open Outcometree
-
-(* Redefine it here since goal differs *)
-
-let rec opened_object ty =
-  match (repr ty).desc with
-    Tobject (t, _)     -> opened_object t
-  | Tfield(_, _, _, t) -> opened_object t
-  | Tvar               -> true
-  | Tunivar            -> true
-  | _                  -> false
 
 (* Print a long identifier *)
 
@@ -68,6 +58,119 @@ let rec path ppf = function
       fprintf ppf "%a.%s" path p s
   | Papply(p1, p2) ->
       fprintf ppf "%a(%a)" path p1 path p2
+
+(* Print a recursive annotation *)
+
+let tree_of_rec = function
+  | Trec_not -> Orec_not
+  | Trec_first -> Orec_first
+  | Trec_next -> Orec_next
+
+(* Print a raw type expression, with sharing *)
+
+let raw_list pr ppf = function
+    [] -> fprintf ppf "[]"
+  | a :: l ->
+      fprintf ppf "@[<1>[%a%t]@]" pr a
+        (fun ppf -> List.iter (fun x -> fprintf ppf ";@,%a" pr x) l)
+
+let rec safe_kind_repr v = function
+    Fvar {contents=Some k}  ->
+      if List.memq k v then "Fvar loop" else
+      safe_kind_repr (k::v) k
+  | Fvar _ -> "Fvar None"
+  | Fpresent -> "Fpresent"
+  | Fabsent -> "Fabsent"
+
+let rec safe_commu_repr v = function
+    Cok -> "Cok"
+  | Cunknown -> "Cunknown"
+  | Clink r ->
+      if List.memq r v then "Clink loop" else
+      safe_commu_repr (r::v) !r
+
+let rec safe_repr v = function
+    {desc = Tlink t} when not (List.memq t v) ->
+      safe_repr (t::v) t
+  | t -> t
+
+let rec list_of_memo = function
+    Mnil -> []
+  | Mcons (p, t1, t2, rem) -> (p,t1,t2) :: list_of_memo rem
+  | Mlink rem -> list_of_memo !rem
+
+let visited = ref []
+let rec raw_type ppf ty =
+  let ty = safe_repr [] ty in
+  if List.memq ty !visited then fprintf ppf "{id=%d}" ty.id else begin
+    visited := ty :: !visited;
+    fprintf ppf "@[<1>{id=%d;level=%d;desc=@,%a}@]" ty.id ty.level
+      raw_type_desc ty.desc
+  end
+and raw_type_list tl = raw_list raw_type tl
+and raw_type_desc ppf = function
+    Tvar -> fprintf ppf "Tvar"
+  | Tarrow(l,t1,t2,c) ->
+      fprintf ppf "@[<hov1>Tarrow(%s,@,%a,@,%a,@,%s)@]"
+        l raw_type t1 raw_type t2
+        (safe_commu_repr [] c)
+  | Ttuple tl ->
+      fprintf ppf "@[<1>Ttuple@,%a@]" raw_type_list tl
+  | Tconstr (p, tl, abbrev) ->
+      fprintf ppf "@[<hov1>Tconstr(@,%a,@,%a,@,%a)@]" path p
+        raw_type_list tl
+        (raw_list (fun ppf (p,t1,t2) ->
+          fprintf ppf "@[%a,@ %a,@ %a@]" path p raw_type t1 raw_type t2))
+        (list_of_memo !abbrev)
+  | Tobject (t, nm) ->
+      fprintf ppf "@[<hov1>Tobject(@,%a,@,@[<1>ref%t@])@]" raw_type t
+        (fun ppf ->
+          match !nm with None -> fprintf ppf " None"
+          | Some(p,tl) ->
+              fprintf ppf "(Some(@,%a,@,%a))" path p raw_type_list tl)
+  | Tfield (f, k, t1, t2) ->
+      fprintf ppf "@[<hov1>Tfield(@,%s,@,%s,@,%a,@,%a)@]" f
+        (safe_kind_repr [] k)
+        raw_type t1 raw_type t2
+  | Tnil -> fprintf ppf "Tnil"  
+  | Tlink t -> fprintf ppf "@[<1>Tlink@,%a@]" raw_type t
+  | Tsubst t -> fprintf ppf "@[<1>Tsubst@,%a@]" raw_type t
+  | Tunivar -> fprintf ppf "Tunivar"
+  | Tpoly (t, tl) ->
+      fprintf ppf "@[<hov1>Tpoly(@,%a,@,%a)@]"
+        raw_type t
+        raw_type_list tl
+  | Tvariant row ->
+      fprintf ppf
+        "@[<hov1>{@[%s@,%a;@]@ @[%s@,%a;@]@ %s%b;@ %s%b;@ @[<1>%s%t@]}@]"
+        "row_fields="
+        (raw_list (fun ppf (l, f) ->
+          fprintf ppf "@[%s,@ %a@]" l raw_field f))
+        row.row_fields
+        "row_more=" raw_type row.row_more
+        "row_closed=" row.row_closed
+        "row_fixed=" row.row_fixed
+        "row_name="
+        (fun ppf ->
+          match row.row_name with None -> fprintf ppf "None"
+          | Some(p,tl) ->
+              fprintf ppf "Some(@,%a,@,%a)" path p raw_type_list tl)
+
+and raw_field ppf = function
+    Rpresent None -> fprintf ppf "Rpresent None"
+  | Rpresent (Some t) -> fprintf ppf "@[<1>Rpresent(Some@,%a)@]" raw_type t
+  | Reither (c,tl,m,e) ->
+      fprintf ppf "@[<hov1>Reither(%b,@,%a,@,%b,@,@[<1>ref%t@])@]" c
+        raw_type_list tl m
+        (fun ppf ->
+          match !e with None -> fprintf ppf " None"
+          | Some f -> fprintf ppf "@,@[<1>(%a)@]" raw_field f)
+  | Rabsent -> fprintf ppf "Rabsent"
+
+let raw_type_expr ppf t =
+  visited := [];
+  raw_type ppf t;
+  visited := []
 
 (* Print a type expression *)
 
@@ -472,11 +575,11 @@ and tree_of_constructor (name, args) =
 and tree_of_label (name, mut, arg) =
   (name, mut = Mutable, tree_of_typexp false arg)
 
-let tree_of_type_declaration id decl =
-  Osig_type [tree_of_type_decl id decl]
+let tree_of_type_declaration id decl rs =
+  Osig_type (tree_of_type_decl id decl, tree_of_rec rs)
 
 let type_declaration id ppf decl =
-  !Oprint.out_sig_item ppf (tree_of_type_declaration id decl)
+  !Oprint.out_sig_item ppf (tree_of_type_declaration id decl Trec_first)
 
 (* Print an exception declaration *)
 
@@ -508,31 +611,17 @@ let class_var sch ppf l (m, t) =
   fprintf ppf
     "@ @[<2>val %s%s :@ %a@]" (string_of_mutable m) l (typexp sch 0) t
 
-let metho sch concrete ppf (lab, kind, ty) =
-  if lab <> "*dummy method*" then begin
-    let priv =
-      match field_kind_repr kind with
-      | Fvar _ (* {contents = None} *) -> "private "
-      | _ (* Fpresent *) -> "" in
-    let virt =
-      if Concr.mem lab concrete then "" else "virtual " in
-    fprintf ppf "@ @[<2>method %s%s%s :@ %a@]" priv virt lab (typexp sch 0) ty
-  end
-
-let method_type ty =
-  let ty = repr ty in
-  match ty.desc with
-    Tpoly(ty, _) -> ty
-  | _            -> ty
+let method_type (_, kind, ty) =
+  match field_kind_repr kind, repr ty with
+    Fpresent, {desc=Tpoly(ty, _)} -> ty
+  | _       , ty                  -> ty
 
 let tree_of_metho sch concrete csil (lab, kind, ty) =
-  if lab <> "*dummy method*" then begin
-    let priv =
-      match field_kind_repr kind with
-      | Fvar _ (* {contents = None} *) -> true
-      | _ (* Fpresent *) -> false in
+  if lab <> dummy_method then begin
+    let kind = field_kind_repr kind in
+    let priv = kind <> Fpresent in
     let virt = not (Concr.mem lab concrete) in
-    let ty = method_type ty in
+    let ty = method_type (lab, kind, ty) in
     Ocsg_method (lab, priv, virt, tree_of_typexp sch ty) :: csil
   end
   else csil
@@ -554,7 +643,7 @@ let rec prepare_class_type params = function
       let (fields, _) =
         Ctype.flatten_fields (Ctype.object_fields sign.cty_self)
       in
-      List.iter (fun (_, _, ty) -> mark_loops (method_type ty)) fields;
+      List.iter (fun met -> mark_loops (method_type met)) fields;
       Vars.iter (fun _ (_, ty) -> mark_loops ty) sign.cty_vars
   | Tcty_fun (_, ty, cty) ->
       mark_loops ty;
@@ -620,7 +709,7 @@ let tree_of_class_params = function
       let tyl = tree_of_typlist true params in
       List.map (function Otyp_var (_, s) -> s | _ -> "?") tyl
 
-let tree_of_class_declaration id cl =
+let tree_of_class_declaration id cl rs =
   let params = filter_params cl.cty_params in
 
   reset ();
@@ -635,12 +724,13 @@ let tree_of_class_declaration id cl =
   let vir_flag = cl.cty_new = None in
   Osig_class
     (vir_flag, Ident.name id, tree_of_class_params params,
-     tree_of_class_type true params cl.cty_type)
+     tree_of_class_type true params cl.cty_type,
+     tree_of_rec rs)
 
 let class_declaration id ppf cl =
-  !Oprint.out_sig_item ppf (tree_of_class_declaration id cl)
+  !Oprint.out_sig_item ppf (tree_of_class_declaration id cl Trec_first)
 
-let tree_of_cltype_declaration id cl =
+let tree_of_cltype_declaration id cl rs =
   let params = List.map repr cl.clty_params in
 
   reset ();
@@ -659,15 +749,16 @@ let tree_of_cltype_declaration id cl =
       Ctype.flatten_fields (Ctype.object_fields sign.cty_self) in
     List.exists
       (fun (lab, _, ty) ->
-         not (lab = "*dummy method*" || Concr.mem lab sign.cty_concr))
+         not (lab = dummy_method || Concr.mem lab sign.cty_concr))
       fields in
 
   Osig_class_type
     (virt, Ident.name id, tree_of_class_params params,
-     tree_of_class_type true params cl.clty_type)
+     tree_of_class_type true params cl.clty_type,
+     tree_of_rec rs)
 
 let cltype_declaration id ppf cl =
-  !Oprint.out_sig_item ppf (tree_of_cltype_declaration id cl)
+  !Oprint.out_sig_item ppf (tree_of_cltype_declaration id cl Trec_first)
 
 (* Print a module type *)
 
@@ -682,48 +773,25 @@ let rec tree_of_modtype = function
 
 and tree_of_signature = function
   | [] -> []
-  | item :: rem ->
-      match item with
-      | Tsig_value(id, decl) ->
-          tree_of_value_description id decl :: tree_of_signature rem
-      | Tsig_type(id, decl)  ->
-          let (type_decl_list, rem) =
-            let rec more_type_declarations = function
-            | Tsig_type(id, decl) :: rem ->
-                let (type_decl_list, rem) = more_type_declarations rem in
-                (id, decl) :: type_decl_list, rem
-            | rem -> [], rem in
-            more_type_declarations rem
-          in
-          let type_decl_list =
-            List.map (fun (id, decl) -> tree_of_type_decl id decl)
-              ((id, decl) :: type_decl_list)
-          in
-          Osig_type type_decl_list
-          ::
-          tree_of_signature rem
-      | Tsig_exception(id, decl)  ->
-          Osig_exception (Ident.name id, tree_of_typlist false decl) ::
-          tree_of_signature rem
-      | Tsig_module(id, mty)  ->
-          Osig_module (Ident.name id, tree_of_modtype mty) ::
-          tree_of_signature rem
-      | Tsig_modtype(id, decl)  ->
-          tree_of_modtype_declaration id decl :: tree_of_signature rem
-      | Tsig_class(id, decl) ->
-          let rem =
-            match rem with
-            | ctydecl :: tydecl1 :: tydecl2 :: rem -> rem
-            | _ -> []
-          in
-          tree_of_class_declaration id decl :: tree_of_signature rem
-      | Tsig_cltype(id, decl) ->
-          let rem =
-            match rem with
-            | tydecl1 :: tydecl2 :: rem -> rem
-            | _ -> []
-          in
-          tree_of_cltype_declaration id decl :: tree_of_signature rem
+  | Tsig_value(id, decl) :: rem ->
+      tree_of_value_description id decl :: tree_of_signature rem
+  | Tsig_type(id, decl, rs) :: rem ->
+      Osig_type(tree_of_type_decl id decl, tree_of_rec rs) ::
+      tree_of_signature rem
+  | Tsig_exception(id, decl) :: rem ->
+      Osig_exception (Ident.name id, tree_of_typlist false decl) ::
+      tree_of_signature rem
+  | Tsig_module(id, mty, rs) :: rem ->
+      Osig_module (Ident.name id, tree_of_modtype mty, tree_of_rec rs) ::
+      tree_of_signature rem
+  | Tsig_modtype(id, decl) :: rem ->
+      tree_of_modtype_declaration id decl :: tree_of_signature rem
+  | Tsig_class(id, decl, rs) :: ctydecl :: tydecl1 :: tydecl2 :: rem ->
+      tree_of_class_declaration id decl rs :: tree_of_signature rem
+  | Tsig_cltype(id, decl, rs) :: tydecl1 :: tydecl2 :: rem ->
+      tree_of_cltype_declaration id decl rs :: tree_of_signature rem
+  | _ ->
+      assert false
 
 and tree_of_modtype_declaration id decl =
   let mty =
@@ -733,7 +801,8 @@ and tree_of_modtype_declaration id decl =
   in
   Osig_modtype (Ident.name id, mty)
 
-let tree_of_module id mty = Osig_module (Ident.name id, tree_of_modtype mty)
+let tree_of_module id mty rs = 
+  Osig_module (Ident.name id, tree_of_modtype mty, tree_of_rec rs)
 
 let modtype ppf mty = !Oprint.out_module_type ppf (tree_of_modtype mty)
 let modtype_declaration id ppf decl =
@@ -762,11 +831,6 @@ let rec trace fst txt ppf = function
        (trace false txt) rem
   | _ -> ()
 
-let rec mismatch = function
-  | [(_, t); (_, t')] -> (t, t')
-  | _ :: _ :: rem -> mismatch rem
-  | _ -> assert false
-
 let rec filter_trace = function
   | (t1, t1') :: (t2, t2') :: rem ->
       let rem' = filter_trace rem in
@@ -789,11 +853,36 @@ let prepare_expansion (t, t') =
   mark_loops t; if t != t' then mark_loops t';
   (t, t')
 
+let may_prepare_expansion compact (t, t') =
+  match (repr t').desc with
+    Tvariant _ | Tobject _ when compact ->
+      mark_loops t; (t, t)
+  | _ -> prepare_expansion (t, t')
+
 let print_tags ppf fields =
   match fields with [] -> ()
   | (t, _) :: fields ->
       fprintf ppf "`%s" t;
       List.iter (fun (t, _) -> fprintf ppf ",@ `%s" t) fields
+
+let has_explanation unif t3 t4 =
+  match t3.desc, t4.desc with
+    Tfield _, _ | _, Tfield _
+  | Tunivar, Tvar | Tvar, Tunivar
+  | Tvariant _, Tvariant _ -> true
+  | Tconstr (p, _, _), Tvar | Tvar, Tconstr (p, _, _) ->
+      unif && min t3.level t4.level < Path.binding_time p
+  | _ -> false
+
+let rec mismatch unif = function
+    (_, t) :: (_, t') :: rem ->
+      begin match mismatch unif rem with
+        Some _ as m -> m
+      | None ->
+          if has_explanation unif t t' then Some(t,t') else None
+      end
+  | [] -> None
+  | _ -> assert false
 
 let explanation unif t3 t4 ppf =
   match t3.desc, t4.desc with
@@ -812,10 +901,12 @@ let explanation unif t3 t4 ppf =
   | Tvar, Tunivar | Tunivar, Tvar ->
       fprintf ppf "@,The universal variable %a would escape its scope"
         type_expr (if t3.desc = Tunivar then t3 else t4)
-  | Tfield ("*dummy method*", _, _, _), _
-  | _, Tfield ("*dummy method*", _, _, _) ->
+  | Tfield (lab, _, _, _), _
+  | _, Tfield (lab, _, _, _) when lab = dummy_method ->
       fprintf ppf
         "@,Self type cannot be unified with a closed object type"
+  | Tfield (l, _, _, _), Tfield (l', _, _, _) when l = l' ->
+      fprintf ppf "@,Types for method %s are incompatible" l
   | Tfield (l, _, _, _), _ ->
       fprintf ppf
         "@,@[Only the first object type has a method %s@]" l
@@ -836,22 +927,29 @@ let explanation unif t3 t4 ppf =
           fprintf ppf
             "@,@[The second variant type does not allow tag(s)@ @[<hov>%a@]@]"
             print_tags fields
+      | [l1,_], true, [l2,_], true when l1 = l2 ->
+          fprintf ppf "@,Types for tag `%s are incompatible" l1
       | _ -> ()
       end
   | _ -> ()
 
+let explanation unif mis ppf =
+  match mis with
+    None -> ()
+  | Some (t3, t4) -> explanation unif t3 t4 ppf
+
 let unification_error unif tr txt1 ppf txt2 =
   reset ();
   let tr = List.map (fun (t, t') -> (t, hide_variant_name t')) tr in
-  let (t3, t4) = mismatch tr in
+  let mis = mismatch unif tr in
   match tr with
   | [] | _ :: [] -> assert false
   | t1 :: t2 :: tr ->
     try
-      let t1, t1' = prepare_expansion t1
-      and t2, t2' = prepare_expansion t2 in
-      print_labels := not !Clflags.classic;
       let tr = filter_trace tr in
+      let t1, t1' = may_prepare_expansion (tr = []) t1
+      and t2, t2' = may_prepare_expansion (tr = []) t2 in
+      print_labels := not !Clflags.classic;
       let tr = List.map prepare_expansion tr in
       fprintf ppf
         "@[<v>\
@@ -862,7 +960,7 @@ let unification_error unif tr txt1 ppf txt2 =
         txt1 (type_expansion t1) t1'
         txt2 (type_expansion t2) t2'
         (trace false "is not compatible with type") tr
-        (explanation unif t3 t4);
+        (explanation unif mis);
       print_labels := true
     with exn ->
       print_labels := true;
@@ -889,6 +987,6 @@ let report_subtyping_error ppf tr1 txt1 tr2 =
   and tr2 = List.map prepare_expansion tr2 in
   trace true txt1 ppf tr1;
   if tr2 = [] then () else
-  let t3, t4 = mismatch tr2 in
+  let mis = mismatch true tr2 in
   trace false "is not compatible with type" ppf tr2;
-  explanation true t3 t4 ppf
+  explanation true mis ppf

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unix.mli,v 1.71 2003/09/14 16:46:31 doligez Exp $ *)
+(* $Id: unix.mli,v 1.79.2.3 2004/07/08 08:40:47 xleroy Exp $ *)
 
 (** Interface to the Unix system *)
 
@@ -153,19 +153,22 @@ type wait_flag =
   | WUNTRACED (** report also the children that receive stop signals. *)
 (** Flags for {!Unix.waitpid}. *)
 
-val execv : string -> string array -> unit
+val execv : string -> string array -> 'a
 (** [execv prog args] execute the program in file [prog], with
-   the arguments [args], and the current process environment. *)
+   the arguments [args], and the current process environment. 
+   These [execv*] functions never return: on success, the current 
+   program is replaced by the new one; 
+   on failure, a {!Unix.Unix_error} exception is raised. *)
 
-val execve : string -> string array -> string array -> unit
+val execve : string -> string array -> string array -> 'a
 (** Same as {!Unix.execv}, except that the third argument provides the
    environment to the program executed. *)
 
-val execvp : string -> string array -> unit
+val execvp : string -> string array -> 'a
 (** Same as {!Unix.execv} respectively, except that
    the program is searched in the path. *)
 
-val execvpe : string -> string array -> string array -> unit
+val execvpe : string -> string array -> string array -> 'a
 (** Same as {!Unix.execvp} respectively, except that
    the program is searched in the path. *)
 
@@ -178,7 +181,7 @@ val wait : unit -> int * process_status
    and termination status. *)
 
 val waitpid : wait_flag list -> int -> int * process_status
-(** Same as {!Unix.wait}, but waits for the process whose pid is given.
+(** Same as {!Unix.wait}, but waits for the child process whose pid is given.
    A pid of [-1] means wait for any child.
    A pid of [0] means wait for any child in the same process group
    as the current process.
@@ -218,7 +221,7 @@ val stdout : file_descr
 (** File descriptor for standard output.*)
 
 val stderr : file_descr
-(** File descriptor for standard standard error. *)
+(** File descriptor for standard error. *)
 
 type open_flag =
     O_RDONLY                    (** Open for reading *)
@@ -237,7 +240,8 @@ type open_flag =
 
 
 type file_perm = int
-(** The type of file access rights. *)
+(** The type of file access rights, e.g. [0o640] is read and write for user, 
+    read for group, none for others *)
 
 val openfile : string -> open_flag list -> file_perm -> file_descr
 (** Open the named file with the given flags. Third argument is
@@ -256,9 +260,13 @@ val write : file_descr -> string -> int -> int -> int
 (** [write fd buff ofs len] writes [len] characters to descriptor
    [fd], taking them from string [buff], starting at position [ofs]
    in string [buff]. Return the number of characters actually
-   written. *)
+   written.  [write] repeats the writing operation until all characters
+   have been written or an error occurs.  *)
 
-
+val single_write : file_descr -> string -> int -> int -> int
+(** Same as [write], but attempts to write only once.
+   Thus, if an error occurs, [single_write] guarantees that no data
+   has been written. *)
 
 (** {6 Interfacing with the standard input/output library} *)
 
@@ -628,11 +636,25 @@ val lockf : file_descr -> lock_command -> int -> unit
    [fd] (as set by {!Unix.lseek}), and extends [size] bytes forward if
    [size] is positive, [size] bytes backwards if [size] is negative,
    or to the end of the file if [size] is zero.
-   A write lock (set with [F_LOCK] or [F_TLOCK]) prevents any other
+   A write lock prevents any other
    process from acquiring a read or write lock on the region.
-   A read lock (set with [F_RLOCK] or [F_TRLOCK]) prevents any other
+   A read lock prevents any other
    process from acquiring a write lock on the region, but lets
-   other processes acquire read locks on it. *)
+   other processes acquire read locks on it.
+
+   The [F_LOCK] and [F_TLOCK] commands attempts to put a write lock
+   on the specified region.
+   The [F_RLOCK] and [F_TRLOCK] commands attempts to put a read lock
+   on the specified region.
+   If one or several locks put by another process prevent the current process
+   from acquiring the lock, [F_LOCK] and [F_RLOCK] block until these locks
+   are removed, while [F_TLOCK] and [F_TRLOCK] fail immediately with an
+   exception.
+   The [F_ULOCK] removes whatever locks the current process has on
+   the specified region.
+   Finally, the [F_TEST] command tests whether a write lock can be
+   acquired on the specified region, without actually putting a lock.
+   It returns immediately if successful, or fails otherwise. *)
 
 
 (** {6 Signals}
@@ -663,7 +685,7 @@ val sigpending : unit -> int list
 (** Return the set of blocked signals that are currently pending. *)
 
 val sigsuspend : int list -> unit
-(** [sigsuspend sigs] atomically sets the blocked signals to [sig]
+(** [sigsuspend sigs] atomically sets the blocked signals to [sigs]
    and waits for a non-ignored, non-blocked signal to be delivered.
    On return, the blocked signals are reset to their initial value. *)
 
@@ -713,10 +735,13 @@ val localtime : float -> tm
 
 val mktime : tm -> float * tm
 (** Convert a date and time, specified by the [tm] argument, into
-   a time in seconds, as returned by {!Unix.time}. Also return a normalized
-   copy of the given [tm] record, with the [tm_wday], [tm_yday],
-   and [tm_isdst] fields recomputed from the other fields.
-   The [tm] argument is interpreted in the local time zone. *)
+   a time in seconds, as returned by {!Unix.time}.  The [tm_isdst],
+   [tm_wday] and [tm_yday] fields of [tm] are ignored.  Also return a
+   normalized copy of the given [tm] record, with the [tm_wday],
+   [tm_yday], and [tm_isdst] fields recomputed from the other fields,
+   and the other fields normalized (so that, e.g., 40 October is
+   changed into 9 November).  The [tm] argument is interpreted in the
+   local time zone. *)
 
 val alarm : int -> int
 (** Schedule a [SIGALRM] signal after the given number of seconds. *)
@@ -835,16 +860,31 @@ type inet_addr
 (** The abstract type of Internet addresses. *)
 
 val inet_addr_of_string : string -> inet_addr
-(** Conversions between string with the format [XXX.YYY.ZZZ.TTT]
-   and Internet addresses. [inet_addr_of_string] raises [Failure]
-   when given a string that does not match this format. *)
+(** Conversion from the printable representation of an Internet
+    address to its internal representation.  The argument string
+    consists of 4 numbers separated by periods ([XXX.YYY.ZZZ.TTT])
+    for IPv4 addresses, and up to 8 numbers separated by colons
+    for IPv6 addresses.  Raise [Failure] when given a string that
+    does not match these formats. *)
 
 val string_of_inet_addr : inet_addr -> string
-(** See {!Unix.inet_addr_of_string}. *)
+(** Return the printable representation of the given Internet address.
+    See {!Unix.inet_addr_of_string} for a description of the
+    printable representation. *)
 
 val inet_addr_any : inet_addr
-(** A special Internet address, for use only with [bind], representing
+(** A special IPv4 address, for use only with [bind], representing
    all the Internet addresses that the host machine possesses. *)
+
+val inet_addr_loopback : inet_addr
+(** A special IPv4 address representing the host machine ([127.0.0.1]). *)
+
+val inet6_addr_any : inet_addr
+(** A special IPv6 address, for use only with [bind], representing
+   all the Internet addresses that the host machine possesses. *)
+
+val inet6_addr_loopback : inet_addr
+(** A special IPv6 address representing the host machine ([::1]). *)
 
 
 (** {6 Sockets} *)
@@ -852,7 +892,8 @@ val inet_addr_any : inet_addr
 
 type socket_domain =
     PF_UNIX                     (** Unix domain *)
-  | PF_INET                     (** Internet domain *)
+  | PF_INET                     (** Internet domain (IPv4) *)
+  | PF_INET6                    (** Internet domain (IPv6) *)
 (** The type of socket domains. *)
 
 type socket_type =
@@ -874,6 +915,9 @@ val socket : socket_domain -> socket_type -> int -> file_descr
 (** Create a new socket in the given domain, and with the
    given kind. The third argument is the protocol type; 0 selects
    the default protocol for that kind of sockets. *)
+
+val domain_of_sockaddr: sockaddr -> socket_domain
+(** Return the socket domain adequate for the given socket address. *)
 
 val socketpair :
   socket_domain -> socket_type -> int -> file_descr * file_descr
@@ -1017,8 +1061,8 @@ external setsockopt_float :
 val open_connection : sockaddr -> in_channel * out_channel
 (** Connect to a server at the given address.
    Return a pair of buffered channels connected to the server.
-   Remember to call {!Pervasives.flush} on the output channel at the right times
-   to ensure correct synchronization. *)
+   Remember to call {!Pervasives.flush} on the output channel at the right
+   times to ensure correct synchronization. *)
 
 val shutdown_connection : in_channel -> unit
 (** ``Shut down'' a connection established with {!Unix.open_connection};
@@ -1086,6 +1130,65 @@ val getservbyport : int -> string -> service_entry
 (** Find an entry in [services] with the given service number,
    or raise [Not_found]. *)
 
+type addr_info =
+  { ai_family : socket_domain;          (** Socket domain *)
+    ai_socktype : socket_type;          (** Socket type *)
+    ai_protocol : int;                  (** Socket protocol number *)
+    ai_addr : sockaddr;                 (** Address *)
+    ai_canonname : string               (** Canonical host name  *)
+  }
+(** Address information returned by {!Unix.getaddrinfo}. *)
+
+type getaddrinfo_option =
+    AI_FAMILY of socket_domain          (** Impose the given socket domain *)
+  | AI_SOCKTYPE of socket_type          (** Impose the given socket type *)
+  | AI_PROTOCOL of int                  (** Impose the given protocol  *)
+  | AI_NUMERICHOST                      (** Do not call name resolver, 
+                                            expect numeric IP address *)
+  | AI_CANONNAME                        (** Fill the [ai_canonname] field
+                                            of the result *)
+  | AI_PASSIVE                          (** Set address to ``any'' address
+                                            for use with {!Unix.bind} *)
+(** Options to {!Unix.getaddrinfo}. *)
+
+val getaddrinfo: 
+  string -> string -> getaddrinfo_option list -> addr_info list
+(** [getaddrinfo host service opts] returns a list of {!Unix.addr_info}
+    records describing socket parameters and addresses suitable for
+    communicating with the given host and service.  The empty list is
+    returned if the host or service names are unknown, or the constraints
+    expressed in [opts] cannot be satisfied.
+
+    [host] is either a host name or the string representation of an IP
+    address.  [host] can be given as the empty string; in this case,
+    the ``any'' address or the ``loopback'' address are used,
+    depending whether [opts] contains [AI_PASSIVE].
+    [service] is either a service name or the string representation of
+    a port number.  [service] can be given as the empty string;
+    in this case, the port field of the returned addresses is set to 0.
+    [opts] is a possibly empty list of options that allows the caller
+    to force a particular socket domain (e.g. IPv6 only or IPv4 only)
+    or a particular socket type (e.g. TCP only or UDP only). *)
+
+type name_info =
+  { ni_hostname : string;               (** Name or IP address of host *)
+    ni_service : string }               (** Name of service or port number *)
+(** Host and service information returned by {!Unix.getnameinfo}. *)
+
+type getnameinfo_option =
+    NI_NOFQDN            (** Do not qualify local host names *)
+  | NI_NUMERICHOST       (** Always return host as IP address *)
+  | NI_NAMEREQD          (** Fail if host name cannot be determined *)
+  | NI_NUMERICSERV       (** Always return service as port number *)
+  | NI_DGRAM             (** Consider the service as UDP-based
+                             instead of the default TCP *)
+(** Options to {!Unix.getnameinfo}. *)
+
+val getnameinfo : sockaddr -> getnameinfo_option list -> name_info
+(** [getnameinfo addr opts] returns the host name and service name
+    corresponding to the socket address [addr].  [opts] is a possibly
+    empty list of options that governs how these names are obtained.
+    Raise [Not_found] if an error occurs. *)
 
 
 (** {6 Terminal interface} *)

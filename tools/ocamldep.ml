@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamldep.ml,v 1.32 2003/04/06 12:41:54 doligez Exp $ *)
+(* $Id: ocamldep.ml,v 1.33 2004/01/16 15:24:03 doligez Exp $ *)
 
 open Format
 open Location
@@ -73,11 +73,7 @@ let find_dependency modname (byt_deps, opt_deps) =
   with Not_found ->
     (byt_deps, opt_deps)
 
-let (depends_on, escaped_eol) =
-  match Sys.os_type with
-  | "Unix" | "Win32" | "Cygwin" -> (": ", "\\\n    ")
-  | "MacOS" -> ("\196 ", "\182\n    ")
-  | _ -> assert false
+let (depends_on, escaped_eol) = (": ", "\\\n    ")
 
 let print_dependencies target_file deps =
   match deps with

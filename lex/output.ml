@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: output.ml,v 1.24 2003/08/29 17:33:45 doligez Exp $ *)
+(* $Id: output.ml,v 1.25 2004/02/12 17:29:04 maranget Exp $ *)
 
 (* Output the DFA tables and its entry points *)
 
@@ -99,8 +99,8 @@ let output_entry sourcefile ic oc oci e =
       copy_chunk sourcefile ic oc oci loc true;
       fprintf oc "\n")
     e.auto_actions;
-  fprintf oc "  | n -> lexbuf.Lexing.refill_buff lexbuf; \
-                                __ocaml_lex_%s_rec %alexbuf n\n\n"
+  fprintf oc "  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; \
+                                __ocaml_lex_%s_rec %alexbuf __ocaml_lex_state\n\n"
           e.auto_name output_args e.auto_args
 
 (* Main output function *)

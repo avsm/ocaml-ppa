@@ -9,6 +9,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: odoc_info.mli,v 1.36 2004/05/23 10:41:50 guesdon Exp $ *)
+
 (** Interface to the information collected in source files. *)
 
 (** The differents kinds of element references. *)
@@ -47,6 +49,9 @@ and text_element = Odoc_types.text_element =
        (** A reference to an element. Complete name and kind. *)
   | Superscript of text (** Superscripts. *)
   | Subscript of text (** Subscripts. *)
+  | Module_list of string list
+       (** The table of the given modules with their abstract. *)
+  | Index_list (** The links to the various indexes (values, types, ...) *)
 
 (** A text is a list of [text_element]. The order matters. *)
 and text = text_element list
@@ -56,6 +61,10 @@ type see_ref = Odoc_types.see_ref =
     See_url of string
   | See_file of string
   | See_doc of string
+
+(** Raised when parsing string to build a {!Odoc_info.text}
+   structure. [(line, char, string)] *)
+exception Text_syntax of int * int * string 
 
 (** The information in a \@see tag. *)
 type see = see_ref * text
@@ -132,13 +141,6 @@ module Parameter :
     (** A parameter is just a param_info.*)
     type parameter = param_info
 
-    (** A module parameter is just a name and a module type.*)
-    type module_parameter = Odoc_parameter.module_parameter =
-        {
-          mp_name : string ;
-          mp_type : Types.module_type ;
-        } 
-    
     (** {3 Functions} *)
     (** Acces to the name as a string. For tuples, parenthesis and commas are added. *)
     val complete_name : parameter -> string
@@ -407,6 +409,7 @@ module Module :
         {
           im_name : Name.t ; (** Complete name of the included module. *)
           mutable im_module : mmt option ; (** The included module or module type, if we found it. *)
+	  mutable im_info : Odoc_types.info option ; (** comment associated to the includ directive *)
         } 
           
     and module_alias = Odoc_module.module_alias = 
@@ -415,12 +418,19 @@ module Module :
           mutable ma_module : mmt option ; (** The real module or module type if we could associate it. *)
         } 
 
+    and module_parameter = Odoc_module.module_parameter = {
+	mp_name : string ; (** the name *)
+	mp_type : Types.module_type ; (** the type *)
+	mp_type_code : string ; (** the original code *)
+	mp_kind : module_type_kind ; (** the way the parameter was built *)
+      } 
+
     (** Different kinds of a module. *)
     and module_kind = Odoc_module.module_kind = 
       | Module_struct of module_element list (** A complete module structure. *)
       | Module_alias of module_alias (** Complete name and corresponding module if we found it *)
-      | Module_functor of (Parameter.module_parameter list) * module_kind 
-                     (** A functor, with {e all} its parameters and the rest of its definition *)
+      | Module_functor of module_parameter * module_kind 
+                     (** A functor, with its parameter and the rest of its definition *)
       | Module_apply of module_kind * module_kind
                      (** A module defined by application of a functor. *)
       | Module_with of module_type_kind * string
@@ -440,6 +450,8 @@ module Module :
           mutable m_kind : module_kind ; (** The way the module is defined. *)
           mutable m_loc : location ;
           mutable m_top_deps : Name.t list ; (** The toplevels module names this module depends on. *)
+	  mutable m_code : string option ; (** The whole code of the module *)
+	  mutable m_code_intf : string option ; (** The whole code of the interface of the module *)
         } 
 
     and module_type_alias = Odoc_module.module_type_alias =
@@ -451,8 +463,8 @@ module Module :
     (** Different kinds of module type. *)
     and module_type_kind = Odoc_module.module_type_kind = 
       | Module_type_struct of module_element list (** A complete module signature. *)
-      | Module_type_functor of (Odoc_parameter.module_parameter list) * module_type_kind
-            (** A functor, with {e all} its parameters and the rest of its definition *)
+      | Module_type_functor of module_parameter * module_type_kind
+            (** A functor, with its parameter and the rest of its definition *)
       | Module_type_alias of module_type_alias
             (** Complete alias name and corresponding module type if we found it. *)
       | Module_type_with of module_type_kind * string
@@ -515,7 +527,7 @@ module Module :
     val module_is_functor : t_module -> bool
 
     (** The list of couples (module parameter, optional description). *)
-    val module_parameters : ?trans:bool-> t_module -> (Parameter.module_parameter * text option) list
+    val module_parameters : ?trans:bool-> t_module -> (module_parameter * text option) list
 
     (** The list of module comments. *)
     val module_comments : ?trans:bool-> t_module -> text list
@@ -562,7 +574,7 @@ module Module :
     val module_type_is_functor : t_module_type -> bool
 
     (** The list of couples (module parameter, optional description). *)
-    val module_type_parameters : ?trans:bool-> t_module_type -> (Parameter.module_parameter * text option) list
+    val module_type_parameters : ?trans:bool-> t_module_type -> (module_parameter * text option) list
 
     (** The list of module comments. *)
     val module_type_comments : ?trans:bool-> t_module_type -> text list
@@ -609,17 +621,24 @@ val string_of_type_expr : Types.type_expr -> string
 
 (** This function returns a string to represent the given list of types,
    with a given separator. *)
-val string_of_type_list : string -> Types.type_expr list -> string
+val string_of_type_list : ?par: bool -> string -> Types.type_expr list -> string
 
 (** This function returns a string to represent the list of type parameters
    for the given type. *)
 val string_of_type_param_list : Type.t_type -> string
 
+(** This function returns a string to represent the given list of 
+   type parameters of a class or class type,
+   with a given separator. *)
+val string_of_class_type_param_list : Types.type_expr list -> string
+
 (** This function returns a string representing a [Types.module_type]. 
    @param complete indicates if we must print complete signatures
    or just [sig end]. Default if [false].
+   @param code if [complete = false] and the type contains something else
+   than identificators and functors, then the given code is used.
 *)
-val string_of_module_type : ?complete: bool -> Types.module_type -> string
+val string_of_module_type : ?code: string -> ?complete: bool -> Types.module_type -> string
 
 (** This function returns a string representing a [Types.class_type]. 
    @param complete indicates if we must print complete signatures
@@ -715,6 +734,37 @@ val apply_opt : ('a -> 'b) -> 'a option -> 'b option
    not different from a second value. If the two values
    are different, return the second one.*)
 val apply_if_equal : ('a -> 'a) -> 'a -> 'a -> 'a
+
+(** [text_of_string s] returns the text structure from the
+   given string. 
+   @raise Text_syntax if a syntax error is encountered. *)
+val text_of_string : string -> text
+
+(** [text_string_of_text text] returns the string representing
+   the given [text]. This string can then be parsed again
+   by {!Odoc_info.text_of_string}.*)   
+val text_string_of_text : text -> string
+
+(** [info_of_string s] parses the given string
+   like a regular ocamldoc comment and return an 
+   {!Odoc_info.info} structure.
+   @return an empty structure if there was a syntax error. TODO: change this
+*)
+val info_of_string : string -> info
+
+(** [info_string_of_info info] returns the string representing
+   the given [info]. This string can then be parsed again
+   by {!Odoc_info.info_of_string}.*)   
+val info_string_of_info : info -> string
+
+(** [info_of_comment_file file] parses the given file
+   and return an {!Odoc_info.info} structure. The content of the 
+   file must have the same syntax as the content of a special comment.
+   @raise Failure is the file could not be opened or there is a
+   syntax error.
+*)
+val info_of_comment_file : string -> info
+
 
 (** Research in elements *)
 module Search :
@@ -887,7 +937,13 @@ module Args :
     
       (** The optional title to use in the generated documentation. *)
       val title : string option ref
+
+      (** To keep the code while merging, when we have both .ml and .mli files for a module. *)
+      val keep_code : bool ref
     
+      (** The optional file whose content can be used as intro text. *)
+      val intro_file : string option ref
+
       (** Flag to indicate whether we must display the complete list of parameters
 	 for functions and methods. *)
       val with_parameter_list : bool ref

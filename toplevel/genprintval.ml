@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: genprintval.ml,v 1.36 2003/07/02 09:14:32 xleroy Exp $ *)
+(* $Id: genprintval.ml,v 1.37 2004/06/13 16:23:35 xleroy Exp $ *)
 
 (* To print values *)
 
@@ -354,9 +354,9 @@ module Make(O : OBJ)(EVP : EVALPATH with type value = O.t) = struct
         tree_of_constr_with_args
            (fun x -> Oide_ident x) name 1 depth bucket cstr.cstr_args
       with Not_found | EVP.Error ->
-        match check_depth depth obj ty with
+        match check_depth depth bucket ty with
           Some x -> x
-        | None -> outval_of_untyped_exception obj
+        | None -> outval_of_untyped_exception bucket
 
     in tree_of_val max_depth obj ty
 

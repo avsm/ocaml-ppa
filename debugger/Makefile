@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.27 2002/11/18 09:23:31 xleroy Exp $
+# $Id: Makefile,v 1.29 2004/02/22 15:07:51 xleroy Exp $
 
 include ../config/Makefile
 
@@ -38,8 +38,8 @@ OTHEROBJS=\
   ../typing/datarepr.cmo ../typing/env.cmo ../typing/oprint.cmo \
   ../typing/ctype.cmo ../typing/printtyp.cmo ../typing/mtype.cmo \
   ../bytecomp/runtimedef.cmo ../bytecomp/bytesections.cmo \
-  ../bytecomp/dll.cmo ../bytecomp/symtable.cmo \
-  ../bytecomp/opcodes.cmo ../bytecomp/meta.cmo \
+  ../bytecomp/dll.cmo ../bytecomp/meta.cmo ../bytecomp/symtable.cmo \
+  ../bytecomp/opcodes.cmo \
   ../toplevel/genprintval.cmo \
   ../otherlibs/dynlink/dynlink.cmo
 
@@ -55,6 +55,7 @@ OBJS=\
 	debugcom.cmo \
 	exec.cmo \
 	source.cmo \
+	pos.cmo \
 	checkpoints.cmo \
 	symbols.cmo \
 	events.cmo \

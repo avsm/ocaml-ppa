@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: sys.mli,v 1.39 2003/03/03 17:16:15 xleroy Exp $ *)
+(* $Id: sys.mli,v 1.45 2004/05/04 11:51:13 basile Exp $ *)
 
 (** System interface. *)
 
@@ -24,34 +24,36 @@ val argv : string array
 val executable_name : string
 (** The name of the file containing the executable currently running. *)
 
-external file_exists : string -> bool = "sys_file_exists"
+external file_exists : string -> bool = "caml_sys_file_exists"
 (** Test if a file with the given name exists. *)
 
-external remove : string -> unit = "sys_remove"
+external remove : string -> unit = "caml_sys_remove"
 (** Remove the given file name from the file system. *)
 
-external rename : string -> string -> unit = "sys_rename"
+external rename : string -> string -> unit = "caml_sys_rename"
 (** Rename a file. The first argument is the old name and the
-   second is the new name. *)
+   second is the new name. If there is already another file
+   under the new name, [rename] may replace it, or raise an
+   exception, depending on your operating system. *)
 
-external getenv : string -> string = "sys_getenv"
+external getenv : string -> string = "caml_sys_getenv"
 (** Return the value associated to a variable in the process
    environment. Raise [Not_found] if the variable is unbound. *)
 
-external command : string -> int = "sys_system_command"
+external command : string -> int = "caml_sys_system_command"
 (** Execute the given shell command and return its exit code. *)
 
-external time : unit -> float = "sys_time"
+external time : unit -> float = "caml_sys_time"
 (** Return the processor time, in seconds, used by the program
    since the beginning of execution. *)
 
-external chdir : string -> unit = "sys_chdir"
+external chdir : string -> unit = "caml_sys_chdir"
 (** Change the current working directory of the process. *)
 
-external getcwd : unit -> string = "sys_getcwd"
+external getcwd : unit -> string = "caml_sys_getcwd"
 (** Return the current working directory of the process. *)
 
-external readdir : string -> string array = "sys_read_directory"
+external readdir : string -> string array = "caml_sys_read_directory"
 (** Return the names of all files present in the given directory.
    Names denoting the current directory and the parent directory
    (["."] and [".."] in Unix) are not returned.  Each string in the
@@ -69,8 +71,7 @@ val os_type : string
 (** Operating system currently executing the Caml program. One of
 -  ["Unix"] (for all Unix versions, including Linux and Mac OS X),
 -  ["Win32"] (for MS-Windows, OCaml compiled with MSVC++ or Mingw),
--  ["Cygwin"] (for MS-Windows, OCaml compiled with Cygwin),
--  ["MacOS"] (for MacOS 9). *)
+-  ["Cygwin"] (for MS-Windows, OCaml compiled with Cygwin). *)
 
 val word_size : int
 (** Size of one word on the machine currently executing the Caml
@@ -98,10 +99,12 @@ type signal_behavior =
    number as argument. *)
 
 external signal :
-  int -> signal_behavior -> signal_behavior = "install_signal_handler"
-(** Set the behavior of the system on receipt of a given signal.
-   The first argument is the signal number.  Return the behavior
-   previously associated with the signal. *)
+  int -> signal_behavior -> signal_behavior = "caml_install_signal_handler"
+(** Set the behavior of the system on receipt of a given signal.  The
+   first argument is the signal number.  Return the behavior
+   previously associated with the signal. If the signal number is
+   invalid (or not available on your system), an [Invalid_argument]
+   exception is raised. *)
 
 val set_signal : int -> signal_behavior -> unit
 (** Same as {!Sys.signal} but return value is ignored. *)
@@ -188,6 +191,7 @@ val catch_break : bool -> unit
 
 val ocaml_version : string;;
 (** [ocaml_version] is the version of Objective Caml.
-    It is a string of the form ["major.minor[additional-info]"]
-    Where major and minor are integers, and [additional-info] is
-    a string that is empty or starts with a '+'. *)
+    It is a string of the form ["major.minor[.patchlevel][+additional-info]"]
+    Where [major], [minor], and [patchlevel] are integers, and
+    [additional-info] is an arbitrary string.  The [[.patchlevel]] and
+    [[+additional-info]] parts may be absent. *)

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: symtable.mli,v 1.13 2003/05/26 13:46:06 xleroy Exp $ *)
+(* $Id: symtable.mli,v 1.14 2004/02/22 15:07:50 xleroy Exp $ *)
 
 (* Assign locations and numbers to globals and primitives *)
 
@@ -25,6 +25,8 @@ val initial_global_table: unit -> Obj.t array
 val output_global_map: out_channel -> unit
 val output_primitive_names: out_channel -> unit
 val output_primitive_table: out_channel -> unit
+val data_global_map: unit -> Obj.t
+val data_primitive_names: unit -> string
 
 (* Functions for the toplevel *)
 

@@ -10,16 +10,30 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: token.ml,v 1.8 2003/07/10 12:28:25 michel Exp $ *)
+(* $Id: token.ml,v 1.11.2.1 2004/06/28 18:30:48 mauny Exp $ *)
 
 type t = (string * string);
 type pattern = (string * string);
 
 exception Error of string;
 
-type location = (int * int);
-type location_function = int -> (int * int);
-type lexer_func 'te = Stream.t char -> (Stream.t 'te * location_function);
+value make_loc (bp, ep) =
+   ({ (Lexing.dummy_pos) with Lexing.pos_cnum = bp; Lexing.pos_lnum = 1 },
+    { (Lexing.dummy_pos) with Lexing.pos_cnum = ep; Lexing.pos_lnum = 1 })
+;
+
+value nowhere = { (Lexing.dummy_pos) with Lexing.pos_cnum = 0 };
+
+value dummy_loc = (Lexing.dummy_pos, Lexing.dummy_pos);
+
+value succ_pos p =
+    { ( p ) with Lexing.pos_cnum = p.Lexing.pos_cnum + 1};
+value lt_pos p1 p2 = p1.Lexing.pos_cnum < p2.Lexing.pos_cnum;
+
+type flocation = (Lexing.position * Lexing.position);
+
+type flocation_function = int -> flocation;
+type lexer_func 'te = Stream.t char -> (Stream.t 'te * flocation_function);
 
 type glexer 'te =
   { tok_func : lexer_func 'te;
@@ -27,7 +41,7 @@ type glexer 'te =
     tok_removing : pattern -> unit;
     tok_match : pattern -> 'te -> string;
     tok_text : pattern -> string;
-    tok_comm : mutable option (list location) }
+    tok_comm : mutable option (list flocation) }
 ;
 type lexer =
   { func : lexer_func t;
@@ -43,31 +57,41 @@ value lexer_text (con, prm) =
   else con ^ " '" ^ prm ^ "'"
 ;
 
-value locerr () = invalid_arg "Lexer: location function";
-value loct_create () = (ref (Array.create 1024 None), ref False);
+value locerr () = invalid_arg "Lexer: flocation function";
+
+value tsz = 256; (* up to 2^29 entries on a 32-bit machine, 2^61 on 64-bit *)
+
+value loct_create () = (ref [| |], ref False);
+
 value loct_func (loct, ov) i =
   match
-    if i < 0 || i >= Array.length loct.val then
-      if ov.val then Some (0, 0) else None
-    else Array.unsafe_get loct.val i
+    if i < 0 || i/tsz >= Array.length loct.val then None
+    else if loct.val.(i/tsz) = [| |] then
+      if ov.val then Some (nowhere, nowhere) else  None
+    else Array.unsafe_get (Array.unsafe_get loct.val (i/tsz)) (i mod tsz)
   with
   [ Some loc -> loc
   | _ -> locerr () ]
 ;
-value loct_add (loct, ov) i loc =
-  if i >= Array.length loct.val then
-    let new_tmax = Array.length loct.val * 2 in
-    if new_tmax < Sys.max_array_length then do {
-      let new_loct = Array.create new_tmax None in
-      Array.blit loct.val 0 new_loct 0 (Array.length loct.val);
-      loct.val := new_loct;
-      loct.val.(i) := Some loc
-    }
-    else ov.val := True
-  else loct.val.(i) := Some loc
-;
 
-value make_stream_and_location next_token_loc =
+value loct_add (loct, ov) i loc = do {
+  while i/tsz >= Array.length loct.val && (not ov.val) do {
+    let new_tmax = Array.length loct.val * 2 + 1 in
+    if new_tmax < Sys.max_array_length then do {
+      let new_loct = Array.make new_tmax [| |] in
+      Array.blit loct.val 0 new_loct 0 (Array.length loct.val);
+      loct.val := new_loct
+    } else ov.val := True
+  };
+  if not(ov.val) then do {
+    if loct.val.(i/tsz) = [| |] then
+      loct.val.(i/tsz) := Array.make tsz None
+    else ();
+    loct.val.(i/tsz).(i mod tsz) := Some loc
+  } else ()
+};
+
+value make_stream_and_flocation next_token_loc =
   let loct = loct_create () in
   let ts =
     Stream.from
@@ -79,7 +103,7 @@ value make_stream_and_location next_token_loc =
 ;
 
 value lexer_func_of_parser next_token_loc cs =
-  make_stream_and_location (fun () -> next_token_loc cs)
+  make_stream_and_flocation (fun () -> next_token_loc cs)
 ;
 
 value lexer_func_of_ocamllex lexfun cs =
@@ -90,10 +114,10 @@ value lexer_func_of_ocamllex lexfun cs =
   in
   let next_token_loc _ =
     let tok = lexfun lb in
-    let loc = (Lexing.lexeme_start lb, Lexing.lexeme_end lb) in
+    let loc = (Lexing.lexeme_start_p lb, Lexing.lexeme_end_p lb) in
     (tok, loc)
   in
-  make_stream_and_location next_token_loc
+  make_stream_and_flocation next_token_loc
 ;
 
 (* Char and string tokens to real chars and string *)
@@ -133,25 +157,25 @@ value rec backslash s i =
     | 'x' -> backslash1h s (i + 1)
     | _ -> raise Not_found ]
 and backslash1 cod s i =
-  if i = String.length s then ('\\', i - 1)
+  if i = String.length s then raise Not_found
   else
     match s.[i] with
     [ '0'..'9' as c -> backslash2 (10 * cod + valch c) s (i + 1)
-    | _ -> ('\\', i - 1) ]
+    | _ -> raise Not_found ]
 and backslash2 cod s i =
-  if i = String.length s then ('\\', i - 2)
+  if i = String.length s then raise Not_found
   else
     match s.[i] with
     [ '0'..'9' as c -> (Char.chr (10 * cod + valch c), i + 1)
-    | _ -> ('\\', i - 2) ]
+    | _ -> raise Not_found ]
 and backslash1h s i =
-  if i = String.length s then ('\\', i - 1)
+  if i = String.length s then raise Not_found
   else
     match s.[i] with
     [ '0'..'9' as c -> backslash2h (valch c) s (i + 1)
     | 'a'..'f' as c -> backslash2h (valch_a c) s (i + 1)
     | 'A'..'F' as c -> backslash2h (valch_A c) s (i + 1)
-    | _ -> ('\\', i - 1) ]
+    | _ -> raise Not_found ]
 and backslash2h cod s i =
   if i = String.length s then ('\\', i - 2)
   else
@@ -159,7 +183,7 @@ and backslash2h cod s i =
     [ '0'..'9' as c -> (Char.chr (16 * cod + valch c), i + 1)
     | 'a'..'f' as c -> (Char.chr (16 * cod + valch_a c), i + 1)
     | 'A'..'F' as c -> (Char.chr (16 * cod + valch_A c), i + 1)
-    | _ -> ('\\', i - 2) ]
+    | _ -> raise Not_found ]
 ;
 
 value rec skip_indent s i =
@@ -188,25 +212,33 @@ value eval_char s =
   else failwith "invalid char token"
 ;
 
-value eval_string s =
+value eval_string  (bp, ep) s =
   loop 0 0 where rec loop len i =
     if i = String.length s then get_buff len
     else
       let (len, i) =
         if s.[i] = '\\' then
           let i = i + 1 in
-          if i = String.length s then failwith "invalid string token"
-          else if s.[i] = '"' then (store len '"', i + 1)
-          else
-            match s.[i] with
-            [ '\010' -> (len, skip_indent s (i + 1))
-            | '\013' -> (len, skip_indent s (skip_opt_linefeed s (i + 1)))
-            | c ->
-                try
-                  let (c, i) = backslash s i in
-                  (store len c, i)
-                with
-                [ Not_found -> (store (store len '\\') c, i + 1) ] ]
+          if i = String.length s then failwith "invalid string token" else
+          if s.[i] = '"' then (store len '"', i + 1) else
+          match s.[i] with
+          [ '\010' -> (len, skip_indent s (i + 1))
+          | '\013' -> (len, skip_indent s (skip_opt_linefeed s (i + 1)))
+          | c ->
+              try
+                let (c, i) = backslash s i in
+                (store len c, i)
+              with
+                [ Not_found -> do {
+                  let txt = "Invalid backslash escape in string" in
+                  let pos = bp.Lexing.pos_cnum - bp.Lexing.pos_bol + i in
+                  if  bp.Lexing.pos_fname = "" then
+                    Printf.eprintf "Warning: line %d, chars %d-%d: %s\n"
+                      bp.Lexing.pos_lnum pos (pos + 1) txt
+                  else
+                    Printf.eprintf "Warning: File \"%s\", line %d, chars %d-%d: %s\n"
+                      bp.Lexing.pos_fname bp.Lexing.pos_lnum pos (pos + 1) txt;
+                  (store (store len '\\') c, i + 1) } ] ]
         else (store len s.[i], i + 1)
       in
       loop len i

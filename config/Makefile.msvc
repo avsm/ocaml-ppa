@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.msvc,v 1.11 2003/07/03 16:14:49 xleroy Exp $
+# $Id: Makefile.msvc,v 1.12 2004/04/01 13:08:56 xleroy Exp $
 
 # Configuration for Windows, Visual C++ compiler
 
@@ -108,7 +108,8 @@ BINUTILS_OBJCOPY=objcopy
 OTHERLIBRARIES=win32unix systhreads str num win32graph dynlink bigarray labltk
 
 ### Name of the target architecture for the "num" library
-BIGNUM_ARCH=C
+BNG_ARCH=generic
+BNG_ASM_LEVEL=0
 
 ### Configuration for LablTk
 # Set TK_ROOT to the directory where you installed TCL/TK 8.3

@@ -11,12 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: globroots.h,v 1.2 2001/12/07 13:39:28 xleroy Exp $ */
+/* $Id: globroots.h,v 1.3 2003/12/15 18:10:47 doligez Exp $ */
 
 /* Registration of global memory roots */
 
-#ifndef _globroots_
-#define _globroots_
+#ifndef CAML_GLOBROOTS_H
+#define CAML_GLOBROOTS_H
 
 #include "mlvalues.h"
 
@@ -37,4 +37,4 @@ struct global_root_list {
 
 extern struct global_root_list caml_global_roots;
 
-#endif /* _globroots */
+#endif /* CAML_GLOBROOTS_H */

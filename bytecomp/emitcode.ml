@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emitcode.ml,v 1.31 2003/03/06 15:59:54 xleroy Exp $ *)
+(* $Id: emitcode.ml,v 1.32 2004/05/26 11:10:50 garrigue Exp $ *)
 
 (* Generation of bytecode + relocation information *)
 
@@ -293,6 +293,8 @@ let emit_instr = function
   | Kisint -> out opISINT
   | Kisout -> out opULTINT
   | Kgetmethod -> out opGETMETHOD
+  | Kgetpubmet tag -> out opGETPUBMET; out_int tag; out_int 0
+  | Kgetdynmet -> out opGETDYNMET
   | Kevent ev -> record_event ev
   | Kstop -> out opSTOP
 

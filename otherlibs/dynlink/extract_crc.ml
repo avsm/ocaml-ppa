@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: extract_crc.ml,v 1.9 2001/12/07 13:39:52 xleroy Exp $ *)
+(* $Id: extract_crc.ml,v 1.10 2004/04/09 13:26:41 xleroy Exp $ *)
 
 (* Print the digests of unit interfaces *)
 
@@ -33,7 +33,9 @@ let print_crc unit =
     prerr_endline unit;
     begin match exn with
       Sys_error msg -> prerr_endline msg
-    | Dynlink.Error _ -> prerr_endline "Ill formed .cmi file"
+    | Dynlink.Error(Dynlink.File_not_found name) ->
+        prerr_string "Cannot find file "; prerr_endline name
+    | Dynlink.Error _ -> prerr_endline "Ill-formed .cmi file"
     | _ -> raise exn
     end;
     exit 2

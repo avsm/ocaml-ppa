@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: translcore.mli,v 1.17 2000/09/04 08:49:31 garrigue Exp $ *)
+(* $Id: translcore.mli,v 1.18 2003/11/25 09:20:43 garrigue Exp $ *)
 
 (* Translation from typed abstract syntax to lambda terms,
    for the core language *)
@@ -46,3 +46,5 @@ val report_error: formatter -> error -> unit
 (* Forward declaration -- to be filled in by Translmod.transl_module *)
 val transl_module :
       (module_coercion -> Path.t option -> module_expr -> lambda) ref
+val transl_object :
+      (Ident.t -> string list -> class_expr -> lambda) ref

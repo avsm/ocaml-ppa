@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: matching.mli,v 1.11 2001/02/19 20:27:35 maranget Exp $ *)
+(* $Id: matching.mli,v 1.12 2004/05/26 11:10:50 garrigue Exp $ *)
 
 (* Compilation of pattern-matching *)
 
@@ -35,3 +35,7 @@ val for_tupled_function:
 exception Cannot_flatten
 
 val flatten_pattern: int -> pattern -> pattern list
+
+val make_test_sequence:
+        lambda option -> primitive -> primitive -> lambda ->
+        (Asttypes.constant * lambda) list -> lambda

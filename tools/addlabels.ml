@@ -1,4 +1,4 @@
-(* $Id: addlabels.ml,v 1.9 2002/11/01 17:06:47 doligez Exp $ *)
+(* $Id: addlabels.ml,v 1.10 2003/11/25 09:20:45 garrigue Exp $ *)
 
 open StdLabels
 open Asttypes
@@ -276,7 +276,7 @@ let rec add_labels_expr ~text ~values ~classes expr =
   | Pexp_override lst ->
       List.iter lst ~f:(fun (_,e) -> add_labels_rec e)
   | Pexp_ident _ | Pexp_constant _ | Pexp_construct _ | Pexp_variant _
-  | Pexp_new _ | Pexp_assertfalse ->
+  | Pexp_new _ | Pexp_assertfalse | Pexp_object _ ->
       ()
 
 let rec add_labels_class ~text ~classes ~values ~methods cl =

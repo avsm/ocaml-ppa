@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pervasives.mli,v 1.94 2003/10/08 13:13:33 weis Exp $ *)
+(* $Id: pervasives.mli,v 1.99.2.2 2004/06/22 14:33:37 xleroy Exp $ *)
 
 (** The initially opened module.
 
@@ -48,8 +48,8 @@ external ( = ) : 'a -> 'a -> bool = "%equal"
    Mutable structures (e.g. references and arrays) are equal
    if and only if their current contents are structurally equal,
    even if the two mutable objects are not the same physical object.
-   Equality between functional values may raise [Invalid_argument].
-   Equality between cyclic data structures may not terminate. *)
+   Equality between functional values raises [Invalid_argument].
+   Equality between cyclic data structures does not terminate. *)
 
 external ( <> ) : 'a -> 'a -> bool = "%notequal"
 (** Negation of {!Pervasives.(=)}. *)
@@ -70,14 +70,27 @@ external ( >= ) : 'a -> 'a -> bool = "%greaterequal"
    total ordering over all types.
    The ordering is compatible with [(=)]. As in the case
    of [(=)], mutable structures are compared by contents.
-   Comparison between functional values may raise [Invalid_argument].
-   Comparison between cyclic structures may not terminate. *)
+   Comparison between functional values raises [Invalid_argument].
+   Comparison between cyclic structures does not terminate. *)
 
 external compare : 'a -> 'a -> int = "%compare"
-(** [compare x y] returns [0] if [x=y], a negative integer if
-   [x<y], and a positive integer if [x>y]. The same restrictions
-   as for [=] apply. [compare] can be used as the comparison function
-   required by the {!Set.Make} and {!Map.Make} functors. *)
+(** [compare x y] returns [0] if [x] is equal to [y],
+   a negative integer if [x] is less than [y], and a positive integer
+   if [x] is greater than [y].  The ordering implemented by [compare]
+   is compatible with the comparison predicates [=], [<] and [>]
+   defined above,  with one difference on the treatment of the float value
+   {!Pervasives.nan}.  Namely, the comparison predicates treat [nan]
+   as different from any other float value, including itself;
+   while [compare] treats [nan] as equal to itself and less than any
+   other float value.  This treatment of [nan] ensures that [compare]
+   defines a total ordering relation.
+
+   [compare] applied to functional values may raise [Invalid_argument].
+   [compare] applied to cyclic structures may not terminate.
+
+   The [compare] function can be used as the comparison function
+   required by the {!Set.Make} and {!Map.Make} functors, as well as
+   the {!List.sort} and {!Array.sort} functions. *)
 
 val min : 'a -> 'a -> 'a
 (** Return the smaller of the two arguments. *)
@@ -92,7 +105,7 @@ external ( == ) : 'a -> 'a -> bool = "%eq"
    physical modification of [e1] also affects [e2].
    On non-mutable structures, the behavior of [(==)] is
    implementation-dependent; however, it is guaranteed that
-   [e1 == e2] implies [e1 = e2]. *)
+   [e1 == e2] implies [compare e1 e2 = 0]. *)
 
 external ( != ) : 'a -> 'a -> bool = "%noteq"
 (** Negation of {!Pervasives.(==)}. *)
@@ -234,55 +247,55 @@ external ( *. ) : float -> float -> float = "%mulfloat"
 external ( /. ) : float -> float -> float = "%divfloat"
 (** Floating-point division. *)
 
-external ( ** ) : float -> float -> float = "power_float" "pow" "float"
+external ( ** ) : float -> float -> float = "caml_power_float" "pow" "float"
 (** Exponentiation *)
 
-external sqrt : float -> float = "sqrt_float" "sqrt" "float"
+external sqrt : float -> float = "caml_sqrt_float" "sqrt" "float"
 (** Square root *)
 
-external exp : float -> float = "exp_float" "exp" "float"
+external exp : float -> float = "caml_exp_float" "exp" "float"
 (** Exponential. *)
 
-external log : float -> float = "log_float" "log" "float"
+external log : float -> float = "caml_log_float" "log" "float"
 (** Natural logarithm. *)
 
-external log10 : float -> float = "log10_float" "log10" "float"
+external log10 : float -> float = "caml_log10_float" "log10" "float"
 (** Base 10 logarithm. *)
 
-external cos : float -> float = "cos_float" "cos" "float"
+external cos : float -> float = "caml_cos_float" "cos" "float"
 (** See {!Pervasives.atan2}. *)
 
-external sin : float -> float = "sin_float" "sin" "float"
+external sin : float -> float = "caml_sin_float" "sin" "float"
 (** See {!Pervasives.atan2}. *)
 
-external tan : float -> float = "tan_float" "tan" "float"
+external tan : float -> float = "caml_tan_float" "tan" "float"
 (** See {!Pervasives.atan2}. *)
 
-external acos : float -> float = "acos_float" "acos" "float"
+external acos : float -> float = "caml_acos_float" "acos" "float"
 (** See {!Pervasives.atan2}. *)
 
-external asin : float -> float = "asin_float" "asin" "float"
+external asin : float -> float = "caml_asin_float" "asin" "float"
 (** See {!Pervasives.atan2}. *)
 
-external atan : float -> float = "atan_float" "atan" "float"
+external atan : float -> float = "caml_atan_float" "atan" "float"
 (** See {!Pervasives.atan2}. *)
 
-external atan2 : float -> float -> float = "atan2_float" "atan2" "float"
+external atan2 : float -> float -> float = "caml_atan2_float" "atan2" "float"
 (** The usual trigonometric functions. *)
 
-external cosh : float -> float = "cosh_float" "cosh" "float"
+external cosh : float -> float = "caml_cosh_float" "cosh" "float"
 (** See {!Pervasives.tanh}. *)
 
-external sinh : float -> float = "sinh_float" "sinh" "float"
+external sinh : float -> float = "caml_sinh_float" "sinh" "float"
 (** See {!Pervasives.tanh}. *)
 
-external tanh : float -> float = "tanh_float" "tanh" "float"
+external tanh : float -> float = "caml_tanh_float" "tanh" "float"
 (** The usual hyperbolic trigonometric functions. *)
 
-external ceil : float -> float = "ceil_float" "ceil" "float"
+external ceil : float -> float = "caml_ceil_float" "ceil" "float"
 (** See {!Pervasives.floor}. *)
 
-external floor : float -> float = "floor_float" "floor" "float"
+external floor : float -> float = "caml_floor_float" "floor" "float"
 (** Round the given float to an integer value.
    [floor f] returns the greatest integer value less than or
    equal to [f].
@@ -292,22 +305,22 @@ external floor : float -> float = "floor_float" "floor" "float"
 external abs_float : float -> float = "%absfloat"
 (** Return the absolute value of the argument. *)
 
-external mod_float : float -> float -> float = "fmod_float" "fmod" "float"
+external mod_float : float -> float -> float = "caml_fmod_float" "fmod" "float"
 (** [mod_float a b] returns the remainder of [a] with respect to
    [b].  The returned value is [a -. n *. b], where [n]
    is the quotient [a /. b] rounded towards zero to an integer. *)
 
-external frexp : float -> float * int = "frexp_float"
+external frexp : float -> float * int = "caml_frexp_float"
 (** [frexp f] returns the pair of the significant
    and the exponent of [f].  When [f] is zero, the
    significant [x] and the exponent [n] of [f] are equal to
    zero.  When [f] is non-zero, they are defined by
    [f = x *. 2 ** n] and [0.5 <= x < 1.0]. *)
 
-external ldexp : float -> int -> float = "ldexp_float"
+external ldexp : float -> int -> float = "caml_ldexp_float"
 (** [ldexp x n] returns [x *. 2 ** n]. *)
 
-external modf : float -> float * float = "modf_float"
+external modf : float -> float * float = "caml_modf_float"
 (** [modf f] returns the pair of the fractional and integral
    part of [f]. *)
 
@@ -334,7 +347,10 @@ val neg_infinity : float
 val nan : float
 (** A special floating-point value denoting the result of an
    undefined operation such as [0.0 /. 0.0].  Stands for
-   ``not a number''. *)
+   ``not a number''.  Any floating-point operation with [nan] as
+   argument returns [nan] as result.  As for floating-point comparisons,
+   [=], [<], [<=], [>] and [>=] return [false] and [<>] returns [true]
+   if one or both of their arguments is [nan]. *)
 
 val max_float : float
 (** The largest positive finite value of type [float]. *)
@@ -354,7 +370,7 @@ type fpclass =
 (** The five classes of floating-point numbers, as determined by
    the {!Pervasives.classify_float} function. *)
 
-external classify_float : float -> fpclass = "classify_float"
+external classify_float : float -> fpclass = "caml_classify_float"
 (** Return the class of the given floating-point number:
    normal, subnormal, zero, infinite, or not a number. *)
 
@@ -406,18 +422,19 @@ val bool_of_string : string -> bool
 val string_of_int : int -> string
 (** Return the string representation of an integer, in decimal. *)
 
-external int_of_string : string -> int = "int_of_string"
+external int_of_string : string -> int = "caml_int_of_string"
 (** Convert the given string to an integer.
    The string is read in decimal (by default) or in hexadecimal (if it
    begins with [0x] or [0X]), octal (if it begins with [0o] or [0O]),
    or binary (if it begins with [0b] or [0B]).
    Raise [Failure "int_of_string"] if the given string is not
-   a valid representation of an integer. *)
+   a valid representation of an integer, or if the integer represented
+   exceeds the range of integers representable in type [int]. *)
 
 val string_of_float : float -> string
 (** Return the string representation of a floating-point number. *)
 
-external float_of_string : string -> float = "float_of_string"
+external float_of_string : string -> float = "caml_float_of_string"
 (** Convert the given string to a float.  Raise [Failure "float_of_string"]
    if the given string is not a valid representation of a float. *)
 
@@ -586,7 +603,9 @@ val output_byte : out_channel -> int -> unit
    256. *)
 
 val output_binary_int : out_channel -> int -> unit
-(** Write one integer in binary format on the given output channel.
+(** Write one integer in binary format (4 bytes, big-endian)
+   on the given output channel.
+   The given integer is taken modulo 2{^32}.
    The only reliable way to read it back is through the
    {!Pervasives.input_binary_int} function. The format is compatible across
    all machines for a given version of Objective Caml. *)
@@ -606,12 +625,14 @@ val seek_out : out_channel -> int -> unit
    the behavior is unspecified. *)
 
 val pos_out : out_channel -> int
-(** Return the current writing position for the given channel. *)
+(** Return the current writing position for the given channel.  Does
+    not work on channels opened with the [Open_append] flag (returns
+    unspecified results). *)
 
 val out_channel_length : out_channel -> int
-(** Return the total length (number of characters) of the
-   given channel.  This works only for regular files. On files of
-   other kinds, the result is meaningless. *)
+(** Return the size (number of characters) of the regular file
+   on which the given channel is opened.  If the channel is opened
+    on a file that is not a regular file, the result is meaningless. *)
 
 val close_out : out_channel -> unit
 (** Close the given channel, flushing all buffered write operations.
@@ -696,8 +717,8 @@ val input_byte : in_channel -> int
    Raise [End_of_file] if an end of file was reached. *)
 
 val input_binary_int : in_channel -> int
-(** Read an integer encoded in binary format from the given input
-   channel. See {!Pervasives.output_binary_int}.
+(** Read an integer encoded in binary format (4 bytes, big-endian)
+   from the given input channel. See {!Pervasives.output_binary_int}.
    Raise [End_of_file] if an end of file was reached while reading the
    integer. *)
 
@@ -717,9 +738,12 @@ val pos_in : in_channel -> int
 (** Return the current reading position for the given channel. *)
 
 val in_channel_length : in_channel -> int
-(** Return the total length (number of characters) of the
-   given channel. This works only for regular files. On files of
-   other kinds, the result is meaningless. *)
+(** Return the size (number of characters) of the regular file
+    on which the given channel is opened.  If the channel is opened
+    on a file that is not a regular file, the result is meaningless.
+    The returned size does not take into account the end-of-line
+    translations that can be performed when reading from a channel
+    opened in text mode. *)
 
 val close_in : in_channel -> unit
 (** Close the given channel.  Input functions raise a [Sys_error]
@@ -798,9 +822,9 @@ type ('a, 'b, 'c) format = ('a, 'b, 'c, 'c) format4
     and ['b] is the type of the first argument given to
     [%a] and [%t] printing functions. *)
 
-external string_of_format :
-  ('a, 'b, 'c, 'd) format4 -> string = "%identity"
+val string_of_format : ('a, 'b, 'c, 'd) format4 -> string
 (** Converts a format string into a string. *)
+
 external format_of_string :
   ('a, 'b, 'c, 'd) format4 -> ('a, 'b, 'c, 'd) format4 = "%identity"
 (** [format_of_string s] returns a format string read from the string

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typedtree.ml,v 1.35 2003/08/12 03:11:38 garrigue Exp $ *)
+(* $Id: typedtree.ml,v 1.36 2003/11/25 09:20:43 garrigue Exp $ *)
 
 (* Abstract syntax tree after typing *)
 
@@ -77,6 +77,7 @@ and expression_desc =
   | Texp_assert of expression
   | Texp_assertfalse
   | Texp_lazy of expression
+  | Texp_object of class_structure * class_signature * string list
 
 and meth =
     Tmeth_name of string
@@ -87,7 +88,8 @@ and meth =
 and class_expr =
   { cl_desc: class_expr_desc;
     cl_loc: Location.t;
-    cl_type: class_type }
+    cl_type: class_type;
+    cl_env: Env.t }
 
 and class_expr_desc =
     Tclass_ident of Path.t

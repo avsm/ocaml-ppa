@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: expunge.ml,v 1.15 2002/11/17 16:42:11 xleroy Exp $ *)
+(* $Id: expunge.ml,v 1.16 2004/01/16 15:24:03 doligez Exp $ *)
 
 (* "Expunge" a toplevel by removing compiler modules from the global List.map.
    Usage: expunge <source file> <dest file> <names of modules to keep> *)
@@ -47,11 +47,6 @@ let main () =
   Bytesections.read_toc ic;
   let toc = Bytesections.toc() in
   let pos_first_section = Bytesections.pos_first_section ic in
-  if Sys.os_type = "MacOS" then begin
-    (* Create output as a text file for bytecode scripts *)
-    let c = open_out_gen [Open_wronly; Open_creat] 0o777 output_name in
-    close_out c
-  end;
   let oc =
     open_out_gen [Open_wronly; Open_creat; Open_trunc; Open_binary] 0o777
                  output_name in

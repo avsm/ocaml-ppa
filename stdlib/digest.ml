@@ -11,14 +11,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: digest.ml,v 1.9 2002/07/12 09:47:53 xleroy Exp $ *)
+(* $Id: digest.ml,v 1.10 2003/12/31 14:20:39 doligez Exp $ *)
 
 (* Message digest (MD5) *)
 
 type t = string
 
-external unsafe_string: string -> int -> int -> t = "md5_string"
-external channel: in_channel -> int -> t = "md5_chan"
+external unsafe_string: string -> int -> int -> t = "caml_md5_string"
+external channel: in_channel -> int -> t = "caml_md5_chan"
 
 let string str =
   unsafe_string str 0 (String.length str)

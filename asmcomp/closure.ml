@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: closure.ml,v 1.42 2003/04/25 12:26:58 xleroy Exp $ *)
+(* $Id: closure.ml,v 1.44 2004/05/26 11:10:27 garrigue Exp $ *)
 
 (* Introduction of closures, uncurrying, recognition of direct calls *)
 
@@ -62,7 +62,7 @@ let occurs_var var u =
     | Uwhile(cond, body) -> occurs cond || occurs body
     | Ufor(id, lo, hi, dir, body) -> occurs lo || occurs hi || occurs body
     | Uassign(id, u) -> id = var || occurs u
-    | Usend(met, obj, args) -> 
+    | Usend(_, met, obj, args) -> 
         occurs met || occurs obj || List.exists occurs args
   and occurs_array a =
     try
@@ -152,7 +152,7 @@ let lambda_smaller lam threshold =
         size := !size + 4; lambda_size low; lambda_size high; lambda_size body
     | Uassign(id, lam) ->
         incr size;  lambda_size lam
-    | Usend(met, obj, args) ->
+    | Usend(_, met, obj, args) ->
         size := !size + 8;
         lambda_size met; lambda_size obj; lambda_list_size args
   and lambda_list_size l = List.iter lambda_size l
@@ -306,8 +306,8 @@ let rec substitute sb ulam =
         with Not_found ->
           id in
       Uassign(id', substitute sb u)
-  | Usend(u1, u2, ul) ->
-      Usend(substitute sb u1, substitute sb u2, List.map (substitute sb) ul)
+  | Usend(k, u1, u2, ul) ->
+      Usend(k, substitute sb u1, substitute sb u2, List.map (substitute sb) ul)
 
 (* Perform an inline expansion *)
 
@@ -457,10 +457,10 @@ let rec close fenv cenv = function
       | ((ufunct, _), uargs) ->
           (Ugeneric_apply(ufunct, uargs), Value_unknown)
       end
-  | Lsend(met, obj, args) ->
+  | Lsend(kind, met, obj, args) ->
       let (umet, _) = close fenv cenv met in
       let (uobj, _) = close fenv cenv obj in
-      (Usend(umet, uobj, close_list fenv cenv args), Value_unknown)
+      (Usend(kind, umet, uobj, close_list fenv cenv args), Value_unknown)
   | Llet(str, id, lam, body) ->
       let (ulam, alam) = close_named fenv cenv id lam in
       begin match (str, alam) with
@@ -616,8 +616,7 @@ and close_functions fenv cenv fun_defs =
     List.map
       (function
           (id, (Lfunction(kind, params, body) as def)) ->
-            let label =
-              Compilenv.current_unit_name() ^ "__" ^ Ident.unique_name id in
+            let label = Compilenv.make_symbol (Some (Ident.unique_name id)) in
             let arity = List.length params in
             let fundesc =
               {fun_label = label;

@@ -11,32 +11,32 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: fix_code.h,v 1.15 2001/12/07 13:39:27 xleroy Exp $ */
+/* $Id: fix_code.h,v 1.17 2004/01/02 19:23:21 doligez Exp $ */
 
 /* Handling of blocks of bytecode (endianness switch, threading). */
 
-#ifndef _fix_code_
-#define _fix_code_
+#ifndef CAML_FIX_CODE_H
+#define CAML_FIX_CODE_H
 
 
 #include "config.h"
 #include "misc.h"
 #include "mlvalues.h"
 
-extern code_t start_code;
-extern asize_t code_size;
-extern unsigned char * saved_code;
-extern unsigned char code_md5[16];
+extern code_t caml_start_code;
+extern asize_t caml_code_size;
+extern unsigned char * caml_saved_code;
+extern unsigned char caml_code_md5[16];
 
-void load_code (int fd, asize_t len);
-void fixup_endianness (code_t code, asize_t len);
-void set_instruction (code_t pos, opcode_t instr);
-int is_instruction (opcode_t instr1, opcode_t instr2);
+void caml_load_code (int fd, asize_t len);
+void caml_fixup_endianness (code_t code, asize_t len);
+void caml_set_instruction (code_t pos, opcode_t instr);
+int caml_is_instruction (opcode_t instr1, opcode_t instr2);
 
 #ifdef THREADED_CODE
-extern char ** instr_table;
-extern char * instr_base;
-void thread_code (code_t code, asize_t len);
+extern char ** caml_instr_table;
+extern char * caml_instr_base;
+void caml_thread_code (code_t code, asize_t len);
 #endif
 
-#endif
+#endif /* CAML_FIX_CODE_H */
