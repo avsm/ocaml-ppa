@@ -8,7 +8,7 @@
 # We want to use dpatch.
 include /usr/share/dpatch/dpatch.make
 PACKAGE = ocaml
-VERSION = 3.08.0
+VERSION = 3.08
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
