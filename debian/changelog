@@ -1,10 +1,18 @@
+ocaml (3.07-5) unstable; urgency=low
+
+  * Somehow the objinfo patch forgot to install objinfo, fixed now.
+  * Test for emacsen flavor early one and abort if unsupported.
+    (Closes: #213862)
+
+ -- Sven Luther <luther@debian.org>  Fri,  3 Oct 2003 17:08:29 +0200
+
 ocaml (3.07-4) unstable; urgency=low
 
   * Arg, dh_gencontrol seems to not support putting stuff after the
     substitution variable, which seems somewhat broken to me, anyway, let's
     put the substitution variable last.
   * Forgot to add the camlp4_optional.dpatch to the list of patches to be
-    applied :(. (Closes: #213881)
+    applied. (Closes: #213881)
 
  -- Sven Luther <luther@debian.org>  Fri,  3 Oct 2003 10:54:26 +0200
 
