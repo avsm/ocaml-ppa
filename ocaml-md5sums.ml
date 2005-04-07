@@ -4,7 +4,7 @@
  * Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
  *
  * Created:        Wed, 06 Apr 2005 16:55:39 +0200 zack
- * Last-Modified:  Wed, 06 Apr 2005 16:55:39 +0200 zack
+ * Last-Modified:  Thu, 07 Apr 2005 09:37:37 +0200 zack
  *
  * This is free software, you can redistribute it and/or modify it under the
  * terms of the GNU General Public License version 2 as published by the Free
@@ -45,6 +45,8 @@ let objects = ref []
 let pkg_version = ref ""
 let pkg_name = ref ""
 let verbosity = ref 0
+let dump_info_to = ref ""
+let load_info_from = ref ""
 let action = ref None
 
 let usage_msg =
@@ -59,20 +61,77 @@ let cmdline_spec = [
     "set package name (required by compute and dep actions)";
   "--version", Arg.Set_string pkg_version,
     "set package version (required by compute and dep actions)";
+  "--dump-info", Arg.Set_string dump_info_to,
+    "dump ocamlobjinfo to file";
+  "--load-info", Arg.Set_string load_info_from,
+    "restore ocamlobjinfo from file";
   "-v", Arg.Unit (fun () -> incr verbosity), "increase verbosity";
 ]
 let die_usage () =
   Arg.usage cmdline_spec usage_msg;
   exit 1
 
-(** {2 Auxiliary functions} *)
+(** {2 Helpers} *)
 
 let error   msg = prerr_endline ("Error: " ^ msg); exit 2
 let warning msg = prerr_endline ("Warning: " ^ msg)
 let info ?(level = 1) msg =
   if !verbosity >= level then prerr_endline ("Info: " ^ msg)
+let iter_in f ic =
+  try while true do f (input_line ic) done with End_of_file -> ()
+let iter_file f fname =
+  let ic = open_in fname in
+  iter_in f ic;
+  close_in ic
+let iter_table f = iter_file (fun line -> f (Str.split blanks_RE line))
 
 module Strings = Set.Make (String)
+
+(** read until the end of standard input
+ * @return the list of lines read from stdin, without trailing "\n" *)
+let read_stdin () =
+  let lines = ref [] in
+  iter_in (fun s -> lines := s :: !lines) stdin;
+  List.rev !lines
+
+(** {2 Auxiliary functions} *)
+
+(** loads info previously stored in a file using --dump-info and stores them in
+ * two hashtables
+ * @param defined hashtable for md5sums of defined units
+ * @param imported hashtable for md5sums of imported units
+ * @param fname file where the dump has been saved *)
+let load_info ~defined ~imported fname =
+  info ("loading ocamlobjinfo information from " ^ fname);
+  let lineno = ref 0 in
+  iter_table
+    (fun fields ->
+      incr lineno;
+      match fields with
+      | [ "defined"; md5; unit_name ] ->
+          info ~level:2 (String.concat " " fields);
+          Hashtbl.replace defined unit_name md5
+      | [ "imported"; md5; unit_name ] ->
+          info ~level:2 (String.concat " " fields);
+          Hashtbl.replace imported unit_name md5
+      | _ ->
+          warning (sprintf "ignoring dump entry (%s, line %d)" fname !lineno))
+    fname
+
+(** dumps ocamlobjinfo to file
+ * @param defined hashtable containing md5sums of defined units
+ * @param imported hashtable containing md5sums of imported units
+ * @param fname file where to dump ocamlobjinfo *)
+let dump_info ~defined ~imported fname =
+  info ("dumping ocamlobjinfo information to " ^ fname);
+  let oc = open_out fname in
+  Hashtbl.iter
+    (fun unit_name md5sum -> fprintf oc "defined  %s %s\n" md5sum unit_name)
+    defined;
+  Hashtbl.iter
+    (fun unit_name md5sum -> fprintf oc "imported %s %s\n" md5sum unit_name)
+    imported;
+  close_out oc
 
 (** @param fnames list of *.cm[ao] file names
  * @return a pair of hash tables <defined_units, imported_units>. Both tables
@@ -80,34 +139,37 @@ module Strings = Set.Make (String)
  * given files while imported_units imported ones *)
 let unit_info fnames =
   let (defined, imported) = (Hashtbl.create 1024, Hashtbl.create 1024) in
+  if !load_info_from <> "" then
+    load_info ~defined ~imported !load_info_from;
   List.iter
     (fun fname ->
       info ("getting unit info from " ^ fname);
-      let ic = Unix.open_process_in (sprintf "%s %s" ocamlobjinfo fname) in
       let current_unit = ref "" in
-      try
-        while true do
-          let line = input_line ic in
+      let ic = Unix.open_process_in (sprintf "%s %s" ocamlobjinfo fname) in
+      iter_in
+        (fun line ->
           if Str.string_match unit_name_line_RE line 0 then
             current_unit := Str.matched_group 1 line
           else if Str.string_match md5sum_line_RE line 0 then
             let md5sum = Str.matched_group 1 line in
             let unit_name = Str.matched_group 2 line in
-            if unit_name = !current_unit then begin
-              info ~level:2 (sprintf "defined unit %s with md5sum %s"
-                unit_name md5sum);
+            if unit_name = !current_unit then begin (* defined unit *)
+              let dump_entry = sprintf "defined %s %s" md5sum unit_name in
+              info ~level:2 dump_entry;
               Hashtbl.replace defined unit_name md5sum
-            end else begin
-              info ~level:2 (sprintf "imported unit %s with md5sum %s"
-                unit_name md5sum);
+            end else begin  (* imported unit *)
+              let dump_entry = sprintf "imported %s %s" md5sum unit_name in
+              info ~level:2 dump_entry;
               Hashtbl.replace imported unit_name md5sum
-            end
-        done
-      with End_of_file -> close_in ic)
+            end)
+        ic;
+      close_in ic)
     fnames;
   Hashtbl.iter  (* imported := imported - defined *)
     (fun unit_name _ -> Hashtbl.remove imported unit_name)
     defined;
+  if !dump_info_to <> "" then
+    dump_info ~defined ~imported !dump_info_to;
   (defined, imported)
 
 (** iter a function over the entries of a registry file
@@ -115,21 +177,18 @@ let unit_info fnames =
  * arguments: ~md5sum ~unit_name ~package ~version
  * @param fname file containining the registry *)
 let iter_registry f fname =
-  let ic = open_in fname in
   info ("processing registry " ^ fname);
   let lineno = ref 0 in
-  try
-    while true do
+  iter_file
+    (fun line ->
       incr lineno;
-      let line = input_line ic in
       (match Str.split blanks_RE line with
       | [ md5sum; unit_name; package; version ] ->
           f ~md5sum ~unit_name ~package ~version
       | _ ->
           warning (sprintf "ignoring registry entry (%s, line %d)"
-            fname !lineno))
-    done
-  with End_of_file -> close_in ic
+            fname !lineno)))
+    fname
 
 (** @param fname file name of the registry file
  * @return an hashtbl mapping pairs <unit_name, md5sum> to pairs <package_name,
@@ -142,15 +201,6 @@ let parse_registry fname =
       Hashtbl.replace registry (unit_name, md5sum) (package, version))
     fname;
   registry
-
-(** read until the end of standard input
- * @return the list of lines read from stdin, without trailing "\n" *)
-let read_stdin () =
-  let lines = ref [] in
-  try
-    while true do lines := input_line stdin :: !lines done;
-    []  (* dummy value *)
-  with End_of_file -> List.rev !lines
 
 (** {2 Main functions, one for each command line action} *)
 
@@ -217,7 +267,7 @@ let main () =
       if (package = "" || version = "") then die_usage ();
       let objects =
         match !objects with
-        | [] -> read_stdin ()
+        | [] when !load_info_from = "" -> read_stdin ()
         | objects -> List.rev objects
       in
       (match action with
