@@ -1,0 +1,7 @@
+entries which should be pre-fed into the registry at ocaml package installation
+time:
+
+71f888453b0f26895819460a72f07493 Pervasives ocaml-nox-3.08.3 3.08.3-3
+
+TODO entry for ocaml-3.08.3
+
