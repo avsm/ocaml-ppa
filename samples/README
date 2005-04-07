@@ -1,0 +1,5 @@
+samples of various kind of files related to dh_ocaml:
+- md5sums/
+    example of /var/lib/ocaml/md5sums directory
+- debian/
+    example of temporary files created/used by dh_ocaml
