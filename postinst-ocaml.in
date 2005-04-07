@@ -1,8 +1,4 @@
-MD5SUMS_DIR="/var/lib/ocaml/md5sums"
-MD5SUMS_EXT=".md5sums"
-MD5SUMS_INDEX="$MD5SUMS_DIR/MD5SUMS"
 if [ "$1" = "configure" ]; then
-#include "update-md5sum.sh"
+  ocaml-md5sums update
 fi
-
 # vim: set ft=wml:
