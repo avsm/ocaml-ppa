@@ -37,6 +37,7 @@ let unit_name_line_RE =
 let md5sum_line_RE =
   Str.regexp "^[ \t]*\\([a-f0-9]+\\)[ \t]+\\([a-zA-Z0-9_]+\\)[ \t]*$"
 let blanks_RE = Str.regexp "[ \t]+"
+let ignorable_line_RE = Str.regexp "^[ \t]*\\(#.*\\)?"
 let md5sums_ext_RE = Str.regexp (sprintf "^.*%s$" (Str.quote md5sums_ext))
 
 (** {2 Argument parsing} *)
@@ -52,15 +53,15 @@ let action = ref None
 let usage_msg =
   "Use and maintain system registry of ocaml md5sums\n"
   ^ "Usage:\n"
-  ^ " ocaml-md5sum compute --package <name> --version <version> [options] file ...\n"
-  ^ " ocaml-md5sum dep     --package <name> --version <version> [options] file ...\n"
+  ^ " ocaml-md5sum compute --package <name> [option ...] file ...\n"
+  ^ " ocaml-md5sum dep     --package <name> [option ...] file ...\n"
   ^ " ocaml-md5sum update\n"
   ^ "Options:"
 let cmdline_spec = [
   "--package", Arg.Set_string pkg_name,
     "set package name (required by compute and dep actions)";
   "--version", Arg.Set_string pkg_version,
-    "set package version (required by compute and dep actions)";
+    "set package version";
   "--dump-info", Arg.Set_string dump_info_to,
     "dump ocamlobjinfo to file";
   "--load-info", Arg.Set_string load_info_from,
@@ -172,11 +173,16 @@ let unit_info fnames =
     dump_info ~defined ~imported !dump_info_to;
   (defined, imported)
 
+type registry_callback =
+  md5sum:string -> unit_name:string -> package:string -> ?version:string ->
+  unit ->
+    unit
+
 (** iter a function over the entries of a registry file
  * @param f function to be executed for each entries, it takes 4 labeled
- * arguments: ~md5sum ~unit_name ~package ~version
+ * arguments: ~md5sum ~unit_name ~package ?version
  * @param fname file containining the registry *)
-let iter_registry f fname =
+let iter_registry (f: registry_callback) fname =
   info ("processing registry " ^ fname);
   let lineno = ref 0 in
   iter_file
@@ -184,7 +190,9 @@ let iter_registry f fname =
       incr lineno;
       (match Str.split blanks_RE line with
       | [ md5sum; unit_name; package; version ] ->
-          f ~md5sum ~unit_name ~package ~version
+          f ~md5sum ~unit_name ~package ~version ()
+      | [ md5sum; unit_name; package ] -> f ~md5sum ~unit_name ~package ()
+      | _ when Str.string_match ignorable_line_RE line 0 -> ()
       | _ ->
           warning (sprintf "ignoring registry entry (%s, line %d)"
             fname !lineno)))
@@ -197,7 +205,7 @@ let iter_registry f fname =
 let parse_registry fname =
   let registry = Hashtbl.create 1024 in
   iter_registry
-    (fun ~md5sum ~unit_name ~package ~version ->
+    (fun ~md5sum ~unit_name ~package ?(version = "") () ->
       Hashtbl.replace registry (unit_name, md5sum) (package, version))
     fname;
   registry
@@ -241,7 +249,7 @@ let update () =
         && ((Unix.stat fname).Unix.st_kind = Unix.S_REG)
       then
         iter_registry
-          (fun ~md5sum ~unit_name ~package ~version ->
+          (fun ~md5sum ~unit_name ~package ?(version = "") () ->
             fprintf registry "%s %s %s %s\n" md5sum unit_name package version)
           fname
     done
@@ -264,7 +272,7 @@ let main () =
   | Some "update" -> update ()
   | Some action ->
       let package, version = !pkg_name, !pkg_version in
-      if (package = "" || version = "") then die_usage ();
+      if package = "" then die_usage ();
       let objects =
         match !objects with
         | [] when !load_info_from = "" -> read_stdin ()

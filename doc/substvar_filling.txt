@@ -1,0 +1,20 @@
+informal description of the ${ocaml:Depends} filling algorithm
+- delsubstvar("ocaml:Depends")
+- if pkgname is "libfoo-ocaml-dev"
+  (handle also "ocaml:Depends" for "libfoo-ocaml" if it does exist)
+  - find all installed .cm[ao]
+  - run "ocaml-md5sums dep" on them
+  - let D be the set of resulting dependencies
+  - foreach d in D of the form <dev-dependency, runtime-dependency, version>
+    - addsubstvar("ocaml:Depends", "libfoo-ocaml-dev", dev-dependency, version)
+    - if exists package "libfoo-ocaml" and exists runtime-dependency
+      - addsubstvar("ocaml:Depends", "libfoo-ocaml", runtime-dependency, version)
+- if pkgname is something else
+  - find all installed ocaml bytecode binaries
+  - guess corresponding .cm[ao]
+  - run "ocaml-md5sums dep" on them
+  - let D be the set of resulting dependencies
+  - foreach d in D of the form <dev-dependency, runtime-dependency, version>
+    - if exists runtime-dependency
+      - addsubstvar("ocaml:Depends", pkgname, runtime-dependency, version)
+

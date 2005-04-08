@@ -1,6 +1,16 @@
 entries which should be pre-fed into the registry at ocaml package installation
 time:
 
+- ocaml-nox-VERSION
+  registry entry can be generated with:
+
+    ocaml-md5sums compute --package ocaml-nox-3.08.3 /usr/lib/ocaml/3.08.3/stdlib.cma
+
+- ocaml-VERSION
+  registry entry can be generated with:
+
+    dpkg -L ocaml ocaml | grep .cma | ocaml-md5sums compute --package ocaml-3.08.3
+
 71f888453b0f26895819460a72f07493 Pervasives ocaml-nox-3.08.3 3.08.3-3
 
 TODO entry for ocaml-3.08.3

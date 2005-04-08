@@ -23,10 +23,7 @@
 #
 
 # TODO check how dh_ocaml work when multiple binary packages are being built
-# TODO for libraries: add proper dependencies on ocaml (and findlib?)
-# TODO for binaries: check if package is shipping any bytecode binaries (head -1
-#	should be enough) and add proper dependencies on ocaml
-# TODO complete POD documentation
+# TODO add proper dependencies on ocaml (and findlib?)
 # TODO check if dh_ocaml md5sums calculation works with -pack -ed units (e.g.
 #      Foo.Bar)
 
@@ -64,18 +61,26 @@ dh_ocaml is a debhelper program that is responsible for generating
 the ${ocaml:Depends} substitutions and adding them to substvars files. It will
 also add a postinst and prerm script if required.
 
-The program will look at ocaml objects (files matching *.cm[ao]) shipped by your
-package. From them, dh_ocaml uses ocamlobjinfo for collecting information about
-ocaml modules (or units, in ocamlobjinfo terminology) defined and used by your
-package. Collected information will be used both for extracting dependencies
-information from the local ocaml md5sums registry (stored in
-/var/lib/ocaml/md5sums/MD5SUMS) and for creating libfoo-ocaml-dev.md5sums entry
-for the registry.
+dh_ocaml acts both on ocaml library packages (having name libXXX-ocaml-dev) and
+on packages shipping ocaml bytecode non-custom binaries (i.e. executables
+interpreted by /usr/bin/ocamlrun).
 
-Dependencies information will be used for filling the ${ocaml:Depends}
-subtitution while .md5sums entry will be installed in /var/lib/ocaml/md5sums/.
-If such an entry gets installed, postinst and prerm script will also be created
-in order to update the registry at package install/removal time.
+On ocaml library packages dh_ocaml will firstly look at ocaml objects (files
+matching *.cm[ao]) shipped by the package. Then, dh_ocaml uses ocamlobjinfo on
+them for collecting information about ocaml modules (or units, in ocamlobjinfo
+terminology) defined and used by them.  Information about defined units will be
+used to automatically create the ocaml md5sums registry entry for your package,
+e.g.  /var/lib/ocaml/md5sums/libXXX-ocaml-dev.md5sums. dh_ocaml will also take
+care of creating autoscripts (postrm and postinst) which update the global
+system registry (/var/lib/ocaml/md5sums/MD5SUMS) with the shipped entry.
+Information about imported units will instead be used as keys in the ocaml
+md5sums registry for retrieving dependency information for the package. Those
+information will then be used to fill the ${ocaml:Depends} substvar.
+
+On non-library packages, dh_ocaml tries to guess the ocaml objects corresponding
+to shipped bytecode binaries and extract from them information about imported
+units. Extracted information will then be used for filling the ${ocaml:Depends}
+as discussed for the library case.
 
 =head1 CONFORMS TO
 
@@ -93,7 +98,7 @@ sub find_ocaml_bc_binaries($) {
   foreach my $bin (@binaries) {
     my $line = `/usr/bin/head -1 $bin` or next;
     chomp $line;
-    push @bc_binaries, $line if $line eq $ocaml_magic_line;
+    push @bc_binaries, $bin if $line eq $ocaml_magic_line;
   }
   return @bc_binaries;
 }
@@ -106,9 +111,11 @@ sub fill_ocaml_depends($$) {
     open DEPS, "< $fname" or die "Can't open $fname";
     while (my $line = <DEPS>) {
       chomp $line;
-      my ($dep_package, $dep_version) = split /\s+/, $line;
-      next unless $dep_package and $dep_version;
-      addsubstvar($package, "ocaml:Depends", $dep_package, ">= $dep_version");
+      if ($line =~ /^\s*(\S+)\s+(\S+)\s*$/) {
+	addsubstvar($package, "ocaml:Depends", $1, ">= $2");
+      } elsif ($line =~ /^\s*(\S+)\s*$/) {
+	addsubstvar($package, "ocaml:Depends", $1);
+      }
     }
     close DEPS;
   }
@@ -141,7 +148,7 @@ foreach my $package (@{$dh{DOPACKAGES}}) {
     complex_doit "> $ocamldeps";
     foreach my $bin (@binaries) { # try to find .cmo of bc binaries
       my $guess = basename($bin) . ".cm[ao]";
-      complex_doit("/usr/bin/find . -type f -name '$guess' >> $ocamldeps");
+      complex_doit("/usr/bin/find . -type f -name '$guess' >> $objlist");
     }
     complex_doit("$ocaml_md5sums $flags dep < $objlist > $ocamldeps");
   }
