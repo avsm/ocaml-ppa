@@ -4,7 +4,7 @@
  * Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
  *
  * Created:        Wed, 06 Apr 2005 16:55:39 +0200 zack
- * Last-Modified:  Thu, 07 Apr 2005 09:37:37 +0200 zack
+ * Last-Modified:  Mon, 11 Apr 2005 10:39:58 +0200 zack
  *
  * This is free software, you can redistribute it and/or modify it under the
  * terms of the GNU General Public License version 2 as published by the Free
@@ -43,25 +43,28 @@ let md5sums_ext_RE = Str.regexp (sprintf "^.*%s$" (Str.quote md5sums_ext))
 (** {2 Argument parsing} *)
 
 let objects = ref []
-let pkg_version = ref ""
-let pkg_name = ref ""
+let dev_dep = ref ""
+let runtime_dep = ref "-"
+let dep_version = ref "-"
 let verbosity = ref 0
 let dump_info_to = ref ""
 let load_info_from = ref ""
 let action = ref None
 
 let usage_msg =
-  "Use and maintain system registry of ocaml md5sums\n"
+  "Use and maintain system wide ocaml md5sums registry\n"
   ^ "Usage:\n"
   ^ " ocaml-md5sum compute --package <name> [option ...] file ...\n"
-  ^ " ocaml-md5sum dep     --package <name> [option ...] file ...\n"
-  ^ " ocaml-md5sum update\n"
+  ^ " ocaml-md5sum dep     [option ...] file ...\n"
+  ^ " ocaml-md5sum update  [option ...]\n"
   ^ "Options:"
 let cmdline_spec = [
-  "--package", Arg.Set_string pkg_name,
-    "set package name (required by compute and dep actions)";
-  "--version", Arg.Set_string pkg_version,
-    "set package version";
+  "--package", Arg.Set_string dev_dep,
+    "set package name for development dependency";
+  "--runtime", Arg.Set_string runtime_dep,
+    "set package name for runtime dependency";
+  "--version", Arg.Set_string dep_version,
+    "set package version for dependencies";
   "--dump-info", Arg.Set_string dump_info_to,
     "dump ocamlobjinfo to file";
   "--load-info", Arg.Set_string load_info_from,
@@ -173,25 +176,24 @@ let unit_info fnames =
     dump_info ~defined ~imported !dump_info_to;
   (defined, imported)
 
-type registry_callback =
-  md5sum:string -> unit_name:string -> package:string -> ?version:string ->
-  unit ->
-    unit
+(** pretty print a registry entry sending output to an output channel *)
+let pp_entry outchan ~md5sum ~unit_name ~dev_dep ~runtime_dep ~dep_version =
+  fprintf outchan "%s %s %s %s %s\n"
+    md5sum unit_name dev_dep runtime_dep dep_version
 
 (** iter a function over the entries of a registry file
  * @param f function to be executed for each entries, it takes 4 labeled
  * arguments: ~md5sum ~unit_name ~package ?version
  * @param fname file containining the registry *)
-let iter_registry (f: registry_callback) fname =
+let iter_registry f fname =
   info ("processing registry " ^ fname);
   let lineno = ref 0 in
   iter_file
     (fun line ->
       incr lineno;
       (match Str.split blanks_RE line with
-      | [ md5sum; unit_name; package; version ] ->
-          f ~md5sum ~unit_name ~package ~version ()
-      | [ md5sum; unit_name; package ] -> f ~md5sum ~unit_name ~package ()
+      | [ md5sum; unit_name; dev_dep; runtime_dep; dep_version ] ->
+          f ~md5sum ~unit_name ~dev_dep ~runtime_dep ~dep_version
       | _ when Str.string_match ignorable_line_RE line 0 -> ()
       | _ ->
           warning (sprintf "ignoring registry entry (%s, line %d)"
@@ -205,31 +207,34 @@ let iter_registry (f: registry_callback) fname =
 let parse_registry fname =
   let registry = Hashtbl.create 1024 in
   iter_registry
-    (fun ~md5sum ~unit_name ~package ?(version = "") () ->
-      Hashtbl.replace registry (unit_name, md5sum) (package, version))
+    (fun ~md5sum ~unit_name ~dev_dep ~runtime_dep ~dep_version ->
+      Hashtbl.replace registry (unit_name, md5sum)
+        (dev_dep, runtime_dep, dep_version))
     fname;
   registry
 
 (** {2 Main functions, one for each command line action} *)
 
 (** compute registry entry for a set of ocaml objects *)
-let compute ~package ~version objects () =
+let compute dev_dep runtime_dep dep_version objects () =
   let defined, _ = unit_info objects in
   Hashtbl.iter
     (fun unit_name md5sum ->
-      printf "%s %s %s %s\n" md5sum unit_name package version)
+       pp_entry stdout ~md5sum ~unit_name ~dev_dep ~runtime_dep ~dep_version)
     defined
 
 (** compute package dependencies for a set of ocaml objects *)
-let dep ~package ~version objects () =
+let dep objects () =
   let _, imported = unit_info objects in
   let registry = parse_registry registry_file in
   let deps =
     Hashtbl.fold
       (fun unit_name md5sum deps ->
         try
-          let (package, version) = Hashtbl.find registry (unit_name, md5sum) in
-          Strings.add (sprintf "%s %s" package version) deps
+          let (dev_dep, runtime_dep, dep_version) =
+            Hashtbl.find registry (unit_name, md5sum)
+          in
+          Strings.add (sprintf "%s %s %s" dev_dep runtime_dep dep_version) deps
         with Not_found -> deps)
       imported
       Strings.empty
@@ -241,6 +246,7 @@ let update () =
   info (sprintf "updating registry %s using info from %s/"
     registry_file md5sums_dir);
   let registry = open_out registry_file in
+  let keys = Hashtbl.create 1024 in (* history of seen registry keys *)
   let dir = Unix.opendir md5sums_dir in
   try
     while true do
@@ -249,8 +255,13 @@ let update () =
         && ((Unix.stat fname).Unix.st_kind = Unix.S_REG)
       then
         iter_registry
-          (fun ~md5sum ~unit_name ~package ?(version = "") () ->
-            fprintf registry "%s %s %s %s\n" md5sum unit_name package version)
+          (fun ~md5sum ~unit_name ~dev_dep ~runtime_dep ~dep_version ->
+             if Hashtbl.mem keys (unit_name, md5sum) then
+               error (sprintf "duplicate entry %s %s in registry" unit_name
+                          md5sum);
+             Hashtbl.replace keys (unit_name, md5sum) ();
+             pp_entry registry ~md5sum ~unit_name ~dev_dep ~runtime_dep
+               ~dep_version)
           fname
     done
   with End_of_file ->
@@ -271,16 +282,16 @@ let main () =
   match !action with
   | Some "update" -> update ()
   | Some action ->
-      let package, version = !pkg_name, !pkg_version in
-      if package = "" then die_usage ();
       let objects =
         match !objects with
         | [] when !load_info_from = "" -> read_stdin ()
         | objects -> List.rev objects
       in
       (match action with
-      | "compute" -> compute ~package ~version objects ()
-      | "dep" -> dep ~package ~version objects ()
+      | "compute" ->
+          if !dev_dep = "" then die_usage ();
+          compute !dev_dep !runtime_dep !dep_version objects ()
+      | "dep" -> dep objects ()
       | _ -> die_usage ())
   | None -> die_usage ()
 
