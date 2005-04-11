@@ -1,17 +1,34 @@
 entries which should be pre-fed into the registry at ocaml package installation
 time:
 
-- ocaml-nox-VERSION
+- ocaml-nox-VERSION [*]
   registry entry can be generated with:
 
-    ocaml-md5sums compute --package ocaml-nox-3.08.3 /usr/lib/ocaml/3.08.3/stdlib.cma
+    dpkg -L ocaml-nox |
+      grep '.cm[ao]' |
+      grep -v ^/usr/lib/ocaml/3.08.3/ocamldoc/ |
+      grep -v ^/usr/lib/ocaml/3.08.3/campl4/ |
+      ocaml-md5sums compute \
+	--package ocaml-nox-3.08.3 --runtime ocaml-base-nox-3.08.3
 
-- ocaml-VERSION
+- ocaml-VERSION [*]
   registry entry can be generated with:
 
-    dpkg -L ocaml ocaml | grep .cma | ocaml-md5sums compute --package ocaml-3.08.3
+    dpkg -L ocaml |
+      grep '.cm[ao]' |
+      grep -v ^/usr/lib/ocaml/3.08.3/ocamldoc/ |
+      grep -v ^/usr/lib/ocaml/3.08.3/campl4/ |
+      ocaml-md5sums compute \
+	--package ocaml-3.08.3 --runtime ocaml-base-3.08.3
 
-71f888453b0f26895819460a72f07493 Pervasives ocaml-nox-3.08.3 3.08.3-3
+- ocaml-compiler-libs-VERSION
+  registry entry can be generated with:
+    dpkg -L ocaml-compiler-libs |
+      grep '.cm[ao]' |
+      ocaml-md5sums compute \
+	--package ocaml-compiler-libs-3.08.3
 
-TODO entry for ocaml-3.08.3
+[*] entries in LIBDIR/ocamldoc/ and LIBDIR/camlp4/ are skipped since they
+    contains .cmas which link units that should be indexed per
+    ocaml-compiler-libs. Skipping them avoids duplicate entries in the registry
 
