@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+rmdir /usr/local/lib/ocaml/3.08.3/stublibs 2>/dev/null || true
+rmdir /usr/local/lib/ocaml/3.08.3 2>/dev/null || true
+rmdir /usr/local/lib/ocaml 2>/dev/null || true
