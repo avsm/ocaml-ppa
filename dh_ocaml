@@ -6,7 +6,7 @@
 # Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
 #
 # Created:	  Fri, 01 Apr 2005 19:50:48 +0200 zack
-# Last-Modified:  Sun, 10 Apr 2005 21:39:23 +0200 zack
+# Last-Modified:  Sun, 17 Apr 2005 16:58:32 +0200 zack
 #
 # This is free software, you can redistribute it and/or modify it under the
 # terms of the GNU General Public License version 2 or above as published by the
@@ -22,14 +22,9 @@
 # Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# TODO check if dh_ocaml md5sums calculation works with -pack -ed units (e.g.
-#      Foo.Bar)
-# TODO add cmd line options:
-# - for not outputting dependency on findlib
-# - for explicitly specifying the list of ocaml objects to be considered
-# TODO use better names for temp files in debian/ (cfr. Joey mail)
 # TODO check if exists a pure-debhelper way of knowing if a binary package
 #      exists or not in debian/control (cfr. sub package_exists)
+# TODO ask joeyh for a O_PARAMS and s/M_PARAMS/O_PARAMS/
 
 =head1 NAME
 
@@ -43,16 +38,16 @@ use Debian::Debhelper::Dh_Lib;
 init();
 
 my $ocamlc = "/usr/bin/ocamlc";
-# my $ocaml_md5sums = "/usr/bin/ocaml-md5sums";
-my $ocaml_md5sums = "/home/zack/dati/source/ocaml/dh_ocaml/ocaml-md5sums";
-my @binaries = ($ocamlc, $ocaml_md5sums);
+# my $omd5 = "/usr/bin/ocaml-md5sums";
+my $omd5 = "/home/zack/dati/source/ocaml/dh_ocaml/ocaml-md5sums";
+my @binaries = ($ocamlc, $omd5);
 foreach my $bin (@binaries) {
   error "$bin does not exists or is not executable" unless -x $bin;
 }
 chomp (my $ocaml_lib_dir = `$ocamlc -where`);
 
-my $md5sums_dir = "/var/lib/ocaml/md5sums";
-my $md5sums_ext = ".md5sums";
+my $md5dir = "/var/lib/ocaml/md5sums";
+my $md5ext = ".md5sums";
 my $ocaml_magic_line = "#!/usr/bin/ocamlrun";
 
 =head1 SYNOPSIS
@@ -63,11 +58,12 @@ B<dh_ocaml> [S<I<debhelper options>>]
 
 dh_ocaml is a debhelper program that is responsible for generating
 the ${ocaml:Depends} substitutions and adding them to substvars files. It will
-also add a postinst and prerm script if required.
+also add postinst and prerm scripts for maintaining system registry of ocaml
+md5sums if required.
 
-dh_ocaml acts both on ocaml library packages (having name libXXX-ocaml-dev) and
-on packages shipping ocaml bytecode non-custom binaries (i.e. executables
-interpreted by /usr/bin/ocamlrun).
+dh_ocaml acts on two kinds of packages: those shipping development part of ocaml
+libraries, and those shipping ocaml bytecode non-custom executables (i.e.
+executables interpreted by /usr/bin/ocamlrun).
 
 On ocaml library packages dh_ocaml will firstly look at ocaml objects (files
 matching *.cm[ao]) shipped by the package. Then, dh_ocaml uses ocamlobjinfo on
@@ -79,12 +75,58 @@ care of creating autoscripts (postrm and postinst) which update the global
 system registry (/var/lib/ocaml/md5sums/MD5SUMS) with the shipped entry.
 Information about imported units will instead be used as keys in the ocaml
 md5sums registry for retrieving dependency information for the package. Those
-information will then be used to fill the ${ocaml:Depends} substvar.
+information will then be used to fill the "${ocaml:Depends}" substvar.
 
 On non-library packages, dh_ocaml tries to guess the ocaml objects corresponding
 to shipped bytecode binaries and extract from them information about imported
-units. Extracted information will then be used for filling the ${ocaml:Depends}
-as discussed for the library case.
+units. Extracted information will then be used for filling "${ocaml:Depends}" as
+discussed for the library case.
+
+In addition to dependencies extracted from the system md5sum registry, dh_ocaml
+will add: (1) dependency from libXXX-ocaml-dev to libXXX-ocaml (runtime part of
+the library), if there is a libXXX-ocaml package in debian/control; (2)
+dependency from libXXX-ocaml-dev to ocaml-findlib if the package ships any META
+file in the ocaml library directory; (3) dependency from libXXX-ocaml, if any,
+to the appropriate ocaml-base-* package (please note that the substvar for
+libXXX-ocaml will be filled while processing libXXX-ocaml-dev).
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-m> I<filename>
+
+By default, list of ocaml objects being shipped which should be analyzed for
+retrieving dependency information is guessed by dh_ocaml.
+
+The -m option permit to specify a file which lists, one per line, that ocaml
+objects. They should be in one of the format understandable by ocamlobjinfo
+(*.cma, *.cmi, *.cmo) and are considered relative to the package build
+directory.
+
+=item B<-l> I<dev1:runtime1,dev2:runtime2,...>
+
+The association between development part of libraries and their runtimes is
+guessed by dh_ocaml according to the ocaml packaging policy. Thus,
+libXXX-ocaml-dev is the name of the package shipping the development part of XXX
+library while libXXX-ocaml, if any, is that of pachage shipping the
+corresponding runtime.
+
+Using -l you could override the pairs development package name, runtime package
+name. The value passed to -l admits no spaces and should be a comma separated
+list of items. Each item could be a single package name (stating that that name
+corresponds to the development part of a library) or two package names separated
+by a colon (stating that the first is corresponds to the development part of a
+library, while the second to its accompanying runtime part).
+
+=item B<-d>
+
+By default, dependency on findlib is generated for development parts of
+libraries which ship any META file. Using -d you can disable the generation of
+such dependency (even if this is discouraged and is very likely to violate the
+ocaml packaging policy)
+
+=back
 
 =head1 CONFORMS TO
 
@@ -95,12 +137,13 @@ OCaml packaging policy, version 0.6
 =cut
 
 # find ocaml bytecode executables contained in a given directory
+# (i.e. executables whose first line is #!/usr/bin/ocamlrun)
 sub find_ocaml_bc_binaries($) {
   my ($dir) = @_;
   my @binaries = split /\n/, `find $dir -type f -perm -0100`;
   my @bc_binaries;
   foreach my $bin (@binaries) {
-    my $line = `/usr/bin/head -1 $bin` or next;
+    my $line = `head -1 $bin` or next;
     chomp $line;
     push @bc_binaries, $bin if $line eq $ocaml_magic_line;
   }
@@ -112,24 +155,16 @@ sub add_ocaml_dep($$$) {
   my ($package, $dep, $version) = @_;
   return if $dep eq "-" or $package eq "";
   if ($version =~ /-\s*$/) {  # ocaml-md5sums returns "-" for "no version"
-    addsubstvar($package, "ocaml:Depends", $dep);
+    addsubstvar $package, "ocaml:Depends", $dep;
   } else {
-    addsubstvar($package, "ocaml:Depends", $dep, $version);
+    addsubstvar $package, "ocaml:Depends", $dep, $version;
   }
 }
 
-# check if a given binary package ships any META file
-sub has_meta($) {
-  my ($package) = @_;
-  my $tmpdir = tmpdir($package);
-  my $out = `find $tmpdir -type f -name "META*"`;
-  return ($out ne "");
-}
-
 # fill the ocaml:Depends substvar, reading info from file
-sub fill_ocaml_depends($$$$) {
-  my ($package, $fname, $is_library, $runtime) = @_;
-  delsubstvar($package, "ocaml:Depends");  # for idempotency
+sub fill_ocaml_depends($$$$$) {
+  my ($package, $tmp, $fname, $is_library, $runtime) = @_;
+  delsubstvar $package, "ocaml:Depends";  # for idempotency
   if (-f $fname) {
     open DEPS, "< $fname" or die "can't open $fname";
     while (my $line = <DEPS>) {
@@ -137,12 +172,15 @@ sub fill_ocaml_depends($$$$) {
       if ($line =~ /^\s*(.+)\s+(.+)\s+(.+)\s*$/) {
 	# matched groups: dev_dep, runtime_dep, dep_version
 	if ($is_library) {
-	  add_ocaml_dep($package, $1, ">= $3");
-	  add_ocaml_dep($package, $runtime, "= $dh{VERSION}") if $runtime;
-	  add_ocaml_dep($package, "ocaml-findlib", "-") if has_meta($package);
-	  add_ocaml_dep($runtime, $2, ">= $3");
+	  add_ocaml_dep $package, $1, ">= $3";
+	  add_ocaml_dep $package, $runtime, "= $dh{VERSION}" if $runtime;
+	  if (`find $tmp -type f -name "META*"` ne "" and not $dh{D_FLAG}) {
+	    # package has META and findlib dependency has not been forbidden
+	    add_ocaml_dep $package, "ocaml-findlib", "-"
+	  }
+	  add_ocaml_dep $runtime, $2, ">= $3";
 	} else {
-	  add_ocaml_dep($package, $2, ">= $3");
+	  add_ocaml_dep $package, $2, ">= $3";
 	}
       }
     }
@@ -190,49 +228,52 @@ sub runtime_of_library($$) {
   } elsif ($package =~ /^(lib.*-ocaml)-dev$/) {
     $runtime = $1;
   }
-  return (package_exists($runtime) ? $runtime : "");
+  return (package_exists $runtime ? $runtime : "");
 }
 
 # main
 exit 0 if $dh{NO_ACT};
 foreach my $package (@{$dh{DOPACKAGES}}) {
-  my $tmpdir = tmpdir($package);
+  my $tmp = tmpdir $package;
+  my $ext = pkgext $package;
   isnative($package);	# sets $dh{VERSION}
-  my $objinfo   = "debian/$package.ocamlobjinfo~";
-  my $objlist   = "debian/$package.ocamlobjects~";
-  my $ocamldeps = "debian/$package.ocamldeps~";
+  my $oinfo = "debian/$ext" . "oinfo.debhelper"; # ocaml objects info
+  my $olist = "debian/$ext" . "olist.debhelper"; # ocaml object list
+  $olist = $dh{M_PARAMS} if $dh{M_PARAMS}; # override object list with -m
+  my $odeps = "debian/$ext" . "odeps.debhelper"; # ocaml dependencies
   if (is_library $package, $dh{L_PARAMS}) {  # ocaml library package
-    my $runtime = runtime_of_library($package, $dh{L_PARAMS});
+    my $runtime = runtime_of_library $package, $dh{L_PARAMS};
     my $flags = "--package $package --version $dh{VERSION}";
     $flags .= " --runtime $runtime" if $runtime;
-    complex_doit("/usr/bin/find $tmpdir$ocaml_lib_dir -type f -name '*.cm[ao]' "
-      . "> $objlist");  # create md5sum registry entry and post.* scripts
-    complex_doit("mkdir -p $tmpdir$md5sums_dir");
-    complex_doit("$ocaml_md5sums $flags --dump-info $objinfo compute < $objlist"
-      . " | /usr/bin/sort -k 2"  # optional pass, just for "pretty" printing
-      . " > $tmpdir$md5sums_dir/$package$md5sums_ext");
-    autoscript($package, "postinst", "postinst-ocaml");
-    autoscript($package, "postrm", "postrm-ocaml");
-    complex_doit("$ocaml_md5sums --load-info $objinfo dep < $objlist"
-      . " > $ocamldeps");  # compute deps
-    fill_ocaml_depends($package, $ocamldeps, 1, $runtime);
+      # create md5sum registry entry and post.* scripts
+    complex_doit "find $tmp$ocaml_lib_dir -type f -name '*.cm[ao]' > $olist"
+      unless $dh{M_PARAMS};
+    complex_doit "mkdir -p $tmp$md5dir";
+    complex_doit("$omd5 $flags --dump-info $oinfo compute < $olist"
+      . " | sort -k 2"  # optional pass, just for "pretty" printing
+      . " > $tmp$md5dir/$package$md5ext");
+    autoscript $package, "postinst", "postinst-ocaml";
+    autoscript $package, "postrm", "postrm-ocaml";
+    complex_doit "$omd5 --load-info $oinfo dep < $olist > $odeps"; #compute deps
+    fill_ocaml_depends $package, $tmp, $odeps, 1, $runtime;
   } elsif (is_binary $package, $dh{L_PARAMS}) {  # ocaml binary package
-    my @binaries = find_ocaml_bc_binaries($tmpdir);
-    if (@binaries) {
-      complex_doit "> $ocamldeps";
+    my @binaries = find_ocaml_bc_binaries $tmp;
+    next unless @binaries;  # nothing to do if no bytecode binary has been found
+    complex_doit "> $odeps";
+    if (not $dh{M_PARAMS}) {
       foreach my $bin (@binaries) { # try to find .cmo of bc binaries
-	my $guess = basename($bin) . ".cm[ao]";
-	complex_doit("/usr/bin/find . -type f -name '$guess' >> $objlist");
+	my $guess = basename $bin . ".cm[ao]";
+	complex_doit "find . -type f -name '$guess' >> $olist"
       }
-      complex_doit("$ocaml_md5sums dep < $objlist > $ocamldeps"); # compute deps
-      fill_ocaml_depends($package, $ocamldeps, 0, "");
     }
+    complex_doit "$omd5 dep < $olist > $odeps"; # compute deps
+    fill_ocaml_depends $package, $tmp, $odeps, 0, "";
   }
 }
 
 =head1 SEE ALSO
 
-L<ocamlobjinfo(1)>, L<debhelper(7)>
+L<ocamlobjinfo(1)>, L<debhelper(7)>, L<ocaml-md5sums(1)>
 
 This program is a part of debhelper.
 
