@@ -1,7 +1,7 @@
 
 SCRIPTS = postinst-ocaml postrm-ocaml
 # DEBHELPER_VERSION := $(shell grep-available -X -F Package -s Version debhelper | cut -f 2 -d ' ')
-DEBHELPER_VERSION = 4.2.32
+DEBHELPER_VERSION = 4.2.33
 OCAML_VERSION = 3.08.3
 OCAML_LIB_DIR = /usr/lib/ocaml/$(OCAML_VERSION)
 DEBHELPER_DSC = debhelper_$(DEBHELPER_VERSION).dsc
