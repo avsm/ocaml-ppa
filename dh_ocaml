@@ -6,7 +6,7 @@
 # Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
 #
 # Created:	  Fri, 01 Apr 2005 19:50:48 +0200 zack
-# Last-Modified:  Sun, 17 Apr 2005 16:58:32 +0200 zack
+# Last-Modified:  Sat, 23 Apr 2005 15:19:39 +0200 zack
 #
 # This is free software, you can redistribute it and/or modify it under the
 # terms of the GNU General Public License version 2 or above as published by the
@@ -191,9 +191,7 @@ sub fill_ocaml_depends($$$$$) {
 # check if a given binary package exists in debian/control
 sub package_exists($) {
   my ($name) = @_;
-  open CONTROL, "< debian/control";
-  my @lines = <CONTROL>;
-  my $retval = grep /^Package:\s*\Q$name\E\s*$/, @lines;
+  my $retval = grep /^\Q$name\E$/, getpackages();
   return $retval;
 }
 
