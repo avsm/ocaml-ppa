@@ -1,3 +1,4 @@
 versioned_libdir
 objinfo
 man-ocamlmklib
+asmcomp_amd64_emit.mlp

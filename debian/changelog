@@ -2,9 +2,11 @@ ocaml (3.08.3-3+SVN) UNRELEASED; urgency=low
 
   * Create directories in /usr/local/lib with proper permissions in
     ocaml-base-nox's postinst, and remove them if empty in prerm
-    (Closes: #270925)
+    (Closes: #270925).
+  * Add patch from upstream bugfix branch by Xavier Leroy to fix code
+    generation on amd64 (reported by John Skaller).
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Sat, 16 Apr 2005 14:22:32 +0200
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Tue, 14 Jun 2005 03:17:55 +0200
 
 ocaml (3.08.3-3) unstable; urgency=medium
 
