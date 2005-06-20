@@ -7,7 +7,7 @@ Standards-Version: 3.6.1
 
 Package: ocaml-nox
 Architecture: any
-Depends: libncurses5-dev, ocaml-base-nox (=${Source-Version}), ocaml-base-nox-3.08.3, ocaml-interp-3.08.3
+Depends: libncurses5-dev, ocaml-base-nox (=${Source-Version}), ocaml-base-nox-3.08.3, ocaml-interp-3.08.3, emacsen-common
 Suggests: ocaml-doc, libgdbm-dev, emacsen
 Recommends: ledit, file
 Provides: ocaml-nox-3.08.3 ${F:BestProvides}, libnums-ocaml-dev
