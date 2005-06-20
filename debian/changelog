@@ -8,8 +8,10 @@ ocaml (3.08.3-3+SVN) UNRELEASED; urgency=low
     generation on amd64 (reported by John Skaller).
   * debian/control: Add a dependency on emacsen-common, because this is needed
     to install the caml emacs mode in ocaml-nox (Closes: #312618).
+  * Add patch from Fedora to fix inline i386 assembly in the num library
+    to allow building ocaml with gcc-4.0 (Closes: #309317).
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Mon, 20 Jun 2005 19:58:32 +0200
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Mon, 20 Jun 2005 20:13:17 +0200
 
 ocaml (3.08.3-3) unstable; urgency=medium
 

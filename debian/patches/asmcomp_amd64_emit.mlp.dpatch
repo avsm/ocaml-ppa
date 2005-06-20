@@ -6,8 +6,8 @@
 
 @DPATCH@
 diff -urNad ocaml-3.08.3.orig/asmcomp/amd64/emit.mlp ocaml-3.08.3/asmcomp/amd64/emit.mlp
---- ocaml-3.08.3/asmcomp/amd64/emit.mlp	2004-07-01 18:09:03.000000000 +0200
-+++ /tmp/dpep.7xGPae/ocaml-3.08.3/asmcomp/amd64/emit.mlp	2005-06-14 03:08:25.481518269 +0200
+--- ocaml-3.08.3.orig/asmcomp/amd64/emit.mlp	2004-07-01 18:09:03.000000000 +0200
++++ ocaml-3.08.3/asmcomp/amd64/emit.mlp	2005-06-14 03:08:25.481518269 +0200
 @@ -10,7 +10,7 @@
  (*                                                                     *)
  (***********************************************************************)

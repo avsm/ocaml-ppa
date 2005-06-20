@@ -1,0 +1,29 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## fix_i386_gcc4_build.dpatch by Julien Cristau <julien.cristau@ens-lyon.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Patch from Fedora to fix build on i386 with gcc4.
+## DP: http://cvs.fedora.redhat.com/viewcvs/devel/ocaml/ocaml-num-gcc4.patch?root=extras&rev=1.1&view=markup
+
+@DPATCH@
+diff -urNad ocaml-3.08.3.orig/otherlibs/num/bng_ia32.c ocaml-3.08.3/otherlibs/num/bng_ia32.c
+--- ocaml-3.08.3.orig/otherlibs/num/bng_ia32.c	2003-10-26 10:51:11.000000000 +0100
++++ ocaml-3.08.3/otherlibs/num/bng_ia32.c	2005-06-20 17:34:10.015173470 +0200
+@@ -121,7 +121,7 @@
+         "leal 4(%1), %1 \n\t"
+         "decl %2 \n\t"
+         "jnz 1b"
+-        : "+&r" (a), "+&r" (b), "+&rm" (blen), "+&r" (out)
++        : "+&r" (a), "+&r" (b), "+m" (blen), "+&r" (out)
+         : "rm" (d)
+         : "eax", "edx");
+   }
+@@ -164,7 +164,7 @@
+         "leal 4(%1), %1 \n\t"
+         "decl %2 \n\t"
+         "jnz 1b"
+-        : "+&r" (a), "+&r" (b), "+&rm" (blen), "+&rm" (out), "=&r" (tmp)
++        : "+&r" (a), "+&r" (b), "+m" (blen), "+m" (out), "=&r" (tmp)
+         : "rm" (d)
+         : "eax", "edx");
+   }
