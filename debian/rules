@@ -9,6 +9,8 @@
 include /usr/share/dpatch/dpatch.make
 PACKAGE = ocaml
 VERSION = 3.08.3
+STDLIBDIR = /usr/lib/ocaml/$(VERSION)
+MD5SUMSDIR = /var/lib/ocaml/md5sums
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
@@ -49,6 +51,7 @@ config-stamp: configure
 		echo "Aborting.";					\
 		exit 1;							\
 	fi
+	(cd ocaml-md5sums/ && chmod +x configure && ./configure $(MD5SUMSDIR))
 	touch config-stamp
 
 
@@ -67,6 +70,11 @@ build-arch-stamp: patch-stamp config-stamp
 		echo "Building native compilers";			\
 		$(MAKE) opt opt.opt;					\
 		touch opt-built-stamp;					\
+	fi
+	if [ -x ./ocamlopt ]; then					\
+		$(MAKE) -C ocaml-md5sums/ opt;				\
+	else								\
+		$(MAKE) -C ocaml-md5sums/ all;				\
 	fi
 	touch build-arch-stamp
 
@@ -88,11 +96,12 @@ clean: unpatch
 		mv boot.debian boot;	\
 	fi
 	-$(MAKE) -C emacs clean
+	-$(MAKE) -C ocaml-md5sums/ distclean
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
-	cp -f /usr/share/misc/config.sub config/gnu/config.sub
+	-cp -f /usr/share/misc/config.sub config/gnu/config.sub
 endif
 ifneq "$(wildcard /usr/share/misc/config.guess)" ""
-	cp -f /usr/share/misc/config.guess config/gnu/config.guess
+	-cp -f /usr/share/misc/config.guess config/gnu/config.guess
 endif
 	
 	dh_clean debian/README.labltk camlp4/config/Makefile.cnf camlp4/config/Makefile config/m.h config/s.h config/Makefile
@@ -182,6 +191,17 @@ install-arch:
 			$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/$(VERSION)/compiler-libs; \
 	fi
 
+	# install ocaml-md5sums
+	$(MAKE) -C ocaml-md5sums/ install DESTDIR=$(CURDIR)/debian/ocaml-base-nox/usr/bin
+
+	# compute core entries of the ocaml md5sums registry and install them
+	(cd ocaml-md5sums/ &&									\
+	 chmod +x feeding.sh &&									\
+	 for pkg in ocaml-nox ocaml ocaml-compiler-libs; do					\
+		mkdir -p ../debian/$$pkg$(MD5SUMSDIR);						\
+		./feeding.sh $$pkg $(STDLIBDIR) $(VERSION) ../debian/$$pkg$(STDLIBDIR)/ >	\
+			../debian/$$pkg$(MD5SUMSDIR)/$$pkg.md5sums;				\
+	 done)
 
 	dh_install -a
 

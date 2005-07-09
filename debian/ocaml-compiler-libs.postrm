@@ -1,7 +1,5 @@
 #!/bin/sh -e
 
-rm -f /usr/include/caml
-
 if [ "$1" = "remove" ]; then
   ocaml-md5sums update
 fi

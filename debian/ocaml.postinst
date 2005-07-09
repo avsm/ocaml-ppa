@@ -3,5 +3,10 @@
 ln -sf ../ocaml-base-nox/Changes.gz /usr/share/doc/ocaml-base
 ln -sf ../ocaml-base-nox/README.gz /usr/share/doc/ocaml-base
 ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz /usr/share/doc/ocaml-base
+ln -sf ../ocaml-base-nox/README.Debian.gz /usr/share/doc/ocaml-base
+
+if [ "$1" = "configure" ]; then
+  ocaml-md5sums update
+fi
 
 #DEBHELPER#
