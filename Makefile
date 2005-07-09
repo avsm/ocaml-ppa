@@ -11,6 +11,7 @@ FED_SUMS = ocaml-nox.md5sums ocaml.md5sums ocaml-compiler-libs.md5sums
 OCAMLC = ocamlc
 OCAMLOPT = ocamlopt
 OCAML_LIBS = unix str
+SCRIPTS = postinst-ocaml prerm-ocaml
 
 all: ocaml-md5sums
 opt: ocaml-md5sums.opt

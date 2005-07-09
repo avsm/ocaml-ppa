@@ -4,7 +4,7 @@
  * Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
  *
  * Created:        Wed, 06 Apr 2005 16:55:39 +0200 zack
- * Last-Modified:  Mon, 11 Apr 2005 10:39:58 +0200 zack
+ * Last-Modified:  Sat, 09 Jul 2005 17:40:44 +0200 zack
  *
  * This is free software, you can redistribute it and/or modify it under the
  * terms of the GNU General Public License version 2 as published by the Free
@@ -97,6 +97,8 @@ let read_stdin () =
   let lines = ref [] in
   iter_in (fun s -> lines := s :: !lines) stdin;
   List.rev !lines
+
+let is_empty fname = (Unix.stat fname).Unix.st_size = 0
 
 (** {2 Auxiliary functions} *)
 
@@ -200,17 +202,19 @@ let iter_registry f fname =
             fname !lineno)))
     fname
 
-(** @param fname file name of the registry file
+(** @param fname file name of the registry file, if fname does not exists an
+ * empty registry will be returned
  * @return an hashtbl mapping pairs <unit_name, md5sum> to pairs <package_name,
  * version_info>. E.g. ("Foo_bar", "74be7fa4320ebd9415f1c7cfc04c2d7b") ->
  * ("libfoo-ocaml-dev", ">= 1.2.3-4") *)
 let parse_registry fname =
   let registry = Hashtbl.create 1024 in
-  iter_registry
-    (fun ~md5sum ~unit_name ~dev_dep ~runtime_dep ~dep_version ->
-      Hashtbl.replace registry (unit_name, md5sum)
-        (dev_dep, runtime_dep, dep_version))
-    fname;
+  if Sys.file_exists fname then
+    iter_registry
+      (fun ~md5sum ~unit_name ~dev_dep ~runtime_dep ~dep_version ->
+        Hashtbl.replace registry (unit_name, md5sum)
+          (dev_dep, runtime_dep, dep_version))
+      fname;
   registry
 
 (** {2 Main functions, one for each command line action} *)
@@ -266,7 +270,8 @@ let update () =
     done
   with End_of_file ->
     Unix.closedir dir;
-    close_out registry
+    close_out registry;
+    if is_empty registry_file then Sys.remove registry_file
 
 (** {2 Main} *)
 
