@@ -30,7 +30,7 @@ let md5sums_index = "MD5SUMS"
 let md5sums_ext = ".md5sums"
 let registry_file = sprintf "%s/%s" md5sums_dir md5sums_index
 
-(** {2 Regular expressions, for parsing} *)
+(** {2 Regular expressions, for parsing purposes} *)
 
 let unit_name_line_RE =
   Str.regexp "^[ \t]*Unit[ \t]+name[ \t]*:[ \t]*\\([a-zA-Z0-9_]+\\)[ \t]*$"
