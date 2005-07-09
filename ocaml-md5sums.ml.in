@@ -271,10 +271,7 @@ let update () =
   with End_of_file ->
     Unix.closedir dir;
     close_out registry;
-    if is_empty registry_file then begin
-      Sys.remove registry_file;
-      ignore (Sys.command ("/bin/rmdir -p " ^ md5sums_dir))
-    end
+    if is_empty registry_file Sys.remove registry_file
 
 (** {2 Main} *)
 
