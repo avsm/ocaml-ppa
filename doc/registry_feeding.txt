@@ -32,3 +32,5 @@ time:
     contains .cmas which link units that should be indexed per
     ocaml-compiler-libs. Skipping them avoids duplicate entries in the registry
 
+Sat, 09 Jul 2005 13:44:50 +0200 zack
+
