@@ -1,4 +1,3 @@
 if [ "$1" = "remove" ]; then
   ocaml-md5sums update
 fi
-# vim: set ft=wml:
