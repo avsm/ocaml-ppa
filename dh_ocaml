@@ -6,7 +6,7 @@
 # Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
 #
 # Created:	  Fri, 01 Apr 2005 19:50:48 +0200 zack
-# Last-Modified:  Sat, 23 Apr 2005 15:19:39 +0200 zack
+# Last-Modified:  Sat, 09 Jul 2005 13:25:57 +0200
 #
 # This is free software, you can redistribute it and/or modify it under the
 # terms of the GNU General Public License version 2 or above as published by the
@@ -26,8 +26,7 @@
 
 =head1 NAME
 
-dh_ocaml - calculates ocaml dependencies and adds postinst and prerm ocaml
-scripts
+dh_ocaml - calculates OCaml packages dependencies
 
 =cut
 
@@ -36,8 +35,7 @@ use Debian::Debhelper::Dh_Lib;
 init();
 
 my $ocamlc = "/usr/bin/ocamlc";
-# my $omd5 = "/usr/bin/ocaml-md5sums";
-my $omd5 = "/home/zack/dati/source/ocaml/dh_ocaml/ocaml-md5sums";
+my $omd5 = "/usr/bin/ocaml-md5sums";
 my @binaries = ($ocamlc, $omd5);
 foreach my $bin (@binaries) {
   error "$bin does not exists or is not executable" unless -x $bin;
@@ -54,28 +52,31 @@ B<dh_ocaml> [S<I<debhelper options>>]
 
 =head1 DESCRIPTION
 
-dh_ocaml is a debhelper program that is responsible for generating
-the ${ocaml:Depends} substitutions and adding them to substvars files. It will
-also add postinst and prerm scripts for maintaining system registry of ocaml
-md5sums if required.
+dh_ocaml is a debhelper program that is responsible for filling the
+${ocaml:Depends} substitutions and adding them to substvars files. It also adds
+postinst and prerm scripts for maintaining system registry of OCaml md5sums
+where required.
 
-dh_ocaml acts on two kinds of packages: those shipping development part of ocaml
-libraries, and those shipping ocaml bytecode non-custom executables (i.e.
-executables interpreted by /usr/bin/ocamlrun).
+dh_ocaml acts on two kinds of binary packages: those shipping development part
+of OCaml libraries (usually named libXXX-ocaml-dev), and those shipping OCaml
+bytecode non-custom executables (i.e. executables interpreted by
+/usr/bin/ocamlrun).
 
-On ocaml library packages dh_ocaml will firstly look at ocaml objects (files
+On OCaml library packages dh_ocaml will firstly look at OCaml objects (files
 matching *.cm[ao]) shipped by the package. Then, dh_ocaml uses ocamlobjinfo on
-them for collecting information about ocaml modules (or units, in ocamlobjinfo
+them for collecting information about OCaml modules (or units, in ocamlobjinfo
 terminology) defined and used by them.  Information about defined units will be
-used to automatically create the ocaml md5sums registry entry for your package,
-e.g.  /var/lib/ocaml/md5sums/libXXX-ocaml-dev.md5sums. dh_ocaml will also take
-care of creating autoscripts (postrm and postinst) which update the global
-system registry (/var/lib/ocaml/md5sums/MD5SUMS) with the shipped entry.
-Information about imported units will instead be used as keys in the ocaml
-md5sums registry for retrieving dependency information for the package. Those
-information will then be used to fill the "${ocaml:Depends}" substvar.
+used to automatically create the OCaml md5sums registry entry for your package,
+e.g.  /var/lib/ocaml/md5sums/libXXX-ocaml-dev.md5sums. Information about
+imported units will instead be used as keys in the OCaml md5sums registry for
+retrieving dependency information for the package. Those information will then
+be used to fill the "${ocaml:Depends}" substvar.
 
-On non-library packages, dh_ocaml tries to guess the ocaml objects corresponding
+dh_ocaml takes also care of creating postinst and postrm autoscripts which
+update the global system registry (/var/lib/ocaml/md5sums/MD5SUMS) with the
+registry entry shipped by your package.
+
+On non-library packages, dh_ocaml tries to guess the OCaml objects corresponding
 to shipped bytecode binaries and extract from them information about imported
 units. Extracted information will then be used for filling "${ocaml:Depends}" as
 discussed for the library case.
@@ -84,7 +85,7 @@ In addition to dependencies extracted from the system md5sum registry, dh_ocaml
 will add: (1) dependency from libXXX-ocaml-dev to libXXX-ocaml (runtime part of
 the library), if there is a libXXX-ocaml package in debian/control; (2)
 dependency from libXXX-ocaml-dev to ocaml-findlib if the package ships any META
-file in the ocaml library directory; (3) dependency from libXXX-ocaml, if any,
+file in the OCaml library directory; (3) dependency from libXXX-ocaml, if any,
 to the appropriate ocaml-base-* package (please note that the substvar for
 libXXX-ocaml will be filled while processing libXXX-ocaml-dev).
 
@@ -94,10 +95,10 @@ libXXX-ocaml will be filled while processing libXXX-ocaml-dev).
 
 =item B<-m> I<filename>
 
-By default, list of ocaml objects being shipped which should be analyzed for
-retrieving dependency information is guessed by dh_ocaml.
+By default, the list of OCaml objects shipped by your package which should be
+analyzed for retrieving dependency information is guessed by dh_ocaml.
 
-The -m option permit to specify a file which lists, one per line, that ocaml
+The -m option permit to specify a file which lists, one per line, that OCaml
 objects. They should be in one of the format understandable by ocamlobjinfo
 (*.cma, *.cmi, *.cmo) and are considered relative to the package build
 directory.
@@ -105,16 +106,16 @@ directory.
 =item B<-l> I<dev1:runtime1,dev2:runtime2,...>
 
 The association between development part of libraries and their runtimes is
-guessed by dh_ocaml according to the ocaml packaging policy. Thus,
+guessed by dh_ocaml according to the OCaml packaging policy. Thus,
 libXXX-ocaml-dev is the name of the package shipping the development part of XXX
-library while libXXX-ocaml, if any, is that of pachage shipping the
+library while libXXX-ocaml, if any, is the name of the package shipping the
 corresponding runtime.
 
 Using -l you could override the pairs development package name, runtime package
-name. The value passed to -l admits no spaces and should be a comma separated
-list of items. Each item could be a single package name (stating that that name
+name. The value passed to -l admits no spaces and must be a comma separated list
+of items. Each item can be a single package name (stating that that name
 corresponds to the development part of a library) or two package names separated
-by a colon (stating that the first is corresponds to the development part of a
+by a colon (stating that the first corresponds to the development part of a
 library, while the second to its accompanying runtime part).
 
 =item B<-d>
@@ -122,7 +123,7 @@ library, while the second to its accompanying runtime part).
 By default, dependency on findlib is generated for development parts of
 libraries which ship any META file. Using -d you can disable the generation of
 such dependency (even if this is discouraged and is very likely to violate the
-ocaml packaging policy)
+OCaml packaging policy)
 
 =back
 
