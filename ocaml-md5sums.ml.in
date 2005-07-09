@@ -271,7 +271,7 @@ let update () =
   with End_of_file ->
     Unix.closedir dir;
     close_out registry;
-    if is_empty registry_file Sys.remove registry_file
+    if is_empty registry_file then Sys.remove registry_file
 
 (** {2 Main} *)
 
