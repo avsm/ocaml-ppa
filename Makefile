@@ -1,5 +1,4 @@
 
-SCRIPTS = postinst-ocaml postrm-ocaml
 # DEBHELPER_VERSION := $(shell grep-available -X -F Package -s Version debhelper | cut -f 2 -d ' ')
 DEBHELPER_VERSION = 4.9.3
 OCAML_VERSION = 3.08.3
@@ -9,12 +8,18 @@ NEW_DEBHELPER_VERSION = $(DEBHELPER_VERSION)+dh_ocaml
 DEBHELPER_DIR = debhelper-$(DEBHELPER_VERSION)
 NEW_DEBHELPER_DIR = debhelper-$(NEW_DEBHELPER_VERSION)
 FED_SUMS = ocaml-nox.md5sums ocaml.md5sums ocaml-compiler-libs.md5sums
+OCAMLC = ocamlc
+OCAMLOPT = ocamlopt
+OCAML_LIBS = unix str
 
-# all: ocaml-md5sums $(SCRIPTS) debhelper
-all: ocaml-md5sums $(SCRIPTS)
+all: ocaml-md5sums
+opt: ocaml-md5sums.opt
+world: all opt
 
 ocaml-md5sums: ocaml-md5sums.ml
-	ocamlfind ocamlc -package str,unix -linkpkg -o $@ $<
+	$(OCAMLC) $(patsubst %,%.cma,$(OCAML_LIBS)) -o $@ $<
+ocaml-md5sums.opt: ocaml-md5sums.ml
+	$(OCAMLOPT) $(patsubst %,%.cmxa,$(OCAML_LIBS)) -o $@ $<
 
 $(DEBHELPER_DSC):
 	apt-get -d source debhelper
@@ -51,5 +56,6 @@ ocaml-compiler-libs.md5sums: ocaml-md5sums ocaml-nox.md5sums
 	wml -p 1-3 $< > $@
 
 clean:
-	rm -f $(TARGETS) $(FED_SUMS)
+	rm -f ocaml-md5sums ocaml-md5sums.opt $(FED_SUMS)
+	rm -f *.cm[aiox] *.cmxa *.[ao]
 
