@@ -6,7 +6,7 @@
 # Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
 #
 # Created:	  Fri, 01 Apr 2005 19:50:48 +0200 zack
-# Last-Modified:  Sat, 09 Jul 2005 13:25:57 +0200
+# Last-Modified:  Sat, 09 Jul 2005 18:45:56 +0200 zack
 #
 # This is free software, you can redistribute it and/or modify it under the
 # terms of the GNU General Public License version 2 or above as published by the
@@ -54,7 +54,7 @@ B<dh_ocaml> [S<I<debhelper options>>]
 
 dh_ocaml is a debhelper program that is responsible for filling the
 ${ocaml:Depends} substitutions and adding them to substvars files. It also adds
-postinst and prerm scripts for maintaining system registry of OCaml md5sums
+postinst and postrm scripts for maintaining system registry of OCaml md5sums
 where required.
 
 dh_ocaml acts on two kinds of binary packages: those shipping development part
@@ -72,9 +72,9 @@ imported units will instead be used as keys in the OCaml md5sums registry for
 retrieving dependency information for the package. Those information will then
 be used to fill the "${ocaml:Depends}" substvar.
 
-dh_ocaml takes also care of creating postinst and prerm autoscripts which update
-the global system registry (/var/lib/ocaml/md5sums/MD5SUMS) with the registry
-entry shipped by your package.
+dh_ocaml takes also care of creating postinst and postrm autoscripts which
+update the global system registry (/var/lib/ocaml/md5sums/MD5SUMS) with the
+registry entry shipped by your package.
 
 On non-library packages, dh_ocaml tries to guess the OCaml objects corresponding
 to shipped bytecode binaries and extract from them information about imported
@@ -250,7 +250,7 @@ foreach my $package (@{$dh{DOPACKAGES}}) {
       . " | sort -k 2"  # optional pass, just for "pretty" printing
       . " > $tmp$md5dir/$package$md5ext");
     autoscript $package, "postinst", "postinst-ocaml";
-    autoscript $package, "prerm", "prerm-ocaml";
+    autoscript $package, "postrm", "postrm-ocaml";
     complex_doit "$omd5 --load-info $oinfo dep < $olist > $odeps"; #compute deps
     fill_ocaml_depends $package, $tmp, $odeps, 1, $runtime;
   } elsif (is_binary $package, $dh{L_PARAMS}) {  # ocaml binary package
