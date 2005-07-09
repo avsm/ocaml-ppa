@@ -16,6 +16,8 @@ all: ocaml-md5sums
 opt: ocaml-md5sums.opt
 world: all opt
 
+ocaml-md5sums.ml: ocaml-md5sums.ml.in
+	./configure
 ocaml-md5sums: ocaml-md5sums.ml
 	$(OCAMLC) $(patsubst %,%.cma,$(OCAML_LIBS)) -o $@ $<
 ocaml-md5sums.opt: ocaml-md5sums.ml

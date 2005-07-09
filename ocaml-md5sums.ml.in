@@ -25,7 +25,7 @@ open Printf
 (** {2 Constants} *)
 
 let ocamlobjinfo = "/usr/bin/ocamlobjinfo"
-let md5sums_dir = "/var/lib/ocaml/md5sums"
+let md5sums_dir = "@MD5SUMS_DIR@"
 let md5sums_index = "MD5SUMS"
 let md5sums_ext = ".md5sums"
 let registry_file = sprintf "%s/%s" md5sums_dir md5sums_index
