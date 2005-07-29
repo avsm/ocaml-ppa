@@ -1,4 +1,4 @@
-ocaml (3.08.3-3+SVN) UNRELEASED; urgency=low
+ocaml (3.08.3-3+SVN) unstable; urgency=low
 
   Changes by Julien Cristau:
   * Create directories in /usr/local/lib with proper permissions in
