@@ -4,12 +4,14 @@ ocaml (3.08.3-3+SVN) UNRELEASED; urgency=low
   * Create directories in /usr/local/lib with proper permissions in
     ocaml-base-nox's postinst, and remove them if empty in prerm
     (Closes: #270925).
-  * Add patch from upstream bugfix branch by Xavier Leroy to fix code
-    generation on amd64 (reported by John Skaller).
+  * debian/patches/asmcomp_amd64_emit.mlp.dpatch: patch from upstream bugfix
+    branch by Xavier Leroy to fix code generation on amd64 (reported by John
+    Skaller).
+  * debian/patches/fix_i386_gcc4_build.dpatch: patch from upstream to fix
+    inline i386 assembly in the num library to allow building ocaml with
+    gcc-4.0 (Closes: #309317).
   * debian/control: Add a dependency on emacsen-common, because this is needed
     to install the caml emacs mode in ocaml-nox (Closes: #312618).
-  * Add patch from upstream to fix inline i386 assembly in the num library
-    to allow building ocaml with gcc-4.0 (Closes: #309317).
 
   Changes by Stefano Zacchiroli:
   * debian/patches/ocaml-md5sums, debian/rules,
@@ -22,6 +24,8 @@ ocaml (3.08.3-3+SVN) UNRELEASED; urgency=low
     svn-buildpackage
   * debian/control
     - bumped Standards-Version to 3.6.2
+    - changed Maintainer to Debian OCaml Maintainers for this upload, set
+      Uploaders to Sven and me
   * debian/rules
     - ignore error on clean target for config.{sub,guess} so that
       svn-buildpackage does not fail at clean time
