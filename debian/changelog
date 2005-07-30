@@ -1,8 +1,9 @@
 ocaml (3.08.3-5) UNRELEASED; urgency=low
 
-  * NOT RELEASED YET
+  * Fix FTBFS by specifying the path to ocamlrun explicitly when building
+    ocaml-md5sums, because /usr/bin/ocamlrun doesn't exist yet.
 
- -- Stefano Zacchiroli <zack@takhisis.invalid>  Fri, 29 Jul 2005 12:55:56 +0200
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Sun, 31 Jul 2005 00:10:42 +0200
 
 ocaml (3.08.3-4) unstable; urgency=low
 

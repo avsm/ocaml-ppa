@@ -72,8 +72,8 @@ diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/Makefile /tmp/dpep-work
 +
 +DESTDIR = /usr/local/bin
 +OFLAGS = -I ../otherlibs/unix -I ../otherlibs/str
-+OCAMLC = ../ocamlc $(OFLAGS)
-+OCAMLOPT = ../ocamlopt $(OFLAGS)
++OCAMLC = ../boot/ocamlrun ../ocamlc $(OFLAGS)
++OCAMLOPT = ../boot/ocamlrun ../ocamlopt $(OFLAGS)
 +OCAML_LIBS = unix str
 +NAME = ocaml-md5sums
 +BYTE = $(NAME)
