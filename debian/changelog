@@ -1,9 +1,15 @@
-ocaml (3.08.3-5) UNRELEASED; urgency=low
+ocaml (3.08.3-5) unstable; urgency=low
 
-  * Fix FTBFS by specifying the path to ocamlrun explicitly when building
-    ocaml-md5sums, because /usr/bin/ocamlrun doesn't exist yet.
+  Changes by Stefano Zacchiroli:
+  * debian/patches/ocaml-md5sums.dpatch
+    - use relative path for ocamlrun when compiling ocaml-md5sums
+      (Closes: #320622)
+    - enable external specification, via env var, of ocamlobjinfo path
+    - fixed bug in feeding.sh which inhibit discovery of *.cm[ao]
+  * debian/rules
+    - passes relative path of ocamlobjinfo to ocaml-md5sums
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Sun, 31 Jul 2005 00:10:42 +0200
+ -- Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>  Fri, 29 Jul 2005 12:55:56 +0200
 
 ocaml (3.08.3-4) unstable; urgency=low
 

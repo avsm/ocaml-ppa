@@ -5,9 +5,9 @@
 ## DP: No description.
 
 @DPATCH@
-diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/configure /tmp/dpep-work.aePevL/trunk/ocaml-md5sums/configure
+diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/configure /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/configure
 --- ./ocaml-md5sums/configure	1970-01-01 01:00:00.000000000 +0100
-+++ /tmp/dpep-work.aePevL/trunk/ocaml-md5sums/configure	2005-07-09 19:21:30.979216376 +0200
++++ /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/configure	2005-07-31 11:02:49.000000000 +0200
 @@ -0,0 +1,12 @@
 +#!/bin/sh
 +DEFAULT="/var/lib/ocaml/3.08.3/md5sums"
@@ -21,9 +21,9 @@ diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/configure /tmp/dpep-wor
 +echo -n "Creating ocaml-md5sums.ml ... "
 +sed "s:@MD5SUMS_DIR@:$MD5SUMS_DIR:" < ocaml-md5sums.ml.in > ocaml-md5sums.ml
 +echo "done."
-diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/feeding.sh /tmp/dpep-work.aePevL/trunk/ocaml-md5sums/feeding.sh
+diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/feeding.sh /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/feeding.sh
 --- ./ocaml-md5sums/feeding.sh	1970-01-01 01:00:00.000000000 +0100
-+++ /tmp/dpep-work.aePevL/trunk/ocaml-md5sums/feeding.sh	2005-07-09 19:21:30.979216376 +0200
++++ /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/feeding.sh	2005-07-31 11:03:53.000000000 +0200
 @@ -0,0 +1,40 @@
 +#!/bin/sh
 +# Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
@@ -36,7 +36,6 @@ diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/feeding.sh /tmp/dpep-wo
 +stdlibdir="$2"
 +version="$3"
 +rootdir="$4"
-+FIND_OBJ="find $rootdir -name *.cm[ao]"
 +SORT="sort -k 2"
 +if [ -x ./ocaml-md5sums.opt ]; then
 +  OCAML_MD5SUMS="./ocaml-md5sums.opt"
@@ -46,18 +45,19 @@ diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/feeding.sh /tmp/dpep-wo
 +  echo "Can't find ocaml-md5sums{.opt,}, aborting."
 +  exit 2
 +fi
-+COMPUTE="./$OCAML_MD5SUMS compute --package $pkg-$version"
++export OCAMLOBJINFO="../boot/ocamlrun ../tools/objinfo"
++COMPUTE="$OCAML_MD5SUMS compute --package $pkg-$version"
 +if [ -z "$pkg" -o -z "$stdlibdir" -o -z "$version" -o -z "$rootdir" ]; then
 +  echo "Usage: feeding.sh <pkg_name> <stdlib_dir> <ocaml_version> <root_dir>"
 +  exit 1
 +fi
 +case "$pkg" in
 +  ocaml-compiler-libs)
-+    $FIND_OBJ | $COMPUTE | $SORT
++    find $rootdir -name "*.cm[ao]" | $COMPUTE | $SORT
 +    ;;
 +  *)
 +    RUNTIME="`echo $pkg | sed 's/ocaml/ocaml-base/'`-$version"
-+    $FIND_OBJ |
++    find $rootdir -name "*.cm[ao]" |
 +      grep -v $stdlibdir/ocamldoc/ |
 +      grep -v $stdlibdir/camlp4/ |
 +      $COMPUTE --runtime $RUNTIME |
@@ -65,13 +65,13 @@ diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/feeding.sh /tmp/dpep-wo
 +    ;;
 +esac
 +
-diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/Makefile /tmp/dpep-work.aePevL/trunk/ocaml-md5sums/Makefile
+diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/Makefile /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/Makefile
 --- ./ocaml-md5sums/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ /tmp/dpep-work.aePevL/trunk/ocaml-md5sums/Makefile	2005-07-09 19:21:30.979216376 +0200
++++ /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/Makefile	2005-07-31 11:02:49.000000000 +0200
 @@ -0,0 +1,30 @@
 +
 +DESTDIR = /usr/local/bin
-+OFLAGS = -I ../otherlibs/unix -I ../otherlibs/str
++OFLAGS = -nostdlib -I ../stdlib -I ../otherlibs/unix -I ../otherlibs/str
 +OCAMLC = ../boot/ocamlrun ../ocamlc $(OFLAGS)
 +OCAMLOPT = ../boot/ocamlrun ../ocamlopt $(OFLAGS)
 +OCAML_LIBS = unix str
@@ -99,17 +99,17 @@ diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/Makefile /tmp/dpep-work
 +clean:
 +	rm -f ocaml-md5sums ocaml-md5sums.opt *.cm[aiox] *.cmxa *.[ao]
 +
-diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/ocaml-md5sums.ml.in /tmp/dpep-work.aePevL/trunk/ocaml-md5sums/ocaml-md5sums.ml.in
+diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/ocaml-md5sums.ml.in /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/ocaml-md5sums.ml.in
 --- ./ocaml-md5sums/ocaml-md5sums.ml.in	1970-01-01 01:00:00.000000000 +0100
-+++ /tmp/dpep-work.aePevL/trunk/ocaml-md5sums/ocaml-md5sums.ml.in	2005-07-09 19:21:39.420933040 +0200
-@@ -0,0 +1,304 @@
++++ /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/ocaml-md5sums.ml.in	2005-07-31 11:02:49.000000000 +0200
+@@ -0,0 +1,310 @@
 +(*
 + * ocaml-md5sums - use and maintain debian registry of ocaml md5sums
 + *
 + * Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
 + *
 + * Created:        Wed, 06 Apr 2005 16:55:39 +0200 zack
-+ * Last-Modified:  Sat, 09 Jul 2005 18:43:03 +0200 zack
++ * Last-Modified:  Sun, 31 Jul 2005 00:48:15 +0200 zack
 + *
 + * This is free software, you can redistribute it and/or modify it under the
 + * terms of the GNU General Public License version 2 as published by the Free
@@ -129,11 +129,17 @@ diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/ocaml-md5sums.ml.in /tm
 +
 +(** {2 Constants} *)
 +
-+let ocamlobjinfo = "/usr/bin/ocamlobjinfo"
 +let md5sums_dir = "@MD5SUMS_DIR@"
 +let md5sums_index = "MD5SUMS"
 +let md5sums_ext = ".md5sums"
 +let registry_file = sprintf "%s/%s" md5sums_dir md5sums_index
++
++(** {2 System requirements} *)
++
++let ocamlobjinfo =
++  try                           (* needed at ocaml package build time, when *)
++    Sys.getenv "OCAMLOBJINFO"   (* ocamlobjinfo is not yet installed        *)
++  with Not_found -> "/usr/bin/ocamlobjinfo"
 +
 +(** {2 Regular expressions, for parsing purposes} *)
 +
