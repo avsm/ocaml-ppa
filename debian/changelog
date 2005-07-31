@@ -1,3 +1,9 @@
+ocaml (3.08.3-6) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefano Zacchiroli <zack@debian.org>  Sun, 31 Jul 2005 11:37:24 +0200
+
 ocaml (3.08.3-5) unstable; urgency=low
 
   Changes by Stefano Zacchiroli:
