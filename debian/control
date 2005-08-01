@@ -39,7 +39,7 @@ Description: ML language implementation with a class-based object system
 
 Package: ocaml
 Architecture: any
-Depends: ocaml-base (= ${Source-Version}), ocaml-base-3.08.3, ocaml-nox-3.08.3
+Depends: ocaml-base (= ${Source-Version}), ocaml-base-3.08.3, ocaml-nox-3.08.3, ocaml-base-nox (>= 3.08.3-6)
 Suggests: xlibs-dev, tcl8.4-dev, tk8.4-dev, 
 Provides: ocaml-3.08.3
 Description: ML language implementation with a class-based object system

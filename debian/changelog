@@ -1,8 +1,11 @@
-ocaml (3.08.3-6) UNRELEASED; urgency=low
+ocaml (3.08.3-6) unstable; urgency=low
 
-  * NOT RELEASED YET
+  Changes by Stefano Zacchiroli:
+  * debian/control
+    - added versioned dep from ocaml to ocaml-base-nox to ensure
+      ocaml-md5sums exists at postinst invocation time (Closes: #320779)
 
- -- Stefano Zacchiroli <zack@debian.org>  Sun, 31 Jul 2005 11:37:24 +0200
+ -- Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>  Sun, 31 Jul 2005 11:37:24 +0200
 
 ocaml (3.08.3-5) unstable; urgency=low
 
