@@ -1,3 +1,11 @@
+ocaml (3.08.3-7) UNRELEASED; urgency=low
+
+  Changes by Sven Luther:
+  * debian/patches/byterun_interp_ia64_fix.dpatch
+    - Removed spurious ia64 cast which broke builds with gcc 4.0
+
+ -- Sven Luther <luther@debian.org>  Tue,  9 Aug 2005 20:06:13 +0200
+
 ocaml (3.08.3-6) unstable; urgency=low
 
   Changes by Stefano Zacchiroli:

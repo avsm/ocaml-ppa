@@ -4,3 +4,5 @@ man-ocamlmklib
 asmcomp_amd64_emit.mlp
 fix_i386_gcc4_build
 ocaml-md5sums
+byterun_interp_ia64_fix
+
