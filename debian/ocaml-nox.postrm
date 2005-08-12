@@ -3,7 +3,9 @@
 rm -f /usr/include/caml
 
 if [ "$1" = "remove" ]; then
-  ocaml-md5sums update
+  if [ -x /usr/bin/ocaml-md5sums ]; then
+    /usr/bin/ocaml-md5sums update
+  fi
 fi
 
 #DEBHELPER#

@@ -5,9 +5,9 @@
 ## DP: No description.
 
 @DPATCH@
-diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/configure /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/configure
+diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/configure /tmp/dpep-work.YsUxwk/trunk/ocaml-md5sums/configure
 --- ./ocaml-md5sums/configure	1970-01-01 01:00:00.000000000 +0100
-+++ /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/configure	2005-07-31 11:02:49.000000000 +0200
++++ /tmp/dpep-work.YsUxwk/trunk/ocaml-md5sums/configure	2005-08-12 10:19:10.000000000 +0200
 @@ -0,0 +1,12 @@
 +#!/bin/sh
 +DEFAULT="/var/lib/ocaml/3.08.3/md5sums"
@@ -21,9 +21,9 @@ diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/configure /tmp/dpep-wor
 +echo -n "Creating ocaml-md5sums.ml ... "
 +sed "s:@MD5SUMS_DIR@:$MD5SUMS_DIR:" < ocaml-md5sums.ml.in > ocaml-md5sums.ml
 +echo "done."
-diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/feeding.sh /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/feeding.sh
+diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/feeding.sh /tmp/dpep-work.YsUxwk/trunk/ocaml-md5sums/feeding.sh
 --- ./ocaml-md5sums/feeding.sh	1970-01-01 01:00:00.000000000 +0100
-+++ /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/feeding.sh	2005-07-31 11:03:53.000000000 +0200
++++ /tmp/dpep-work.YsUxwk/trunk/ocaml-md5sums/feeding.sh	2005-08-12 10:19:10.000000000 +0200
 @@ -0,0 +1,40 @@
 +#!/bin/sh
 +# Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
@@ -65,9 +65,9 @@ diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/feeding.sh /tmp/dpep-wo
 +    ;;
 +esac
 +
-diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/Makefile /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/Makefile
+diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/Makefile /tmp/dpep-work.YsUxwk/trunk/ocaml-md5sums/Makefile
 --- ./ocaml-md5sums/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/Makefile	2005-07-31 11:02:49.000000000 +0200
++++ /tmp/dpep-work.YsUxwk/trunk/ocaml-md5sums/Makefile	2005-08-12 10:19:10.000000000 +0200
 @@ -0,0 +1,30 @@
 +
 +DESTDIR = /usr/local/bin
@@ -99,17 +99,17 @@ diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/Makefile /tmp/dpep-work
 +clean:
 +	rm -f ocaml-md5sums ocaml-md5sums.opt *.cm[aiox] *.cmxa *.[ao]
 +
-diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/ocaml-md5sums.ml.in /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/ocaml-md5sums.ml.in
+diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/ocaml-md5sums.ml.in /tmp/dpep-work.YsUxwk/trunk/ocaml-md5sums/ocaml-md5sums.ml.in
 --- ./ocaml-md5sums/ocaml-md5sums.ml.in	1970-01-01 01:00:00.000000000 +0100
-+++ /tmp/dpep-work.c7Vvzd/trunk/ocaml-md5sums/ocaml-md5sums.ml.in	2005-07-31 11:02:49.000000000 +0200
-@@ -0,0 +1,310 @@
++++ /tmp/dpep-work.YsUxwk/trunk/ocaml-md5sums/ocaml-md5sums.ml.in	2005-08-12 10:28:16.000000000 +0200
+@@ -0,0 +1,314 @@
 +(*
 + * ocaml-md5sums - use and maintain debian registry of ocaml md5sums
 + *
 + * Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
 + *
 + * Created:        Wed, 06 Apr 2005 16:55:39 +0200 zack
-+ * Last-Modified:  Sun, 31 Jul 2005 00:48:15 +0200 zack
++ * Last-Modified:  Fri, 12 Aug 2005 10:28:10 +0200 zack
 + *
 + * This is free software, you can redistribute it and/or modify it under the
 + * terms of the GNU General Public License version 2 as published by the Free
@@ -210,6 +210,8 @@ diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/ocaml-md5sums.ml.in /tm
 +  List.rev !lines
 +
 +let is_empty fname = (Unix.stat fname).Unix.st_size = 0
++let is_regular fname = (Unix.stat fname).Unix.st_kind = Unix.S_REG
++let is_dir fname = (Unix.stat fname).Unix.st_kind = Unix.S_DIR
 +
 +(** {2 Auxiliary functions} *)
 +
@@ -361,28 +363,30 @@ diff -urNad --exclude=CVS --exclude=.svn ./ocaml-md5sums/ocaml-md5sums.ml.in /tm
 +  info (sprintf "updating registry %s using info from %s/"
 +    registry_file md5sums_dir);
 +  let keys = Hashtbl.create 1024 in (* history of seen registry keys *)
-+  let dir = Unix.opendir md5sums_dir in
-+  let registry = open_out registry_file in
-+  try
-+    while true do
-+      let fname = sprintf "%s/%s" md5sums_dir (Unix.readdir dir) in
-+      if (Str.string_match md5sums_ext_RE fname 0)
-+        && ((Unix.stat fname).Unix.st_kind = Unix.S_REG)
-+      then
-+        iter_registry
-+          (fun ~md5sum ~unit_name ~dev_dep ~runtime_dep ~dep_version ->
-+             if Hashtbl.mem keys (unit_name, md5sum) then
-+               error (sprintf "duplicate entry %s %s in registry" unit_name
-+                          md5sum);
-+             Hashtbl.replace keys (unit_name, md5sum) ();
-+             pp_entry registry ~md5sum ~unit_name ~dev_dep ~runtime_dep
-+               ~dep_version)
-+          fname
-+    done
-+  with End_of_file ->
-+    Unix.closedir dir;
-+    close_out registry;
-+    if is_empty registry_file then Sys.remove registry_file
++  if Sys.file_exists md5sums_dir && is_dir md5sums_dir then begin
++    let dir = Unix.opendir md5sums_dir in
++    let registry = open_out registry_file in
++    try
++      while true do
++        let fname = sprintf "%s/%s" md5sums_dir (Unix.readdir dir) in
++        if (Str.string_match md5sums_ext_RE fname 0) && is_regular fname then
++          iter_registry
++            (fun ~md5sum ~unit_name ~dev_dep ~runtime_dep ~dep_version ->
++               if Hashtbl.mem keys (unit_name, md5sum) then
++                 error (sprintf "duplicate entry %s %s in registry" unit_name
++                            md5sum);
++               Hashtbl.replace keys (unit_name, md5sum) ();
++               pp_entry registry ~md5sum ~unit_name ~dev_dep ~runtime_dep
++                 ~dep_version)
++            fname
++      done
++    with End_of_file ->
++      Unix.closedir dir;
++      close_out registry;
++      if is_empty registry_file then Sys.remove registry_file
++  end else
++    warning (sprintf "%s/ does not exist or is not a directory, not updating"
++      md5sums_dir)
 +
 +(** {2 Main} *)
 +

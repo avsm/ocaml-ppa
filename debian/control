@@ -138,7 +138,7 @@ Description: Ocaml interpreter and standard libraries
 Package: ocaml-compiler-libs
 Architecture: any
 Provides: ocaml-compiler-libs-3.08.3
-Depends: ocaml-nox-3.08.3
+Depends: ocaml-nox-3.08.3, ocaml-base-nox (>= 3.08.3-6)
 Description: Ocaml interpreter and standard libraries
  Objective Caml is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
