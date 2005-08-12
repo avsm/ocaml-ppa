@@ -4,7 +4,7 @@
  * Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
  *
  * Created:        Wed, 06 Apr 2005 16:55:39 +0200 zack
- * Last-Modified:  Sat, 09 Jul 2005 18:43:03 +0200 zack
+ * Last-Modified:  Fri, 12 Aug 2005 10:28:10 +0200 zack
  *
  * This is free software, you can redistribute it and/or modify it under the
  * terms of the GNU General Public License version 2 as published by the Free
@@ -24,11 +24,17 @@ open Printf
 
 (** {2 Constants} *)
 
-let ocamlobjinfo = "/usr/bin/ocamlobjinfo"
 let md5sums_dir = "@MD5SUMS_DIR@"
 let md5sums_index = "MD5SUMS"
 let md5sums_ext = ".md5sums"
 let registry_file = sprintf "%s/%s" md5sums_dir md5sums_index
+
+(** {2 System requirements} *)
+
+let ocamlobjinfo =
+  try                           (* needed at ocaml package build time, when *)
+    Sys.getenv "OCAMLOBJINFO"   (* ocamlobjinfo is not yet installed        *)
+  with Not_found -> "/usr/bin/ocamlobjinfo"
 
 (** {2 Regular expressions, for parsing purposes} *)
 
@@ -99,6 +105,8 @@ let read_stdin () =
   List.rev !lines
 
 let is_empty fname = (Unix.stat fname).Unix.st_size = 0
+let is_regular fname = (Unix.stat fname).Unix.st_kind = Unix.S_REG
+let is_dir fname = (Unix.stat fname).Unix.st_kind = Unix.S_DIR
 
 (** {2 Auxiliary functions} *)
 
@@ -250,28 +258,30 @@ let update () =
   info (sprintf "updating registry %s using info from %s/"
     registry_file md5sums_dir);
   let keys = Hashtbl.create 1024 in (* history of seen registry keys *)
-  let dir = Unix.opendir md5sums_dir in
-  let registry = open_out registry_file in
-  try
-    while true do
-      let fname = sprintf "%s/%s" md5sums_dir (Unix.readdir dir) in
-      if (Str.string_match md5sums_ext_RE fname 0)
-        && ((Unix.stat fname).Unix.st_kind = Unix.S_REG)
-      then
-        iter_registry
-          (fun ~md5sum ~unit_name ~dev_dep ~runtime_dep ~dep_version ->
-             if Hashtbl.mem keys (unit_name, md5sum) then
-               error (sprintf "duplicate entry %s %s in registry" unit_name
-                          md5sum);
-             Hashtbl.replace keys (unit_name, md5sum) ();
-             pp_entry registry ~md5sum ~unit_name ~dev_dep ~runtime_dep
-               ~dep_version)
-          fname
-    done
-  with End_of_file ->
-    Unix.closedir dir;
-    close_out registry;
-    if is_empty registry_file then Sys.remove registry_file
+  if Sys.file_exists md5sums_dir && is_dir md5sums_dir then begin
+    let dir = Unix.opendir md5sums_dir in
+    let registry = open_out registry_file in
+    try
+      while true do
+        let fname = sprintf "%s/%s" md5sums_dir (Unix.readdir dir) in
+        if (Str.string_match md5sums_ext_RE fname 0) && is_regular fname then
+          iter_registry
+            (fun ~md5sum ~unit_name ~dev_dep ~runtime_dep ~dep_version ->
+               if Hashtbl.mem keys (unit_name, md5sum) then
+                 error (sprintf "duplicate entry %s %s in registry" unit_name
+                            md5sum);
+               Hashtbl.replace keys (unit_name, md5sum) ();
+               pp_entry registry ~md5sum ~unit_name ~dev_dep ~runtime_dep
+                 ~dep_version)
+            fname
+      done
+    with End_of_file ->
+      Unix.closedir dir;
+      close_out registry;
+      if is_empty registry_file then Sys.remove registry_file
+  end else
+    warning (sprintf "%s/ does not exist or is not a directory, not updating"
+      md5sums_dir)
 
 (** {2 Main} *)
 
