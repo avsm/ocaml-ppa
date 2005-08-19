@@ -1,3 +1,12 @@
+ocaml (3.08.3-8) UNRELEASED; urgency=low
+
+  Changes by Stefano Zacchiroli:
+  * debian/rules
+    - remove spurious CVS directories from labltk examples
+      (Closes: Bug#322712)
+
+ -- Stefano Zacchiroli <zack@debian.org>  Fri, 19 Aug 2005 14:39:51 +0200
+
 ocaml (3.08.3-7) unstable; urgency=low
 
   Changes by Sven Luther:

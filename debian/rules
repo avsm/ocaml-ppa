@@ -213,6 +213,7 @@ binary-common:
 	dh_testroot
 	dh_installchangelogs Changes
 	dh_installdocs
+	-find debian/ocaml/ -type d -name CVS -exec rm -rf {} \;
 	dh_installexamples
 #	dh_installmenu
 #	dh_installdebconf	
