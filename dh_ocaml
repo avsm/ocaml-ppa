@@ -6,7 +6,7 @@
 # Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
 #
 # Created:	  Fri, 01 Apr 2005 19:50:48 +0200 zack
-# Last-Modified:  Sat, 09 Jul 2005 18:45:56 +0200 zack
+# Last-Modified:  Sat, 20 Aug 2005 09:46:04 +0200 zack
 #
 # This is free software, you can redistribute it and/or modify it under the
 # terms of the GNU General Public License version 2 or above as published by the
@@ -41,6 +41,7 @@ foreach my $bin (@binaries) {
   error "$bin does not exists or is not executable" unless -x $bin;
 }
 chomp (my $ocaml_lib_dir = `$ocamlc -where`);
+chomp (my $ocaml_version = `$ocamlc -version`);
 
 my $md5dir = "/var/lib/ocaml/md5sums";
 my $md5ext = ".md5sums";
@@ -82,12 +83,32 @@ units. Extracted information will then be used for filling "${ocaml:Depends}" as
 discussed for the library case.
 
 In addition to dependencies extracted from the system md5sum registry, dh_ocaml
-will add: (1) dependency from libXXX-ocaml-dev to libXXX-ocaml (runtime part of
-the library), if there is a libXXX-ocaml package in debian/control; (2)
+will add:
+
+=over
+
+=item 1.
+
+dependency from libXXX-ocaml-dev to libXXX-ocaml (runtime part of the library),
+if there is a libXXX-ocaml package in debian/control;
+
+=item 2.
+
 dependency from libXXX-ocaml-dev to ocaml-findlib if the package ships any META
-file in the OCaml library directory; (3) dependency from libXXX-ocaml, if any,
-to the appropriate ocaml-base-* package (please note that the substvar for
-libXXX-ocaml will be filled while processing libXXX-ocaml-dev).
+file in the OCaml library directory;
+
+=item 3.
+
+dependency from libXXX-ocaml, if any, to the appropriate ocaml-base-* package
+(please note that the substvar for libXXX-ocaml will be filled while processing
+libXXX-ocaml-dev);
+
+=item 4.
+
+dependency on ocaml-base-nox-<ocaml_version> for packages shipping bytecode
+non-custom OCaml executables.
+
+=back
 
 =head1 OPTIONS
 
@@ -185,6 +206,7 @@ sub fill_ocaml_depends($$$$$) {
     }
     close DEPS;
   }
+  add_ocaml_dep $package, "ocaml-base-nox-$ocaml_version", "-" unless $is_library;
 }
 
 # check if a given binary package exists in debian/control
