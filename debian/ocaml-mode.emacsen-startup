@@ -15,7 +15,7 @@
       (nconc load-path
 	     (list (concat "/usr/share/"
 			   (symbol-name flavor)
-			   "/site-lisp/ocaml"))))
+			   "/site-lisp/ocaml-mode"))))
 (setq auto-mode-alist
           (cons '("\\.ml[iylp]?$" . caml-mode) auto-mode-alist))
 (autoload 'caml-mode "caml" "Major mode for editing Caml code." t)

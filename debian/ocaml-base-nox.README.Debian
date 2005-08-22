@@ -28,6 +28,8 @@ ocaml for Debian
     need them at build time or for personal use (it should _not_ be used to
     build ocam litself).
 
+  o ocaml-mode: contains a major mode for editing OCaml files in Emacs.
+
   2) The caml include files are found under /usr/lib/ocaml/<ocaml_version>/caml.
   A symlink is provided from /usr/include/caml for convenience. If
   /usr/include/caml was previously a directory, for whatever reason, a warning
@@ -48,4 +50,4 @@ ocaml for Debian
   /usr/local/lib/ocaml/<ocaml_version>/stublibs which is searched before
   /usr/lib/ocaml/<ocaml_version>/stublibs.
 
- -- Mike Furr <mfurr@debian.org>, Thu Jun 24 14:23:14 2004
+ -- Jerome Marant <jerome@debian.org>, Sat Aug 20 11:51:32 2005

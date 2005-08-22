@@ -4,7 +4,6 @@ usr/lib/ocaml/3.08.3/config
 usr/include/ocaml/3.08.3
 usr/share/man/man1
 usr/share/man/man3
-usr/share/emacs/site-lisp/ocaml
 usr/share/texmf/tex/latex/misc
 usr/X11R6/include/X11/pixmaps
 usr/share/lintian/overrides

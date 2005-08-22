@@ -60,7 +60,7 @@ build: build-arch build-indep
 
 build-arch: build-arch-stamp
 build-arch-stamp: patch-stamp config-stamp
-	
+
 	# Add here commands to compile the arch part of the package.
 	if test ! -d boot.debian; then 					\
 		cp -xa boot boot.debian;				\
@@ -80,7 +80,7 @@ build-arch-stamp: patch-stamp config-stamp
 
 build-indep: build-indep-stamp
 build-indep-stamp: patch-stamp config-stamp
-	
+
 	# Add here commands to compile the indep part of the package.
 	#$(MAKE) doc
 
@@ -103,7 +103,7 @@ endif
 ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	-cp -f /usr/share/misc/config.guess config/gnu/config.guess
 endif
-	
+
 	dh_clean debian/README.labltk camlp4/config/Makefile.cnf camlp4/config/Makefile config/m.h config/s.h config/Makefile
 
 install: install-indep install-arch
@@ -112,7 +112,12 @@ install-indep:
 	dh_testroot
 	dh_clean -k -i
 	dh_installdirs -i
-	
+
+	# Install Emacs files
+	$(MAKE) -C emacs EMACSDIR=$(CURDIR)/debian/ocaml-mode/usr/share/emacs/site-lisp/ocaml-mode \
+		NOCOMPILE=true simple-install
+	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-mode/usr/bin install-ocamltags
+
 	# Add here commands to install the indep part of the package into
 	# debian/<package>-doc.
 	for i in `cat debian/ocaml-source.files`; do			\
@@ -137,9 +142,6 @@ install-arch:
 
 	# Let's install ocaml first.
 	$(MAKE) install PREFIX=$(CURDIR)/debian/ocaml-nox/usr
-	$(MAKE) -C emacs EMACSDIR=$(CURDIR)/debian/ocaml-nox/usr/share/emacs/site-lisp/ocaml \
-		NOCOMPILE=true simple-install
-	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-nox/usr/bin install-ocamltags
 	install -m 644 debian/JoeCaml.xpm \
 		$(CURDIR)/debian/ocaml-nox/usr/X11R6/include/X11/pixmaps
 	install -m 644 debian/ocaml-nox.override \
@@ -178,7 +180,7 @@ install-arch:
 
 	# The interpreter files
 	dh_movefiles -pocaml-interp					\
-			--sourcedir=debian/ocaml-nox;			\
+			--sourcedir=debian/ocaml-nox
 
 	# Some extra stuff
 	install -m 644 utils/*.mli utils/*.cmi utils/*.cmo		\

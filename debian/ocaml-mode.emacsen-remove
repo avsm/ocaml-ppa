@@ -1,8 +1,8 @@
 #!/bin/sh -e
-# /usr/lib/emacsen-common/packages/remove/ocaml
+# /usr/lib/emacsen-common/packages/remove/ocaml-mode
 
 FLAVOR=$1
-PACKAGE=ocaml
+PACKAGE=ocaml-mode
 
 if [ ${FLAVOR} != emacs ]; then
     if test -x /usr/sbin/install-info-altdir; then

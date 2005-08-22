@@ -8,8 +8,8 @@ Standards-Version: 3.6.2
 
 Package: ocaml-nox
 Architecture: any
-Depends: libncurses5-dev, ocaml-base-nox (=${Source-Version}), ocaml-base-nox-3.08.3, ocaml-interp-3.08.3, emacsen-common
-Suggests: ocaml-doc, libgdbm-dev, emacsen
+Depends: libncurses5-dev, ocaml-base-nox (=${Source-Version}), ocaml-base-nox-3.08.3, ocaml-interp-3.08.3
+Suggests: ocaml-doc, libgdbm-dev, tuareg-mode | ocaml-mode
 Recommends: ledit, file
 Provides: ocaml-nox-3.08.3 ${F:BestProvides}, libnums-ocaml-dev
 Replaces: camlp4, ocaml (<< 3.07.2a-3), libnums-ocaml-dev
@@ -147,3 +147,19 @@ Description: Ocaml interpreter and standard libraries
  This package contains several modules used internally by the ocaml
  compilers.  They are not needed for normal ocaml development, but may
  be helpful in the development of certain applications.
+
+Package: ocaml-mode
+Architecture: all
+Depends: emacs21 | emacsen
+Suggests: ocaml
+Conflicts: ocaml-nox (<< 3.08.3-8)
+Description: A major mode for editing Objective Caml in Emacs
+ This package provides support for editing both Objective Caml and
+ Caml Light programs with Emacs and XEmacs.
+ .
+ Caml-mode supports:
+  - indentation
+  - compilation and error retrieving
+  - interaction with the toplevel
+  - font-lock
+  - imenu

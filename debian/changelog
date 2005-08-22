@@ -4,8 +4,28 @@ ocaml (3.08.3-8) UNRELEASED; urgency=low
   * debian/rules
     - remove spurious CVS directories from labltk examples
       (Closes: Bug#322712)
+  
+  Changes by Jérôme Marant:
+  * debian/control
+    - Add new ocaml-mode package section
+    - [ocaml-nox]
+      + Remove emacsen-common dependency
+      + Suggests tuareg-mode or ocaml-mode
+  * debian/ocaml-mode.dirs: New file
+  * debian/ocaml-nox.dirs: Remove emacsen-related files entries
+  * debian/ocaml-mode.emacsen-install,
+    debian/ocaml-mode.emacsen-remove,
+    debian/ocaml-mode.emacsen-startup: New files respectively renamed from
+    emacsen-install, emacsen-remove and emacsen-startup
+  * debian/rules: Install ocaml-mode files in their own location
+  * debian/ocaml-base-nox.README.Debian: Mention new ocaml-mode package
+  * debian/ocaml-nox.NEWS:
+    - New file
+    - Mention all emacs-related files moved to a separate ocaml-mode
+      package
+  * debian/changelog: Remove spurious changelog entry
 
- -- Stefano Zacchiroli <zack@debian.org>  Fri, 19 Aug 2005 14:39:51 +0200
+ -- Jerome Marant <jerome@debian.org>  Sat, 20 Aug 2005 13:34:52 +0200
 
 ocaml (3.08.3-7) unstable; urgency=low
 
@@ -182,11 +202,6 @@ ocaml (3.08.0-1) unstable; urgency=low
   * Now include ocamldoc manpage. (Closes: #255239)
 
  -- Sven Luther <luther@debian.org>  Thu, 15 Jul 2004 09:21:55 +0200
-
-ocaml (3.07.2a-5) unstable; urgency=low
-
-
- -- Sven Luther <luther@debian.org>  Mon, 12 Jul 2004 12:06:33 +0200
 
 ocaml (3.07.2a-4) unstable; urgency=low
 

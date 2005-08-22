@@ -1,12 +1,12 @@
 #! /bin/sh -e
-# /usr/lib/emacsen-common/packages/install/ocaml
+# /usr/lib/emacsen-common/packages/install/ocaml-mode
 
 # Written by Jim Van Zandt <jrv@vanzandt.mv.com>, borrowing heavily
 # from the install scripts for gettext by Santiago Vila
 # <sanvila@ctv.es> and octave by Dirk Eddelbuettel <edd@debian.org>.
 
 FLAVOR=$1
-PACKAGE=ocaml
+PACKAGE=ocaml-mode
 
 case ${FLAVOR} in
     emacs20|emacs21|xemacs21)
