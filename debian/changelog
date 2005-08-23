@@ -17,12 +17,17 @@ ocaml (3.08.3-8) UNRELEASED; urgency=low
     debian/ocaml-mode.emacsen-remove,
     debian/ocaml-mode.emacsen-startup: New files respectively renamed from
     emacsen-install, emacsen-remove and emacsen-startup
+  * debian/ocaml-nox.postint: Rename previous existing emacs site
+    conffiles to <file>.save in order to avoid messing with the new
+    ocaml-mode 
   * debian/rules: Install ocaml-mode files in their own location
   * debian/ocaml-base-nox.README.Debian: Mention new ocaml-mode package
   * debian/ocaml-nox.NEWS:
     - New file
     - Mention all emacs-related files moved to a separate ocaml-mode
       package
+    - Mention that all previous emacs conffiles are renamed in order
+      not to mess with the new ocaml-mode
   * debian/changelog: Remove spurious changelog entry
 
  -- Jerome Marant <jerome@debian.org>  Sat, 20 Aug 2005 13:34:52 +0200

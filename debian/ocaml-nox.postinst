@@ -9,10 +9,10 @@ ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz /usr/share/doc/ocaml-nox
 if [ "$1" = "configure" ]; then
   ocaml-md5sums update
 
-  # Get rid of Emacs conffiles from previous ocaml versions
+  # Save Emacs conffiles from previous ocaml versions
   for f in ocaml ocaml-nox ; do
-    [ -e "/etc/emacs/site-start.d/50$f.el" ] && \
-      rm -f "/etc/emacs/site-start.d/50$f.el"
+    file="/etc/emacs/site-start.d/50$f.el"
+    [ -e "$file" ] && mv "$file" "$file.save"
   done
 fi
 
