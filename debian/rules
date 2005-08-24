@@ -51,7 +51,7 @@ config-stamp: configure
 		echo "Aborting.";					\
 		exit 1;							\
 	fi
-	(cd ocaml-md5sums/ && chmod +x configure && ./configure $(MD5SUMSDIR))
+	(cd debian/ocaml-md5sums && chmod +x configure && ./configure $(MD5SUMSDIR))
 	touch config-stamp
 
 
@@ -72,9 +72,9 @@ build-arch-stamp: patch-stamp config-stamp
 		touch opt-built-stamp;					\
 	fi
 	if [ -x ./ocamlopt ]; then					\
-		$(MAKE) -C ocaml-md5sums/ opt;				\
+		$(MAKE) -C debian/ocaml-md5sums opt;				\
 	else								\
-		$(MAKE) -C ocaml-md5sums/ all;				\
+		$(MAKE) -C debian/ocaml-md5sums all;				\
 	fi
 	touch build-arch-stamp
 
@@ -96,7 +96,7 @@ clean: unpatch
 		mv boot.debian boot;	\
 	fi
 	-$(MAKE) -C emacs clean
-	-$(MAKE) -C ocaml-md5sums/ distclean
+	-$(MAKE) -C debian/ocaml-md5sums distclean
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	-cp -f /usr/share/misc/config.sub config/gnu/config.sub
 endif
@@ -127,7 +127,7 @@ install-indep:
 	tar cjf debian/ocaml-source/usr/src/ocaml-source-$(VERSION).tar.bz2	\
 		-C debian/ocaml-source/usr/src ocaml-$(VERSION)
 	rm -rf debian/ocaml-source/usr/src/ocaml-$(VERSION)
-	
+
 	dh_install -i
 
 install-arch:
@@ -194,15 +194,15 @@ install-arch:
 	fi
 
 	# install ocaml-md5sums
-	$(MAKE) -C ocaml-md5sums/ install DESTDIR=$(CURDIR)/debian/ocaml-base-nox/usr/bin
+	$(MAKE) -C debian/ocaml-md5sums install DESTDIR=$(CURDIR)/debian/ocaml-base-nox/usr/bin
 
 	# compute core entries of the ocaml md5sums registry and install them
-	(cd ocaml-md5sums/ &&									\
+	(cd debian/ocaml-md5sums &&									\
 	 chmod +x feeding.sh &&									\
 	 for pkg in ocaml-nox ocaml ocaml-compiler-libs; do					\
-		mkdir -p ../debian/$$pkg$(MD5SUMSDIR);						\
-		./feeding.sh $$pkg $(STDLIBDIR) $(VERSION) ../debian/$$pkg$(STDLIBDIR)/ >	\
-			../debian/$$pkg$(MD5SUMSDIR)/$$pkg.md5sums;				\
+		mkdir -p ../$$pkg$(MD5SUMSDIR);						\
+		./feeding.sh $$pkg $(STDLIBDIR) $(VERSION) ../$$pkg$(STDLIBDIR) >	\
+			../$$pkg$(MD5SUMSDIR)/$$pkg.md5sums;				\
 	 done)
 
 	dh_install -a

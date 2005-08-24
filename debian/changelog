@@ -6,7 +6,8 @@ ocaml (3.08.3-8) UNRELEASED; urgency=low
       (Closes: Bug#322712)
   
   Changes by Jérôme Marant:
-  * debian/control
+  * Create a new `ocaml-mode' package dedicated at Emacs-related files
+  * debian/control:
     - Add new ocaml-mode package section
     - [ocaml-nox]
       + Remove emacsen-common dependency
@@ -28,8 +29,16 @@ ocaml (3.08.3-8) UNRELEASED; urgency=low
       package
     - Mention that all previous emacs conffiles are renamed in order
       not to mess with the new ocaml-mode
+
   * debian/changelog: Remove spurious changelog entry
 
+  * Move ocaml-md5sum from a dpatch to a debian subdirectory
+  * debian/patches/ocaml-md5sums.dpatch: Remove file
+  * debian/patches/00list: Remove ocaml-md5sums entry
+  * debian/ocaml-md5sums/{configure,feeding.sh,Makefile,ocaml-md5sums.ml.in}:
+    - New files
+  * debian/rules: Update ocaml-md5sum files location accordingly
+  
  -- Jerome Marant <jerome@debian.org>  Sat, 20 Aug 2005 13:34:52 +0200
 
 ocaml (3.08.3-7) unstable; urgency=low
