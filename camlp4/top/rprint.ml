@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: rprint.ml,v 1.14 2004/06/12 08:55:46 xleroy Exp $ *)
+(* $Id: rprint.ml,v 1.14.2.1 2005/06/17 12:25:57 mauny Exp $ *)
 
 open Format;
 open Outcometree;
@@ -135,7 +135,7 @@ and print_out_type_1 ppf =
       fprintf ppf "@[%s%a ->@ %a@]" (if lab <> "" then lab ^ ":" else "")
         print_out_type_2 ty1 print_out_type_1 ty2
   | Otyp_poly sl ty ->
-      fprintf ppf "@[<hov 2>%a.@ %a@]"
+      fprintf ppf "@[<hov 2>!%a.@ %a@]"
         pr_vars sl
         print_out_type ty
   | ty -> print_out_type_2 ppf ty ]

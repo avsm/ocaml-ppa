@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: program_loading.ml,v 1.6 1999/11/17 18:57:27 xleroy Exp $ *)
+(* $Id: program_loading.ml,v 1.6.16.1 2005/08/02 14:04:13 doligez Exp $ *)
 
 (* Program loading *)
 
@@ -70,8 +70,8 @@ let exec_with_runtime =
     (function () ->
       Printf.sprintf "CAML_DEBUG_SOCKET=%s %s %s %s"
                      !socket_name
-                     runtime_program
-                     !program_name
+                     (Filename.quote runtime_program)
+                     (Filename.quote !program_name)
                      !arguments)
 
 (* Excute the program directly *)
@@ -80,7 +80,7 @@ let exec_direct =
     (function () ->
       Printf.sprintf "CAML_DEBUG_SOCKET=%s %s %s"
                      !socket_name
-                     !program_name
+                     (Filename.quote !program_name)
                      !arguments)
 
 (* Ask the user. *)

@@ -12,7 +12,7 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: skeleton.c,v 1.12 2002/11/02 22:36:46 doligez Exp $ */
+/* $Id: skeleton.c,v 1.12.6.1 2005/06/21 12:28:36 doligez Exp $ */
 
 #include "defs.h"
 
@@ -25,22 +25,22 @@ char *header[] =
 char *define_tables[] =
 {
   "let yytables =",
-  "  { actions=yyact;",
-  "    transl_const=yytransl_const;",
-  "    transl_block=yytransl_block;",
-  "    lhs=yylhs;",
-  "    len=yylen;",
-  "    defred=yydefred;",
-  "    dgoto=yydgoto;",
-  "    sindex=yysindex;",
-  "    rindex=yyrindex;",
-  "    gindex=yygindex;",
-  "    tablesize=yytablesize;",
-  "    table=yytable;",
-  "    check=yycheck;",
-  "    error_function=parse_error;",
-  "    names_const=yynames_const;",
-  "    names_block=yynames_block }",
+  "  { Parsing.actions=yyact;",
+  "    Parsing.transl_const=yytransl_const;",
+  "    Parsing.transl_block=yytransl_block;",
+  "    Parsing.lhs=yylhs;",
+  "    Parsing.len=yylen;",
+  "    Parsing.defred=yydefred;",
+  "    Parsing.dgoto=yydgoto;",
+  "    Parsing.sindex=yysindex;",
+  "    Parsing.rindex=yyrindex;",
+  "    Parsing.gindex=yygindex;",
+  "    Parsing.tablesize=yytablesize;",
+  "    Parsing.table=yytable;",
+  "    Parsing.check=yycheck;",
+  "    Parsing.error_function=parse_error;",
+  "    Parsing.names_const=yynames_const;",
+  "    Parsing.names_block=yynames_block }",
   0
 };
 

@@ -13,7 +13,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: configure,v 1.215.2.9 2005/01/24 15:22:46 doligez Exp $
+# $Id: configure,v 1.215.2.10 2005/06/12 13:36:42 xleroy Exp $
 
 configure_options="$*"
 prefix=/usr/local
@@ -1180,6 +1180,7 @@ for dir in \
     $x11_lib_dir          \
     $x11_try_lib_dir      \
                           \
+    /usr/X11R6/lib64      \
     /usr/X11R6/lib        \
     /usr/lib/X11R6        \
     /usr/local/X11R6/lib  \

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bigarray.mli,v 1.21 2002/05/25 08:34:05 xleroy Exp $ *)
+(* $Id: bigarray.mli,v 1.21.6.1 2005/05/04 14:05:19 doligez Exp $ *)
 
 (** Large, multi-dimensional, numerical arrays.
 
@@ -420,7 +420,8 @@ module Genarray :
 
 (** {6 One-dimensional arrays} *)
 
-(** One-dimensional arrays. The [Array1] structure provides operations similar to those of
+(** One-dimensional arrays. The [Array1] structure provides operations
+   similar to those of
    {!Bigarray.Genarray}, but specialized to the case of one-dimensional arrays.
    (The [Array2] and [Array3] structures below provide operations
    specialized for two- and three-dimensional arrays.)
@@ -489,8 +490,9 @@ end
 
 (** {6 Two-dimensional arrays} *)
 
-(** Two-dimensional arrays. The [Array2] structure provides operations similar to those of
-   {!Bigarray.Genarray}, but specialized to the case of two-dimensional arrays. *)
+(** Two-dimensional arrays. The [Array2] structure provides operations
+   similar to those of {!Bigarray.Genarray}, but specialized to the
+   case of two-dimensional arrays. *)
 module Array2 :
   sig
   type ('a, 'b, 'c) t

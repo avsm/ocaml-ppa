@@ -10,7 +10,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id$ *)
+;(* $Id: caml-help.el,v 1.16.4.1 2004/08/09 16:09:33 doligez Exp $ *)
 
 ;; caml-info.el --- contextual completion and help to caml-mode
 

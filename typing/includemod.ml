@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: includemod.ml,v 1.34 2004/06/12 08:55:47 xleroy Exp $ *)
+(* $Id: includemod.ml,v 1.34.2.1 2005/07/27 15:05:06 xleroy Exp $ *)
 
 (* Inclusion checks for the module language *)
 
@@ -283,11 +283,12 @@ and check_modtype_equiv env mty1 mty2 =
     (Tcoerce_none, Tcoerce_none) -> ()
   | (_, _) -> raise(Error [Modtype_permutation])
 
-(* Simplified inclusion check between module types *)
+(* Simplified inclusion check between module types (for Env) *)
 
-let check_modtype_inclusion env mty1 mty2 =
+let check_modtype_inclusion env mty1 path1 mty2 =
   try
-    ignore(modtypes env Subst.identity mty1 mty2)
+    ignore(modtypes env Subst.identity
+                    (Mtype.strengthen env mty1 path1) mty2)
   with Error reasons ->
     raise Not_found
 

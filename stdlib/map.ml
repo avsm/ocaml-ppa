@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: map.ml,v 1.15 2004/04/23 10:01:33 xleroy Exp $ *)
+(* $Id: map.ml,v 1.15.4.1 2005/04/27 12:35:07 doligez Exp $ *)
 
 module type OrderedType =
   sig
@@ -161,7 +161,7 @@ module Make(Ord: OrderedType) = struct
       match m with
         Empty -> accu
       | Node(l, v, d, r, _) ->
-          fold f l (f v d (fold f r accu))
+          fold f r (f v d (fold f l accu))
 
     type 'a enumeration = End | More of key * 'a * 'a t * 'a enumeration
 

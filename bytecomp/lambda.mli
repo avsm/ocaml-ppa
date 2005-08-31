@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lambda.mli,v 1.38.2.1 2004/07/07 16:49:53 xleroy Exp $ *)
+(* $Id: lambda.mli,v 1.38.2.2 2005/04/04 05:14:25 garrigue Exp $ *)
 
 (* The "lambda" intermediate code *)
 
@@ -174,8 +174,10 @@ val name_lambda_list: lambda list -> (lambda list -> lambda) -> lambda
 val is_guarded: lambda -> bool
 val patch_guarded : lambda -> lambda -> lambda
 
+val iter: (lambda -> unit) -> lambda -> unit
 module IdentSet: Set.S with type elt = Ident.t
 val free_variables: lambda -> IdentSet.t
+val free_methods: lambda -> IdentSet.t
 
 val transl_path: Path.t -> lambda
 val make_sequence: ('a -> lambda) -> 'a list -> lambda

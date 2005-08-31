@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: list.mli,v 1.44 2003/11/21 16:06:08 xleroy Exp $ *)
+(* $Id: list.mli,v 1.44.10.1 2005/06/22 13:20:30 doligez Exp $ *)
 
 (** List operations.
 
@@ -109,8 +109,8 @@ val map2 : ('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list
    different lengths.  Not tail-recursive. *)
 
 val rev_map2 : ('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list
-(** [List.rev_map2 f l] gives the same result as
-   {!List.rev}[ (]{!List.map2}[ f l)], but is tail-recursive and
+(** [List.rev_map2 f l1 l2] gives the same result as
+   {!List.rev}[ (]{!List.map2}[ f l1 l2)], but is tail-recursive and
    more efficient. *)
 
 val fold_left2 : ('a -> 'b -> 'c -> 'a) -> 'a -> 'b list -> 'c list -> 'a

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: translclass.ml,v 1.32 2004/05/26 11:10:50 garrigue Exp $ *)
+(* $Id: translclass.ml,v 1.32.2.2 2005/08/08 01:40:31 garrigue Exp $ *)
 
 open Misc
 open Asttypes
@@ -365,6 +365,16 @@ let rec build_class_lets cl =
   | _ ->
       (cl.cl_env, fun x -> x)
 
+let rec get_class_meths cl =
+  match cl.cl_desc with
+    Tclass_structure cl ->
+      Meths.fold (fun _ -> IdentSet.add) cl.cl_meths IdentSet.empty
+  | Tclass_ident _ -> IdentSet.empty
+  | Tclass_fun (_, _, cl, _)
+  | Tclass_let (_, _, _, cl)
+  | Tclass_apply (cl, _)
+  | Tclass_constraint (cl, _, _, _) -> get_class_meths cl
+
 (*
    XXX Il devrait etre peu couteux d'ecrire des classes :
      class c x y = d e f
@@ -476,8 +486,8 @@ let rec builtin_meths self env env2 body =
     | _ -> raise Not_found
   in
   match body with
-  | Llet(Alias, s', Lvar s, body) when List.mem s self ->
-      builtin_meths self env env2 body
+  | Llet(_, s', Lvar s, body) when List.mem s self ->
+      builtin_meths (s'::self) env env2 body
   | Lapply(f, [arg]) when const_path f ->
       let s, args = conv arg in ("app_"^s, f :: args)
   | Lapply(f, [arg; p]) when const_path f && const_path p ->
@@ -502,7 +512,7 @@ let rec builtin_meths self env env2 body =
         | Lprim(Parraysetu _, [Lvar s; Lvar n; Lvar x'])
           when Ident.same x x' && List.mem s self ->
             ("set_var", [Lvar n])
-        | Llet(Alias, s', Lvar s, body) when List.mem s self ->
+        | Llet(_, s', Lvar s, body) when List.mem s self ->
             enter (s'::self) body
         | _ -> raise Not_found
       in enter self body
@@ -577,11 +587,18 @@ let transl_class ids cl_id arity pub_meths cl =
   let cl_env, llets = build_class_lets cl in
   let new_ids = if top then [] else Env.diff top_env cl_env in
   let env2 = Ident.create "env" in
+  let meth_ids = get_class_meths cl in
   let subst env lam i0 new_ids' =
     let fv = free_variables lam in
     let fv = List.fold_right IdentSet.remove !new_ids' fv in
-    let fv =
-      IdentSet.filter (fun id -> List.mem id new_ids) fv in
+    (* IdentSet.iter
+      (fun id ->
+        if not (List.mem id new_ids) then prerr_endline (Ident.name id))
+      fv; *)
+    let fv = IdentSet.filter (fun id -> List.mem id new_ids) fv in
+    (* need to handle methods specially (PR#3576) *)
+    let fm = IdentSet.diff (free_methods lam) meth_ids in
+    let fv = IdentSet.union fv fm in
     new_ids' := !new_ids' @ IdentSet.elements fv;
     let i = ref (i0-1) in
     List.fold_left

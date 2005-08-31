@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: events.c,v 1.17 2004/05/30 10:25:08 xleroy Exp $ */
+/* $Id: events.c,v 1.17.2.1 2005/07/29 14:21:18 xleroy Exp $ */
 
 #include <signal.h>
 #include "libgraph.h"
@@ -230,6 +230,7 @@ static value caml_gr_wait_event_blocking(long mask)
       enter_blocking_section();
       select(FD_SETSIZE, &readfds, NULL, NULL, NULL);
       leave_blocking_section();
+      caml_gr_check_open(); /* in case another thread closed the display */
     }
   }
   caml_gr_ignore_sigio = False;

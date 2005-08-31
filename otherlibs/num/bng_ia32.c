@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: bng_ia32.c,v 1.3 2003/10/26 09:51:11 xleroy Exp $ */
+/* $Id: bng_ia32.c,v 1.3.6.1 2005/07/20 08:18:59 xleroy Exp $ */
 
 /* Code specific to the Intel IA32 (x86) architecture. */
 
@@ -121,8 +121,8 @@ static bngdigit bng_ia32_mult_add_digit
         "leal 4(%1), %1 \n\t"
         "decl %2 \n\t"
         "jnz 1b"
-        : "+&r" (a), "+&r" (b), "+&rm" (blen), "+&r" (out)
-        : "rm" (d)
+        : "+&r" (a), "+&r" (b), "+&r" (blen), "=m" (out)
+        : "m" (d)
         : "eax", "edx");
   }
   if (alen == 0) return out;
@@ -164,8 +164,8 @@ static bngdigit bng_ia32_mult_sub_digit
         "leal 4(%1), %1 \n\t"
         "decl %2 \n\t"
         "jnz 1b"
-        : "+&r" (a), "+&r" (b), "+&rm" (blen), "+&rm" (out), "=&r" (tmp)
-        : "rm" (d)
+        : "+&r" (a), "+&r" (b), "=m" (blen), "=m" (out), "=&r" (tmp)
+        : "m" (d)
         : "eax", "edx");
   }
   if (alen == 0) return out;

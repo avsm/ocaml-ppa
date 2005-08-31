@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pa_r.ml,v 1.59.2.2 2004/11/29 14:16:46 mauny Exp $ *)
+(* $Id: pa_r.ml,v 1.59.2.3 2005/06/02 10:40:32 mauny Exp $ *)
 
 open Stdpp;
 open Pcaml;
@@ -427,7 +427,8 @@ EXTEND
     [ RIGHTA
       [ p = ipatt; e = SELF -> <:expr< fun $p$ -> $e$ >>
       | "="; e = expr -> <:expr< $e$ >>
-      | ":"; t = ctyp; "="; e = expr -> <:expr< ($e$ : $t$) >> ] ]
+      | ":"; t = ctyp; "="; e = expr -> <:expr< ($e$ : $t$) >> 
+      | ":>"; t = ctyp; "="; e = expr -> <:expr< ($e$ :> $t$) >> ] ]
   ;
   match_case:
     [ [ p = patt; aso = as_patt_opt; w = when_expr_opt; "->"; e = expr ->

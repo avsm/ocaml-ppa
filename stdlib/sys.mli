@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: sys.mli,v 1.45 2004/05/04 11:51:13 basile Exp $ *)
+(* $Id: sys.mli,v 1.45.4.1 2005/07/08 15:17:39 doligez Exp $ *)
 
 (** System interface. *)
 
@@ -81,7 +81,9 @@ val max_string_length : int
 (** Maximum length of a string. *)
 
 val max_array_length : int
-(** Maximum length of an array. *)
+(** Maximum length of a normal array.  The maximum length of a float
+    array is [max_array_length/2] on 32-bit machines and
+    [max_array_length] on 64-bit machines. *)
 
 
 (** {6 Signal handling} *)
@@ -89,7 +91,7 @@ val max_array_length : int
 
 type signal_behavior =
     Signal_default
-  | Signal_ignore 
+  | Signal_ignore
   | Signal_handle of (int -> unit)
 (** What to do when receiving a signal:
    - [Signal_default]: take the default behavior

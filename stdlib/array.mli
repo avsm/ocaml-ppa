@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: array.mli,v 1.38 2003/12/31 14:20:39 doligez Exp $ *)
+(* $Id: array.mli,v 1.38.6.1 2005/07/08 15:17:39 doligez Exp $ *)
 
 (** Array operations. *)
 
@@ -34,7 +34,7 @@ external set : 'a array -> int -> 'a -> unit = "%array_safe_set"
 
    Raise [Invalid_argument "index out of bounds"]
    if [n] is outside the range 0 to [Array.length a - 1]. *)
-        
+
 external make : int -> 'a -> 'a array = "caml_make_vect"
 (** [Array.make n x] returns a fresh array of length [n],
    initialized with [x].

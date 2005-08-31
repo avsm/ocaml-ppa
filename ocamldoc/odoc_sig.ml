@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_sig.ml,v 1.30.2.3 2004/10/01 09:43:24 guesdon Exp $ *)
+(* $Id: odoc_sig.ml,v 1.30.2.4 2005/06/23 14:23:27 guesdon Exp $ *)
 
 (** Analysis of interface files. *)
 
@@ -191,8 +191,11 @@ module Analyser =
                   ([], []) ->
                     let pos = Str.search_forward (Str.regexp_string name) !file last_pos in
                     let pos' = pos + (String.length name) in
-                    let pos2 = Str.search_forward
-			(Str.regexp ("|[ \n\t\r]*"^name2)) !file pos'
+                    let pos2 =
+		      try Str.search_forward
+			  (Str.regexp ("|[ \n\t\r]*"^name2)) !file pos'
+		      with Not_found ->
+			failwith (Odoc_messages.misplaced_comment !file_name pos')
 		    in
                     let s = get_string_of_file pos' pos2 in
                     let (_,comment_opt) =  My_ir.just_after_special !file_name  s in
@@ -202,16 +205,25 @@ module Analyser =
                     let pos = Str.search_forward (Str.regexp_string name) !file last_pos in
                     let pos' = pos + (String.length name) in
                     let pos2 = ct2.Parsetree.ptyp_loc.Location.loc_start.Lexing.pos_cnum in
-                    let pos2' = Str.search_backward (Str.regexp_string name2) !file pos2 in
+                    let pos2' =
+		      try Str.search_backward
+			  (Str.regexp ("|[ \n\t\r]*"^name2)) !file pos2
+		      with Not_found ->
+			failwith (Odoc_messages.misplaced_comment !file_name pos')
+		    in
                     let s = get_string_of_file pos' pos2' in
                     let (_,comment_opt) =  My_ir.just_after_special !file_name  s in
                     f (acc @ [name, comment_opt]) pos2' ((name2, core_type_list2) :: q)
 
                 | ((ct :: _), []) ->
                     let pos = ct.Parsetree.ptyp_loc.Location.loc_end.Lexing.pos_cnum in
-                    let pos2 = Str.search_forward
-			(Str.regexp ("|[ \n\t\r]*"^name2))
-			!file pos
+                    let pos2 =
+		      try
+			Str.search_forward
+			  (Str.regexp ("|[ \n\t\r]*"^name2))
+			  !file pos
+		      with Not_found ->
+			failwith (Odoc_messages.misplaced_comment !file_name pos)
 		    in
                     let s = get_string_of_file pos pos2 in
                     let (_,comment_opt) =  My_ir.just_after_special !file_name  s in
@@ -225,7 +237,12 @@ module Analyser =
 		| ((ct:: _), (ct2 :: _)) ->
 		    let pos = ct.Parsetree.ptyp_loc.Location.loc_end.Lexing.pos_cnum in
                     let pos2 = ct2.Parsetree.ptyp_loc.Location.loc_start.Lexing.pos_cnum in
-                    let pos2' = Str.search_backward (Str.regexp_string name2) !file pos2 in
+                    let pos2' =
+		      try Str.search_backward
+			  (Str.regexp ("|[ \n\t\r]*"^name2)) !file pos2
+		      with Not_found ->
+			failwith (Odoc_messages.misplaced_comment !file_name pos)
+		    in
                     let s = get_string_of_file pos pos2' in
                     let (_,comment_opt) =  My_ir.just_after_special !file_name  s in
                     f (acc @ [name, comment_opt]) pos2' ((name2, core_type_list2) :: q)
@@ -1359,4 +1376,4 @@ module Analyser =
 
     end
 
-(* eof $Id: odoc_sig.ml,v 1.30.2.3 2004/10/01 09:43:24 guesdon Exp $ *)
+(* eof $Id: odoc_sig.ml,v 1.30.2.4 2005/06/23 14:23:27 guesdon Exp $ *)

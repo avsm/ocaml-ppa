@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typedecl.mli,v 1.26 2003/07/01 13:05:43 xleroy Exp $ *)
+(* $Id: typedecl.mli,v 1.26.10.2 2005/04/15 08:16:41 garrigue Exp $ *)
 
 (* Typing of type definitions and primitive definitions *)
 
@@ -58,10 +58,10 @@ type error =
   | Parameters_differ of Path.t * type_expr * type_expr
   | Null_arity_external
   | Missing_native_external
-  | Unbound_type_var
+  | Unbound_type_var of type_expr * type_declaration
   | Unbound_exception of Longident.t
   | Not_an_exception of Longident.t
-  | Bad_variance
+  | Bad_variance of int * (bool*bool) * (bool*bool)
   | Unavailable_type_constructor of Path.t
 
 exception Error of Location.t * error

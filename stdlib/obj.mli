@@ -11,11 +11,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: obj.mli,v 1.27 2004/01/01 16:42:40 doligez Exp $ *)
+(* $Id: obj.mli,v 1.27.6.1 2005/04/13 12:34:44 doligez Exp $ *)
 
 (** Operations on internal representations of values.
 
-   Not for the casual user. 
+   Not for the casual user.
 *)
 
 type t

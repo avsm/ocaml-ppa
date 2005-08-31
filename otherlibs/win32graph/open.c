@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: open.c,v 1.8.2.2 2004/06/21 15:44:17 xleroy Exp $ */
+/* $Id: open.c,v 1.8.2.3 2005/05/26 09:15:22 doligez Exp $ */
 
 #include <fcntl.h>
 #include <signal.h>
@@ -301,6 +301,15 @@ CAMLprim value caml_gr_size_y(void)
         return Val_int(grwindow.height);
 }
 
+CAMLprim value caml_gr_resize_window (value vx, value vy)
+{
+  caml_gr_check_open ();
+
+  /* FIXME TODO implement this function... */
+
+  return Val_unit;
+}
+
 CAMLprim value caml_gr_synchronize(void)
 {
         gr_check_open();
@@ -353,4 +362,3 @@ void gr_check_open(void)
 {
   if (!gr_initialized) gr_fail("graphic screen not opened", NULL);
 }
-

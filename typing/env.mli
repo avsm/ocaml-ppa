@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: env.mli,v 1.28 2003/11/25 09:20:42 garrigue Exp $ *)
+(* $Id: env.mli,v 1.28.8.1 2005/07/27 15:05:06 xleroy Exp $ *)
 
 (* Environment handling *)
 
@@ -135,5 +135,6 @@ open Format
 val report_error: formatter -> error -> unit
 
 (* Forward declaration to break mutual recursion with Includemod. *)
-val check_modtype_inclusion: (t -> module_type -> module_type -> unit) ref
+val check_modtype_inclusion:
+      (t -> module_type -> Path.t -> module_type -> unit) ref
 
