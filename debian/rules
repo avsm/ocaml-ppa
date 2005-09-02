@@ -176,6 +176,8 @@ install-arch:
 	if [ -e opt-built-stamp ]; then					\
 		dh_movefiles -pocaml-native-compilers			\
 			--sourcedir=debian/ocaml-nox;			\
+		cp debian/ocamlfind/ocaml-native-compilers.conf		\
+			debian/ocaml-native-compilers/usr/share/ocaml-findlib/;	\
 	fi
 
 	# The interpreter files

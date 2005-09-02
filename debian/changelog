@@ -1,10 +1,5 @@
 ocaml (3.08.3-8) UNRELEASED; urgency=low
 
-  Changes by Stefano Zacchiroli:
-  * debian/rules
-    - remove spurious CVS directories from labltk examples
-      (Closes: Bug#322712)
-  
   Changes by Jérôme Marant:
   * Create a new `ocaml-mode' package dedicated at Emacs-related files
   * debian/control:
@@ -38,6 +33,15 @@ ocaml (3.08.3-8) UNRELEASED; urgency=low
   * debian/ocaml-md5sums/{configure,feeding.sh,Makefile,ocaml-md5sums.ml.in}:
     - New files
   * debian/rules: Update ocaml-md5sum files location accordingly
+  
+  Changes by Stefano Zacchiroli:
+  * debian/rules
+    - remove spurious CVS directories from labltk examples
+      (Closes: Bug#322712)
+  * debian/ocamlfind/ocaml-native-compilers.conf
+    - gets installed under /usr/share/ocaml-findlib/ so that, if
+      ocamlfind is available, compiling with findlib will use the
+      native compilers
   
  -- Jerome Marant <jerome@debian.org>  Sat, 20 Aug 2005 13:34:52 +0200
 
