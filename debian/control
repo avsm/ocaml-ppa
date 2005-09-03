@@ -8,7 +8,7 @@ Standards-Version: 3.6.2
 
 Package: ocaml-nox
 Architecture: any
-Depends: libncurses5-dev, ocaml-base-nox (=${Source-Version}), ocaml-base-nox-3.08.3, ocaml-interp-3.08.3
+Depends: libncurses5-dev, ocaml-base-nox (=${Source-Version}), ocaml-base-nox-3.08.3, ocaml-interp-3.08.3, gcc, binutils
 Suggests: ocaml-doc, libgdbm-dev, tuareg-mode | ocaml-mode
 Recommends: ledit, file
 Provides: ocaml-nox-3.08.3 ${F:BestProvides}, libnums-ocaml-dev
@@ -96,7 +96,7 @@ Description: Runtime system for ocaml bytecode executables
 
 Package: ocaml-native-compilers
 Architecture: alpha amd64 arm hppa i386 ia64 powerpc sparc
-Depends: ocaml-nox (= ${Source-Version}), ocaml-nox-3.08.3, ${shlibs:Depends}
+Depends: ocaml-nox (= ${Source-Version}), ocaml-nox-3.08.3, gcc, binutils, ${shlibs:Depends}
 Provides: ocaml-best-compilers
 Description: Native code compilers of the ocaml suite (the .opt ones)
  Objective Caml is an implementation of the ML language, based on

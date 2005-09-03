@@ -59,6 +59,12 @@ ocaml (3.08.3-8) UNRELEASED; urgency=low
   
   * debian/ocaml-nox.preinst: Remove bashism
   
+  * Add dependencies on gcc and binutils for all interpreters since
+    OCaml compilers may use of them (Closes: Bug#322722)
+  * debian/control:
+    - [ocaml-nox]: Add dependency on both gcc and binutils
+    - [ocaml-native-compilers]: Likewise
+  
   Changes by Stefano Zacchiroli:
   * debian/rules
     - remove spurious CVS directories from labltk examples
