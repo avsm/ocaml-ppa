@@ -24,6 +24,10 @@ ocaml (3.08.3-8) UNRELEASED; urgency=low
       package
     - Mention that all previous emacs conffiles are renamed in order
       not to mess with the new ocaml-mode
+  * debian/ocaml-mode.README.Debian:
+    - New file
+    - Explain how to override tuareg-mode in case both modes are
+      installed
 
   * debian/changelog: Remove spurious changelog entry
 
