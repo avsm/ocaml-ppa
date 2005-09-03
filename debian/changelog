@@ -27,12 +27,12 @@ ocaml (3.08.3-8) UNRELEASED; urgency=low
 
   * debian/changelog: Remove spurious changelog entry
 
-  * Move ocaml-md5sum from a dpatch to a debian subdirectory
+  * Move ocaml-md5sums from a dpatch to a debian subdirectory
   * debian/patches/ocaml-md5sums.dpatch: Remove file
   * debian/patches/00list: Remove ocaml-md5sums entry
   * debian/ocaml-md5sums/{configure,feeding.sh,Makefile,ocaml-md5sums.ml.in}:
     - New files
-  * debian/rules: Update ocaml-md5sum files location accordingly
+  * debian/rules: Update ocaml-md5sums files location accordingly
   
   Changes by Stefano Zacchiroli:
   * debian/rules
@@ -43,7 +43,7 @@ ocaml (3.08.3-8) UNRELEASED; urgency=low
       ocamlfind is available, compiling with findlib will use the
       native compilers
   
- -- Jerome Marant <jerome@debian.org>  Sat, 20 Aug 2005 13:34:52 +0200
+ --
 
 ocaml (3.08.3-7) unstable; urgency=low
 
