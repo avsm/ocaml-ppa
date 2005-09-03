@@ -12,7 +12,9 @@ if [ "$1" = "configure" ]; then
   # Save Emacs conffiles from previous ocaml versions
   for f in ocaml ocaml-nox ; do
     file="/etc/emacs/site-start.d/50$f.el"
-    [ -e "$file" ] && mv "$file" "$file.save"
+    if [ -e "$file" ]; then
+      mv "$file" "$file.save"
+    fi
   done
 fi
 

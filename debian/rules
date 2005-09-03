@@ -143,7 +143,7 @@ install-arch:
 	# Let's install ocaml first.
 	$(MAKE) install PREFIX=$(CURDIR)/debian/ocaml-nox/usr
 	install -m 644 debian/JoeCaml.xpm \
-		$(CURDIR)/debian/ocaml-nox/usr/X11R6/include/X11/pixmaps
+		$(CURDIR)/debian/ocaml-interp/usr/share/pixmaps
 	install -m 644 debian/ocaml-nox.override \
 		$(CURDIR)/debian/ocaml-nox/usr/share/lintian/overrides/ocaml-nox
 	install -m 644 debian/ocaml-base.override \
@@ -217,9 +217,10 @@ binary-common:
 	dh_testroot
 	dh_installchangelogs Changes
 	dh_installdocs
-	-find debian/ocaml/ -type d -name CVS -exec rm -rf {} \;
+	-find debian/ocaml -type d -name CVS -exec rm -rf {} \;
+	-find debian/ocaml -type f -name .cvsignore -exec rm -rf {} \;
 	dh_installexamples
-#	dh_installmenu
+	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate	
 	dh_installemacsen

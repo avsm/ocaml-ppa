@@ -2,6 +2,7 @@ ocaml (3.08.3-8) UNRELEASED; urgency=low
 
   Changes by Jérôme Marant:
   * Create a new `ocaml-mode' package dedicated at Emacs-related files
+    (Closes: Bug#312618, Bug#322210)
   * debian/control:
     - Add new ocaml-mode package section
     - [ocaml-nox]
@@ -38,6 +39,26 @@ ocaml (3.08.3-8) UNRELEASED; urgency=low
     - New files
   * debian/rules: Update ocaml-md5sums files location accordingly
   
+  * Move ocaml-nox menu file to ocaml-interp since the toplevel
+    is provided by ocaml-interp
+  * debian/ocaml-interp.menu:
+    - New file renamed from ocaml-nox.menu
+    - Change 'ocaml' to 'ocaml-interp' in the required package for
+      the menu to be displayed 
+  * debian/ocaml-interp.dirs: Add pixmaps directory
+  * debian/ocaml-nox.dirs: Remove pixmaps directory
+   
+  * Move xpm files away from the /usr/X11R6 deprecated directory
+    hierarchy to /usr/share/pixmaps, as per Policy (11.8.7)
+  * debian/rules: install JoeCaml.xpm in /usr/share/pixmaps within the
+    ocaml-interp package
+  * debian/ocaml-interp.menu: Change pixmap location
+ 
+  * Really install menu files
+  * debian/rules: uncomment dh_installmenu in the build-common target
+  
+  * debian/ocaml-nox.preinst: Remove bashism
+  
   Changes by Stefano Zacchiroli:
   * debian/rules
     - remove spurious CVS directories from labltk examples
@@ -46,8 +67,8 @@ ocaml (3.08.3-8) UNRELEASED; urgency=low
     - gets installed under /usr/share/ocaml-findlib/ so that, if
       ocamlfind is available, compiling with findlib will use the
       native compilers
-  
- --
+
+ -- Jerome Marant <jerome@debian.org>  Sat,  3 Sep 2005 12:16:52 +0200
 
 ocaml (3.08.3-7) unstable; urgency=low
 

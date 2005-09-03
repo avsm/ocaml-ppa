@@ -1,5 +1,0 @@
-?package(ocaml):needs="text" section="Apps/Programming" \
-	title="Ocaml" longtitle="Ocaml Toplevel" \
-	hints="ocaml" \
-	command="/usr/bin/ocaml" \
-	icon="/usr/X11R6/include/X11/pixmaps/JoeCaml.xpm"
