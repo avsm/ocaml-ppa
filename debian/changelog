@@ -1,4 +1,4 @@
-ocaml (3.08.3-8) UNRELEASED; urgency=low
+ocaml (3.08.3-8) unstable; urgency=low
 
   Changes by Jérôme Marant:
   * Create a new `ocaml-mode' package dedicated at Emacs-related files
