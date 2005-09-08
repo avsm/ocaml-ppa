@@ -1,3 +1,11 @@
+ocaml (3.08.3-9) unstable; urgency=low
+
+  Changes by Samuel Mimram:
+  * debain/patches/map_fold_order.dpatch: added a patch to make Map.fold order
+    conform to the specification (Closes: #327211)
+
+ -- Samuel Mimram <smimram@debian.org>  Thu,  8 Sep 2005 20:45:08 +0200
+
 ocaml (3.08.3-8) unstable; urgency=low
 
   Changes by Jérôme Marant:
@@ -73,10 +81,6 @@ ocaml (3.08.3-8) unstable; urgency=low
     - gets installed under /usr/share/ocaml-findlib/ so that, if
       ocamlfind is available, compiling with findlib will use the
       native compilers
-
-  Changes by Samuel Mimram:
-  * debain/patches/map_fold_order.dpatch: added a patch to make Map.fold order
-    conform to the specification (Closes: #327211)
 
  -- Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>  Thu, 08 Sep 2005 12:46:36 +0200
 
