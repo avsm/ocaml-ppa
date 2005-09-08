@@ -1,0 +1,19 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## map_fold_order.dpatch by Samuel Mimram <smimram@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Make Map.fold order conform to the specification.
+
+@DPATCH@
+diff -urNad --exclude=CVS --exclude=.svn ./stdlib/map.ml /tmp/dpep-work.68QXab/ocaml-3.08.3/stdlib/map.ml
+--- ./stdlib/map.ml	2004-04-23 12:01:33.000000000 +0200
++++ /tmp/dpep-work.68QXab/ocaml-3.08.3/stdlib/map.ml	2005-09-08 20:27:30.000000000 +0200
+@@ -161,7 +161,7 @@
+       match m with
+         Empty -> accu
+       | Node(l, v, d, r, _) ->
+-          fold f l (f v d (fold f r accu))
++          fold f r (f v d (fold f l accu))
+ 
+     type 'a enumeration = End | More of key * 'a * 'a t * 'a enumeration
+ 

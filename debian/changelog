@@ -38,7 +38,7 @@ ocaml (3.08.3-8) unstable; urgency=low
   * debian/ocaml-md5sums/{configure,feeding.sh,Makefile,ocaml-md5sums.ml.in}:
     - New files
   * debian/rules: Update ocaml-md5sums files location accordingly
-  
+
   * Move ocaml-nox menu file to ocaml-interp since the toplevel
     is provided by ocaml-interp
   * debian/ocaml-interp.menu:
@@ -47,24 +47,24 @@ ocaml (3.08.3-8) unstable; urgency=low
       the menu to be displayed 
   * debian/ocaml-interp.dirs: Add pixmaps directory
   * debian/ocaml-nox.dirs: Remove pixmaps directory
-   
+
   * Move xpm files away from the /usr/X11R6 deprecated directory
     hierarchy to /usr/share/pixmaps, as per Policy (11.8.7)
   * debian/rules: install JoeCaml.xpm in /usr/share/pixmaps within the
     ocaml-interp package
   * debian/ocaml-interp.menu: Change pixmap location
- 
+
   * Really install menu files
   * debian/rules: uncomment dh_installmenu in the build-common target
-  
+
   * debian/ocaml-nox.preinst: Remove bashism
-  
+
   * Add dependencies on gcc and binutils for all interpreters since
     OCaml compilers may use of them (Closes: Bug#322722)
   * debian/control:
     - [ocaml-nox]: Add dependency on both gcc and binutils
     - [ocaml-native-compilers]: Likewise
-  
+
   Changes by Stefano Zacchiroli:
   * debian/rules
     - remove spurious CVS directories from labltk examples
@@ -73,6 +73,10 @@ ocaml (3.08.3-8) unstable; urgency=low
     - gets installed under /usr/share/ocaml-findlib/ so that, if
       ocamlfind is available, compiling with findlib will use the
       native compilers
+
+  Changes by Samuel Mimram:
+  * debain/patches/map_fold_order.dpatch: added a patch to make Map.fold order
+    conform to the specification (Closes: #327211)
 
  -- Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>  Thu, 08 Sep 2005 12:46:36 +0200
 
