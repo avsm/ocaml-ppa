@@ -74,7 +74,7 @@ ocaml (3.08.3-8) unstable; urgency=low
       ocamlfind is available, compiling with findlib will use the
       native compilers
 
- -- Jerome Marant <jerome@debian.org>  Sat,  3 Sep 2005 12:16:52 +0200
+ -- Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>  Thu, 08 Sep 2005 12:46:36 +0200
 
 ocaml (3.08.3-7) unstable; urgency=low
 
