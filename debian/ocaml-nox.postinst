@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-ln -sf /usr/lib/ocaml/3.08.3/caml /usr/include/caml
+ln -sf /usr/lib/ocaml/3.09.0/caml /usr/include/caml
 
 ln -sf ../ocaml-base-nox/Changes.gz /usr/share/doc/ocaml-nox
 ln -sf ../ocaml-base-nox/README.gz /usr/share/doc/ocaml-nox

@@ -5,16 +5,16 @@ if [ ! -e /usr/local/lib/ocaml ]; then
 	chmod 2775 /usr/local/lib/ocaml
     fi
 fi
-if [ ! -e /usr/local/lib/ocaml/3.08.3 ]; then
-    if mkdir /usr/local/lib/ocaml/3.08.3 2>/dev/null; then
-	chown root:staff /usr/local/lib/ocaml/3.08.3
-	chmod 2775 /usr/local/lib/ocaml/3.08.3
+if [ ! -e /usr/local/lib/ocaml/3.09.0 ]; then
+    if mkdir /usr/local/lib/ocaml/3.09.0 2>/dev/null; then
+	chown root:staff /usr/local/lib/ocaml/3.09.0
+	chmod 2775 /usr/local/lib/ocaml/3.09.0
     fi
 fi
-if [ ! -e /usr/local/lib/ocaml/3.08.3/stublibs ]; then
-    if mkdir /usr/local/lib/ocaml/3.08.3/stublibs 2>/dev/null; then
-	chown root:staff /usr/local/lib/ocaml/3.08.3/stublibs
-	chmod 2775 /usr/local/lib/ocaml/3.08.3/stublibs
+if [ ! -e /usr/local/lib/ocaml/3.09.0/stublibs ]; then
+    if mkdir /usr/local/lib/ocaml/3.09.0/stublibs 2>/dev/null; then
+	chown root:staff /usr/local/lib/ocaml/3.09.0/stublibs
+	chmod 2775 /usr/local/lib/ocaml/3.09.0/stublibs
     fi
 fi
 

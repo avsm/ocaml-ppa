@@ -8,7 +8,7 @@
 # We want to use dpatch.
 include /usr/share/dpatch/dpatch.make
 PACKAGE = ocaml
-VERSION = 3.08.3
+VERSION = 3.09.0
 STDLIBDIR = /usr/lib/ocaml/$(VERSION)
 MD5SUMSDIR = /var/lib/ocaml/md5sums
 

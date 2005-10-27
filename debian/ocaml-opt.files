@@ -1,6 +1,6 @@
 usr/bin/labltk
-usr/lib/ocaml/3.08.3/libgraphics.a
-usr/lib/ocaml/3.08.3/labltk
-usr/lib/ocaml/3.08.3/graphics.cmx
-usr/lib/ocaml/3.08.3/graphics.cmxa
-usr/lib/ocaml/3.08.3/graphics.a
+usr/lib/ocaml/3.09.0/libgraphics.a
+usr/lib/ocaml/3.09.0/labltk
+usr/lib/ocaml/3.09.0/graphics.cmx
+usr/lib/ocaml/3.09.0/graphics.cmxa
+usr/lib/ocaml/3.09.0/graphics.a
