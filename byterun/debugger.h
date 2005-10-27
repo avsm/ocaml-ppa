@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: debugger.h,v 1.9 2004/01/01 16:42:35 doligez Exp $ */
+/* $Id: debugger.h,v 1.10 2005/09/22 14:21:50 xleroy Exp $ */
 
 /* Interface with the debugger */
 
@@ -23,7 +23,7 @@
 
 extern int caml_debugger_in_use;
 extern int running;
-extern unsigned long caml_event_count;
+extern uintnat caml_event_count;
 
 enum event_kind {
   EVENT_COUNT, BREAKPOINT, PROGRAM_START, PROGRAM_EXIT,

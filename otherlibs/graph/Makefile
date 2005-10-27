@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.35 2003/08/05 13:39:33 xleroy Exp $
+# $Id: Makefile,v 1.39 2005/08/13 20:59:37 doligez Exp $
 
 # Makefile for the portable graphics library
 
@@ -69,7 +69,7 @@ installopt:
 	$(CAMLOPT) -c $(COMPFLAGS) $<
 
 depend:
-	gcc -MM $(CFLAGS) *.c > .depend
+	gcc -MM $(CFLAGS) *.c | sed -e 's, /usr[^ ]*\.h,,g' > .depend
 	../../boot/ocamlrun ../../tools/ocamldep *.mli *.ml >> .depend
 
 include .depend

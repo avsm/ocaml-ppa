@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: translcore.ml,v 1.96 2004/05/26 11:10:50 garrigue Exp $ *)
+(* $Id: translcore.ml,v 1.100 2005/08/25 15:35:16 doligez Exp $ *)
 
 (* Translation from typed abstract syntax to lambda terms,
    for the core language *)
@@ -53,7 +53,8 @@ let comparisons_table = create_hashtable 11 [
               prim_native_name = ""; prim_native_float = false},
        Pbintcomp(Pnativeint, Ceq),
        Pbintcomp(Pint32, Ceq),
-       Pbintcomp(Pint64, Ceq));
+       Pbintcomp(Pint64, Ceq),
+       true);
   "%notequal",
       (Pccall{prim_name = "caml_notequal"; prim_arity = 2; prim_alloc = true;
               prim_native_name = ""; prim_native_float = false},
@@ -64,7 +65,8 @@ let comparisons_table = create_hashtable 11 [
               prim_native_float = false},
        Pbintcomp(Pnativeint, Cneq),
        Pbintcomp(Pint32, Cneq),
-       Pbintcomp(Pint64, Cneq));
+       Pbintcomp(Pint64, Cneq),
+       true);
   "%lessthan",
       (Pccall{prim_name = "caml_lessthan"; prim_arity = 2; prim_alloc = true;
               prim_native_name = ""; prim_native_float = false},
@@ -75,7 +77,8 @@ let comparisons_table = create_hashtable 11 [
               prim_native_float = false},
        Pbintcomp(Pnativeint, Clt),
        Pbintcomp(Pint32, Clt),
-       Pbintcomp(Pint64, Clt));
+       Pbintcomp(Pint64, Clt),
+       false);
   "%greaterthan",
       (Pccall{prim_name = "caml_greaterthan"; prim_arity = 2; prim_alloc = true;
               prim_native_name = ""; prim_native_float = false},
@@ -86,7 +89,8 @@ let comparisons_table = create_hashtable 11 [
               prim_native_float = false},
        Pbintcomp(Pnativeint, Cgt),
        Pbintcomp(Pint32, Cgt),
-       Pbintcomp(Pint64, Cgt));
+       Pbintcomp(Pint64, Cgt),
+       false);
   "%lessequal",
       (Pccall{prim_name = "caml_lessequal"; prim_arity = 2; prim_alloc = true;
               prim_native_name = ""; prim_native_float = false},
@@ -97,7 +101,8 @@ let comparisons_table = create_hashtable 11 [
               prim_native_float = false},
        Pbintcomp(Pnativeint, Cle),
        Pbintcomp(Pint32, Cle),
-       Pbintcomp(Pint64, Cle));
+       Pbintcomp(Pint64, Cle),
+       false);
   "%greaterequal",
       (Pccall{prim_name = "caml_greaterequal"; prim_arity = 2;
               prim_alloc = true;
@@ -109,7 +114,8 @@ let comparisons_table = create_hashtable 11 [
               prim_native_float = false},
        Pbintcomp(Pnativeint, Cge),
        Pbintcomp(Pint32, Cge),
-       Pbintcomp(Pint64, Cge));
+       Pbintcomp(Pint64, Cge),
+       false);
   "%compare",
       (Pccall{prim_name = "caml_compare"; prim_arity = 2; prim_alloc = true;
               prim_native_name = ""; prim_native_float = false},
@@ -130,7 +136,8 @@ let comparisons_table = create_hashtable 11 [
               prim_native_float = false},
        Pccall{prim_name = "caml_int64_compare"; prim_arity = 2;
               prim_alloc = false; prim_native_name = "";
-              prim_native_float = false})
+              prim_native_float = false},
+       false)
 ]
 
 let primitives_table = create_hashtable 57 [
@@ -262,12 +269,15 @@ let prim_obj_dup =
 let transl_prim prim args =
   try
     let (gencomp, intcomp, floatcomp, stringcomp,
-         nativeintcomp, int32comp, int64comp) =
+         nativeintcomp, int32comp, int64comp,
+         simplify_constant_constructor) =
       Hashtbl.find comparisons_table prim.prim_name in
     begin match args with
-      [arg1; {exp_desc = Texp_construct({cstr_tag = Cstr_constant _}, _)}] ->
+      [arg1; {exp_desc = Texp_construct({cstr_tag = Cstr_constant _}, _)}]
+      when simplify_constant_constructor ->
         intcomp
-    | [{exp_desc = Texp_construct({cstr_tag = Cstr_constant _}, _)}; arg2] ->
+    | [{exp_desc = Texp_construct({cstr_tag = Cstr_constant _}, _)}; arg2]
+      when simplify_constant_constructor ->
         intcomp
     | [arg1; arg2] when has_base_type arg1 Predef.path_int
                      || has_base_type arg1 Predef.path_char ->
@@ -313,7 +323,7 @@ let transl_prim prim args =
 let transl_primitive p =
   let prim =
     try
-      let (gencomp, _, _, _, _, _, _) =
+      let (gencomp, _, _, _, _, _, _, _) =
         Hashtbl.find comparisons_table p.prim_name in
       gencomp
     with Not_found ->
@@ -419,8 +429,8 @@ let rec push_defaults loc bindings pat_expr_list partial =
     [pat, ({exp_desc = Texp_function(pl,partial)} as exp)] ->
       let pl = push_defaults exp.exp_loc bindings pl partial in
       [pat, {exp with exp_desc = Texp_function(pl, partial)}]
-  | [pat, ({exp_desc = Texp_let
-             (Default, cases, ({exp_desc = Texp_function _} as e2))} as e1)] ->
+  | [pat, {exp_desc = Texp_let
+             (Default, cases, ({exp_desc = Texp_function _} as e2))}] ->
       push_defaults loc (cases :: bindings) [pat, e2] partial
   | [pat, exp] ->
       let exp =
@@ -451,7 +461,7 @@ let event_before exp lam = match lam with
 | Lstaticraise (_,_) -> lam
 | _ ->
   if !Clflags.debug
-  then Levent(lam, {lev_pos = exp.exp_loc.Location.loc_start;
+  then Levent(lam, {lev_loc = exp.exp_loc;
                     lev_kind = Lev_before;
                     lev_repr = None;
                     lev_env = Env.summary exp.exp_env})
@@ -459,7 +469,7 @@ let event_before exp lam = match lam with
 
 let event_after exp lam =
   if !Clflags.debug
-  then Levent(lam, {lev_pos = exp.exp_loc.Location.loc_end;
+  then Levent(lam, {lev_loc = exp.exp_loc;
                     lev_kind = Lev_after exp.exp_type;
                     lev_repr = None;
                     lev_env = Env.summary exp.exp_env})
@@ -470,7 +480,7 @@ let event_function exp lam =
     let repr = Some (ref 0) in
     let (info, body) = lam repr in
     (info,
-     Levent(body, {lev_pos = exp.exp_loc.Location.loc_start;
+     Levent(body, {lev_loc = exp.exp_loc;
                    lev_kind = Lev_function;
                    lev_repr = repr;
                    lev_env = Env.summary exp.exp_env}))
@@ -502,6 +512,11 @@ let assert_failed loc =
                Const_base(Const_int line);
                Const_base(Const_int char)]))])])
 ;;
+
+let rec cut n l =
+  if n = 0 then ([],l) else
+  match l with [] -> failwith "Translcore.cut"
+  | a::l -> let (l1,l2) = cut (n-1) l in (a::l1,l2)
 
 (* Translation of expressions *)
 
@@ -548,8 +563,13 @@ and transl_exp0 e =
       in
       Lfunction(kind, params, body)
   | Texp_apply({exp_desc = Texp_ident(path, {val_kind = Val_prim p})}, args)
-    when List.length args = p.prim_arity
+    when List.length args >= p.prim_arity
     && List.for_all (fun (arg,_) -> arg <> None) args ->
+      let args, args' = cut p.prim_arity args in
+      let wrap f =
+        event_after e (if args' = [] then f else transl_apply f args') in
+      let wrap0 f =
+        if args' = [] then f else wrap f in
       let args = List.map (function Some x, _ -> x | _ -> assert false) args in
       let argl = transl_list args in
       let public_send = p.prim_name = "%send"
@@ -557,24 +577,23 @@ and transl_exp0 e =
       if public_send || p.prim_name = "%sendself" then
         let kind = if public_send then Public else Self in
 	let obj = List.hd argl in
-	event_after e (Lsend (kind, List.nth argl 1, obj, []))
+	wrap (Lsend (kind, List.nth argl 1, obj, []))
       else if p.prim_name = "%sendcache" then
         match argl with [obj; meth; cache; pos] ->
-          event_after e (Lsend(Cached, meth, obj, [cache; pos]))
+          wrap (Lsend(Cached, meth, obj, [cache; pos]))
         | _ -> assert false
       else begin
         let prim = transl_prim p args in
         match (prim, args) with
           (Praise, [arg1]) ->
-            Lprim(Praise, [event_after arg1 (List.hd argl)])
+            wrap0 (Lprim(Praise, [event_after arg1 (List.hd argl)]))
         | (_, _) ->
-            if primitive_is_ccall prim
-            then event_after e (Lprim(prim, argl))
-            else Lprim(prim, argl)
+            let p = Lprim(prim, argl) in
+            if primitive_is_ccall prim then wrap p else wrap0 p
       end
   | Texp_apply(funct, oargs) ->
       event_after e (transl_apply (transl_exp funct) oargs)
-  | Texp_match({exp_desc = Texp_tuple argl} as arg, pat_expr_list, partial) ->
+  | Texp_match({exp_desc = Texp_tuple argl}, pat_expr_list, partial) ->
       Matching.for_multiple_match e.exp_loc
         (transl_list argl) (transl_cases pat_expr_list) partial
   | Texp_match(arg, pat_expr_list, partial) ->

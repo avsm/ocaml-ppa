@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pcaml.ml,v 1.13.2.4 2004/10/07 09:18:13 mauny Exp $ *)
+(* $Id: pcaml.ml,v 1.16 2005/04/14 09:49:17 mauny Exp $ *)
 
 value version = Sys.ocaml_version;
 
@@ -99,7 +99,7 @@ value expand_quotation loc expander shift name str =
        try expander str with
        [ Stdpp.Exc_located loc exc ->
            let exc1 = Qerror name Expanding exc in
-           raise (Stdpp.Exc_located (Reloc.adjust_loc shift (Reloc.linearize loc)) exc1)
+           raise (Stdpp.Exc_located (Reloc.adjust_loc shift loc) exc1)
        | exc ->
            let exc1 = Qerror name Expanding exc in
            raise (Stdpp.Exc_located loc exc1) ])

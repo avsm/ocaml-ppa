@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main_args.mli,v 1.25 2003/07/17 08:38:27 xleroy Exp $ *)
+(* $Id: main_args.mli,v 1.26 2005/05/09 13:39:17 doligez Exp $ *)
 
 module Make_options (F :
     sig
@@ -19,6 +19,7 @@ module Make_options (F :
       val _cc : string -> unit
       val _cclib : string -> unit
       val _ccopt : string -> unit
+      val _config : unit -> unit
       val _custom : unit -> unit
       val _dllib : string -> unit
       val _dllpath : string -> unit

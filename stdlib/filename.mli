@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: filename.mli,v 1.31.2.1 2005/01/31 17:01:02 doligez Exp $ *)
+(* $Id: filename.mli,v 1.33 2005/10/25 18:34:07 doligez Exp $ *)
 
 (** Operations on file names. *)
 
@@ -97,4 +97,3 @@ val quote : string -> string
 (** Return a quoted version of a file name, suitable for use as
    one argument in a shell command line, escaping all shell
    meta-characters. *)
-

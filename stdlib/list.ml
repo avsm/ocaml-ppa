@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: list.ml,v 1.31 2004/01/01 16:42:40 doligez Exp $ *)
+(* $Id: list.ml,v 1.32 2005/10/25 18:34:07 doligez Exp $ *)
 
 (* List operations *)
 
@@ -158,7 +158,8 @@ let rec mem_assq x = function
 
 let rec remove_assoc x = function
   | [] -> []
-  | (a, b as pair) :: l -> if compare a x = 0 then l else pair :: remove_assoc x l
+  | (a, b as pair) :: l ->
+      if compare a x = 0 then l else pair :: remove_assoc x l
 
 let rec remove_assq x = function
   | [] -> []

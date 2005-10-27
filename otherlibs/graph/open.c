@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: open.c,v 1.32.2.1 2005/01/12 15:32:18 doligez Exp $ */
+/* $Id: open.c,v 1.34 2005/08/13 20:59:37 doligez Exp $ */
 
 #include <string.h>
 #include <fcntl.h>
@@ -249,6 +249,31 @@ value caml_gr_set_window_title(value n)
     XSetIconName(caml_gr_display, caml_gr_window.win, window_name);
     XFlush(caml_gr_display);
   }
+  return Val_unit;
+}
+
+value caml_gr_resize_window (value vx, value vy)
+{
+  caml_gr_check_open ();
+
+  caml_gr_window.w = Int_val (vx);
+  caml_gr_window.h = Int_val (vy);
+  XResizeWindow (caml_gr_display, caml_gr_window.win, caml_gr_window.w,
+                 caml_gr_window.h);
+
+  XFreeGC(caml_gr_display, caml_gr_bstore.gc);
+  XFreePixmap(caml_gr_display, caml_gr_bstore.win);
+
+  caml_gr_bstore.w = caml_gr_window.w;
+  caml_gr_bstore.h = caml_gr_window.h;
+  caml_gr_bstore.win =
+    XCreatePixmap(caml_gr_display, caml_gr_window.win, caml_gr_bstore.w,
+                  caml_gr_bstore.h,
+                  XDefaultDepth(caml_gr_display, caml_gr_screen));
+  caml_gr_bstore.gc = XCreateGC(caml_gr_display, caml_gr_bstore.win, 0, NULL);
+  XSetBackground(caml_gr_display, caml_gr_bstore.gc, caml_gr_background);
+
+  caml_gr_clear_graph ();
   return Val_unit;
 }
 

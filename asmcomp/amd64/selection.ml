@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml,v 1.2 2003/06/30 11:29:26 xleroy Exp $ *)
+(* $Id: selection.ml,v 1.3 2005/10/13 03:53:52 xleroy Exp $ *)
 
 (* Instruction selection for the AMD64 *)
 
@@ -144,7 +144,7 @@ method select_store addr exp =
       (Ispecific(Istore_int(Nativeint.of_int n, addr)), Ctuple [])
   | Cconst_natpointer n when self#is_immediate_natint n ->
       (Ispecific(Istore_int(n, addr)), Ctuple [])
-  | Cconst_symbol s ->
+  | Cconst_symbol s when not !pic_code ->
       (Ispecific(Istore_symbol(s, addr)), Ctuple [])
   | _ ->
       super#select_store addr exp

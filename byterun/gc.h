@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: gc.h,v 1.14 2003/12/15 18:10:46 doligez Exp $ */
+/* $Id: gc.h,v 1.15 2004/07/19 13:20:06 xleroy Exp $ */
 
 #ifndef CAML_GC_H
 #define CAML_GC_H
@@ -51,5 +51,8 @@
 #define Is_blue_val(val) (Color_val(val) == Caml_blue)
 #define Is_black_val(val) (Color_val(val) == Caml_black)
 
+/* For extern.c */
+#define Colornum_hd(hd) ((color_t) (((hd) >> 8) & 3))
+#define Coloredhd_hd(hd,colnum) (((hd) & ~Caml_black) | ((colnum) << 8))
 
 #endif /* CAML_GC_H */

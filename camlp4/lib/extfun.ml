@@ -1,5 +1,5 @@
 (* camlp4r *)
-(* $Id: extfun.ml,v 1.3 2003/07/10 12:28:24 michel Exp $ *)
+(* $Id: extfun.ml,v 1.4 2005/06/29 13:19:14 mauny Exp $ *)
 (* Copyright 2001 INRIA *)
 
 (* Extensible Functions *)
@@ -89,14 +89,12 @@ value insert_matching matchings (patt, has_when, expr) =
   let rec loop =
     fun
     [ [m :: ml] as gml ->
-        if m1.has_when && not m.has_when then [m1 :: gml]
-        else if not m1.has_when && m.has_when then [m :: loop ml]
-        else
-          let c = compare m1.patt m.patt in
-          if c < 0 then [m1 :: gml]
-          else if c > 0 then [m :: loop ml]
-          else if m.has_when then [m1 :: gml]
-          else [m1 :: ml]
+        if m1.has_when && not m.has_when then [m1 :: gml] else
+        if not m1.has_when && m.has_when then [m :: loop ml] else
+        (* either both or none have a when clause *)
+        if compare m1.patt m.patt = 0 then 
+          if not m1.has_when then [m1 :: ml] else [m1 :: gml]
+        else [m :: loop ml]
     | [] -> [m1] ]
   in
   loop matchings

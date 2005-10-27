@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: instrtrace.h,v 1.8 2004/04/22 09:48:04 basile Exp $ */
+/* $Id: instrtrace.h,v 1.9 2005/09/22 14:21:50 xleroy Exp $ */
 
 /* Trace the instructions executed */
 
@@ -23,7 +23,7 @@
 #include "misc.h"
 
 extern int caml_trace_flag;
-extern long caml_icount;
+extern intnat caml_icount;
 void caml_stop_here (void);
 void caml_disasm_instr (code_t pc);
 void caml_trace_value_file (value v, code_t prog, int proglen, FILE * f);

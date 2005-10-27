@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: sendrecv.c,v 1.16.6.1 2005/02/02 15:40:14 xleroy Exp $ */
+/* $Id: sendrecv.c,v 1.18 2005/09/22 14:21:50 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -27,7 +27,7 @@ static int msg_flag_table[] = {
 CAMLprim value unix_recv(value sock, value buff, value ofs, value len, value flags)
 {
   int ret;
-  long numbytes;
+  intnat numbytes;
   char iobuf[UNIX_BUFFER_SIZE];
 
   Begin_root (buff);
@@ -49,7 +49,7 @@ CAMLprim value unix_recv(value sock, value buff, value ofs, value len, value fla
 CAMLprim value unix_recvfrom(value sock, value buff, value ofs, value len, value flags)
 {
   int ret;
-  long numbytes;
+  intnat numbytes;
   char iobuf[UNIX_BUFFER_SIZE];
   value res;
   value adr = Val_unit;
@@ -82,7 +82,7 @@ CAMLprim value unix_recvfrom(value sock, value buff, value ofs, value len, value
 CAMLprim value unix_send(value sock, value buff, value ofs, value len, value flags)
 {
   int ret;
-  long numbytes;
+  intnat numbytes;
   char iobuf[UNIX_BUFFER_SIZE];
 
   numbytes = Long_val(len);
@@ -102,7 +102,7 @@ CAMLprim value unix_send(value sock, value buff, value ofs, value len, value fla
 value unix_sendto_native(value sock, value buff, value ofs, value len, value flags, value dest)
 {
   int ret;
-  long numbytes;
+  intnat numbytes;
   char iobuf[UNIX_BUFFER_SIZE];
   union sock_addr_union addr;
   socklen_param_type addr_len;

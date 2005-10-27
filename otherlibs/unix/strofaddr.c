@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: strofaddr.c,v 1.9.2.1 2004/08/23 11:31:44 doligez Exp $ */
+/* $Id: strofaddr.c,v 1.10 2005/03/24 17:20:53 doligez Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>

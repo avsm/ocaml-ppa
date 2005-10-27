@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: types.ml,v 1.24 2004/06/12 08:55:49 xleroy Exp $ *)
+(* $Id: types.ml,v 1.25 2004/12/09 12:40:53 garrigue Exp $ *)
 
 (* Representation of types and declarations *)
 
@@ -164,12 +164,14 @@ type class_declaration =
   { cty_params: type_expr list;
     mutable cty_type: class_type;
     cty_path: Path.t;
-    cty_new: type_expr option }
+    cty_new: type_expr option;
+    cty_variance: (bool * bool) list }
 
 type cltype_declaration =
   { clty_params: type_expr list;
     clty_type: class_type;
-    clty_path: Path.t }
+    clty_path: Path.t;
+    clty_variance: (bool * bool) list }
 
 (* Type expressions for the module language *)
 

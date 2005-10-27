@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.23 2002/06/27 11:36:01 xleroy Exp $
+# $Id: Makefile,v 1.25 2004/11/29 14:53:32 doligez Exp $
 
 # Makefile for the ndbm library
 

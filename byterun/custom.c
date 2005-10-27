@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: custom.c,v 1.14 2004/01/05 20:25:58 doligez Exp $ */
+/* $Id: custom.c,v 1.15 2005/09/22 14:21:50 xleroy Exp $ */
 
 #include <string.h>
 
@@ -22,7 +22,7 @@
 #include "mlvalues.h"
 
 CAMLexport value caml_alloc_custom(struct custom_operations * ops,
-                                   unsigned long size,
+                                   uintnat size,
                                    mlsize_t mem,
                                    mlsize_t max)
 {

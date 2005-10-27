@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: sys.mli,v 1.45 2004/05/04 11:51:13 basile Exp $ *)
+(* $Id: sys.mli,v 1.47 2005/10/25 18:34:07 doligez Exp $ *)
 
 (** System interface. *)
 
@@ -81,7 +81,9 @@ val max_string_length : int
 (** Maximum length of a string. *)
 
 val max_array_length : int
-(** Maximum length of an array. *)
+(** Maximum length of a normal array.  The maximum length of a float
+    array is [max_array_length/2] on 32-bit machines and
+    [max_array_length] on 64-bit machines. *)
 
 
 (** {6 Signal handling} *)
@@ -89,7 +91,7 @@ val max_array_length : int
 
 type signal_behavior =
     Signal_default
-  | Signal_ignore 
+  | Signal_ignore
   | Signal_handle of (int -> unit)
 (** What to do when receiving a signal:
    - [Signal_default]: take the default behavior
@@ -110,7 +112,7 @@ val set_signal : int -> signal_behavior -> unit
 (** Same as {!Sys.signal} but return value is ignored. *)
 
 
-(** {7 Signal numbers for the standard POSIX signals.} *) 
+(** {7 Signal numbers for the standard POSIX signals.} *)
 
 val sigabrt : int
 (** Abnormal termination *)
@@ -183,7 +185,7 @@ exception Break
 
 val catch_break : bool -> unit
 (** [catch_break] governs whether interactive interrupt (ctrl-C)
-   terminates the program or raises the [Break] exception. 
+   terminates the program or raises the [Break] exception.
    Call [catch_break true] to enable raising [Break],
    and [catch_break false] to let the system
    terminate the program on user interrupt. *)

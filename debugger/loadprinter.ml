@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: loadprinter.ml,v 1.18 2003/07/17 13:55:37 doligez Exp $ *)
+(* $Id: loadprinter.ml,v 1.19 2004/11/29 02:27:25 garrigue Exp $ *)
 
 (* Loading and installation of user-defined printer functions *)
 
@@ -134,9 +134,9 @@ let install_printer ppf lid =
       raise(Error(Unavailable_module(s, lid))) in
   let print_function =
     if is_old_style then
-      (fun formatter repr -> (Obj.obj v) (Obj.obj repr))
+      (fun formatter repr -> Obj.obj v (Obj.obj repr))
     else
-      (fun formatter repr -> (Obj.obj v) formatter (Obj.obj repr)) in
+      (fun formatter repr -> Obj.obj v formatter (Obj.obj repr)) in
   Printval.install_printer path ty_arg ppf print_function
 
 let remove_printer lid =

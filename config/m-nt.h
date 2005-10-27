@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: m-nt.h,v 1.10 2002/06/07 09:49:37 xleroy Exp $ */
+/* $Id: m-nt.h,v 1.11 2005/09/22 14:21:50 xleroy Exp $ */
 
 /* Machine configuration, Intel x86 processors, Win32,
    Visual C++ or Mingw compiler */
@@ -21,6 +21,7 @@
 #undef ARCH_ALIGN_DOUBLE
 #define SIZEOF_INT 4
 #define SIZEOF_LONG 4
+#define SIZEOF_PTR 4
 #define SIZEOF_SHORT 2
 #ifdef __MINGW32__
 #define ARCH_INT64_TYPE long long

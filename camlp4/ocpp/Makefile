@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 2004/05/12 15:22:48 mauny Exp $
+# $Id: Makefile,v 1.8 2004/11/30 18:57:03 doligez Exp $
 
 include ../config/Makefile
 

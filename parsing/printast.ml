@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printast.ml,v 1.26 2003/11/25 08:46:45 garrigue Exp $ *)
+(* $Id: printast.ml,v 1.28 2005/03/23 03:08:37 garrigue Exp $ *)
 
 open Asttypes;;
 open Format;;
@@ -319,10 +319,12 @@ and type_kind i ppf x =
       line i ppf "Ptype_abstract\n"
   | Ptype_variant (l, priv) ->
       line i ppf "Ptype_variant %a\n" fmt_private_flag priv;
-      list (i+1) string_x_core_type_list ppf l;
+      list (i+1) string_x_core_type_list_x_location ppf l;
   | Ptype_record (l, priv) ->
       line i ppf "Ptype_record %a\n" fmt_private_flag priv;
-      list (i+1) string_x_mutable_flag_x_core_type ppf l;
+      list (i+1) string_x_mutable_flag_x_core_type_x_location ppf l;
+  | Ptype_private ->
+      line i ppf "Ptype_private\n"
 
 and exception_declaration i ppf x = list i core_type ppf x
 
@@ -611,11 +613,11 @@ and core_type_x_core_type_x_location i ppf (ct1, ct2, l) =
   core_type (i+1) ppf ct1;
   core_type (i+1) ppf ct2;
 
-and string_x_core_type_list i ppf (s, l) =
+and string_x_core_type_list_x_location i ppf (s, l, loc) =
   string i ppf s;
   list (i+1) core_type ppf l;
 
-and string_x_mutable_flag_x_core_type i ppf (s, mf, ct) =
+and string_x_mutable_flag_x_core_type_x_location i ppf (s, mf, ct, loc) =
   line i ppf "\"%s\" %a\n" s fmt_mutable_flag mf;
   core_type (i+1) ppf ct;
 

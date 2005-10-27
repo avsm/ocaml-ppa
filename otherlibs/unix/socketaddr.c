@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: socketaddr.c,v 1.22.2.2 2005/01/17 18:10:36 doligez Exp $ */
+/* $Id: socketaddr.c,v 1.23 2005/03/24 17:20:53 doligez Exp $ */
 
 #include <string.h>
 #include <mlvalues.h>

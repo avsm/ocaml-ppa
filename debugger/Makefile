@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.29 2004/02/22 15:07:51 xleroy Exp $
+# $Id: Makefile,v 1.30 2005/08/25 15:35:16 doligez Exp $
 
 include ../config/Makefile
 
@@ -57,8 +57,8 @@ OBJS=\
 	source.cmo \
 	pos.cmo \
 	checkpoints.cmo \
-	symbols.cmo \
 	events.cmo \
+	symbols.cmo \
 	breakpoints.cmo \
 	trap_barrier.cmo \
 	history.cmo \

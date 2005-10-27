@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: char.ml,v 1.12 2003/12/16 18:09:43 doligez Exp $ *)
+(* $Id: char.ml,v 1.13 2005/05/19 15:30:35 habouzit Exp $ *)
 
 (* Character operations *)
 
@@ -19,7 +19,7 @@ external code: char -> int = "%identity"
 external unsafe_chr: int -> char = "%identity"
 
 let chr n =
-  if n < 0 or n > 255 then invalid_arg "Char.chr" else unsafe_chr n
+  if n < 0 || n > 255 then invalid_arg "Char.chr" else unsafe_chr n
 
 external is_printable: char -> bool = "caml_is_printable"
 

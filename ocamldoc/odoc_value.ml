@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_value.ml,v 1.5.6.1 2004/07/02 12:59:49 guesdon Exp $ *)
+(* $Id: odoc_value.ml,v 1.6 2004/07/13 12:25:12 xleroy Exp $ *)
 
 (** Representation and manipulation of values, class attributes and class methods. *)
 

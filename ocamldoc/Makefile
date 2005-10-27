@@ -9,7 +9,7 @@
 #(*                                                                     *)
 #(***********************************************************************)
 
-# $Id: Makefile,v 1.55.4.1 2005/02/18 16:08:37 guesdon Exp $
+# $Id: Makefile,v 1.60 2005/05/31 11:48:03 habouzit Exp $
 
 include ../config/Makefile
 
@@ -187,7 +187,9 @@ STDLIB_MLIS=../stdlib/*.mli \
 	../otherlibs/bigarray/bigarray.mli \
 	../otherlibs/num/num.mli
 
-all: exe lib manpages
+all: exe lib
+	$(MAKE) manpages
+
 exe: $(OCAMLDOC)
 lib: $(OCAMLDOC_LIBCMA) $(OCAMLDOC_LIBCMI) $(ODOC_TEST)
 

@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: fileselect.ml,v 1.19 2002/04/26 12:16:12 furuse Exp $ *)
+(* $Id: fileselect.ml,v 1.21 2005/01/28 16:13:11 doligez Exp $ *)
 
 (* file selection box *)
 
@@ -56,8 +56,7 @@ let subshell cmd =
   let r,w = pipe () in
     match fork () with
       0 -> close r; dup2 ~src:w ~dst:stdout; 
-           execv ~prog:"/bin/sh" ~args:[| "/bin/sh"; "-c"; cmd |]; 
-           exit 127
+           execv ~prog:"/bin/sh" ~args:[| "/bin/sh"; "-c"; cmd |]
     | id -> 
         close w; 
         let rc = in_channel_of_descr r in
@@ -70,7 +69,7 @@ let subshell cmd =
         in 
         let answer = it [] in
         close_in rc;  (* because of finalize_channel *)
-        let p, st = waitpid ~mode:[] id in answer
+        let _ = waitpid ~mode:[] id in answer
 
 (***************************************************************** Path name *)
 

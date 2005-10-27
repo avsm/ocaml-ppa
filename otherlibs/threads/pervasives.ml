@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pervasives.ml,v 1.48.4.1 2004/06/22 12:13:46 xleroy Exp $ *)
+(* $Id: pervasives.ml,v 1.49 2004/07/13 12:25:13 xleroy Exp $ *)
 
 (* Same as ../../stdlib/pervasives.ml, except that I/O functions have
    been redefined to not block the whole process, but only the calling

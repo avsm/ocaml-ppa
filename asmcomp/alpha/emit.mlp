@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit.mlp,v 1.40 2004/05/03 12:46:50 xleroy Exp $ *)
+(* $Id: emit.mlp,v 1.41 2005/10/14 16:41:06 xleroy Exp $ *)
 
 module LabelSet =
   Set.Make(struct type t = Linearize.label let compare = compare end)
@@ -536,7 +536,6 @@ let emit_instr fallthrough i =
         end
     | Lop(Iintop_imm(Imod, n)) ->
         if n = 1 lsl (Misc.log2 n) then begin
-          let l = Misc.log2 n in
           if is_immediate n then
             `	and	{emit_reg i.arg.(0)}, {emit_int(n-1)}, $25\n`
           else begin

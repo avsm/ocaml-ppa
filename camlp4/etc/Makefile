@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.20.2.2 2004/07/07 16:22:23 mauny Exp $
+# $Id: Makefile,v 1.24 2004/11/30 18:57:03 doligez Exp $
 
 include ../config/Makefile
 
@@ -41,8 +41,14 @@ camlp4o.opt: $(CAMLP4OMX)
 	rm -f camlp4o.opt
 	cd ../camlp4; $(MAKE) optp4 CAMLP4OPT=../etc/camlp4o.opt CAMLP4M="-I ../etc $(CAMLP4OMX)"
 
-mkcamlp4.sh: mkcamlp4.sh.tpl
-	sed -e "s!LIBDIR!$(LIBDIR)!g" mkcamlp4.sh.tpl > mkcamlp4.sh
+mkcamlp4.sh: mkcamlp4.sh.tpl version.sh
+	sed -e "s!LIBDIR!$(LIBDIR)!g" -e "/define VERSION/r version.sh" \
+	    mkcamlp4.sh.tpl > mkcamlp4.sh
+
+version.sh : $(OTOP)/stdlib/sys.ml
+	sed -n -e 's/;;//' \
+            -e '/let *ocaml_version *= */s//VERSION=/p' \
+            <$(OTOP)/stdlib/sys.ml >version.sh
 
 bootstrap_l:
 	../boot/camlp4 ./pa_$Lr.cmo ./q_phony.cmo -I ../boot pa_extend.cmo ./pr_r.cmo ./pr_extend.cmo ./pr_rp.cmo pa_$L.ml > tmp

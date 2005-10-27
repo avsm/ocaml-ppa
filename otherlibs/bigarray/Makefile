@@ -11,12 +11,12 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.18 2002/06/27 11:36:00 xleroy Exp $
+# $Id: Makefile,v 1.21 2005/10/19 11:56:24 xleroy Exp $
 
 include ../../config/Makefile
 
 CC=$(BYTECC)
-CFLAGS=-I../../byterun -g -O $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)
+CFLAGS=-I../../byterun -O $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)
 CAMLC=../../ocamlcomp.sh -I ../unix
 CAMLOPT=../../ocamlcompopt.sh -I ../unix
 MKLIB=../../boot/ocamlrun ../../tools/ocamlmklib

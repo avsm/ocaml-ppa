@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlcp.ml,v 1.37.6.1 2005/03/09 15:49:09 doligez Exp $ *)
+(* $Id: ocamlcp.ml,v 1.39 2005/05/09 13:39:17 doligez Exp $ *)
 
 open Printf
 
@@ -47,6 +47,7 @@ module Options = Main_args.Make_options (struct
   let _cc s = option_with_arg "-cc" s
   let _cclib s = option_with_arg "-cclib" s
   let _ccopt s = option_with_arg "-ccopt" s
+  let _config = option "-config"
   let _custom = option "-custom"
   let _dllib = option_with_arg "-dllib"
   let _dllpath = option_with_arg "-dllpath"

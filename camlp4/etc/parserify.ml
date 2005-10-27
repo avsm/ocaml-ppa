@@ -1,7 +1,7 @@
 (* camlp4r q_MLast.cmo *)
-(* $Id: parserify.ml,v 1.2 2004/05/12 15:22:40 mauny Exp $ *)
+(* $Id: parserify.ml,v 1.3 2004/11/17 09:07:56 mauny Exp $ *)
 
-value loc = (Token.nowhere, Token.nowhere);
+value _loc = (Token.nowhere, Token.nowhere);
 
 type spc =
   [ SPCterm of (MLast.patt * option MLast.expr)

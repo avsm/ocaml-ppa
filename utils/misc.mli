@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: misc.mli,v 1.24.6.1 2004/07/07 16:47:27 xleroy Exp $ *)
+(* $Id: misc.mli,v 1.25 2004/07/13 12:25:20 xleroy Exp $ *)
 
 (* Miscellaneous useful types and functions *)
 

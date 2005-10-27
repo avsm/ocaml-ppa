@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_analyse.mli,v 1.3.6.1 2004/08/06 13:42:16 guesdon Exp $ *)
+(* $Id: odoc_analyse.mli,v 1.4 2004/08/20 17:04:35 doligez Exp $ *)
 
 (** Analysis of source files. *)
 

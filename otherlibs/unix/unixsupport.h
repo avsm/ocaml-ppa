@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: unixsupport.h,v 1.7 2004/02/14 10:21:23 xleroy Exp $ */
+/* $Id: unixsupport.h,v 1.8 2005/09/06 12:38:32 doligez Exp $ */
 
 #ifdef HAS_UNISTD
 #include <unistd.h>
@@ -19,6 +19,7 @@
 
 #define Nothing ((value) 0)
 
+extern value unix_error_of_code (int errcode);
 extern void unix_error (int errcode, char * cmdname, value arg) Noreturn;
 extern void uerror (char * cmdname, value arg) Noreturn;
 

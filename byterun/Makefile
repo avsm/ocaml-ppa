@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.48.4.2 2004/08/20 15:11:36 doligez Exp $
+# $Id: Makefile,v 1.52 2005/10/18 14:03:52 xleroy Exp $
 
 include ../config/Makefile
 
@@ -89,17 +89,21 @@ prims.c : primitives
 	 echo '	 0 };') > prims.c
 
 opnames.h : instruct.h
-	LANG=C; \
 	sed -e '/\/\*/d' \
 	    -e '/^#/d' \
 	    -e 's/enum /char * names_of_/' \
 	    -e 's/{$$/[] = {/' \
-	    -e 's/\([A-Z][A-Z_0-9]*\)/"\1"/g' instruct.h > opnames.h
+	    -e 's/\([[:upper:]][[:upper:]_0-9]*\)/"\1"/g' instruct.h > opnames.h
 
 # jumptbl.h is required only if you have GCC 2.0 or later
 jumptbl.h : instruct.h
 	sed -n -e '/^  /s/ \([A-Z]\)/ \&\&lbl_\1/gp' \
 	       -e '/^}/q' instruct.h > jumptbl.h
+
+version.h : ../stdlib/sys.ml
+	sed -n -e 's/;;//' \
+            -e '/let *ocaml_version *= */s//#define OCAML_VERSION /p' \
+            <../stdlib/sys.ml >version.h
 
 .SUFFIXES: .d.o
 
@@ -109,7 +113,7 @@ jumptbl.h : instruct.h
 	mv $*.o $*.d.o
 	@ if test -f $*.f.o; then mv $*.f.o $*.o; else :; fi
 
-depend : prims.c opnames.h jumptbl.h
+depend : prims.c opnames.h jumptbl.h version.h
 	gcc -MM $(BYTECCCOMPOPTS) *.c > .depend
 	gcc -MM $(BYTECCCOMPOPTS) -DDEBUG *.c | sed -e 's/\.o/.d.o/' >> .depend
 

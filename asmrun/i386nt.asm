@@ -11,7 +11,7 @@
 ;
 ;*********************************************************************
 
-; $Id: i386nt.asm,v 1.17 2004/05/04 09:02:47 xleroy Exp $
+; $Id: i386nt.asm,v 1.19 2005/10/12 12:56:53 xleroy Exp $
 
 ; Asm part of the runtime system, Intel 386 processor, Intel syntax
 
@@ -274,4 +274,9 @@ _caml_system__frametable LABEL DWORD
         WORD    -1              ; negative frame size => use callback link 
         WORD    0               ; no roots here 
 
+        PUBLIC  _caml_extra_params
+_caml_extra_params LABEL DWORD
+        BYTE    64 DUP (?)
+
         END
+

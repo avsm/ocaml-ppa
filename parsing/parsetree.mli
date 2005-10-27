@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parsetree.mli,v 1.40 2003/11/25 08:46:45 garrigue Exp $ *)
+(* $Id: parsetree.mli,v 1.42 2005/03/23 03:08:37 garrigue Exp $ *)
 
 (* Abstract syntax tree produced by parsing *)
 
@@ -130,8 +130,10 @@ and type_declaration =
 
 and type_kind =
     Ptype_abstract
-  | Ptype_variant of (string * core_type list) list * private_flag
-  | Ptype_record of (string * mutable_flag * core_type) list * private_flag
+  | Ptype_variant of (string * core_type list * Location.t) list * private_flag
+  | Ptype_record of
+      (string * mutable_flag * core_type * Location.t) list * private_flag
+  | Ptype_private
 
 and exception_declaration = core_type list
 

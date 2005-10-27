@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: num.ml,v 1.6 2001/12/07 13:40:16 xleroy Exp $ *)
+(* $Id: num.ml,v 1.7 2005/01/21 14:15:44 maranget Exp $ *)
 
 open Int_misc
 open Nat
@@ -32,11 +32,11 @@ let num_of_big_int bi =
  else Big_int bi
 
 let numerator_num = function
-  Ratio r -> normalize_ratio r; num_of_big_int (numerator_ratio r)
+  Ratio r -> ignore (normalize_ratio r); num_of_big_int (numerator_ratio r)
 | n -> n
 
 let denominator_num = function
-  Ratio r -> normalize_ratio r; num_of_big_int (denominator_ratio r)
+  Ratio r -> ignore (normalize_ratio r); num_of_big_int (denominator_ratio r)
 | n -> Int 1
 
 let normalize_num = function
@@ -50,7 +50,7 @@ let cautious_normalize_num_when_printing n =
  if (!normalize_ratio_when_printing_flag) then (normalize_num n) else n
 
 let num_of_ratio r = 
- normalize_ratio r; 
+ ignore (normalize_ratio r); 
  if not (is_integer_ratio r) then Ratio r
  else if is_int_big_int (numerator_ratio r) then
         Int (int_of_big_int (numerator_ratio r))

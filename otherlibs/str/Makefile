@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.31 2002/12/09 14:05:18 xleroy Exp $
+# $Id: Makefile,v 1.33 2004/11/29 14:53:32 doligez Exp $
 
 # Makefile for the str library
 

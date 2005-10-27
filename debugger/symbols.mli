@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: symbols.mli,v 1.6 1999/11/17 18:57:29 xleroy Exp $ *)
+(* $Id: symbols.mli,v 1.7 2005/08/25 15:35:16 doligez Exp $ *)
 
 (* Modules used by the program. *)
 val modules : string list ref
@@ -42,3 +42,5 @@ val event_at_pos : string -> int -> Instruct.debug_event
 (* --- Raise `Not_found' if no such event. *)
 val event_near_pos : string -> int -> Instruct.debug_event
 
+(* Recompute the current event *)
+val update_current_event : unit -> unit

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pa_extend_m.ml,v 1.8 2002/07/19 14:53:50 mauny Exp $ *)
+(* $Id: pa_extend_m.ml,v 1.9 2004/11/17 09:07:56 mauny Exp $ *)
 
 open Pa_extend;
 
@@ -19,8 +19,8 @@ EXTEND
     [ NONA
       [ min = [ UIDENT "SLIST0" -> False | UIDENT "SLIST1" -> True ];
         s = SELF; sep = OPT [ UIDENT "SEP"; t = symbol -> t ] ->
-          sslist loc min sep s
+          sslist _loc min sep s
       | UIDENT "SOPT"; s = SELF ->
-          ssopt loc s ] ]
+          ssopt _loc s ] ]
   ;
 END;

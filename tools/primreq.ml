@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: primreq.ml,v 1.3 2000/03/27 12:18:09 xleroy Exp $ *)
+(* $Id: primreq.ml,v 1.4 2005/06/22 13:53:34 doligez Exp $ *)
 
 (* Determine the set of C primitives required by the given .cmo and .cma
    files *)
@@ -82,9 +82,9 @@ let main() =
     "Usage: primreq [options] <.cmo and .cma files>\nOptions are:";
   if String.length !exclude_file > 0 then exclude !exclude_file;
   StringSet.iter
-    (fun s -> 
+    (fun s ->
       if s.[0] <> '%' then begin print_string s; print_newline() end)
     !primitives;
   exit 0
 
-let _ = Printexc.catch main (); exit 0
+let _ = main ()

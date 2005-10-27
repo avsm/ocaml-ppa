@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: globroots.c,v 1.7 2004/01/05 20:25:58 doligez Exp $ */
+/* $Id: globroots.c,v 1.8 2005/09/22 14:21:50 xleroy Exp $ */
 
 /* Registration of global memory roots */
 
@@ -61,7 +61,7 @@ CAMLexport void caml_register_global_root(value *r)
   struct global_root * e, * f;
   int i, new_level;
   
-  Assert (((long) r & 3) == 0);  /* compact.c demands this (for now) */
+  Assert (((intnat) r & 3) == 0);  /* compact.c demands this (for now) */
 
   /* Init "cursor" to list head */
   e = (struct global_root *) &caml_global_roots;

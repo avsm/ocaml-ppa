@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tbl.ml,v 1.12 2000/04/21 08:13:21 weis Exp $ *)
+(* $Id: tbl.ml,v 1.13 2004/11/25 13:28:27 doligez Exp $ *)
 
 type ('a, 'b) t =
     Empty
@@ -48,7 +48,7 @@ let bal l x d r =
 let rec add x data = function
     Empty ->
       Node(Empty, x, data, Empty, 1)
-  | Node(l, v, d, r, h) as t ->
+  | Node(l, v, d, r, h) ->
       let c = compare x v in
       if c = 0 then
         Node(l, x, data, r, h)
@@ -81,7 +81,7 @@ let rec merge t1 t2 =
 let rec remove x = function
     Empty ->
       Empty
-  | Node(l, v, d, r, h) as t ->
+  | Node(l, v, d, r, h) ->
       let c = compare x v in
       if c = 0 then
         merge l r

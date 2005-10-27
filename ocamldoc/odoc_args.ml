@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* cvsid $Id: odoc_args.ml,v 1.15.6.3 2005/02/18 16:08:37 guesdon Exp $ *)
+(* cvsid $Id: odoc_args.ml,v 1.18 2005/03/24 17:20:53 doligez Exp $ *)
 
 (** Command-line arguments. *)
 
@@ -335,6 +335,3 @@ let parse ~html_generator ~latex_generator ~texi_generator ~man_generator ~dot_g
      A.B is before A, so we will match against A.B before A in
      Odoc_name.hide_modules.*)
   hidden_modules := List.sort (fun a -> fun b -> - (compare a b)) !hidden_modules
-
-
-(* eof $Id: odoc_args.ml,v 1.15.6.3 2005/02/18 16:08:37 guesdon Exp $ *)

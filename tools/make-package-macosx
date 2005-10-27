@@ -12,7 +12,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: make-package-macosx,v 1.8.4.2 2004/12/22 16:08:09 doligez Exp $
+# $Id: make-package-macosx,v 1.10 2005/08/13 20:59:37 doligez Exp $
 
 cd package-macosx
 rm -rf ocaml.pkg ocaml-rw.dmg
@@ -105,6 +105,12 @@ cat >resources/ReadMe.txt <<EOF
 This package installs Objective Caml version ${VERSION}.
 You need Mac OS X 10.3 (panther), with X11 and the
 XCode tools installed.
+
+Files will be installed in the following directories:
+
+/usr/local/bin - command-line executables
+/usr/local/lib/ocaml - library and support files
+/usr/local/man - manual pages
 EOF
 
 chmod -R g-w root

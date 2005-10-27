@@ -12,7 +12,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: ocaml-objcopy-macosx,v 1.1.2.1 2005/01/25 13:13:52 doligez Exp $
+# $Id: ocaml-objcopy-macosx,v 1.1 2005/01/21 18:15:55 doligez Exp $
 
 
 TEMP=/tmp/ocaml-objcopy-$$.o

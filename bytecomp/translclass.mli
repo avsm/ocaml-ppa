@@ -10,12 +10,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: translclass.mli,v 1.10 2004/05/26 11:10:50 garrigue Exp $ *)
+(* $Id: translclass.mli,v 1.11 2004/08/12 12:55:11 xleroy Exp $ *)
 
 open Typedtree
 open Lambda
 
-val dummy_class : lambda -> lambda
 val transl_class :
   Ident.t list -> Ident.t -> int -> string list -> class_expr -> lambda;;
 

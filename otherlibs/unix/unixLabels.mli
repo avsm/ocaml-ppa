@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unixLabels.mli,v 1.12.2.2 2004/07/02 09:37:17 doligez Exp $ *)
+(* $Id: unixLabels.mli,v 1.13 2004/07/13 12:25:14 xleroy Exp $ *)
 
 (** Interface to the Unix system.
    To use as replacement to default {!Unix} module,

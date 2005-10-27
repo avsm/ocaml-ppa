@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arg.mli,v 1.35 2004/06/11 23:45:46 doligez Exp $ *)
+(* $Id: arg.mli,v 1.36 2005/10/25 18:34:07 doligez Exp $ *)
 
 (** Parsing of command line arguments.
 
@@ -56,7 +56,7 @@ type spec =
   | Symbol of string list * (string -> unit)
                                (** Take one of the symbols as argument and
                                    call the function with the symbol *)
-  | Rest of (string -> unit)   (** Stop interpreting keywords and call the 
+  | Rest of (string -> unit)   (** Stop interpreting keywords and call the
                                    function with each remaining argument *)
 (** The concrete type describing the behavior associated
    with a keyword. *)

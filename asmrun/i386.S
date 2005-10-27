@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: i386.S,v 1.42 2004/01/03 12:51:19 doligez Exp $ */
+/* $Id: i386.S,v 1.43 2004/08/12 13:37:12 xleroy Exp $ */
 
 /* Asm part of the runtime system, Intel 386 processor */
 /* Must be preprocessed by cpp */
@@ -323,4 +323,12 @@ G(caml_system__frametable):
 #else
         .value  -1              /* negative frame size => use callback link */
         .value  0               /* no roots here */
+#endif
+
+        .globl  G(caml_extra_params)
+G(caml_extra_params):
+#ifndef SYS_solaris
+        .space  64
+#else
+        .zero   64
 #endif

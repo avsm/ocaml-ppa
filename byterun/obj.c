@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: obj.c,v 1.34.2.3 2005/01/04 16:29:27 doligez Exp $ */
+/* $Id: obj.c,v 1.39 2005/01/04 16:29:33 doligez Exp $ */
 
 /* Operations on objects */
 
@@ -242,5 +242,3 @@ value caml_cache_public_method2 (value *meths, value tag, value *cache)
   }
 }
 #endif /*CAML_JIT*/
-
-/* eof $Id: obj.c,v 1.34.2.3 2005/01/04 16:29:27 doligez Exp $ */

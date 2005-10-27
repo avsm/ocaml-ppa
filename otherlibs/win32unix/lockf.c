@@ -12,7 +12,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: lockf.c,v 1.3 2002/07/23 14:12:01 doligez Exp $ */
+/* $Id: lockf.c,v 1.4 2005/09/22 14:21:50 xleroy Exp $ */
 
 #include <errno.h>
 #include <fcntl.h>
@@ -62,7 +62,7 @@ static void set_file_pointer(HANDLE h, LARGE_INTEGER dest,
   LONG high = dest.HighPart;
   DWORD ret = SetFilePointer(h, dest.LowPart, &high, method);
   if (ret == INVALID_SET_FILE_POINTER) {
-    long err = GetLastError();
+    DWORD err = GetLastError();
     if (err != NO_ERROR) { win32_maperr(err); uerror("lockf", Nothing); }
   }
   if (cur != NULL) { cur->LowPart = ret; cur->HighPart = high; }

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml,v 1.21.2.1 2004/07/22 11:00:35 maranget Exp $ *)
+(* $Id: main.ml,v 1.22 2004/08/20 17:04:35 doligez Exp $ *)
 
 (* The lexer generator. Command-line parsing. *)
 

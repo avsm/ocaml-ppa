@@ -12,7 +12,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: profiling.ml,v 1.6.10.1 2004/11/18 23:52:08 doligez Exp $ *)
+(* $Id: profiling.ml,v 1.7 2005/03/24 17:20:54 doligez Exp $ *)
 
 (* Run-time library for profiled programs *)
 

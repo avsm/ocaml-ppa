@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stdpp.ml,v 1.5 2004/05/12 15:22:42 mauny Exp $ *)
+(* $Id: stdpp.ml,v 1.6 2004/11/17 09:07:56 mauny Exp $ *)
 
 exception Exc_located of Token.flocation and exn;
 
@@ -85,4 +85,4 @@ value line_of_loc fname (bp, ep) =
 ;
 *)
 
-value loc_name = ref "loc";
+value loc_name = ref "_loc";

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asmlibrarian.ml,v 1.13 2002/04/04 09:00:16 garrigue Exp $ *)
+(* $Id: asmlibrarian.ml,v 1.14 2005/09/24 16:45:56 xleroy Exp $ *)
 
 (* Build libraries of .cmx files *)
 
@@ -40,7 +40,7 @@ let read_info name =
   (Filename.chop_suffix filename ".cmx" ^ ext_obj, (info, crc))
 
 let create_archive file_list lib_name =
-  let archive_name = Filename.chop_suffix lib_name ".cmxa" ^ ext_lib in
+  let archive_name = chop_extension_if_any lib_name ^ ext_lib in
   let outchan = open_out_bin lib_name in
   try
     output_string outchan cmxa_magic_number;

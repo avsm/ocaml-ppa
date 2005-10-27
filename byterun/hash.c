@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: hash.c,v 1.22 2004/01/02 19:23:22 doligez Exp $ */
+/* $Id: hash.c,v 1.23 2005/09/22 14:21:50 xleroy Exp $ */
 
 /* The generic hashing primitive */
 
@@ -21,8 +21,8 @@
 #include "custom.h"
 #include "memory.h"
 
-static unsigned long hash_accu;
-static long hash_univ_limit, hash_univ_count;
+static uintnat hash_accu;
+static intnat hash_univ_limit, hash_univ_count;
 
 static void hash_aux(value obj);
 
@@ -137,7 +137,7 @@ static void hash_aux(value obj)
 
   /* Otherwise, obj is a pointer outside the heap, to an object with
      a priori unknown structure. Use its physical address as hash key. */
-  Combine((long) obj);
+  Combine((intnat) obj);
 }
 
 /* Hashing variant tags */

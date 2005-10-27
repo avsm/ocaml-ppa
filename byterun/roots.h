@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: roots.h,v 1.18 2004/01/01 16:42:37 doligez Exp $ */
+/* $Id: roots.h,v 1.19 2005/09/22 14:21:50 xleroy Exp $ */
 
 #ifndef CAML_ROOTS_H
 #define CAML_ROOTS_H
@@ -29,7 +29,7 @@ CAMLextern void caml_do_local_roots (scanning_action, value *, value *,
                                      struct caml__roots_block *);
 #else
 CAMLextern void caml_do_local_roots(scanning_action f, char * bottom_of_stack,
-                                    unsigned long last_retaddr, value * gc_regs,
+                                    uintnat last_retaddr, value * gc_regs,
                                     struct caml__roots_block * local_roots);
 #endif
 

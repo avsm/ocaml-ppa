@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unix.ml,v 1.41.2.1 2004/06/22 17:18:50 remy Exp $ *)
+(* $Id: unix.ml,v 1.43 2004/11/30 17:06:19 xleroy Exp $ *)
 
 (* Initialization *)
 
@@ -872,7 +872,7 @@ let shutdown_connection inchan =
   shutdown (descr_of_in_channel inchan) SHUTDOWN_SEND
 
 let establish_server server_fun sockaddr =
-  invalid_arg "Unix.establish_server not implmented"
+  invalid_arg "Unix.establish_server not implemented"
 
 (* Terminal interface *)
 

@@ -12,7 +12,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id: ocamltags.in,v 1.5.18.1 2004/08/09 16:09:33 doligez Exp $ *)
+;(* $Id: ocamltags.in,v 1.6 2004/08/20 17:04:35 doligez Exp $ *)
 
 ;; Copyright (C) 1998 Ian Zimmerman <itz@transbay.net>
 ;;  This program is free software; you can redistribute it and/or
@@ -24,7 +24,7 @@
 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;  General Public License for more details.
-;; $Id: ocamltags.in,v 1.5.18.1 2004/08/09 16:09:33 doligez Exp $
+;; $Id: ocamltags.in,v 1.6 2004/08/20 17:04:35 doligez Exp $
 
 (require 'caml)
 

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: list.mli,v 1.44 2003/11/21 16:06:08 xleroy Exp $ *)
+(* $Id: list.mli,v 1.46 2005/10/25 18:34:07 doligez Exp $ *)
 
 (** List operations.
 
@@ -109,8 +109,8 @@ val map2 : ('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list
    different lengths.  Not tail-recursive. *)
 
 val rev_map2 : ('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list
-(** [List.rev_map2 f l] gives the same result as
-   {!List.rev}[ (]{!List.map2}[ f l)], but is tail-recursive and
+(** [List.rev_map2 f l1 l2] gives the same result as
+   {!List.rev}[ (]{!List.map2}[ f l1 l2)], but is tail-recursive and
    more efficient. *)
 
 val fold_left2 : ('a -> 'b -> 'c -> 'a) -> 'a -> 'b list -> 'c list -> 'a
@@ -247,7 +247,7 @@ val sort : ('a -> 'a -> int) -> 'a list -> 'a list
    [List.sort] is guaranteed to run in constant heap space
    (in addition to the size of the result list) and logarithmic
    stack space.
-   
+
    The current implementation uses Merge Sort. It runs in constant
    heap space and logarithmic stack space.
 *)
@@ -256,7 +256,7 @@ val stable_sort : ('a -> 'a -> int) -> 'a list -> 'a list
 (** Same as {!List.sort}, but the sorting algorithm is guaranteed to
    be stable (i.e. elements that compare equal are kept in their
    original order) .
-   
+
    The current implementation uses Merge Sort. It runs in constant
    heap space and logarithmic stack space.
 *)

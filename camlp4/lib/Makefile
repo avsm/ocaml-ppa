@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8.2.6 2004/07/28 13:55:43 mauny Exp $
+# $Id: Makefile,v 1.15 2004/11/30 18:57:03 doligez Exp $
 
 include ../config/Makefile
 
@@ -7,6 +7,8 @@ OCAMLCFLAGS=-warn-error A $(INCLUDES)
 OBJS=stdpp.cmo token.cmo plexer.cmo gramext.cmo grammar.cmo extfold.cmo extfun.cmo fstream.cmo
 SHELL=/bin/sh
 TARGET=gramlib.cma
+
+.PHONY: opt all clean depend promote compare install installopt
 
 all: $(TARGET)
 opt: opt$(PROFILING)

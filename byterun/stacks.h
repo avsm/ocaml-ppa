@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: stacks.h,v 1.13 2004/01/01 16:42:37 doligez Exp $ */
+/* $Id: stacks.h,v 1.14 2005/09/22 14:21:50 xleroy Exp $ */
 
 /* structure of the stacks */
 
@@ -33,9 +33,9 @@ CAMLextern value * caml_trap_barrier;
 #define Trap_pc(tp) (((code_t *)(tp))[0])
 #define Trap_link(tp) (((value **)(tp))[1])
 
-void caml_init_stack (unsigned long init_max_size);
+void caml_init_stack (uintnat init_max_size);
 void caml_realloc_stack (asize_t required_size);
-void caml_change_max_stack_size (unsigned long new_max_size);
+void caml_change_max_stack_size (uintnat new_max_size);
 
 
 #endif /* CAML_STACKS_H */

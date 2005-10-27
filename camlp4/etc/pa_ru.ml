@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pa_ru.ml,v 1.7 2003/07/10 12:28:21 michel Exp $ *)
+(* $Id: pa_ru.ml,v 1.8 2004/11/17 09:07:56 mauny Exp $ *)
 
 open Pcaml;
 
@@ -38,7 +38,7 @@ EXTEND
           in
           [<:expr< let $opt:o2b o$ $list:l$ in $e$ >>]
       | e = expr; ";"; el = SELF ->
-          let e = let loc = MLast.loc_of_expr e in <:expr< ($e$ : unit) >> in
+          let e = let _loc = MLast.loc_of_expr e in <:expr< ($e$ : unit) >> in
           [e :: el]
       | e = expr; ";" -> [e]
       | e = expr -> [e] ] ]

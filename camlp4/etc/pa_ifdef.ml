@@ -1,5 +1,5 @@
 (* camlp4r pa_extend.cmo q_MLast.cmo *)
-(* $Id: pa_ifdef.ml,v 1.1.6.1 2004/07/05 09:48:42 mauny Exp $ *)
+(* $Id: pa_ifdef.ml,v 1.2 2004/07/13 12:19:11 xleroy Exp $ *)
 
 (* This module is deprecated since version 3.07; use pa_macro.ml instead *)
 

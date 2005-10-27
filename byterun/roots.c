@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: roots.c,v 1.28 2004/01/05 20:25:59 doligez Exp $ */
+/* $Id: roots.c,v 1.29 2005/09/22 14:21:50 xleroy Exp $ */
 
 /* To walk the memory roots for garbage collection */
 
@@ -38,7 +38,7 @@ void caml_oldify_local_roots (void)
   register value * sp;
   struct global_root * gr;
   struct caml__roots_block *lr;
-  long i, j;
+  intnat i, j;
 
   /* The stack */
   for (sp = caml_extern_sp; sp < caml_stack_high; sp++) {

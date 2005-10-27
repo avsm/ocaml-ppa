@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: depend.ml,v 1.7 2003/11/25 09:20:45 garrigue Exp $ *)
+(* $Id: depend.ml,v 1.9 2005/03/23 03:08:37 garrigue Exp $ *)
 
 open Format
 open Location
@@ -68,11 +68,11 @@ let add_type_declaration bv td =
     td.ptype_cstrs;
   add_opt add_type bv td.ptype_manifest;
   let rec add_tkind = function
-    Ptype_abstract -> ()
+    Ptype_abstract | Ptype_private -> ()
   | Ptype_variant (cstrs, _) ->
-      List.iter (fun (c, args) -> List.iter (add_type bv) args) cstrs
+      List.iter (fun (c, args, _) -> List.iter (add_type bv) args) cstrs
   | Ptype_record (lbls, _) ->
-      List.iter (fun (l, mut, ty) -> add_type bv ty) lbls in
+      List.iter (fun (l, mut, ty, _) -> add_type bv ty) lbls in
   add_tkind td.ptype_kind
 
 let rec add_class_type bv cty =

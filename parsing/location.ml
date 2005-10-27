@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: location.ml,v 1.44.6.1 2005/01/12 17:01:58 doligez Exp $ *)
+(* $Id: location.ml,v 1.48 2005/03/24 17:20:54 doligez Exp $ *)
 
 open Lexing
 
@@ -237,7 +237,7 @@ let print_warning loc ppf w =
       num_loc_lines := !num_loc_lines + n
     in
     fprintf ppf "%a" print loc;
-    fprintf ppf "Warning: %a@." printw w;
+    fprintf ppf "Warning %a@." printw w;
     pp_print_flush ppf ();
     incr num_loc_lines;
   end

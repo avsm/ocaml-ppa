@@ -11,14 +11,15 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: bng.h,v 1.2 2003/11/07 07:59:09 xleroy Exp $ */
+/* $Id: bng.h,v 1.3 2005/09/22 14:21:50 xleroy Exp $ */
 
 #include <string.h>
+#include "config.h"
 
-typedef unsigned long bngdigit;
+typedef uintnat bngdigit;
 typedef bngdigit * bng;
 typedef unsigned int bngcarry;
-typedef unsigned long bngsize;
+typedef uintnat bngsize;
 
 #define BNG_BITS_PER_DIGIT (sizeof(bngdigit) * 8)
 #define BNG_BITS_PER_HALF_DIGIT (sizeof(bngdigit) * 4)

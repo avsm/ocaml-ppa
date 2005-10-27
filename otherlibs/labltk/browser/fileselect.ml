@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: fileselect.ml,v 1.20 2002/08/09 10:34:44 garrigue Exp $ *)
+(* $Id: fileselect.ml,v 1.21 2005/01/28 16:13:11 doligez Exp $ *)
 
 (* file selection box *)
 
@@ -214,7 +214,7 @@ let f ~title ~action:proc ?(dir = Unix.getcwd ())
       in
       let files = if files = [] then [Textvariable.get selection_var] 
                                 else files in
-      activate [Textvariable.get selection_var]
+      activate files
     end
   and flb = Button.create cfrm ~text:"Filter"
       ~command:(fun () -> configure ~filter:(Textvariable.get filter_var))

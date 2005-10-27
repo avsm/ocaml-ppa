@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: env.mli,v 1.28 2003/11/25 09:20:42 garrigue Exp $ *)
+(* $Id: env.mli,v 1.30 2005/08/13 20:59:37 doligez Exp $ *)
 
 (* Environment handling *)
 
@@ -76,10 +76,11 @@ val enter_modtype: string -> modtype_declaration -> t -> Ident.t * t
 val enter_class: string -> class_declaration -> t -> Ident.t * t
 val enter_cltype: string -> cltype_declaration -> t -> Ident.t * t
 
-(* Reset the cache of in-core module interfaces.
-   To be called in particular when load_path changes. *)
-
+(* Initialize the cache of in-core module interfaces. *)
 val reset_cache: unit -> unit
+
+(* Remember the name of the current compilation unit. *)
+val set_unit_name: string -> unit
 
 (* Read, save a signature to/from a file *)
 
@@ -135,5 +136,6 @@ open Format
 val report_error: formatter -> error -> unit
 
 (* Forward declaration to break mutual recursion with Includemod. *)
-val check_modtype_inclusion: (t -> module_type -> module_type -> unit) ref
+val check_modtype_inclusion:
+      (t -> module_type -> Path.t -> module_type -> unit) ref
 

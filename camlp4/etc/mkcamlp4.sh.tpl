@@ -1,8 +1,10 @@
 #!/bin/sh
-# $Id: mkcamlp4.sh.tpl,v 1.7 2003/09/23 18:17:35 mauny Exp $
+# $Id: mkcamlp4.sh.tpl,v 1.8 2004/11/27 01:04:19 doligez Exp $
 
 OLIB="`ocamlc -where`"
 LIB="LIBDIR/camlp4"
+
+# automatically define VERSION here:
 
 INTERFACES=
 OPTS=
@@ -10,6 +12,7 @@ INCL="-I ."
 while test "" != "$1"; do
     case "$1" in
     -I) INCL="$INCL -I $2"; shift;;
+    -version) echo "mkcamlp4, version $VERSION"; exit;;
     *)
         j=`basename "$1" .cmi`
         if test "$j.cmi" = "$1"; then

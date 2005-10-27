@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lambda.mli,v 1.38.2.1 2004/07/07 16:49:53 xleroy Exp $ *)
+(* $Id: lambda.mli,v 1.42 2005/08/25 15:35:16 doligez Exp $ *)
 
 (* The "lambda" intermediate code *)
 
@@ -110,6 +110,7 @@ type structured_constant =
   | Const_pointer of int
   | Const_block of int * structured_constant list
   | Const_float_array of string list
+  | Const_immstring of string
 
 type function_kind = Curried | Tupled
 
@@ -156,7 +157,7 @@ and lambda_switch =
     sw_blocks: (int * lambda) list;     (* Tag block cases *)
     sw_failaction : lambda option}      (* Action to take if failure *)
 and lambda_event =
-  { lev_pos: Lexing.position;
+  { lev_loc: Location.t;
     lev_kind: lambda_event_kind;
     lev_repr: int ref option;
     lev_env: Env.summary }
@@ -174,8 +175,10 @@ val name_lambda_list: lambda list -> (lambda list -> lambda) -> lambda
 val is_guarded: lambda -> bool
 val patch_guarded : lambda -> lambda -> lambda
 
+val iter: (lambda -> unit) -> lambda -> unit
 module IdentSet: Set.S with type elt = Ident.t
 val free_variables: lambda -> IdentSet.t
+val free_methods: lambda -> IdentSet.t
 
 val transl_path: Path.t -> lambda
 val make_sequence: ('a -> lambda) -> 'a list -> lambda
@@ -197,6 +200,6 @@ val next_raise_count : unit -> int
 val staticfail : lambda (* Anticipated static failure *)
 
 (* Check anticipated failure, substitute its final value *)
-val is_guarded: lambda -> bool 
-val patch_guarded : lambda -> lambda -> lambda 
+val is_guarded: lambda -> bool
+val patch_guarded : lambda -> lambda -> lambda
 

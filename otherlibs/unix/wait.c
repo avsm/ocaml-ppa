@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: wait.c,v 1.17.6.3 2005/01/17 18:10:36 doligez Exp $ */
+/* $Id: wait.c,v 1.19 2005/04/17 08:23:51 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -47,11 +47,11 @@ static value alloc_process_status(int pid, int status)
   }
   else if (WIFSTOPPED(status)) {
     st = alloc_small(1, TAG_WSTOPPED);
-    Field(st, 0) = Val_int(WSTOPSIG(status));
+    Field(st, 0) = Val_int(caml_rev_convert_signal_number(WSTOPSIG(status)));
   }
   else {
     st = alloc_small(1, TAG_WSIGNALED);
-    Field(st, 0) = Val_int(WTERMSIG(status));
+    Field(st, 0) = Val_int(caml_rev_convert_signal_number(WTERMSIG(status)));
   }
   Begin_root (st);
     res = alloc_small(2, 0);

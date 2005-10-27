@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: token.ml,v 1.11.2.1 2004/06/28 18:30:48 mauny Exp $ *)
+(* $Id: token.ml,v 1.13 2004/11/06 20:13:41 doligez Exp $ *)
 
 type t = (string * string);
 type pattern = (string * string);
@@ -153,6 +153,7 @@ value rec backslash s i =
     | '\\' -> ('\\', i + 1)
     | '"' -> ('"', i + 1)
     | ''' -> (''', i + 1)
+    | ' ' -> (' ', i + 1)
     | '0'..'9' as c -> backslash1 (valch c) s (i + 1)
     | 'x' -> backslash1h s (i + 1)
     | _ -> raise Not_found ]

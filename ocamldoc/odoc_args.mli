@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_args.mli,v 1.12.6.2 2005/02/18 16:08:37 guesdon Exp $ *)
+(* $Id: odoc_args.mli,v 1.14 2005/03/24 17:20:53 doligez Exp $ *)
 
 (** Analysis of the command line arguments. *)
 

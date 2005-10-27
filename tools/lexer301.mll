@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexer301.mll,v 1.4 2004/01/16 15:24:03 doligez Exp $ *)
+(* $Id: lexer301.mll,v 1.5 2004/11/30 18:57:04 doligez Exp $ *)
 
 (* The lexer definition *)
 
@@ -327,7 +327,7 @@ rule token = parse
         token lexbuf }
   | "(*)"
       { let loc = Location.curr lexbuf
-        and warn = Warnings.Comment "the start of a comment"
+        and warn = Warnings.Comment_start
         in
         Location.prerr_warning loc warn;
         comment_start_pos := [Lexing.lexeme_start lexbuf];
@@ -336,7 +336,7 @@ rule token = parse
       }
   | "*)"
       { let loc = Location.curr lexbuf
-        and warn = Warnings.Comment "not the end of a comment"
+        and warn = Warnings.Comment_not_end
         in
         Location.prerr_warning loc warn;
         lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_curr_pos - 1;

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: gc_ctrl.h,v 1.15 2004/01/02 19:23:22 doligez Exp $ */
+/* $Id: gc_ctrl.h,v 1.16 2005/09/22 14:21:50 xleroy Exp $ */
 
 #ifndef CAML_GC_CTRL_H
 #define CAML_GC_CTRL_H
@@ -23,7 +23,7 @@ extern double
      caml_stat_promoted_words,
      caml_stat_major_words;
 
-extern long
+extern intnat
      caml_stat_minor_collections,
      caml_stat_major_collections,
      caml_stat_heap_size,
@@ -31,8 +31,8 @@ extern long
      caml_stat_compactions,
      caml_stat_heap_chunks;
 
-void caml_init_gc (unsigned long, unsigned long, unsigned long,
-                   unsigned long, unsigned long);
+void caml_init_gc (uintnat, uintnat, uintnat,
+                   uintnat, uintnat);
 
 
 #ifdef DEBUG

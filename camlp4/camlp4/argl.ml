@@ -1,5 +1,5 @@
 (* camlp4r q_MLast.cmo *)
-(* $Id: argl.ml,v 1.14.2.2 2004/10/07 09:18:13 mauny Exp $ *)
+(* $Id: argl.ml,v 1.18 2005/10/21 10:55:32 mauny Exp $ *)
 
 open Printf;
 
@@ -122,7 +122,7 @@ value loc_fmt =
 value print_location loc =
   if Pcaml.input_file.val <> "-" then
     let (fname, line, bp, ep) = Stdpp.line_of_loc Pcaml.input_file.val loc in
-    eprintf loc_fmt Pcaml.input_file.val line bp ep
+    eprintf loc_fmt fname line bp ep
   else eprintf "At location %d-%d\n" (fst loc).Lexing.pos_cnum (snd loc).Lexing.pos_cnum
 ;
 
@@ -357,7 +357,9 @@ value initial_spec_list =
    ("-v", Arg.Unit print_version,
     "Print Camlp4 version and exit.");
    ("-version", Arg.Unit print_version_string,
-    "Print Camlp4 version number and exit.")
+    "Print Camlp4 version number and exit.");
+   ("-no_quot", Arg.Set Plexer.no_quotations,
+    " Don't parse quotations, allowing to use, e.g. \"<:>\" as token")
  ]
 ;
 

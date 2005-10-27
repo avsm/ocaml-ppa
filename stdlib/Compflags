@@ -12,12 +12,13 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Compflags,v 1.1.4.1 2004/07/08 07:43:13 xleroy Exp $
+# $Id: Compflags,v 1.5 2004/11/25 00:04:15 doligez Exp $
 
 case $1 in
   pervasives.cm[iox]|pervasives.p.cmx) echo ' -nopervasives';;
   camlinternalOO.cmi) echo ' -nopervasives';;
   camlinternalOO.cmx|camlinternalOO.p.cmx) echo ' -inline 0';;
+  scanf.cmx|scanf.p.cmx) echo ' -inline 9';;
   arrayLabels.cm[ox]|arrayLabels.p.cmx) echo ' -nolabels';;
   listLabels.cm[ox]|listLabels.p.cmx) echo ' -nolabels';;
   stringLabels.cm[ox]|stringLabels.p.cmx) echo ' -nolabels';;

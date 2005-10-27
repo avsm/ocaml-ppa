@@ -10,7 +10,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id: caml.el,v 1.36.4.1 2004/08/09 16:09:33 doligez Exp $ *)
+;(* $Id: caml.el,v 1.39 2005/02/04 17:19:21 remy Exp $ *)
 
 ;;; caml.el --- O'Caml code editing commands for Emacs
 
@@ -348,6 +348,7 @@ have caml-electric-indent on, which see.")
       (define-key map [separator-types] '("---"))
 
       ;; others
+      (define-key map [camldebug] '("Call debugger..." . camldebug))
       (define-key map [run-caml] '("Start subshell..." . run-caml))
       (define-key map [compile] '("Compile..." . compile))
       (define-key map [switch-view]
@@ -1598,7 +1599,7 @@ matching nodes to determine KEYWORD's final indentation.")
            (cond
             (closing 1)
             (comment-mark 1)
-            (t caml-comment-indent)))))
+            (t (- (match-end 0) (match-beginning 0)))))))
      (t (let* ((leading (looking-at caml-leading-kwops-regexp))
                (assoc-val (if leading (assoc (caml-match-string 0)
                                              caml-leading-kwops-alist)))

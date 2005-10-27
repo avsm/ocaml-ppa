@@ -12,7 +12,7 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: main.c,v 1.18 2004/04/21 23:26:05 doligez Exp $ */
+/* $Id: main.c,v 1.19 2004/11/27 01:04:19 doligez Exp $ */
 
 #include <signal.h>
 #include <string.h>
@@ -20,6 +20,8 @@
 #ifdef HAS_UNISTD
 #include <unistd.h>
 #endif
+
+#include "version.h"
 
 char dflag;
 char lflag;
@@ -163,7 +165,13 @@ void getargs(int argc, char **argv)
             goto no_more_options;
 
         case 'v':
-            vflag = 1;
+            if (!strcmp (argv[i], "-version")){
+              printf ("The Objective Caml parser generator, version "
+                      OCAML_VERSION "\n");
+              exit (0);
+            }else{
+              vflag = 1;
+            }
             break;
 
         case 'q':
