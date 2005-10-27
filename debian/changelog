@@ -1,7 +1,15 @@
+ocaml (3.09.0-1) experimental; urgency=low
+
+  Changes by Sven Luther
+  * Updated to new upstream release.
+  
+
+ -- Sven Luther <luther@debian.org>  Thu, 27 Oct 2005 19:03:17 +0000
+
 ocaml (3.08.3-9) unstable; urgency=low
 
   Changes by Samuel Mimram:
-  * debain/patches/map_fold_order.dpatch: added a patch to make Map.fold order
+  * debian/patches/map_fold_order.dpatch: added a patch to make Map.fold order
     conform to the specification (Closes: #327211)
 
  -- Samuel Mimram <smimram@debian.org>  Thu,  8 Sep 2005 20:45:08 +0200
