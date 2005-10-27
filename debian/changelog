@@ -1,8 +1,7 @@
-ocaml (3.09.0-1) experimental; urgency=low
+ocaml (3.09.0-0.experimental.1) experimental; urgency=low
 
-  Changes by Sven Luther
+  Changes by Sven Luther:
   * Updated to new upstream release.
-  
 
  -- Sven Luther <luther@debian.org>  Thu, 27 Oct 2005 19:03:17 +0000
 
