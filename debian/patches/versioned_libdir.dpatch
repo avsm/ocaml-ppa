@@ -27,8 +27,8 @@ diff -ur ocaml-3.08.orig/camlp4/config/configure_batch ocaml-3.08/camlp4/config/
  case "$libdir" in
 -  "") echo 'LIBDIR=$(PREFIX)/lib/camlp4' >> Makefile.cnf
 -      libdir="$prefix/lib/camlp4";;
-+  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml/3.08.3/camlp4' >> Makefile.cnf
-+      libdir="$prefix/lib/ocaml/3.08.3/camlp4";;
++  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml/3.09.0/camlp4' >> Makefile.cnf
++      libdir="$prefix/lib/ocaml/3.09.0/camlp4";;
     *) echo "LIBDIR=$libdir" >> Makefile.cnf;;
  esac
  case "$mandir" in
@@ -48,8 +48,8 @@ diff -ur ocaml-3.08.orig/configure ocaml-3.08/configure
  case "$libdir" in
 -  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml' >> Makefile
 -      libdir="$prefix/lib/ocaml";;
-+  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml/3.08.3' >> Makefile
-+      libdir="$prefix/lib/ocaml/3.08.3";;
++  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml/3.09.0' >> Makefile
++      libdir="$prefix/lib/ocaml/3.09.0";;
     *) echo "LIBDIR=$libdir" >> Makefile;;
  esac
  echo 'STUBLIBDIR=$(LIBDIR)/stublibs' >> Makefile
