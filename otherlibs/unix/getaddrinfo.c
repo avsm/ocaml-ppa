@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getaddrinfo.c,v 1.1.4.3 2005/04/17 08:53:02 xleroy Exp $ */
+/* $Id: getaddrinfo.c,v 1.3 2005/08/13 20:59:37 doligez Exp $ */
 
 #include <string.h>
 #include <mlvalues.h>

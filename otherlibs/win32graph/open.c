@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: open.c,v 1.8.2.3 2005/05/26 09:15:22 doligez Exp $ */
+/* $Id: open.c,v 1.10.2.1 2005/10/27 09:02:59 xleroy Exp $ */
 
 #include <fcntl.h>
 #include <signal.h>
@@ -303,7 +303,7 @@ CAMLprim value caml_gr_size_y(void)
 
 CAMLprim value caml_gr_resize_window (value vx, value vy)
 {
-  caml_gr_check_open ();
+  gr_check_open ();
 
   /* FIXME TODO implement this function... */
 

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: smllib.sml,v 1.1.2.1 2004/07/07 16:37:11 mauny Exp $ *)
+(* $Id: smllib.sml,v 1.2 2004/07/13 12:25:09 xleroy Exp $ *)
 
 datatype 'a option = SOME of 'a | NONE
 exception Fail of string

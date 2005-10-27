@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typecore.mli,v 1.35 2003/11/25 09:20:42 garrigue Exp $ *)
+(* $Id: typecore.mli,v 1.37 2005/03/04 14:51:31 weis Exp $ *)
 
 (* Type inference for the core language *)
 
@@ -74,7 +74,8 @@ type error =
   | Label_multiply_defined of Longident.t
   | Label_missing of string list
   | Label_not_mutable of Longident.t
-  | Bad_format of string
+  | Incomplete_format of string
+  | Bad_conversion of string * int * char
   | Undefined_method of type_expr * string
   | Undefined_inherited_method of string
   | Unbound_class of Longident.t

@@ -10,7 +10,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id: caml-hilit.el,v 1.8.4.1 2004/08/09 16:09:33 doligez Exp $ *)
+;(* $Id: caml-hilit.el,v 1.9 2004/08/20 17:04:35 doligez Exp $ *)
 
 ; Highlighting patterns for hilit19 under caml-mode
 

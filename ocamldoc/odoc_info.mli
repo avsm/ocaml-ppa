@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_info.mli,v 1.36.4.3 2005/02/18 16:08:37 guesdon Exp $ *)
+(* $Id: odoc_info.mli,v 1.38 2005/03/24 17:20:53 doligez Exp $ *)
 
 (** Interface to the information collected in source files. *)
 

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: str.mli,v 1.23.2.1 2005/03/10 16:03:11 doligez Exp $ *)
+(* $Id: str.mli,v 1.24 2005/03/24 17:20:53 doligez Exp $ *)
 
 (** Regular expressions and high-level string processing *)
 

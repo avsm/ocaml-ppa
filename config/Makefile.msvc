@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.msvc,v 1.12.4.2 2005/02/02 15:39:40 xleroy Exp $
+# $Id: Makefile.msvc,v 1.14 2005/08/01 15:51:09 xleroy Exp $
 
 # Configuration for Windows, Visual C++ compiler
 
@@ -98,10 +98,6 @@ NATIVECCLINKOPTS=/MT
 ### Build partially-linked object file
 PARTIALLD=lib /nologo /debugtype:cv
 PACKLD=ld -r --oformat pe-i386
-
-### nm and objcopy are missing
-BINUTILS_NM=nm
-BINUTILS_OBJCOPY=objcopy
 
 ############# Configuration for the contributed libraries
 

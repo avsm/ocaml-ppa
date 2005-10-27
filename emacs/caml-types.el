@@ -10,7 +10,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id: caml-types.el,v 1.29.6.4 2005/08/05 12:00:16 doligez Exp $ *)
+;(* $Id: caml-types.el,v 1.32 2005/08/13 20:59:37 doligez Exp $ *)
 
 ; An emacs-lisp complement to the "-dtypes" option of ocamlc and ocamlopt.
 

@@ -11,14 +11,14 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.9 2003/10/24 09:17:46 xleroy Exp $
+# $Id: Makefile,v 1.10 2005/09/22 14:21:50 xleroy Exp $
 
 include ../../../config/Makefile
 
 CAMLC=../../../boot/ocamlrun ../../../ocamlc -I ../../../stdlib
 CAMLOPT=../../../boot/ocamlrun ../../../ocamlopt -I ../../../stdlib
 CC=$(BYTECC)
-CFLAGS=-I.. $(BYTECCCOMPOPTS)
+CFLAGS=-I.. -I../../../byterun $(BYTECCCOMPOPTS)
 
 test: test.byt test.opt
 	if $(SUPPORTS_SHARED_LIBRARIES); then ../../../byterun/ocamlrun -I .. ./test.byt; else ./test.byt; fi

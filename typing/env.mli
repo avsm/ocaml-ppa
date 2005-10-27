@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: env.mli,v 1.28.8.1 2005/07/27 15:05:06 xleroy Exp $ *)
+(* $Id: env.mli,v 1.30 2005/08/13 20:59:37 doligez Exp $ *)
 
 (* Environment handling *)
 
@@ -76,10 +76,11 @@ val enter_modtype: string -> modtype_declaration -> t -> Ident.t * t
 val enter_class: string -> class_declaration -> t -> Ident.t * t
 val enter_cltype: string -> cltype_declaration -> t -> Ident.t * t
 
-(* Reset the cache of in-core module interfaces.
-   To be called in particular when load_path changes. *)
-
+(* Initialize the cache of in-core module interfaces. *)
 val reset_cache: unit -> unit
+
+(* Remember the name of the current compilation unit. *)
+val set_unit_name: string -> unit
 
 (* Read, save a signature to/from a file *)
 

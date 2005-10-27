@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: int32.mli,v 1.16.6.1 2005/04/11 16:51:42 doligez Exp $ *)
+(* $Id: int32.mli,v 1.18 2005/10/25 18:34:07 doligez Exp $ *)
 
 (** 32-bit integers.
 
@@ -166,4 +166,3 @@ external format : string -> int32 -> string = "caml_int32_format"
    one [%d], [%i], [%u], [%x], [%X] or [%o] conversion specification.
    This function is deprecated; use {!Printf.sprintf} with a [%lx] format
    instead. *)
-

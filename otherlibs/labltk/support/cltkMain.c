@@ -14,7 +14,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: cltkMain.c,v 1.13 2002/07/23 14:11:59 doligez Exp $ */
+/* $Id: cltkMain.c,v 1.14 2005/09/22 14:21:50 xleroy Exp $ */
 
 #include <string.h>
 #include <tcl.h>
@@ -91,7 +91,7 @@ CAMLprim value camltk_opentk(value argv)
       /* Register cltclinterp for use in other related extensions */
       value *interp = caml_named_value("cltclinterp");
       if (interp != NULL)
-        Store_field(*interp,0,copy_nativeint((long)cltclinterp));
+        Store_field(*interp,0,copy_nativeint((intnat)cltclinterp));
     }
 
     if (Tcl_Init(cltclinterp) != TCL_OK)

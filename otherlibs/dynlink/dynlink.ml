@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: dynlink.ml,v 1.31 2003/05/26 13:46:36 xleroy Exp $ *)
+(* $Id: dynlink.ml,v 1.32 2004/11/29 02:27:25 garrigue Exp $ *)
 
 (* Dynamic loading of .cmo files *)
 
@@ -114,7 +114,7 @@ let digest_interface unit loadpath =
       close_in ic;
       raise(Error(Corrupted_interface filename))
     end;
-    input_value ic;
+    ignore (input_value ic);
     let crc =
       match input_value ic with
         (_, crc) :: _ -> crc

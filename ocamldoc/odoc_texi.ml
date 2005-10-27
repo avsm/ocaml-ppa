@@ -8,7 +8,7 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (***********************************************************************)
 
-(* $Id: odoc_texi.ml,v 1.17.4.1 2004/07/02 12:59:48 guesdon Exp $ *)
+(* $Id: odoc_texi.ml,v 1.19 2004/11/29 02:27:25 garrigue Exp $ *)
 
 (** Generation of Texinfo documentation. *)
 
@@ -264,8 +264,8 @@ class text =
 
     (** this method is not used here but is virtual
         in a class we will inherit later *)
-    method label ?(no_ : bool option) (_ : string) = 
-      failwith "gni" ; ""
+    method label ?(no_ : bool option) (_ : string) : string = 
+      failwith "gni"
 
     (** Return the Texinfo code corresponding to the [text] parameter.*)
     method texi_of_text t =

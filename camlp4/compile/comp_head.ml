@@ -1,5 +1,5 @@
 (* camlp4r q_MLast.cmo pa_extend.cmo *)
-(* $Id: comp_head.ml,v 1.3.6.1 2005/02/18 09:11:13 mauny Exp $ *)
+(* $Id: comp_head.ml,v 1.4 2005/03/24 17:20:53 doligez Exp $ *)
 
 module P =
   struct

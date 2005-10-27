@@ -2,19 +2,14 @@
 (*                                                                     *)
 (*                           Objective Caml                            *)
 (*                                                                     *)
-(*    Valerie Menissier-Morain, projet Cristal, INRIA Rocquencourt     *)
+(*           Damien Doligez, projet Cristal, INRIA Rocquencourt        *)
 (*                                                                     *)
-(*  Copyright 1996 Institut National de Recherche en Informatique et   *)
+(*  Copyright 2004 Institut National de Recherche en Informatique et   *)
 (*  en Automatique.  All rights reserved.  This file is distributed    *)
-(*  under the terms of the GNU Library General Public License, with    *)
-(*  the special exception on linking described in file ../../LICENSE.  *)
+(*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: string_misc.ml,v 1.4 2001/12/07 13:40:16 xleroy Exp $ *)
+(* $Id: unused_var.mli,v 1.1 2005/10/26 12:39:02 doligez Exp $ *)
 
-let rec index_char str chr pos =
-  if pos >= String.length str then -1
-  else if String.get str pos = chr then pos
-  else index_char str chr (pos + 1)
-;;
+val warn : Format.formatter -> Parsetree.structure -> Parsetree.structure;;

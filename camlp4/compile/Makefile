@@ -1,9 +1,9 @@
-# $Id: Makefile,v 1.8.4.3 2005/06/22 15:46:42 doligez Exp $
+# $Id: Makefile,v 1.13 2005/08/13 20:59:37 doligez Exp $
 
 include ../config/Makefile
 
 INCLUDES=-I ../camlp4 -I ../boot
-OCAMLCFLAGS=-warn-error A $(INCLUDES)
+OCAMLCFLAGS=-warn-error Ay $(INCLUDES)
 SRC=../etc/pa_o.ml ../etc/pa_op.ml
 D=o
 COMP_OPT=-strict_parsing

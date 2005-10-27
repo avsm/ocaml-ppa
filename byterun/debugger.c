@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: debugger.c,v 1.28 2004/01/02 19:23:20 doligez Exp $ */
+/* $Id: debugger.c,v 1.29 2005/09/22 14:21:50 xleroy Exp $ */
 
 /* Interface with the debugger */
 
@@ -30,7 +30,7 @@
 #include "sys.h"
 
 int caml_debugger_in_use = 0;
-unsigned long caml_event_count;
+uintnat caml_event_count;
 
 #if !defined(HAS_SOCKETS) || defined(_WIN32)
 
@@ -170,7 +170,7 @@ void caml_debugger(enum event_kind event)
 {
   int frame_number;
   value * frame;
-  long i, pos;
+  intnat i, pos;
   value val;
 
   if (dbg_socket == -1) return;  /* Not connected to a debugger. */

@@ -14,7 +14,7 @@
 /* Began 14 Sept 2003 - watford@uiuc.edu                               */
 /***********************************************************************/
 
-/* $Id: ocaml.c,v 1.7.2.1 2004/08/09 08:51:09 xleroy Exp $ */
+/* $Id: ocaml.c,v 1.8 2004/08/20 17:04:35 doligez Exp $ */
 
 /*@@ Wedit generated application. Written Sat Jun 02 18:22:38 2001
 @@header: D:\lcc\inria\inriares.h

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: int64.mli,v 1.17.6.1 2005/04/11 16:51:42 doligez Exp $ *)
+(* $Id: int64.mli,v 1.19 2005/10/25 18:34:07 doligez Exp $ *)
 
 (** 64-bit integers.
 
@@ -188,4 +188,3 @@ external format : string -> int64 -> string = "caml_int64_format"
    [%d], [%i], [%u], [%x], [%X] or [%o] conversion specification.
    This function is deprecated; use {!Printf.sprintf} with a [%Lx] format
    instead. *)
-

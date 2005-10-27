@@ -1,5 +1,5 @@
 (* camlp4r *)
-(* $Id: pr_depend.ml,v 1.13 2003/07/23 22:26:17 doligez Exp $ *)
+(* $Id: pr_depend.ml,v 1.14 2005/06/29 04:11:26 garrigue Exp $ *)
 
 open MLast;
 
@@ -48,8 +48,9 @@ value rec ctyp =
   | TyMan _ t1 t2 -> do { ctyp t1; ctyp t2; }
   | TyOlb _ _ t -> ctyp t
   | TyQuo _ _ -> ()
-  | TyRec _ _ ldl -> list label_decl ldl
-  | TySum _ _ cdl -> list constr_decl cdl
+  | TyRec _ ldl -> list label_decl ldl
+  | TySum _ cdl -> list constr_decl cdl
+  | TyPrv _ t -> ctyp t
   | TyTup _ tl -> list ctyp tl
   | TyVrn _ sbtll _ -> list variant sbtll
   | x -> not_impl "ctyp" x ]

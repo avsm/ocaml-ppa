@@ -15,7 +15,7 @@
 /* Began 14 Sept 2003 - watford@uiuc.edu                               */
 /***********************************************************************/
 
-/* $Id: startocaml.c,v 1.9.2.2 2005/02/02 15:41:30 xleroy Exp $ */
+/* $Id: startocaml.c,v 1.11 2005/03/24 17:20:54 doligez Exp $ */
 
 #include <windows.h>
 #include <stdio.h>

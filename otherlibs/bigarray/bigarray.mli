@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bigarray.mli,v 1.21.6.1 2005/05/04 14:05:19 doligez Exp $ *)
+(* $Id: bigarray.mli,v 1.22 2005/08/13 20:59:37 doligez Exp $ *)
 
 (** Large, multi-dimensional, numerical arrays.
 

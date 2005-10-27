@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: scheduler.c,v 1.58.4.1 2005/06/21 12:27:36 doligez Exp $ */
+/* $Id: scheduler.c,v 1.60 2005/09/22 14:21:50 xleroy Exp $ */
 
 /* The thread scheduler */
 
@@ -653,7 +653,7 @@ value thread_inchan_ready(value vchan) /* ML */
 value thread_outchan_ready(value vchan, value vsize) /* ML */
 {
   struct channel * chan = Channel(vchan);
-  long size = Long_val(vsize);
+  intnat size = Long_val(vsize);
   /* Negative size means we want to flush the buffer entirely */
   if (size < 0) {
     return Val_bool(chan->curr == chan->buff);

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: objinfo.ml,v 1.8 2000/03/27 12:18:09 xleroy Exp $ *)
+(* $Id: objinfo.ml,v 1.10 2005/06/22 12:45:55 doligez Exp $ *)
 
 (* Dump a compilation unit description *)
 
@@ -96,6 +96,4 @@ let main() =
   done;
   exit 0
 
-let _ = Printexc.catch main (); exit 0
-
-
+let _ = main ()

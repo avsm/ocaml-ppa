@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.mingw,v 1.12 2004/04/01 13:08:56 xleroy Exp $
+# $Id: Makefile.mingw,v 1.13 2005/08/01 15:51:09 xleroy Exp $
 
 # Configuration for Windows, Mingw compiler
 
@@ -98,10 +98,6 @@ NATIVECCLINKOPTS=
 ### Build partially-linked object file
 PARTIALLD=ld -r $(NATIVECCLINKOPTS)
 PACKLD=$(PARTIALLD)
-
-### nm and objcopy from GNU binutils
-BINUTILS_NM=nm
-BINUTILS_OBJCOPY=objcopy
 
 ############# Configuration for the contributed libraries
 

@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.186.2.7 2005/01/31 10:30:47 doligez Exp $
+# $Id: Makefile,v 1.199 2005/09/24 16:20:36 xleroy Exp $
 
 # The main Makefile
 
@@ -44,7 +44,7 @@ PARSING=parsing/linenum.cmo parsing/location.cmo parsing/longident.cmo \
   parsing/syntaxerr.cmo parsing/parser.cmo \
   parsing/lexer.cmo parsing/parse.cmo parsing/printast.cmo
 
-TYPING=typing/ident.cmo typing/path.cmo \
+TYPING=typing/unused_var.cmo typing/ident.cmo typing/path.cmo \
   typing/primitive.cmo typing/types.cmo \
   typing/btype.cmo typing/oprint.cmo \
   typing/subst.cmo typing/predef.cmo \
@@ -177,7 +177,7 @@ coldstart:
           ln -s ../byterun stdlib/caml; fi
 
 # Build the core system: the minimum needed to make depend and bootstrap
-core : runtime ocamlc ocamllex ocamlyacc ocamltools library
+core : coldstart ocamlc ocamllex ocamlyacc ocamltools library
 
 # Save the current bootstrap compiler
 MAXSAVED=boot/Saved/Saved.prev/Saved.prev/Saved.prev/Saved.prev/Saved.prev
@@ -260,6 +260,7 @@ install: FORCE
 	cd camlp4; $(MAKE) install BINDIR=$(BINDIR) LIBDIR=$(LIBDIR) MANDIR=$(MANDIR)
 	if test -f debugger/ocamldebug; then (cd debugger; $(MAKE) install); \
 	   else :; fi
+	cp config/Makefile $(LIBDIR)/Makefile.config
 
 # Installation of the native-code compiler
 installopt:
@@ -328,9 +329,7 @@ utils/config.ml: utils/config.mlp config/Makefile
             -e 's|%%BYTECCLIBS%%|$(BYTECCLIBS)|' \
             -e 's|%%NATIVECCLIBS%%|$(NATIVECCLIBS)|' \
             -e 's|%%RANLIBCMD%%|$(RANLIBCMD)|' \
-            -e 's|%%BINUTILS_NM%%|$(BINUTILS_NM)|' \
             -e 's|%%CC_PROFILE%%|$(CC_PROFILE)|' \
-            -e 's|%%BINUTILS_OBJCOPY%%|$(BINUTILS_OBJCOPY)|' \
             -e 's|%%ARCH%%|$(ARCH)|' \
             -e 's|%%MODEL%%|$(MODEL)|' \
             -e 's|%%SYSTEM%%|$(SYSTEM)|' \
@@ -338,6 +337,7 @@ utils/config.ml: utils/config.mlp config/Makefile
             -e 's|%%EXT_ASM%%|.s|' \
             -e 's|%%EXT_LIB%%|.a|' \
             -e 's|%%EXT_DLL%%|.so|' \
+            -e 's|%%SYSTHREAD_SUPPORT%%|$(SYSTHREAD_SUPPORT)|' \
             utils/config.mlp > utils/config.ml
 	@chmod -w utils/config.ml
 
@@ -487,7 +487,8 @@ partialclean::
 beforedepend:: asmcomp/emit.ml
 
 tools/cvt_emit: tools/cvt_emit.mll
-	cd tools; $(MAKE) CAMLC="../$(CAMLRUN) ../ocamlc -I ../stdlib" cvt_emit
+	cd tools; \
+	$(MAKE) CAMLC="../$(CAMLRUN) ../boot/ocamlc -I ../stdlib" cvt_emit
 
 # The "expunge" utility
 

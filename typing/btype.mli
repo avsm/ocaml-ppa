@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: btype.mli,v 1.16 2004/01/06 13:41:39 garrigue Exp $ *)
+(* $Id: btype.mli,v 1.17 2005/03/23 03:08:37 garrigue Exp $ *)
 
 (* Basic operations on core types *)
 
@@ -58,6 +58,10 @@ val hash_variant: label -> int
 val proxy: type_expr -> type_expr
         (* Return the proxy representative of the type: either itself
            or a row variable *)
+
+(**** Utilities for private types ****)
+val has_constr_row: type_expr -> bool
+val is_row_name: string -> bool
 
 (**** Utilities for type traversal ****)
 

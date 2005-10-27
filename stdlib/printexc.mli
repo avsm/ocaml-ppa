@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printexc.mli,v 1.11 2001/12/07 13:40:57 xleroy Exp $ *)
+(* $Id: printexc.mli,v 1.12 2005/10/25 18:34:07 doligez Exp $ *)
 
 (** Facilities for printing exceptions. *)
 
@@ -36,4 +36,3 @@ val catch : ('a -> 'b) -> 'a -> 'b
    makes it harder to track the location of the exception
    using the debugger or the stack backtrace facility.
    So, do not use [Printexc.catch] in new code.  *)
-

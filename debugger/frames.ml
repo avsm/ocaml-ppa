@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: frames.ml,v 1.9 2002/11/02 22:36:42 doligez Exp $ *)
+(* $Id: frames.ml,v 1.10 2005/08/25 15:35:16 doligez Exp $ *)
 
 (***************************** Frames **********************************)
 
@@ -34,8 +34,8 @@ let selected_point () =
   match !selected_event with
     None ->
       raise Not_found
-  | Some {ev_char = point; ev_module = mdle} ->
-      (mdle, point.Lexing.pos_cnum)
+  | Some ev ->
+      (ev.ev_module, (Events.get_pos ev).Lexing.pos_cnum)
 
 let selected_event_is_before () =
   match !selected_event with

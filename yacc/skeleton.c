@@ -12,7 +12,7 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: skeleton.c,v 1.12.6.1 2005/06/21 12:28:36 doligez Exp $ */
+/* $Id: skeleton.c,v 1.13 2005/08/13 20:59:37 doligez Exp $ */
 
 #include "defs.h"
 

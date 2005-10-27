@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: int64_emul.h,v 1.3 2003/12/15 18:10:47 doligez Exp $ */
+/* $Id: int64_emul.h,v 1.5 2005/09/22 14:21:50 xleroy Exp $ */
 
 /* Software emulation of 64-bit integer arithmetic, for C compilers
    that do not support it.  */
@@ -21,7 +21,7 @@
 
 #include <math.h>
 
-#if ARCH_BIG_ENDIAN
+#ifdef ARCH_BIG_ENDIAN
 #define I64_literal(hi,lo) { hi, lo }
 #else
 #define I64_literal(hi,lo) { lo, hi }
@@ -239,10 +239,10 @@ static int64 I64_of_int32(int32 x)
 
 #define I64_to_int32(x) ((int32) (x).l)
 
-/* Note: we assume sizeof(long) = 4 here, which is true otherwise
+/* Note: we assume sizeof(intnat) = 4 here, which is true otherwise
    autoconfiguration would have selected native 64-bit integers */
-#define I64_of_long I64_of_int32
-#define I64_to_long I64_to_int32
+#define I64_of_intnat I64_of_int32
+#define I64_to_intnat I64_to_int32
 
 static double I64_to_double(int64 x)
 {

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: bng.c,v 1.2.6.1 2004/12/22 16:17:44 doligez Exp $ */
+/* $Id: bng.c,v 1.4 2005/09/22 14:21:50 xleroy Exp $ */
 
 #include "bng.h"
 #include "config.h"
@@ -317,7 +317,7 @@ static bngdigit bng_generic_div_rem_norm_digit
      (bng a/*[len-1]*/, bng b/*[len]*/, bngsize len, bngdigit d)
 {
   bngdigit topdigit, quo, rem;
-  long i;
+  intnat i;
 
   topdigit = b[len - 1];
   for (i = len - 2; i >= 0; i--) {

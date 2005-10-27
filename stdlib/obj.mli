@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: obj.mli,v 1.27.6.1 2005/04/13 12:34:44 doligez Exp $ *)
+(* $Id: obj.mli,v 1.29 2005/10/25 18:34:07 doligez Exp $ *)
 
 (** Operations on internal representations of values.
 
@@ -55,4 +55,3 @@ val out_of_heap_tag : int
 
 val marshal : t -> string
 val unmarshal : string -> int -> t * int
-

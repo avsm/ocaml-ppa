@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: socketaddr.h,v 1.15.2.2 2005/01/17 18:10:36 doligez Exp $ */
+/* $Id: socketaddr.h,v 1.16 2005/03/24 17:20:53 doligez Exp $ */
 
 #include <misc.h>
 #include <sys/types.h>

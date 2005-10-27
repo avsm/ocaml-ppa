@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: reloc.ml,v 1.16.2.1 2005/04/14 07:22:06 mauny Exp $ *)
+(* $Id: reloc.ml,v 1.18 2005/06/29 04:11:26 garrigue Exp $ *)
 
 open MLast;
 
@@ -37,12 +37,13 @@ value rec ctyp floc sh =
     | TyOlb loc x1 x2 -> TyOlb (floc loc) x1 (self x2)
     | TyPol loc x1 x2 -> TyPol (floc loc) x1 (self x2)
     | TyQuo loc x1 -> TyQuo (floc loc) x1
-    | TyRec loc pflag x1 ->
-        TyRec (floc loc) pflag
+    | TyRec loc x1 ->
+        TyRec (floc loc)
           (List.map (fun (loc, x1, x2, x3) -> (floc loc, x1, x2, self x3)) x1)
-    | TySum loc pflag x1 ->
-        TySum (floc loc) pflag
+    | TySum loc x1 ->
+        TySum (floc loc)
           (List.map (fun (loc, x1, x2) -> (floc loc, x1, List.map self x2)) x1)
+    | TyPrv loc x1 -> TyPrv (floc loc) (self x1)
     | TyTup loc x1 -> TyTup (floc loc) (List.map self x1)
     | TyUid loc x1 -> TyUid (floc loc) x1
     | TyVrn loc x1 x2 ->

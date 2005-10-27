@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_html.ml,v 1.52.4.3 2005/07/07 13:40:29 guesdon Exp $ *)
+(* $Id: odoc_html.ml,v 1.58 2005/08/16 00:48:56 garrigue Exp $ *)
 
 (** Generation of html documentation. *)
 
@@ -425,6 +425,8 @@ class virtual text =
       bs b "<sub class=\"subscript\">";
       self#html_of_text b t;
       bs b "</sub>"
+
+    method virtual html_of_info_first_sentence : _
 
     method html_of_Module_list b l =
       bs b "<br>\n<table class=\"indextable\">\n";
@@ -2359,7 +2361,6 @@ class html =
 
     (** Generate the module types index in the file [index_module_types.html]. *)
     method generate_module_types_index module_list =
-      let module_types = Odoc_info.Search.module_types module_list in
       self#generate_elements_index
         self#list_module_types
         (fun mt -> mt.mt_name)
@@ -2448,6 +2449,4 @@ class html =
 	)
   end
 
-
-
-(* eof $Id: odoc_html.ml,v 1.52.4.3 2005/07/07 13:40:29 guesdon Exp $ *)
+(* eof $Id: odoc_html.ml,v 1.58 2005/08/16 00:48:56 garrigue Exp $ *)

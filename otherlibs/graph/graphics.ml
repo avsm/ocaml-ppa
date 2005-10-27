@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: graphics.ml,v 1.25.2.2 2005/08/05 12:43:47 doligez Exp $ *)
+(* $Id: graphics.ml,v 1.26 2005/08/13 20:59:37 doligez Exp $ *)
 
 exception Graphic_failure of string
 

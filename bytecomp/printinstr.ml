@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printinstr.ml,v 1.22 2004/05/26 11:10:50 garrigue Exp $ *)
+(* $Id: printinstr.ml,v 1.23 2005/08/25 15:35:16 doligez Exp $ *)
 
 (* Pretty-print lists of instructions *)
 
@@ -99,8 +99,10 @@ let instruction ppf = function
   | Kgetpubmet n -> fprintf ppf "\tgetpubmet %i" n
   | Kgetdynmet -> fprintf ppf "\tgetdynmet"
   | Kstop -> fprintf ppf "\tstop"
-  | Kevent ev -> fprintf ppf "\tevent \"%s\" %i" ev.ev_char.Lexing.pos_fname
-                                                 ev.ev_char.Lexing.pos_cnum
+  | Kevent ev -> fprintf ppf "\tevent \"%s\" %i-%i"
+                         ev.ev_loc.Location.loc_start.Lexing.pos_fname
+                         ev.ev_loc.Location.loc_start.Lexing.pos_cnum
+                         ev.ev_loc.Location.loc_end.Lexing.pos_cnum
 
 let rec instruction_list ppf = function
     [] -> ()
@@ -108,6 +110,6 @@ let rec instruction_list ppf = function
       fprintf ppf "L%i:%a" lbl instruction_list il
   | instr :: il ->
       fprintf ppf "%a@ %a" instruction instr instruction_list il
- 
+
 let instrlist ppf il =
   fprintf ppf "@[<v 0>%a@]" instruction_list il

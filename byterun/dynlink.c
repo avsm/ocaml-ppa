@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: dynlink.c,v 1.14 2004/02/22 15:07:51 xleroy Exp $ */
+/* $Id: dynlink.c,v 1.15 2005/09/22 14:21:50 xleroy Exp $ */
 
 /* Dynamic loading of C primitives. */
 
@@ -122,7 +122,7 @@ static void open_shared_lib(char * name)
 
   realname = caml_search_dll_in_path(&caml_shared_libs_path, name);
   caml_gc_message(0x100, "Loading shared library %s\n",
-                  (unsigned long) realname);
+                  (uintnat) realname);
   handle = caml_dlopen(realname);
   if (handle == NULL)
     caml_fatal_error_arg2("Fatal error: cannot load shared library %s\n", name,

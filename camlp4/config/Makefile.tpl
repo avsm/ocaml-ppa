@@ -1,4 +1,4 @@
-# $Id: Makefile.tpl,v 1.4.10.6 2004/07/03 16:53:45 mauny Exp $
+# $Id: Makefile.tpl,v 1.5 2004/07/13 12:19:11 xleroy Exp $
 
 # Change the value of PROFILING to prof for systematically building
 # and installing profiled versions of Camlp4 libraries. Then, execute

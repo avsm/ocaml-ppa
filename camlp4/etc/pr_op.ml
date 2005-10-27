@@ -10,12 +10,10 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pr_op.ml,v 1.4 2002/07/19 14:53:47 mauny Exp $ *)
+(* $Id: pr_op.ml,v 1.5 2004/11/17 09:07:56 mauny Exp $ *)
 
 open Pcaml;
 open Spretty;
-
-value loc = (0, 0);
 
 value expr e dg k = pr_expr.pr_fun "top" e dg k;
 value patt e dg k = pr_patt.pr_fun "top" e dg k;

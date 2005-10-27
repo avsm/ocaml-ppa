@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: maincompile.ml,v 1.19 2002/10/30 23:31:26 weis Exp $ *)
+(* $Id: maincompile.ml,v 1.20 2005/01/28 16:13:11 doligez Exp $ *)
 
 open StdLabels
 open Support
@@ -313,7 +313,7 @@ module Timer = Timer;;
       let cname = realname name in
       output_string oc (Printf.sprintf "module %s = %s;;\n"
                           (String.capitalize name)
-                          (String.capitalize name))) module_table;
+                          (String.capitalize cname))) module_table;
     (* widget typer *)
     output_string oc "\n(** Widget typers *)\n\nopen Widget\n\n";
     Hashtbl.iter (fun name def ->

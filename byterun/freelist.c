@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: freelist.c,v 1.16 2004/01/02 19:23:21 doligez Exp $ */
+/* $Id: freelist.c,v 1.17 2005/09/22 14:21:50 xleroy Exp $ */
 
 #include "config.h"
 #include "freelist.h"
@@ -55,7 +55,7 @@ static void fl_check (void)
 {
   char *cur, *prev;
   int prev_found = 0, merge_found = 0;
-  unsigned long size_found = 0;
+  uintnat size_found = 0;
 
   prev = Fl_head;
   cur = Next (prev);

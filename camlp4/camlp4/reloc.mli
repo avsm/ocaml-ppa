@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: reloc.mli,v 1.3.2.3 2005/04/14 07:22:06 mauny Exp $ *)
+(* $Id: reloc.mli,v 1.5 2005/04/14 09:49:17 mauny Exp $ *)
 
 value zero_loc : Lexing.position;
 value shift_pos : int -> Lexing.position -> Lexing.position;

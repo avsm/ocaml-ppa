@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.35.4.1 2005/06/22 15:47:33 doligez Exp $
+# $Id: Makefile,v 1.39 2005/08/13 20:59:37 doligez Exp $
 
 # Makefile for the portable graphics library
 

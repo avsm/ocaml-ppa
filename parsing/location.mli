@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: location.mli,v 1.15.10.1 2005/01/12 17:01:58 doligez Exp $ *)
+(* $Id: location.mli,v 1.16 2005/03/24 17:20:54 doligez Exp $ *)
 
 (* Source code locations (ranges of positions), used in parsetree. *)
 

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: symtable.ml,v 1.37 2004/02/22 15:07:50 xleroy Exp $ *)
+(* $Id: symtable.ml,v 1.38 2004/11/30 07:28:00 garrigue Exp $ *)
 
 (* To assign numbers to globals and primitives *)
 
@@ -212,6 +212,7 @@ let rec transl_const = function
   | Const_base(Const_int64 i) -> Obj.repr i
   | Const_base(Const_nativeint i) -> Obj.repr i
   | Const_pointer i -> Obj.repr i
+  | Const_immstring s -> Obj.repr s
   | Const_block(tag, fields) ->
       let block = Obj.new_block tag (List.length fields) in
       let pos = ref 0 in

@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.17 2002/11/01 15:31:11 doligez Exp $
+# $Id: Makefile,v 1.19 2004/11/29 14:49:24 doligez Exp $
 
 # The lexer generator
 CAMLC=../boot/ocamlrun ../boot/ocamlc -nostdlib -I ../boot

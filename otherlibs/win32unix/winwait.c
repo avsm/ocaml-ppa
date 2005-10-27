@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: winwait.c,v 1.14 2002/06/07 09:49:41 xleroy Exp $ */
+/* $Id: winwait.c,v 1.15 2005/09/22 14:21:50 xleroy Exp $ */
 
 #include <windows.h>
 #include <mlvalues.h>
@@ -28,7 +28,7 @@ static value alloc_process_status(HANDLE pid, int status)
   Field(st, 0) = Val_int(status);
   Begin_root (st);
     res = alloc_small(2, 0);
-    Field(res, 0) = Val_long((long) pid);
+    Field(res, 0) = Val_long((intnat) pid);
     Field(res, 1) = st;
   End_roots();
   return res;

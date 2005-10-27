@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: sys.ml,v 1.101.2.28 2005/08/11 15:29:25 doligez Exp $ *)
+(* $Id: sys.ml,v 1.138.2.1 2005/10/26 15:25:30 xleroy Exp $ *)
 
 (* System interface *)
 
@@ -78,4 +78,4 @@ let catch_break on =
 
 (* OCaml version string, must be in the format described in sys.mli. *)
 
-let ocaml_version = "3.08.4";;
+let ocaml_version = "3.09.0";;

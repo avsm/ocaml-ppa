@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: thread_win32.ml,v 1.8 2001/12/07 13:40:20 xleroy Exp $ *)
+(* $Id: thread_win32.ml,v 1.9 2005/07/31 12:32:41 xleroy Exp $ *)
 
 (* User-level threads *)
 
@@ -72,4 +72,6 @@ let select rd wr ex delay = invalid_arg "Thread.select: not implemented"
 
 let wait_pid p = Unix.waitpid [] p
 
-external wait_signal : int list -> int = "caml_wait_signal"
+let sigmask cmd set = invalid_arg "Thread.sigmask: not implemented"
+let wait_signal set = invalid_arg "Thread.wait_signal: not implemented"
+

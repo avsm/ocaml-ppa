@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: int64_native.h,v 1.4 2003/12/15 18:10:47 doligez Exp $ */
+/* $Id: int64_native.h,v 1.5 2005/09/22 14:21:50 xleroy Exp $ */
 
 /* Wrapper macros around native 64-bit integer arithmetic,
    so that it has the same interface as the software emulation
@@ -40,8 +40,8 @@
 #define I64_lsl(x,y) ((x) << (y))
 #define I64_asr(x,y) ((x) >> (y))
 #define I64_lsr(x,y) ((uint64)(x) >> (y))
-#define I64_to_long(x) ((long) (x))
-#define I64_of_long(x) ((int64) (x))
+#define I64_to_intnat(x) ((intnat) (x))
+#define I64_of_intnat(x) ((intnat) (x))
 #define I64_to_int32(x) ((int32) (x))
 #define I64_of_int32(x) ((int64) (x))
 #define I64_to_double(x) ((double)(x))

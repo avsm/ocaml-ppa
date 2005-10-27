@@ -11,10 +11,10 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: show_source.mli,v 1.3 1999/11/17 18:57:28 xleroy Exp $ *)
+(* $Id: show_source.mli,v 1.4 2005/08/25 15:35:16 doligez Exp $ *)
 
 (* Print the line containing the point *)
-val show_point : string -> int -> bool -> bool -> unit;;
+val show_point : Instruct.debug_event -> bool -> unit;;
 
 (* Tell Emacs we are nowhere in the source. *)
 val show_no_point : unit -> unit;;

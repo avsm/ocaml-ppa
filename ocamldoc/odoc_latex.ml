@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_latex.ml,v 1.36.2.2 2004/08/06 12:35:07 guesdon Exp $ *)
+(* $Id: odoc_latex.ml,v 1.38 2004/08/20 17:04:35 doligez Exp $ *)
 
 (** Generation of LaTeX documentation. *)
 
@@ -1129,5 +1129,3 @@ class latex =
           prerr_endline s ;
           incr Odoc_info.errors 
   end
-
-(* eof $Id: odoc_latex.ml,v 1.36.2.2 2004/08/06 12:35:07 guesdon Exp $ *)

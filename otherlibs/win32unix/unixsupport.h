@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: unixsupport.h,v 1.15 2003/01/06 14:52:57 xleroy Exp $ */
+/* $Id: unixsupport.h,v 1.16 2005/09/22 14:21:50 xleroy Exp $ */
 
 #define WIN32_LEAN_AND_MEAN
 #include <wtypes.h>
@@ -46,7 +46,7 @@ extern value win_alloc_socket(SOCKET);
 #define NO_CRT_FD (-1)
 #define Nothing ((value) 0)
 
-extern void win32_maperr(unsigned long errcode);
+extern void win32_maperr(DWORD errcode);
 extern void unix_error (int errcode, char * cmdname, value arg);
 extern void uerror (char * cmdname, value arg);
 extern value unix_freeze_buffer (value);

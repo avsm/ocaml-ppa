@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: thread_posix.ml,v 1.9 2003/06/16 12:31:13 xleroy Exp $ *)
+(* $Id: thread_posix.ml,v 1.10 2005/07/31 12:32:41 xleroy Exp $ *)
 
 (* User-level threads *)
 
@@ -70,4 +70,5 @@ let select = Unix.select
 
 let wait_pid p = Unix.waitpid [] p
 
+external sigmask : Unix.sigprocmask_command -> int list -> int list = "caml_thread_sigmask"
 external wait_signal : int list -> int = "caml_wait_signal"

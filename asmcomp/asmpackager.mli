@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asmpackager.mli,v 1.1 2002/02/08 16:55:30 xleroy Exp $ *)
+(* $Id: asmpackager.mli,v 1.2 2005/08/01 15:51:09 xleroy Exp $ *)
 
 (* "Package" a set of .cmx/.o files into one .cmx/.o file having the
    original compilation units as sub-modules. *)
@@ -20,10 +20,10 @@ val package_files: Format.formatter -> string list -> string -> unit
 type error =
     Illegal_renaming of string * string
   | Forward_reference of string * string
+  | Wrong_for_pack of string * string
   | Linking_error
   | Assembler_error of string
   | File_not_found of string
-  | No_binutils
 
 exception Error of error
 

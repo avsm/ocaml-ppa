@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stdLabels.mli,v 1.11.2.1 2004/06/22 14:23:24 xleroy Exp $ *)
+(* $Id: stdLabels.mli,v 1.13 2004/11/25 00:04:15 doligez Exp $ *)
 
 (** Standard labeled libraries.
 

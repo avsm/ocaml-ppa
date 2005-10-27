@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getnameinfo.c,v 1.1.4.1 2004/08/23 11:31:44 doligez Exp $ */
+/* $Id: getnameinfo.c,v 1.2 2005/03/24 17:20:53 doligez Exp $ */
 
 #include <string.h>
 #include <mlvalues.h>

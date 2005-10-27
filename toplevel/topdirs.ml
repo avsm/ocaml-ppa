@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: topdirs.ml,v 1.62.2.1 2004/06/23 12:10:02 garrigue Exp $ *)
+(* $Id: topdirs.ml,v 1.64 2004/11/29 02:27:25 garrigue Exp $ *)
 
 (* Toplevel directives *)
 
@@ -179,9 +179,9 @@ let dir_install_printer ppf lid =
     let v = eval_path path in
     let print_function =
       if is_old_style then
-        (fun formatter repr -> (Obj.obj v) (Obj.obj repr))
+        (fun formatter repr -> Obj.obj v (Obj.obj repr))
       else
-        (fun formatter repr -> (Obj.obj v) formatter (Obj.obj repr)) in
+        (fun formatter repr -> Obj.obj v formatter (Obj.obj repr)) in
     install_printer path ty_arg print_function
   with Exit -> ()
 

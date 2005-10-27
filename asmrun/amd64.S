@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: amd64.S,v 1.8.4.1 2004/07/01 16:09:03 xleroy Exp $ */
+/* $Id: amd64.S,v 1.9 2004/07/13 12:18:53 xleroy Exp $ */
 
 /* Asm part of the runtime system, AMD64 processor */
 /* Must be preprocessed by cpp */

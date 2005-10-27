@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_info.ml,v 1.20.4.2 2005/07/07 14:34:18 guesdon Exp $ *)
+(* $Id: odoc_info.ml,v 1.22 2005/08/13 20:59:37 doligez Exp $ *)
 
 (** Interface for analysing documented OCaml source files and to the collected information. *)
 

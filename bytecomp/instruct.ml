@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: instruct.ml,v 1.21 2004/05/26 11:10:50 garrigue Exp $ *)
+(* $Id: instruct.ml,v 1.22 2005/08/25 15:35:16 doligez Exp $ *)
 
 open Lambda
 
@@ -22,7 +22,7 @@ type compilation_env =
 type debug_event =
   { mutable ev_pos: int;                (* Position in bytecode *)
     ev_module: string;                  (* Name of defining module *)
-    ev_char: Lexing.position;           (* Position in source file *)
+    ev_loc: Location.t;                 (* Location in source file *)
     ev_kind: debug_event_kind;          (* Before/after event *)
     ev_info: debug_event_info;          (* Extra information *)
     ev_typenv: Env.summary;             (* Typing environment *)

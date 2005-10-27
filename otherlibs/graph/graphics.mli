@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: graphics.mli,v 1.36.2.2 2005/08/05 12:43:47 doligez Exp $ *)
+(* $Id: graphics.mli,v 1.37 2005/08/13 20:59:37 doligez Exp $ *)
 
 (** Machine-independent graphics primitives. *)
 

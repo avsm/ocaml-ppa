@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: genprintval.ml,v 1.37 2004/06/13 16:23:35 xleroy Exp $ *)
+(* $Id: genprintval.ml,v 1.38 2005/06/13 04:55:53 garrigue Exp $ *)
 
 (* To print values *)
 
@@ -293,7 +293,7 @@ module Make(O : OBJ)(EVP : EVALPATH with type value = O.t) = struct
                   | (l, f) :: fields ->
                       if Btype.hash_variant l = tag then
                         match Btype.row_field_repr f with
-                        | Rpresent(Some ty) ->
+                        | Rpresent(Some ty) | Reither(_,[ty],_,_) ->
                             let args =
                               tree_of_val (depth - 1) (O.field obj 1) ty in
                             Oval_variant (l, Some args)

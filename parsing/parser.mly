@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: parser.mly,v 1.120 2004/05/19 12:15:19 doligez Exp $ */
+/* $Id: parser.mly,v 1.123 2005/03/23 03:08:37 garrigue Exp $ */
 
 /* The parser definition */
 
@@ -828,6 +828,10 @@ expr:
       { mkexp(Pexp_construct(Lident "::",
                              Some(ghexp(Pexp_tuple[$1;$3])),
                              false)) }
+  | LPAREN COLONCOLON RPAREN LPAREN expr COMMA expr RPAREN
+      { mkexp(Pexp_construct(Lident "::",
+                             Some(ghexp(Pexp_tuple[$5;$7])),
+                             false)) }
   | expr INFIXOP0 expr
       { mkinfix $1 $2 $3 }
   | expr INFIXOP1 expr
@@ -1057,6 +1061,9 @@ pattern:
   | pattern COLONCOLON pattern
       { mkpat(Ppat_construct(Lident "::", Some(ghpat(Ppat_tuple[$1;$3])),
                              false)) }
+  | LPAREN COLONCOLON RPAREN LPAREN pattern COMMA pattern RPAREN
+      { mkpat(Ppat_construct(Lident "::", Some(ghpat(Ppat_tuple[$5;$7])),
+                             false)) }
   | pattern BAR pattern
       { mkpat(Ppat_or($1, $3)) }
 ;
@@ -1158,6 +1165,8 @@ type_kind:
       { (Ptype_variant(List.rev $6, $4), Some $2) }
   | EQUAL core_type EQUAL private_flag LBRACE label_declarations opt_semi RBRACE
       { (Ptype_record(List.rev $6, $4), Some $2) }
+  | EQUAL PRIVATE core_type
+      { (Ptype_private, Some $3) }
 ;
 type_parameters:
     /*empty*/                                   { [] }
@@ -1181,7 +1190,7 @@ constructor_declarations:
   | constructor_declarations BAR constructor_declaration { $3 :: $1 }
 ;
 constructor_declaration:
-    constr_ident constructor_arguments          { ($1, $2) }
+    constr_ident constructor_arguments          { ($1, $2, symbol_rloc()) }
 ;
 constructor_arguments:
     /*empty*/                                   { [] }
@@ -1192,7 +1201,7 @@ label_declarations:
   | label_declarations SEMI label_declaration   { $3 :: $1 }
 ;
 label_declaration:
-    mutable_flag label COLON poly_type          { ($2, $1, $4) }
+    mutable_flag label COLON poly_type          { ($2, $1, $4, symbol_rloc()) }
 ;
 
 /* "with" constraints (additional type equations over signature components) */
@@ -1202,11 +1211,11 @@ with_constraints:
   | with_constraints AND with_constraint        { $3 :: $1 }
 ;
 with_constraint:
-    TYPE type_parameters label_longident EQUAL core_type constraints
+    TYPE type_parameters label_longident with_type_binder core_type constraints
       { let params, variance = List.split $2 in
         ($3, Pwith_type {ptype_params = params;
                          ptype_cstrs = List.rev $6;
-                         ptype_kind = Ptype_abstract;
+                         ptype_kind = $4;
                          ptype_manifest = Some $5;
                          ptype_variance = variance;
                          ptype_loc = symbol_rloc()}) }
@@ -1214,6 +1223,10 @@ with_constraint:
        functor applications in type path */
   | MODULE mod_longident EQUAL mod_ext_longident
       { ($2, Pwith_module $4) }
+;
+with_type_binder:
+    EQUAL          { Ptype_abstract }
+  | EQUAL PRIVATE  { Ptype_private }
 ;
 
 /* Polymorphic types */
@@ -1410,6 +1423,7 @@ constr_ident:
 /*  | LBRACKET RBRACKET                           { "[]" } */
   | LPAREN RPAREN                               { "()" }
   | COLONCOLON                                  { "::" }
+/*  | LPAREN COLONCOLON RPAREN                    { "::" } */
   | FALSE                                       { "false" }
   | TRUE                                        { "true" }
 ;

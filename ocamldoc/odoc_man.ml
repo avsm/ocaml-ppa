@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_man.ml,v 1.22.4.4 2005/07/07 09:12:05 guesdon Exp $ *)
+(* $Id: odoc_man.ml,v 1.25 2005/08/13 20:59:37 doligez Exp $ *)
 
 (** The man pages generator. *)
 open Odoc_info
@@ -577,7 +577,7 @@ class man =
       );
       bs b (Name.simple c.cl_name);
       bs b " : " ;
-      self#man_of_class_type_expr b (Name.father c.cl_name) c.cl_type;
+      self#man_of_class_type_expr b father c.cl_type;
       bs b "\n.sp\n";
       self#man_of_info b c.cl_info;
       bs b "\n.sp\n"

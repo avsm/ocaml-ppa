@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml,v 1.67 2004/06/13 12:46:41 xleroy Exp $ *)
+(* $Id: main.ml,v 1.68 2005/05/09 13:39:17 doligez Exp $ *)
 
 open Config
 open Clflags
@@ -80,6 +80,11 @@ let anonymous = process_file Format.err_formatter;;
 let impl = process_implementation_file Format.err_formatter;;
 let intf = process_interface_file Format.err_formatter;;
 
+let show_config () =
+  Config.print_config stdout;
+  exit 0;
+;;
+
 module Options = Main_args.Make_options (struct
   let set r () = r := true
   let unset r () = r := false
@@ -88,6 +93,7 @@ module Options = Main_args.Make_options (struct
   let _cc s = c_compiler := s; c_linker := s
   let _cclib s = ccobjs := Misc.rev_split_words s @ !ccobjs
   let _ccopt s = ccopts := s :: !ccopts
+  let _config = show_config
   let _custom = set custom_runtime
   let _dllib s = dllibs := Misc.rev_split_words s @ !dllibs
   let _dllpath s = dllpaths := !dllpaths @ [s]
