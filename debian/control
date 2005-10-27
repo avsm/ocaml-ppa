@@ -39,7 +39,7 @@ Description: ML language implementation with a class-based object system
 
 Package: ocaml
 Architecture: any
-Depends: ocaml-base (= ${Source-Version}), ocaml-base-3.09.0, ocaml-nox-3.09.0, ocaml-base-nox (>= 3.09.0-6)
+Depends: ocaml-base (= ${Source-Version}), ocaml-base-3.09.0, ocaml-nox-3.09.0, ocaml-base-nox (>= 3.08.3-6)
 Suggests: xlibs-dev, tcl8.4-dev, tk8.4-dev, 
 Provides: ocaml-3.09.0
 Description: ML language implementation with a class-based object system
@@ -138,7 +138,7 @@ Description: Ocaml interpreter and standard libraries
 Package: ocaml-compiler-libs
 Architecture: any
 Provides: ocaml-compiler-libs-3.09.0
-Depends: ocaml-nox-3.09.0, ocaml-base-nox (>= 3.09.0-6)
+Depends: ocaml-nox-3.09.0, ocaml-base-nox (>= 3.08.3-6)
 Description: Ocaml interpreter and standard libraries
  Objective Caml is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
@@ -152,7 +152,7 @@ Package: ocaml-mode
 Architecture: all
 Depends: emacs21 | emacsen
 Suggests: ocaml
-Conflicts: ocaml-nox (<< 3.09.0-8)
+Conflicts: ocaml-nox (<< 3.08.3-8)
 Description: A major mode for editing Objective Caml in Emacs
  This package provides support for editing both Objective Caml and
  Caml Light programs with Emacs and XEmacs.
