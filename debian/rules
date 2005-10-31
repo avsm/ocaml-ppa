@@ -195,6 +195,9 @@ install-arch:
 			$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/$(VERSION)/compiler-libs; \
 	fi
 
+	# Delete rpath in DLLs
+	chrpath -d $(CURDIR)/debian/ocaml-base/usr/lib/ocaml/3.09.0/stublibs/dllgraphics.so $(CURDIR)/debian/ocaml-base/usr/lib/ocaml/3.09.0/stublibs/dlllabltk.so $(CURDIR)/debian/ocaml-base/usr/lib/ocaml/3.09.0/stublibs/dlltkanim.so
+
 	# install ocaml-md5sums
 	$(MAKE) -C debian/ocaml-md5sums install DESTDIR=$(CURDIR)/debian/ocaml-base-nox/usr/bin
 
