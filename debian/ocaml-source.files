@@ -1050,8 +1050,6 @@ otherlibs/num/num.ml
 otherlibs/num/num.mli
 otherlibs/num/ratio.ml
 otherlibs/num/ratio.mli
-otherlibs/num/string_misc.ml
-otherlibs/num/string_misc.mli
 otherlibs/num/test/Makefile
 otherlibs/num/test/.depend
 otherlibs/num/test/Makefile.nt
