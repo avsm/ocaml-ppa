@@ -146,8 +146,6 @@ install-arch:
 		$(CURDIR)/debian/ocaml-interp/usr/share/pixmaps
 	install -m 644 debian/ocaml-nox.override \
 		$(CURDIR)/debian/ocaml-nox/usr/share/lintian/overrides/ocaml-nox
-	install -m 644 debian/ocaml-base.override \
-		$(CURDIR)/debian/ocaml-nox/usr/share/lintian/overrides/ocaml-base
 	install -m 644 otherlibs/labltk/README \
 		$(CURDIR)/debian/README.labltk
 	install -m 644 config/Makefile \

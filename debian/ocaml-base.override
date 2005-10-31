@@ -1,3 +1,0 @@
-binary-or-shlib-defines-rpath ./usr/lib/ocaml/3.08/stublibs/dllgraphics.so /usr/X11R6/lib
-binary-or-shlib-defines-rpath ./usr/lib/ocaml/3.08/stublibs/dlllabltk.so /usr/lib:/usr/X11R6/lib
-binary-or-shlib-defines-rpath ./usr/lib/ocaml/3.08/stublibs/dlltkanim.so /usr/lib:/usr/X11R6/lib
