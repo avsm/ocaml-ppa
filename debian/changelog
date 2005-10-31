@@ -1,3 +1,10 @@
+ocaml (3.09.0-0.experimental.2) experimental; urgency=low
+
+  * Cleanup debian/control: remove redundant Depends.
+  * Update location of ocaml-md5sums stuff.
+
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Mon, 31 Oct 2005 15:02:57 +0100
+
 ocaml (3.09.0-0.experimental.1) experimental; urgency=low
 
   Changes by Sven Luther:
