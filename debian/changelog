@@ -3,8 +3,9 @@ ocaml (3.09.0-0.experimental.2) experimental; urgency=low
   * Cleanup debian/control: remove redundant Depends.
   * Update location of ocaml-md5sums stuff.
   * Build-Depend on chrpath and delete rpath from DLLs.
+  * Various lintian warnings fixed, and overrides cleaned up.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Mon, 31 Oct 2005 17:22:03 +0100
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Mon, 31 Oct 2005 20:17:50 +0100
 
 ocaml (3.09.0-0.experimental.1) experimental; urgency=low
 

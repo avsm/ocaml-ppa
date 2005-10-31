@@ -116,6 +116,9 @@ install-indep:
 	# Install Emacs files
 	$(MAKE) -C emacs EMACSDIR=$(CURDIR)/debian/ocaml-mode/usr/share/emacs/site-lisp/ocaml-mode \
 		NOCOMPILE=true simple-install
+	if ! head -n 1 emacs/ocamltags.in | grep -q '^#!/bin/sh'; then \
+		sed -i -e '1 i #!/bin/sh' emacs/ocamltags.in; \
+	fi
 	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-mode/usr/bin install-ocamltags
 
 	# Add here commands to install the indep part of the package into
@@ -146,6 +149,8 @@ install-arch:
 		$(CURDIR)/debian/ocaml-interp/usr/share/pixmaps
 	install -m 644 debian/ocaml-nox.override \
 		$(CURDIR)/debian/ocaml-nox/usr/share/lintian/overrides/ocaml-nox
+	install -m 644 debian/ocaml-compiler-libs.override \
+		$(CURDIR)/debian/ocaml-compiler-libs/usr/share/lintian/overrides/ocaml-compiler-libs
 	install -m 644 otherlibs/labltk/README \
 		$(CURDIR)/debian/README.labltk
 	install -m 644 config/Makefile \

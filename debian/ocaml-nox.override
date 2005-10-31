@@ -1,1 +1,1 @@
-script-not-executable ./usr/lib/ocaml/3.08/camlheader
+script-not-executable ./usr/lib/ocaml/3.09.0/camlheader
