@@ -1,11 +1,17 @@
-ocaml (3.09.0-0.experimental.2) experimental; urgency=low
+ocaml (3.09.0-1) UNRELEASED; urgency=low
 
+  [ Julien Cristau ]
   * Cleanup debian/control: remove redundant Depends.
   * Update location of ocaml-md5sums stuff.
   * Build-Depend on chrpath and delete rpath from DLLs.
   * Various lintian warnings fixed, and overrides cleaned up.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Mon, 31 Oct 2005 20:17:50 +0100
+  [ Sven Luther ]
+  * Modified the packaging ifrastructure to not use hard-coded abi number
+    except in the head of debian/rules. All else is sed'ed from #OcamlABI#
+    (and #OcamlMAJOR# for the debian/copyright file and the upstream url).
+
+ -- Sven Luther <luther@debian.org>  Wed,  2 Nov 2005 12:02:36 +0000
 
 ocaml (3.09.0-0.experimental.1) experimental; urgency=low
 
