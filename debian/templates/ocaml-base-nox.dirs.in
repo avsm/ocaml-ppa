@@ -1,0 +1,4 @@
+usr/bin
+usr/share/man/man1
+usr/lib/ocaml/#OcamlABI#
+usr/lib/ocaml/#OcamlABI#/stublibs

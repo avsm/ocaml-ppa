@@ -37,6 +37,10 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 endif
 
 config-stamp: configure
+	for t in templates/*; \ do
+	  target=${t#templates/};	\
+	  sed -e 's%#OcamlABI#%3.09.0%' -e 's%#OcamlMAJOR#%3.09%' $t >sven/${target%.in};	\
+	done
 	dh_testdir
 	# Add here commands to configure the package.
 	./configure --with-pthread -prefix /usr				\
@@ -201,8 +205,8 @@ install-arch:
 
 	# Delete rpath in DLLs
 	chrpath -d $(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(VERSION)/stublibs/dllgraphics.so	\
-		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/3.09.0/stublibs/dlllabltk.so		\
-		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/3.09.0/stublibs/dlltkanim.so
+		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(VERSION)/stublibs/dlllabltk.so		\
+		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(VERSION)/stublibs/dlltkanim.so
 
 	# install ocaml-md5sums
 	$(MAKE) -C debian/ocaml-md5sums install DESTDIR=$(CURDIR)/debian/ocaml-base-nox/usr/bin
@@ -251,7 +255,7 @@ binary-common:
 # Build architecture independant packages using the common target.
 binary-indep: build-indep install-indep
 	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
-	dh_gencontrol -i
+	dh_gencontrol -i -- -VF:OcamlABI="$(OCAMLABI)"
 	dh_md5sums -i
 	dh_builddeb -i
 
@@ -260,22 +264,22 @@ binary-arch: build-arch install-arch
 	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
 	dh_shlibdeps -s
 	if [ ! -e opt-built-stamp ]; then			\
-	  dh_gencontrol -pocaml-nox				\
-		-u-VF:BestProvides=",ocaml-best-compilers"	\
-		-u-VF:OcamlABI="$(OCAMLABI);			\
+	  dh_gencontrol -pocaml-nox --				\
+		-VF:BestProvides=",ocaml-best-compilers"	\
+		-VF:OcamlABI="$(OCAMLABI)";			\
 	else 							\
-	  dh_gencontrol -pocaml-nox				\
-	  	-u-VF:BestProvides=""				\
-		-u-VF:OcamlABI="$(OCAMLABI);			\
-	  dh_gencontrol -pocaml-native-compilers		\
-		-u-VF:OcamlABI="$(OCAMLABI);			\
+	  dh_gencontrol -pocaml-nox --				\
+	  	-VF:BestProvides=""				\
+		-VF:OcamlABI="$(OCAMLABI)";			\
+	  dh_gencontrol -pocaml-native-compilers --		\
+		-VF:OcamlABI="$(OCAMLABI)";			\
 	fi
-	dh_gencontrol -pocaml
-	dh_gencontrol -pocaml-base-nox
-	dh_gencontrol -pocaml-base
-	dh_gencontrol -pocaml-source
-	dh_gencontrol -pocaml-interp
-	dh_gencontrol -pocaml-compiler-libs
+	dh_gencontrol -pocaml -- -VF:OcamlABI="$(OCAMLABI)"
+	dh_gencontrol -pocaml-base-nox -- -VF:OcamlABI="$(OCAMLABI)"
+	dh_gencontrol -pocaml-base -- -VF:OcamlABI="$(OCAMLABI)"
+	dh_gencontrol -pocaml-source -- -VF:OcamlABI="$(OCAMLABI)" 
+	dh_gencontrol -pocaml-interp -- -VF:OcamlABI="$(OCAMLABI)"
+	dh_gencontrol -pocaml-compiler-libs -- -VF:OcamlABI="$(OCAMLABI)"
 	dh_md5sums -s
 	dh_builddeb -s
 

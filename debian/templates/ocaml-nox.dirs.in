@@ -1,7 +1,7 @@
 usr/bin
-usr/lib/ocaml/3.09.0
-usr/lib/ocaml/3.09.0/config
-usr/include/ocaml/3.09.0
+usr/lib/ocaml/#OcamlABI#
+usr/lib/ocaml/#OcamlABI#/config
+usr/include/ocaml/#OcamlABI#
 usr/share/man/man1
 usr/share/man/man3
 usr/share/texmf/tex/latex/misc

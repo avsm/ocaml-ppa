@@ -1,7 +1,0 @@
-#!/bin/sh -e
-
-rmdir /usr/local/lib/ocaml/3.09.0/stublibs 2>/dev/null || true
-rmdir /usr/local/lib/ocaml/3.09.0 2>/dev/null || true
-rmdir /usr/local/lib/ocaml 2>/dev/null || true
-
-#DEBHELPER#

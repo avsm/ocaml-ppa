@@ -1,0 +1,7 @@
+usr/bin/labltk
+usr/lib/ocaml/#OcamlABI#/graphics.cma
+usr/lib/ocaml/#OcamlABI#/graphics.cmi
+usr/lib/ocaml/#OcamlABI#/graphicsX11.cmi
+usr/lib/ocaml/#OcamlABI#/graphics.mli
+usr/lib/ocaml/#OcamlABI#/graphicsX11.mli
+usr/lib/ocaml/#OcamlABI#/labltk
