@@ -39,7 +39,7 @@ endif
 config-stamp: configure
 	for t in templates/*; do \
 	  target=${t#templates/};	\
-	  sed -e 's%#OcamlABI#%3.09.0%' -e 's%#OcamlMAJOR#%3.09%' $t >sven/${target%.in};	\
+	  sed -e 's%#OcamlABI#%3.09.0%' -e 's%#OcamlMAJOR#%3.09%' $t >${target%.in};	\
 	done
 	dh_testdir
 	# Add here commands to configure the package.
