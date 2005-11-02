@@ -8,9 +8,10 @@
 # We want to use dpatch.
 include /usr/share/dpatch/dpatch.make
 PACKAGE = ocaml
-VERSION = 3.09.0
-OCAMLABI = $(VERSION)
-STDLIBDIR = /usr/lib/ocaml/$(VERSION)
+OCAMLMAJOR = 3.09
+OCAMLMINOR = 0
+OCAMLABI = $(OCAMLMAJOR).$(OCAMLMINOR)
+STDLIBDIR = /usr/lib/ocaml/$(OCAMLABI)
 MD5SUMSDIR = /var/lib/ocaml/md5sums
 
 # Uncomment this to turn on verbose mode.
@@ -38,7 +39,7 @@ endif
 
 config-stamp: configure
 	for t in `find . -name \*.in`; do \
-	  sed -e 's%#OcamlABI#%3.09.0%' -e 's%#OcamlMAJOR#%3.09%' $$t >$${t%.in};	\
+	  sed -e 's%#OcamlABI#%$(OCAMLABI)%' -e 's%#OcamlMAJOR#%$(OCAMLMAJOR)%' $$t >$${t%.in};	\
 	done
 	dh_testdir
 	# Add here commands to configure the package.
@@ -129,11 +130,11 @@ install-indep:
 	# debian/<package>-doc.
 	for i in `cat debian/ocaml-source.files`; do			\
 		install -m 644 -D $$i					\
-		debian/ocaml-source/usr/src/ocaml-$(VERSION)/$$i;	\
+		debian/ocaml-source/usr/src/ocaml-$(OCAMLABI)/$$i;	\
 	done
-	tar cjf debian/ocaml-source/usr/src/ocaml-source-$(VERSION).tar.bz2	\
-		-C debian/ocaml-source/usr/src ocaml-$(VERSION)
-	rm -rf debian/ocaml-source/usr/src/ocaml-$(VERSION)
+	tar cjf debian/ocaml-source/usr/src/ocaml-source-$(OCAMLABI).tar.bz2	\
+		-C debian/ocaml-source/usr/src ocaml-$(OCAMLABI)
+	rm -rf debian/ocaml-source/usr/src/ocaml-$(OCAMLABI)
 
 	dh_install -i
 
@@ -158,7 +159,7 @@ install-arch:
 	install -m 644 otherlibs/labltk/README \
 		$(CURDIR)/debian/README.labltk
 	install -m 644 config/Makefile \
-		$(CURDIR)/debian/ocaml-nox/usr/lib/ocaml/$(VERSION)/config/Makefile
+		$(CURDIR)/debian/ocaml-nox/usr/lib/ocaml/$(OCAMLABI)/config/Makefile
 
 	# now move the graphics files over
 	if [ -e opt-built-stamp ]; then					\
@@ -174,7 +175,7 @@ install-arch:
 	# Then move the ocaml-base-nox package.
 	dh_movefiles -pocaml-base-nox --sourcedir=debian/ocaml-nox
 	install -m 644 debian/ld.conf \
-		$(CURDIR)/debian/ocaml-base-nox/usr/lib/ocaml/$(VERSION)
+		$(CURDIR)/debian/ocaml-base-nox/usr/lib/ocaml/$(OCAMLABI)
 
 	# and base's corresponding graphics stuff.
 	dh_movefiles -pocaml-base --sourcedir=debian/ocaml-nox
@@ -195,17 +196,17 @@ install-arch:
 	install -m 644 utils/*.mli utils/*.cmi utils/*.cmo		\
 		typing/*.mli typing/*.cmi typing/*.cmo			\
 		parsing/*.mli parsing/*.cmi parsing/*.cmo		\
-		$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/$(VERSION)/compiler-libs
+		$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/$(OCAMLABI)/compiler-libs
 	if [ -e opt-built-stamp ]; then					\
 		install -m 644 utils/*.cmx utils/*.o typing/*.cmx	\
 			typing/*.o parsing/*.cmx parsing/*.o		\
-			$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/$(VERSION)/compiler-libs; \
+			$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/$(OCAMLABI)/compiler-libs; \
 	fi
 
 	# Delete rpath in DLLs
-	chrpath -d $(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(VERSION)/stublibs/dllgraphics.so	\
-		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(VERSION)/stublibs/dlllabltk.so		\
-		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(VERSION)/stublibs/dlltkanim.so
+	chrpath -d $(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(OCAMLABI)/stublibs/dllgraphics.so	\
+		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(OCAMLABI)/stublibs/dlllabltk.so		\
+		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(OCAMLABI)/stublibs/dlltkanim.so
 
 	# install ocaml-md5sums
 	$(MAKE) -C debian/ocaml-md5sums install DESTDIR=$(CURDIR)/debian/ocaml-base-nox/usr/bin
@@ -215,7 +216,7 @@ install-arch:
 	 chmod +x feeding.sh &&									\
 	 for pkg in ocaml-nox ocaml ocaml-compiler-libs; do					\
 		mkdir -p ../$$pkg$(MD5SUMSDIR);						\
-		./feeding.sh $$pkg $(STDLIBDIR) $(VERSION) ../$$pkg$(STDLIBDIR) >	\
+		./feeding.sh $$pkg $(STDLIBDIR) $(OCAMLABI) ../$$pkg$(STDLIBDIR) >	\
 			../$$pkg$(MD5SUMSDIR)/$$pkg.md5sums;				\
 	 done)
 
