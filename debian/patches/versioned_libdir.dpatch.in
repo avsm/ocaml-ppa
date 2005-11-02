@@ -18,17 +18,17 @@ esac
 
 exit 0
 @DPATCH@
-diff -ur ocaml-3.08.orig/camlp4/config/configure_batch ocaml-3.08/camlp4/config/configure_batch
---- ocaml-3.08.orig/camlp4/config/configure_batch.orig	2003-09-30 18:11:57.000000000 +0200
-+++ ocaml-3.08/camlp4/config/configure_batch	2003-09-30 18:12:51.000000000 +0200
+diff -ur ocaml.orig/camlp4/config/configure_batch ocaml/camlp4/config/configure_batch
+--- ocaml.orig/camlp4/config/configure_batch.orig	2003-09-30 18:11:57.000000000 +0200
++++ ocaml/camlp4/config/configure_batch	2003-09-30 18:12:51.000000000 +0200
 @@ -94,13 +94,13 @@
     *) echo "BINDIR=$bindir" >> Makefile.cnf;;
  esac
  case "$libdir" in
 -  "") echo 'LIBDIR=$(PREFIX)/lib/camlp4' >> Makefile.cnf
 -      libdir="$prefix/lib/camlp4";;
-+  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml/3.09.0/camlp4' >> Makefile.cnf
-+      libdir="$prefix/lib/ocaml/3.09.0/camlp4";;
++  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml/#OcamlABI#/camlp4' >> Makefile.cnf
++      libdir="$prefix/lib/ocaml/#OcamlABI#/camlp4";;
     *) echo "LIBDIR=$libdir" >> Makefile.cnf;;
  esac
  case "$mandir" in
@@ -39,17 +39,17 @@ diff -ur ocaml-3.08.orig/camlp4/config/configure_batch ocaml-3.08/camlp4/config/
     *) echo "MANDIR=$mandir" >> Makefile.cnf;;
  esac
  
-diff -ur ocaml-3.08.orig/configure ocaml-3.08/configure
---- ocaml-3.08.orig/configure	2003-09-30 18:09:47.000000000 +0200
-+++ ocaml-3.08/configure	2003-09-30 18:10:12.000000000 +0200
+diff -ur ocaml.orig/configure ocaml/configure
+--- ocaml.orig/configure	2003-09-30 18:09:47.000000000 +0200
++++ ocaml/configure	2003-09-30 18:10:12.000000000 +0200
 @@ -149,8 +149,8 @@
     *) echo "BINDIR=$bindir" >> Makefile;;
  esac
  case "$libdir" in
 -  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml' >> Makefile
 -      libdir="$prefix/lib/ocaml";;
-+  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml/3.09.0' >> Makefile
-+      libdir="$prefix/lib/ocaml/3.09.0";;
++  "") echo 'LIBDIR=$(PREFIX)/lib/ocaml/#OcamlABI#' >> Makefile
++      libdir="$prefix/lib/ocaml/#OcamlABI#";;
     *) echo "LIBDIR=$libdir" >> Makefile;;
  esac
  echo 'STUBLIBDIR=$(LIBDIR)/stublibs' >> Makefile
