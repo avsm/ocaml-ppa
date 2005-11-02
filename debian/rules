@@ -9,6 +9,7 @@
 include /usr/share/dpatch/dpatch.make
 PACKAGE = ocaml
 VERSION = 3.09.0
+OCAMLABI = $(VERSION)
 STDLIBDIR = /usr/lib/ocaml/$(VERSION)
 MD5SUMSDIR = /var/lib/ocaml/md5sums
 
@@ -258,11 +259,14 @@ binary-arch: build-arch install-arch
 	dh_shlibdeps -s
 	if [ ! -e opt-built-stamp ]; then			\
 	  dh_gencontrol -pocaml-nox				\
-		-u-VF:BestProvides=",ocaml-best-compilers";	\
+		-u-VF:BestProvides=",ocaml-best-compilers"	\
+		-u-VF:OcamlABI="$(OCAMLABI);			\
 	else 							\
 	  dh_gencontrol -pocaml-nox				\
-	  	-u-VF:BestProvides="";				\
-	  dh_gencontrol -pocaml-native-compilers;		\
+	  	-u-VF:BestProvides=""				\
+		-u-VF:OcamlABI="$(OCAMLABI);			\
+	  dh_gencontrol -pocaml-native-compilers		\
+		-u-VF:OcamlABI="$(OCAMLABI);			\
 	fi
 	dh_gencontrol -pocaml
 	dh_gencontrol -pocaml-base-nox
