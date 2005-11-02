@@ -37,10 +37,12 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
-config-stamp: configure
+abi-sed:
 	for t in `find . -name \*.in`; do \
 	  sed -e 's%#OcamlABI#%$(OCAMLABI)%' -e 's%#OcamlMAJOR#%$(OCAMLMAJOR)%' $$t >$${t%.in};	\
 	done
+
+config-stamp: configure abi-sed
 	dh_testdir
 	# Add here commands to configure the package.
 	./configure --with-pthread -prefix /usr				\
@@ -89,7 +91,7 @@ build-indep-stamp: patch-stamp config-stamp
 	# Add here commands to compile the indep part of the package.
 	#$(MAKE) doc
 
-clean: unpatch
+clean: abi-sed unpatch
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp config-stamp
