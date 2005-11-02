@@ -38,7 +38,7 @@ endif
 
 config-stamp: configure
 	for t in `find . -name \*.in`; do \
-	  sed -e 's%#OcamlABI#%3.09.0%' -e 's%#OcamlMAJOR#%3.09%' $t >${t%.in};	\
+	  sed -e 's%#OcamlABI#%3.09.0%' -e 's%#OcamlMAJOR#%3.09%' $$t >$${t%.in};	\
 	done
 	dh_testdir
 	# Add here commands to configure the package.
