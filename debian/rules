@@ -257,7 +257,7 @@ binary-common:
 # Build architecture independant packages using the common target.
 binary-indep: build-indep install-indep
 	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
-	dh_gencontrol -i -- -VF:OcamlABI="$(OCAMLABI)"
+	dh_gencontrol -i -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_md5sums -i
 	dh_builddeb -i
 
@@ -268,20 +268,20 @@ binary-arch: build-arch install-arch
 	if [ ! -e opt-built-stamp ]; then			\
 	  dh_gencontrol -pocaml-nox --				\
 		-VF:BestProvides=",ocaml-best-compilers"	\
-		-VF:OcamlABI="$(OCAMLABI)";			\
+		-VF:OCamlABI="$(OCAMLABI)";			\
 	else 							\
 	  dh_gencontrol -pocaml-nox --				\
 	  	-VF:BestProvides=""				\
-		-VF:OcamlABI="$(OCAMLABI)";			\
+		-VF:OCamlABI="$(OCAMLABI)";			\
 	  dh_gencontrol -pocaml-native-compilers --		\
-		-VF:OcamlABI="$(OCAMLABI)";			\
+		-VF:OCamlABI="$(OCAMLABI)";			\
 	fi
-	dh_gencontrol -pocaml -- -VF:OcamlABI="$(OCAMLABI)"
-	dh_gencontrol -pocaml-base-nox -- -VF:OcamlABI="$(OCAMLABI)"
-	dh_gencontrol -pocaml-base -- -VF:OcamlABI="$(OCAMLABI)"
-	dh_gencontrol -pocaml-source -- -VF:OcamlABI="$(OCAMLABI)" 
-	dh_gencontrol -pocaml-interp -- -VF:OcamlABI="$(OCAMLABI)"
-	dh_gencontrol -pocaml-compiler-libs -- -VF:OcamlABI="$(OCAMLABI)"
+	dh_gencontrol -pocaml -- -VF:OCamlABI="$(OCAMLABI)"
+	dh_gencontrol -pocaml-base-nox -- -VF:OCamlABI="$(OCAMLABI)"
+	dh_gencontrol -pocaml-base -- -VF:OCamlABI="$(OCAMLABI)"
+	dh_gencontrol -pocaml-source -- -VF:OCamlABI="$(OCAMLABI)" 
+	dh_gencontrol -pocaml-interp -- -VF:OCamlABI="$(OCAMLABI)"
+	dh_gencontrol -pocaml-compiler-libs -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_md5sums -s
 	dh_builddeb -s
 
