@@ -1,4 +1,4 @@
-ocaml (3.09.0-1) UNRELEASED; urgency=low
+ocaml (3.09.0-1) unstable; urgency=low
 
   [ Julien Cristau ]
   * Cleanup debian/control: remove redundant Depends.
@@ -7,18 +7,12 @@ ocaml (3.09.0-1) UNRELEASED; urgency=low
   * Various lintian warnings fixed, and overrides cleaned up.
 
   [ Sven Luther ]
+  * Updated to new upstream release.
   * Modified the packaging ifrastructure to not use hard-coded abi number
     except in the head of debian/rules. All else is sed'ed from #OcamlABI#
     (and #OcamlMAJOR# for the debian/copyright file and the upstream url).
 
  -- Sven Luther <luther@debian.org>  Wed,  2 Nov 2005 12:02:36 +0000
-
-ocaml (3.09.0-0.experimental.1) experimental; urgency=low
-
-  Changes by Sven Luther:
-  * Updated to new upstream release.
-
- -- Sven Luther <luther@debian.org>  Thu, 27 Oct 2005 19:03:17 +0000
 
 ocaml (3.08.3-9) unstable; urgency=low
 
