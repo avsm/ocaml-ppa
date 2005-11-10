@@ -72,16 +72,18 @@ build-arch-stamp: patch-stamp config-stamp
 	if test ! -d boot.debian; then 					\
 		cp -xa boot boot.debian;				\
 	fi
-	$(MAKE) world bootstrap
-	if test -z `grep "ARCH=none" config/Makefile`;then		\
-		echo "Building native compilers";			\
-		$(MAKE) opt opt.opt;					\
-		touch opt-built-stamp;					\
-	fi
+	$(MAKE) world
+	$(MAKE) bootstrap
+ifeq (,$(shell grep "ARCH=none" config/Makefile))
+	@echo "Building native compilers"
+	$(MAKE) opt
+	$(MAKE) opt.opt
+	touch opt-built-stamp
+endif
 	if [ -x ./ocamlopt ]; then					\
-		$(MAKE) -C debian/ocaml-md5sums opt;				\
+		$(MAKE) -C debian/ocaml-md5sums opt;			\
 	else								\
-		$(MAKE) -C debian/ocaml-md5sums all;				\
+		$(MAKE) -C debian/ocaml-md5sums all;			\
 	fi
 	touch build-arch-stamp
 
