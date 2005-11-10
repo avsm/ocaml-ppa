@@ -1,3 +1,4 @@
 versioned_libdir
 objinfo
 man-ocamlmklib
+kbsd-gnu
