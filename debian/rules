@@ -113,7 +113,7 @@ ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	-cp -f /usr/share/misc/config.guess config/gnu/config.guess
 endif
 
-	dh_clean debian/README.labltk camlp4/config/Makefile.cnf camlp4/config/Makefile config/m.h config/s.h config/Makefile
+	dh_clean debian/README.labltk camlp4/config/Makefile.cnf camlp4/config/Makefile config/m.h config/s.h config/Makefile emacs/ocamltags driver/ocamlcomp.sh
 
 install: install-indep install-arch
 install-indep:
