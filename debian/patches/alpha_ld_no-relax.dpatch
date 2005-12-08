@@ -1,0 +1,29 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## alpha_ld_no-relax.dpatch by Steve Langasek <vorlon@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Pass the --no-relax option to ld to fix a segfault in initialization 
+## DP: code (bug#338437)
+
+@DPATCH@
+
+--- ocaml-3.09.0.orig/configure	2005-09-24 02:19:09.000000000 -0700
++++ ocaml-3.09.0/configure	2005-12-07 22:03:36.019001353 -0800
+@@ -268,7 +268,8 @@
+   gcc,alpha*-*-linux*)
+     if cc="$bytecc" sh ./hasgot -mieee; then
+       bytecccompopts="-mieee $bytecccompopts";
+-    fi;;
++    fi
++    bytecclinkopts="-Wl,--no-relax";;
+   cc,mips-*-irix6*)
+     # Add -n32 flag to ensure compatibility with native-code compiler
+     bytecccompopts="-n32"
+@@ -612,6 +613,7 @@
+                        nativecccompopts="$gcc_warnings -DSHRINKED_GNUC";;
+   *,*,rhapsody,*)
+                  nativecccompopts="$gcc_warnings -DDARWIN_VERSION_6 $dl_defs";;
++  alpha,gcc*,linux*,*) nativecclinkopts="-Wl,--no-relax";;
+   *,gcc*,cygwin,*)     nativecccompopts="$gcc_warnings -U_WIN32";;
+   *,gcc*,*,*)          nativecccompopts="$gcc_warnings";;
+ esac

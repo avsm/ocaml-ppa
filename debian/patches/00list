@@ -2,3 +2,4 @@ versioned_libdir
 objinfo
 man-ocamlmklib
 kbsd-gnu
+alpha_ld_no-relax

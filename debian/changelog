@@ -5,8 +5,12 @@ ocaml (3.09.0-2) unstable; urgency=low
   * New patch kbsd-gnu.dpatch to add support for GNU/Hurd and GNU/k*BSD on
     i386 (thanks to Robert Millan and Aurélien Jarno; Closes: #216886).
   * Add myself to Uploaders (acked by Sven).
+  * Add patch by Steve Langasek <vorlon@debian.org> to fix native code linking
+    by passing the --no-relax option to ld (Closes: #338437).
+    Bug#335578 stays open since a proper fix to the generated asm would still
+    be better than this workaround.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Thu, 10 Nov 2005 17:09:00 +0100
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Thu,  8 Dec 2005 10:19:39 +0100
 
 ocaml (3.09.0-1) unstable; urgency=low
 
