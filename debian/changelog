@@ -1,3 +1,10 @@
+ocaml (3.09.0-3) unstable; urgency=low
+
+  * Fix build on non-native arches which was broken by the changes to
+    debian/rules in the previous release. Sorry for this :(
+
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Fri,  9 Dec 2005 11:01:06 +0100
+
 ocaml (3.09.0-2) unstable; urgency=low
 
   * Modified debian/rules to exit with an error when native compiler build
