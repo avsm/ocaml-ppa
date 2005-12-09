@@ -38,7 +38,7 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 endif
 
 abi-sed:
-	for t in `find . -name \*.in`; do \
+	for t in `find debian/ -name \*.in`; do \
 	  sed -e 's%#OcamlABI#%$(OCAMLABI)%' -e 's%#OcamlMAJOR#%$(OCAMLMAJOR)%' $$t >$${t%.in};	\
 	done
 
@@ -287,4 +287,4 @@ binary-arch: build-arch install-arch
 	dh_builddeb -s
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch 
+.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch abi-sed
