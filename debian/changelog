@@ -3,12 +3,14 @@ ocaml (3.09.0-4) UNRELEASED; urgency=low
   [ Julien Cristau ]
   * debian/rules: the abi-sed rule is phony, we don't want to run configure
     twice.
+  * Stop building the native compilers on hppa, they are buggy and upstream
+    considers this port dead (see bug#342704).
 
   [ Samuel Mimram ]
   * Added for_pack_static.dpatch (from CVS) to correct a bug when linking.
   * Added myself to uploaders.
 
- -- Samuel Mimram <smimram@debian.org>  Sun, 11 Dec 2005 19:13:13 +0100
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Thu, 15 Dec 2005 17:55:22 +0100
 
 ocaml (3.09.0-3) unstable; urgency=low
 
