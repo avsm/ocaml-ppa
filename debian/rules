@@ -14,6 +14,8 @@ OCAMLABI = $(OCAMLMAJOR).$(OCAMLMINOR)
 STDLIBDIR = /usr/lib/ocaml/$(OCAMLABI)
 MD5SUMSDIR = /var/lib/ocaml/md5sums
 
+NATIVE_ARCHS = $(shell cat debian/native-archs)
+
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
@@ -38,9 +40,15 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 endif
 
 abi-sed:
-	for t in `find debian/ -name \*.in`; do \
+	for t in `find debian/ -name \*.in | grep -v debian/control.in`; do \
 	  sed -e 's%#OcamlABI#%$(OCAMLABI)%' -e 's%#OcamlMAJOR#%$(OCAMLMAJOR)%' $$t >$${t%.in};	\
 	done
+
+# generate ocaml-native-compilers' Architecture field
+# should never be called automatically
+debian/control:
+	sed -e 's/@native-archs@/$(NATIVE_ARCHS)/g' debian/control.in > $@
+
 
 config-stamp: configure abi-sed
 	dh_testdir
@@ -74,12 +82,10 @@ build-arch-stamp: patch-stamp config-stamp
 	fi
 	$(MAKE) world
 	$(MAKE) bootstrap
-ifneq ($(DEB_BUILD_ARCH),hppa)
-	if ! grep -q "ARCH=none" config/Makefile; then \
-		echo "Building native compilers" && \
-		$(MAKE) opt opt.opt && \
-		touch opt-built-stamp; \
-	fi
+ifneq ($(findstring $(DEB_BUILD_ARCH),$(NATIVE_ARCHS)),)
+	@echo "Building native compilers"
+	$(MAKE) opt opt.opt
+	touch opt-built-stamp
 endif
 	if [ -x ./ocamlopt ]; then					\
 		$(MAKE) -C debian/ocaml-md5sums opt;			\
@@ -165,6 +171,8 @@ install-arch:
 		$(CURDIR)/debian/README.labltk
 	install -m 644 config/Makefile \
 		$(CURDIR)/debian/ocaml-nox/usr/lib/ocaml/$(OCAMLABI)/config/Makefile
+	# install the list of archs with ocamlopt
+	install -m 644 debian/native-archs $(CURDIR)/debian/ocaml-nox$(STDLIBDIR)
 
 	# now move the graphics files over
 	if [ -e opt-built-stamp ]; then					\

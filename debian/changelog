@@ -12,8 +12,10 @@ ocaml (3.09.0-4) unstable; urgency=low
 
   [ Julien Cristau ]
   * Disable for_pack_static.dpatch for now, as it breaks the ABI.
+  * Install the list of architectures with native compilers in the ocaml-nox
+    package.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Mon, 19 Dec 2005 13:13:31 +0100
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Mon, 19 Dec 2005 14:03:50 +0100
 
 ocaml (3.09.0-3) unstable; urgency=low
 
