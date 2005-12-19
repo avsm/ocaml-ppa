@@ -47,7 +47,7 @@ abi-sed:
 # generate ocaml-native-compilers' Architecture field
 # should never be called automatically
 debian/control:
-	sed -e 's/@native-archs@/$(NATIVE_ARCHS)/g' debian/control.in > $@
+	sed -e 's/#OcamlNativeArchs#/$(NATIVE_ARCHS)/g' debian/control.in > $@
 
 
 config-stamp: configure abi-sed

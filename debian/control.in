@@ -95,7 +95,7 @@ Description: Runtime system for ocaml bytecode executables
  you do not require any graphical capilities for your runtime.
 
 Package: ocaml-native-compilers
-Architecture: @native-archs@
+Architecture: #OcamlNativeArchs#
 Depends: ocaml-nox (= ${Source-Version}), ocaml-nox-${F:OCamlABI}, gcc, binutils, ${shlibs:Depends}
 Provides: ocaml-best-compilers
 Description: Native code compilers of the ocaml suite (the .opt ones)

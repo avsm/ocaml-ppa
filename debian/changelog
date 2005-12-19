@@ -7,15 +7,18 @@ ocaml (3.09.0-4) unstable; urgency=low
     considers this port dead (see bug#342704).
 
   [ Samuel Mimram ]
-  * Added for_pack_static.dpatch (from CVS) to correct a bug when linking.
+  * Added for_pack_static.dpatch (from CVS) to correct a bug when linking,
+    disabled for now though.
   * Added myself to uploaders.
 
   [ Julien Cristau ]
-  * Disable for_pack_static.dpatch for now, as it breaks the ABI.
   * Install the list of architectures with native compilers in the ocaml-nox
     package.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Mon, 19 Dec 2005 14:03:50 +0100
+  [ Sven Luther ]
+  * This version should make it into testing, so let's (Closes: #338435).
+
+ -- Sven Luther <luther@debian.org>  Mon, 19 Dec 2005 13:36:31 +0000
 
 ocaml (3.09.0-3) unstable; urgency=low
 
