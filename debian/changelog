@@ -1,4 +1,4 @@
-ocaml (3.09.0-4) UNRELEASED; urgency=low
+ocaml (3.09.0-4) unstable; urgency=low
 
   [ Julien Cristau ]
   * debian/rules: the abi-sed rule is phony, we don't want to run configure
@@ -10,7 +10,10 @@ ocaml (3.09.0-4) UNRELEASED; urgency=low
   * Added for_pack_static.dpatch (from CVS) to correct a bug when linking.
   * Added myself to uploaders.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Thu, 15 Dec 2005 17:55:22 +0100
+  [ Julien Cristau ]
+  * Disable for_pack_static.dpatch for now, as it breaks the ABI.
+
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Mon, 19 Dec 2005 13:13:31 +0100
 
 ocaml (3.09.0-3) unstable; urgency=low
 

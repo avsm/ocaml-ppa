@@ -3,4 +3,3 @@ objinfo
 man-ocamlmklib
 kbsd-gnu
 alpha_ld_no-relax
-for_pack_static
