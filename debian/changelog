@@ -1,3 +1,11 @@
+ocaml (3.09.0-5) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+  * Removing possibly leftover /usr/lib/ocaml/ld.conf, closes: #300846.
+  * Added a watch file.
+
+ -- Samuel Mimram <smimram@debian.org>  Tue, 27 Dec 2005 13:40:07 +0100
+
 ocaml (3.09.0-4) unstable; urgency=low
 
   [ Julien Cristau ]
