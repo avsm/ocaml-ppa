@@ -1,5 +1,6 @@
 versioned_libdir
 objinfo
+dumpobj
 man-ocamlmklib
 kbsd-gnu
 alpha_ld_no-relax

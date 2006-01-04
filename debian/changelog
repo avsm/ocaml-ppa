@@ -4,6 +4,7 @@ ocaml (3.09.1-1) UNRELEASED; urgency=low
   * Removing possibly leftover /usr/lib/ocaml/ld.conf, closes: #300846.
   * Added a watch file.
   * Updated objinfo.dpatch.
+  * Added dumpobj.dpatch to install ocamldumpobj.
 
   [ Julien Cristau ]
   * New upstream release
