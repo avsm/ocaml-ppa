@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ctype.ml,v 1.197 2005/09/20 04:08:49 garrigue Exp $ *)
+(* $Id: ctype.ml,v 1.197.2.6 2005/12/15 02:28:38 garrigue Exp $ *)
 
 (* Operations on core types *)
 
@@ -698,7 +698,9 @@ let limited_generalize ty0 ty =
       match ty.desc with
         Tvariant row ->
           let more = row_more row in
-          if more.level <> generic_level then generalize_parents more
+          let lv = more.level in
+          if (lv < lowest_level || lv > !current_level)
+          && lv <> generic_level then set_level more generic_level
       | _ -> ()
     end
   in
@@ -802,6 +804,14 @@ let rec copy ty =
               more.desc <- Tsubst(newgenty(Ttuple[more';t]));
               (* Return a new copy *)
               Tvariant (copy_row copy true row keep more')
+          end
+      | Tfield (p, k, ty1, ty2) ->
+          begin match field_kind_repr k with
+            Fabsent  -> Tlink (copy ty2)
+          | Fpresent -> copy_type_desc copy desc
+          | Fvar r ->
+              dup_kind r;
+              copy_type_desc copy desc
           end
       | _ -> copy_type_desc copy desc
       end;
@@ -1095,8 +1105,9 @@ let expand_abbrev env ty =
   | _ ->
       assert false
 
-(* Fully expand the head of a type. Raise an exception if the type
-   cannot be expanded. *)
+(* Fully expand the head of a type.
+   Raise Cannot_expand if the type cannot be expanded.
+   May raise Unify, if a recursion was hidden in the type. *)
 let rec try_expand_head env ty =
   let ty = repr ty in
   match ty.desc with
@@ -1118,7 +1129,11 @@ let expand_head_once env ty =
 
 (* Fully expand the head of a type. *)
 let rec expand_head env ty =
-  try try_expand_head env ty with Cannot_expand -> repr ty
+  let snap = Btype.snapshot () in
+  try try_expand_head env ty
+  with Cannot_expand | Unify _ -> (* expand_head shall never fail *)
+    Btype.backtrack snap;
+    repr ty
 
 (* Make sure that the type parameters of the type constructor [ty]
    respect the type constraints *)
@@ -1589,7 +1604,7 @@ and unify3 env t1 t1' t2 t2' =
           if not (closed_parameterized_type tl t2'') then
             link_type (repr t2) (repr t2')
       | _ ->
-          assert false
+          () (* t2 has already been expanded by update_level *)
     end
 
 (*

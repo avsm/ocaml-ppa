@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_ast.ml,v 1.26 2004/12/03 14:42:09 guesdon Exp $ *)
+(* $Id: odoc_ast.ml,v 1.26.4.1 2005/11/10 14:44:36 guesdon Exp $ *)
 
 (** Analysis of implementation files. *)
 open Misc
@@ -1405,6 +1405,7 @@ module Analyser =
           m_top_deps = [] ;
 	  m_code = None ; (* code is set by the caller, after the module is created *)
 	  m_code_intf = m_code_intf ;
+	  m_text_only = false ;
       }
       in
       match (p_module_expr.Parsetree.pmod_desc, tt_module_expr.Typedtree.mod_desc) with
@@ -1586,9 +1587,10 @@ module Analyser =
          m_top_deps = [] ;
 	 m_code = (if !Odoc_args.keep_code then Some !file else None) ;
 	 m_code_intf = None ;
+	 m_text_only = false ;
        }
   end
 
 
 
-(* eof $Id: odoc_ast.ml,v 1.26 2004/12/03 14:42:09 guesdon Exp $ *)
+(* eof $Id: odoc_ast.ml,v 1.26.4.1 2005/11/10 14:44:36 guesdon Exp $ *)

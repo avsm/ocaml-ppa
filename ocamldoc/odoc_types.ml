@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_types.ml,v 1.8 2005/08/13 20:59:37 doligez Exp $ *)
+(* $Id: odoc_types.ml,v 1.8.2.1 2005/11/07 15:59:04 doligez Exp $ *)
 
 type ref_kind =
     RK_module
@@ -46,6 +46,7 @@ and text_element =
   | Subscript of text
   | Module_list of string list
   | Index_list
+  | Custom of string * text
 
 and text = text_element list
 

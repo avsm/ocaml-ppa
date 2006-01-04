@@ -9,9 +9,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_misc.mli,v 1.12 2005/03/24 17:20:53 doligez Exp $ *)
+(* $Id: odoc_misc.mli,v 1.12.4.1 2005/11/07 15:59:04 doligez Exp $ *)
 
 (** Miscelaneous functions *)
+
+(** [no_blanks s] returns the given string without any blank
+   characters, i.e. '\n' '\r' ' ' '\t'.
+*)
+val no_blanks : string -> string
 
 (** This function returns a file in the form of one string.*)
 val input_file_as_string : string -> string

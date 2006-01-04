@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printf.mli,v 1.46 2005/09/26 10:12:01 weis Exp $ *)
+(* $Id: printf.mli,v 1.46.2.1 2005/12/15 12:46:10 doligez Exp $ *)
 
 (** Formatted output functions. *)
 
@@ -72,7 +72,7 @@ val fprintf : out_channel -> ('a, out_channel, unit) format -> 'a
      [out_channel -> unit]) and apply it to [outchan].
    - [\{ fmt %\}]: convert a format string argument. The argument must
      have the same type as the internal format string [fmt].
-   - [\( fmt %\)]: format string substitution. Takes a format string
+   - [( fmt %)]: format string substitution. Takes a format string
      argument and substitutes it to the internal format string [fmt]
      to print following arguments. The argument must have the same
      type as [fmt].

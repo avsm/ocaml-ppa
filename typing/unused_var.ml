@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unused_var.ml,v 1.4 2004/11/30 18:57:04 doligez Exp $ *)
+(* $Id: unused_var.ml,v 1.4.10.2 2005/12/28 17:27:46 doligez Exp $ *)
 
 open Parsetree
 
@@ -152,7 +152,7 @@ and expression ppf tbl e =
   | Pexp_for (id, e1, e2, _, e3) ->
       expression ppf tbl e1;
       expression ppf tbl e2;
-      let defined = ([ (id, e.pexp_loc, ref false) ], []) in
+      let defined = ([ (id, e.pexp_loc, ref true) ], []) in
       add_vars tbl defined;
       expression ppf tbl e3;
       check_rm_vars ppf tbl defined;
@@ -226,9 +226,11 @@ and class_declaration ppf tbl cd = class_expr ppf tbl cd.pci_expr
 and class_expr ppf tbl ce =
   match ce.pcl_desc with
   | Pcl_constr _ -> ()
-  | Pcl_structure cs -> class_structure ppf tbl cs
-  | Pcl_fun (_, _, _, ce) -> class_expr ppf tbl ce
-  | Pcl_apply (ce, _) -> class_expr ppf tbl ce
+  | Pcl_structure cs -> class_structure ppf tbl cs;
+  | Pcl_fun (_, _, _, ce) -> class_expr ppf tbl ce;
+  | Pcl_apply (ce, lel) ->
+      class_expr ppf tbl ce;
+      List.iter (fun (_, e) -> expression ppf tbl e) lel;
   | Pcl_let (recflag, pel, ce) ->
       let_pel ppf tbl recflag pel (Some (fun ppf tbl -> class_expr ppf tbl ce));
   | Pcl_constraint (ce, _) -> class_expr ppf tbl ce;

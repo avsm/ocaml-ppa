@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: clambda.ml,v 1.16 2004/05/26 11:10:27 garrigue Exp $ *)
+(* $Id: clambda.ml,v 1.16.8.2 2005/12/11 10:21:12 xleroy Exp $ *)
 
 (* A variant of the "lambda" code with direct / indirect calls explicit
    and closures explicit too *)

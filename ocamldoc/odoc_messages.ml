@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_messages.ml,v 1.28 2005/08/13 20:59:37 doligez Exp $ *)
+(* $Id: odoc_messages.ml,v 1.28.2.1 2005/11/07 15:59:04 doligez Exp $ *)
 
 (** The messages of the application. *)
 
@@ -38,6 +38,7 @@ let rectypes = "\tAllow arbitrary recursive types"
 let preprocess = "<command>\tPipe sources through preprocessor <command>"
 let option_impl ="<file>\tConsider <file> as a .ml file"
 let option_intf ="<file>\tConsider <file> as a .mli file"
+let option_text ="<file>\tConsider <file> as a .txt file"
 let display_custom_generators_dir = "\tDisplay custom generators standard directory and exit"
 let add_load_dir = "<dir>\tAdd the given directory to the search path for custom\n"^
   "\t\tgenerators "^bytecode_only
@@ -62,7 +63,9 @@ let option_not_in_native_code op = "Option "^op^" not available in native code v
 let default_out_file = "ocamldoc.out"
 let out_file =
   "<file>\tSet the ouput file name, used by texi, latex and dot generators\n"^
-  "\t\t(default is "^default_out_file^")"
+  "\t\t(default is "^default_out_file^")\n"^
+  "\t\tor the prefix of index files for the HTML generator\n"^
+  "\t\t(default is index)"
 
 let dot_include_all =
   "\n\t\tInclude all modules in the dot output, not only the\n"^

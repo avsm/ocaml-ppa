@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt,v 1.38 2005/02/02 15:51:23 xleroy Exp $
+# $Id: Makefile.nt,v 1.38.4.1 2005/12/30 09:58:40 xleroy Exp $
 
 include ../config/Makefile
 
@@ -104,7 +104,7 @@ main.$(DO): main.c
 	$(CC) $(CFLAGS) $(BYTECCCOMPOPTS) -c $<
 	mv $*.$(O) $*.$(SO)
 
-.depend.nt:
+.depend.nt: .depend
 	sed -e '/\.d\.o/q' -e 's/^\(.*\)\.o:/\1.$$(DO) \1.$$(SO):/' .depend > .depend.nt
 
 include .depend.nt

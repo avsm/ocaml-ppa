@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printast.ml,v 1.28 2005/03/23 03:08:37 garrigue Exp $ *)
+(* $Id: printast.ml,v 1.28.4.1 2005/11/16 16:01:12 doligez Exp $ *)
 
 open Asttypes;;
 open Format;;
@@ -425,7 +425,7 @@ and class_structure i ppf (p, l) =
 and class_field i ppf x =
   match x with
   | Pcf_inher (ce, so) ->
-      printf "Pcf_inher\n";
+      line i ppf "Pcf_inher\n";
       class_expr (i+1) ppf ce;
       option (i+1) string ppf so;
   | Pcf_val (s, mf, e, loc) ->

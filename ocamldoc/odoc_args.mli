@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_args.mli,v 1.14 2005/03/24 17:20:53 doligez Exp $ *)
+(* $Id: odoc_args.mli,v 1.14.4.1 2005/11/07 15:59:04 doligez Exp $ *)
 
 (** Analysis of the command line arguments. *)
 
@@ -17,6 +17,7 @@
 type source_file =
     Impl_file of string
   | Intf_file of string
+  | Text_file of string
 
 (** The include_dirs in the OCaml compiler. *)
 val include_dirs : string list ref

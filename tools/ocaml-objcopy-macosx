@@ -12,11 +12,12 @@
 #                                                                       #
 #########################################################################
 
-# $Id: ocaml-objcopy-macosx,v 1.1 2005/01/21 18:15:55 doligez Exp $
+# $Id: ocaml-objcopy-macosx,v 1.1.10.1 2005/11/29 12:17:27 doligez Exp $
 
 
-TEMP=/tmp/ocaml-objcopy-$$.o
-UNDEF=/tmp/ocaml-objcopy-$$.sym
+TMP="${TMPDIR=/tmp}"
+TEMP="${TMP}"/ocaml-objcopy-$$.o
+UNDEF="${TMP}"/ocaml-objcopy-$$.sym
 
 usage () {
   echo "usage: objcopy {--redefine-sym <old>=<new>} file.o" >&2

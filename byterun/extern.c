@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: extern.c,v 1.58 2005/09/22 14:21:50 xleroy Exp $ */
+/* $Id: extern.c,v 1.58.2.1 2005/11/22 11:50:34 doligez Exp $ */
 
 /* Structured output */
 
@@ -142,6 +142,13 @@ static void init_extern_output(void)
   extern_output_block->next = NULL;
   extern_ptr = extern_output_block->data;
   extern_limit = extern_output_block->data + SIZE_EXTERN_OUTPUT_BLOCK;
+}
+
+static void close_extern_output(void)
+{
+  if (extern_userprovided_output == NULL){
+    extern_output_block->end = extern_ptr;
+  }
 }
 
 static void free_extern_output(void)
@@ -465,7 +472,7 @@ static intnat extern_value(value v, value flags)
   /* Marshal the object */
   extern_rec(v);
   /* Record end of output */
-  extern_output_block->end = extern_ptr;
+  close_extern_output();
   /* Undo the modifications done on externed blocks */
   extern_replay_trail();
   /* Write the sizes */

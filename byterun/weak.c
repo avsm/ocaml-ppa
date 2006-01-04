@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: weak.c,v 1.24 2004/01/01 16:42:38 doligez Exp $ */
+/* $Id: weak.c,v 1.24.12.1 2005/12/05 13:37:43 doligez Exp $ */
 
 /* Operations on weak arrays */
 
@@ -19,6 +19,7 @@
 
 #include "alloc.h"
 #include "fail.h"
+#include "major_gc.h"
 #include "memory.h"
 #include "mlvalues.h"
 
@@ -113,7 +114,11 @@ CAMLprim value caml_weak_get_copy (value ar, value n)
     if (Tag_val (v) < No_scan_tag){
       mlsize_t i;
       for (i = 0; i < Wosize_val (v); i++){
-        Modify (&Field (elt, i), Field (v, i));
+        value f = Field (v, i);
+        if (caml_gc_phase == Phase_mark && Is_block (f) && Is_in_heap (f)){
+          caml_darken (f, NULL);
+        }
+        Modify (&Field (elt, i), f);
       }
     }else{
       memmove (Bp_val (elt), Bp_val (v), Bosize_val (v));
