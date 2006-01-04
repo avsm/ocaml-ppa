@@ -3,6 +3,7 @@ ocaml (3.09.1-1) UNRELEASED; urgency=low
   [ Samuel Mimram ]
   * Removing possibly leftover /usr/lib/ocaml/ld.conf, closes: #300846.
   * Added a watch file.
+  * Updated objinfo.dpatch.
 
   [ Julien Cristau ]
   * New upstream release
@@ -10,7 +11,7 @@ ocaml (3.09.1-1) UNRELEASED; urgency=low
       double-word boundaries is forced (Closes: #344615).
   * Remove Suggests on xlibs-dev which doesn't exist anymore.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Wed,  4 Jan 2006 16:06:34 +0100
+ -- Samuel Mimram <smimram@debian.org>  Wed,  4 Jan 2006 20:32:13 +0100
 
 ocaml (3.09.0-4) unstable; urgency=low
 

@@ -18,9 +18,9 @@ esac
 
 exit 0
 @DPATCH@
-diff -urN ocaml-3.08.0.orig/man/ocamlc.m ocaml-3.08.0/man/ocamlc.m
---- ocaml-3.08.0.orig/man/ocamlc.m	2004-06-24 16:53:42.000000000 +0200
-+++ ocaml-3.08.0/man/ocamlc.m	2004-07-26 14:28:30.816216392 +0200
+diff -urNad ocaml-3.09.1~/man/ocamlc.m ocaml-3.09.1/man/ocamlc.m
+--- ocaml-3.09.1~/man/ocamlc.m	2004-07-13 14:25:10.000000000 +0200
++++ ocaml-3.09.1/man/ocamlc.m	2006-01-04 20:29:18.000000000 +0100
 @@ -242,7 +242,8 @@
  
  .SH SEE ALSO
@@ -31,9 +31,9 @@ diff -urN ocaml-3.08.0.orig/man/ocamlc.m ocaml-3.08.0/man/ocamlc.m
  .br
  .I The Objective Caml user's manual,
  chapter "Batch compilation".
-diff -urN ocaml-3.08.0.orig/man/ocamlobjinfo.m ocaml-3.08.0/man/ocamlobjinfo.m
---- ocaml-3.08.0.orig/man/ocamlobjinfo.m	1970-01-01 01:00:00.000000000 +0100
-+++ ocaml-3.08.0/man/ocamlobjinfo.m	2004-07-26 14:30:06.561660872 +0200
+diff -urNad ocaml-3.09.1~/man/ocamlobjinfo.m ocaml-3.09.1/man/ocamlobjinfo.m
+--- ocaml-3.09.1~/man/ocamlobjinfo.m	1970-01-01 01:00:00.000000000 +0100
++++ ocaml-3.09.1/man/ocamlobjinfo.m	2006-01-04 20:29:18.000000000 +0100
 @@ -0,0 +1,40 @@
 +.TH OCAML-SOAP 1 "October 26, 2002"
 +.SH NAME
@@ -75,9 +75,9 @@ diff -urN ocaml-3.08.0.orig/man/ocamlobjinfo.m ocaml-3.08.0/man/ocamlobjinfo.m
 +.SH AUTHOR
 +This manual page was written by Stefano Zacchiroli <zack@debian.org>,
 +for the Debian GNU/Linux system (but may be used by others).
-diff -urN ocaml-3.08.0.orig/man/ocamlopt.m ocaml-3.08.0/man/ocamlopt.m
---- ocaml-3.08.0.orig/man/ocamlopt.m	2004-06-24 15:55:21.000000000 +0200
-+++ ocaml-3.08.0/man/ocamlopt.m	2004-07-26 14:28:50.160275648 +0200
+diff -urNad ocaml-3.09.1~/man/ocamlopt.m ocaml-3.09.1/man/ocamlopt.m
+--- ocaml-3.09.1~/man/ocamlopt.m	2004-07-13 14:25:10.000000000 +0200
++++ ocaml-3.09.1/man/ocamlopt.m	2006-01-04 20:29:18.000000000 +0100
 @@ -225,7 +225,8 @@
  array or string outside of its bounds.
  
@@ -88,20 +88,19 @@ diff -urN ocaml-3.08.0.orig/man/ocamlopt.m ocaml-3.08.0/man/ocamlopt.m
  .br
  .I The Objective Caml user's manual,
  chapter "Native-code compilation".
-diff -urN ocaml-3.08.0.orig/tools/Makefile ocaml-3.08.0/tools/Makefile
---- ocaml-3.08.0.orig/tools/Makefile	2004-06-20 17:26:06.000000000 +0200
-+++ ocaml-3.08.0/tools/Makefile	2004-07-26 14:27:54.000000000 +0200
-@@ -23,7 +23,8 @@
- COMPFLAGS= -warn-error A $(INCLUDES)
+diff -urNad ocaml-3.09.1~/tools/Makefile ocaml-3.09.1/tools/Makefile
+--- ocaml-3.09.1~/tools/Makefile	2005-11-17 15:26:37.000000000 +0100
++++ ocaml-3.09.1/tools/Makefile	2006-01-04 20:30:02.000000000 +0100
+@@ -24,7 +24,7 @@
  LINKFLAGS=$(INCLUDES)
  
--all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels 
-+all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels \
-+	objinfo
+ all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels \
+-     dumpobj
++     dumpobj objinfo
  
  opt.opt: ocamldep.opt
  
-@@ -69,6 +70,7 @@
+@@ -70,6 +70,7 @@
  	cp ocamlprof $(BINDIR)/ocamlprof$(EXE)
  	cp ocamlcp $(BINDIR)/ocamlcp$(EXE)
  	cp profiling.cmi profiling.cmo $(LIBDIR)
