@@ -1,15 +1,15 @@
-ocaml (3.09.0-5) UNRELEASED; urgency=low
+ocaml (3.09.1-1) UNRELEASED; urgency=low
 
   [ Samuel Mimram ]
-  * NOT RELEASED YET
   * Removing possibly leftover /usr/lib/ocaml/ld.conf, closes: #300846.
   * Added a watch file.
 
   [ Julien Cristau ]
-  * Patch configure to correctly detect sparc machines, and thus align doubles
-    and 64-bit ints on double-word boundaries (closes: #338437).
+  * New upstream release
+    + sparc is correctly detected and alignment of doubles and 64-bit ints on
+      double-word boundaries is forced (Closes: #344615).
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Wed,  4 Jan 2006 15:28:00 +0100
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Wed,  4 Jan 2006 15:49:24 +0100
 
 ocaml (3.09.0-4) unstable; urgency=low
 
