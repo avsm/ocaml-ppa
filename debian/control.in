@@ -40,7 +40,7 @@ Description: ML language implementation with a class-based object system
 Package: ocaml
 Architecture: any
 Depends: ocaml-base (= ${Source-Version}), ocaml-base-${F:OCamlABI}, ocaml-nox-${F:OCamlABI}
-Suggests: xlibs-dev, tcl8.4-dev, tk8.4-dev
+Suggests: tcl8.4-dev, tk8.4-dev
 Provides: ocaml-${F:OCamlABI}
 Description: ML language implementation with a class-based object system
  Objective Caml is an implementation of the ML language, based on

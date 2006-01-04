@@ -8,8 +8,9 @@ ocaml (3.09.1-1) UNRELEASED; urgency=low
   * New upstream release
     + sparc is correctly detected and alignment of doubles and 64-bit ints on
       double-word boundaries is forced (Closes: #344615).
+  * Remove Suggests on xlibs-dev which doesn't exist anymore.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Wed,  4 Jan 2006 15:49:24 +0100
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Wed,  4 Jan 2006 16:06:34 +0100
 
 ocaml (3.09.0-4) unstable; urgency=low
 
