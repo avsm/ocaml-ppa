@@ -155,7 +155,7 @@ install-arch:
 	dh_clean -k -a
 	dh_installdirs -a
 
-	# Add here commands to install the arch part of the package into 
+	# Add here commands to install the arch part of the package into
 	# debian/tmp.
 	#$(MAKE) install prefix=$(CURDIR)/debian/ocaml/usr
 
@@ -236,8 +236,7 @@ install-arch:
 	dh_install -a
 
 # Must not depend on anything. This is to be called by
-# binary-arch/binary-multi
-# in another 'make' thread.
+# binary-arch/binary-multi in another 'make' thread.
 binary-common:
 	dh_testdir
 	dh_testroot
@@ -247,21 +246,12 @@ binary-common:
 	-find debian/ocaml -type f -name .cvsignore -exec rm -rf {} \;
 	dh_installexamples
 	dh_installmenu
-#	dh_installdebconf	
-#	dh_installlogrotate	
 	dh_installemacsen
-#	dh_installpam
-#	dh_installmime
-#	dh_installinit
-#	dh_installcron
-#	dh_installinfo
 	dh_installman
 	dh_link
 	dh_strip
-	dh_compress 
+	dh_compress
 	dh_fixperms
-#	dh_perl
-#	dh_python
 	dh_makeshlibs
 	dh_installdeb
 
@@ -290,7 +280,7 @@ binary-arch: build-arch install-arch
 	dh_gencontrol -pocaml -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_gencontrol -pocaml-base-nox -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_gencontrol -pocaml-base -- -VF:OCamlABI="$(OCAMLABI)"
-	dh_gencontrol -pocaml-source -- -VF:OCamlABI="$(OCAMLABI)" 
+	dh_gencontrol -pocaml-source -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_gencontrol -pocaml-interp -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_gencontrol -pocaml-compiler-libs -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_md5sums -s
