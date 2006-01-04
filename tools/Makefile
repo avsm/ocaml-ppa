@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.61 2005/08/01 15:51:09 xleroy Exp $
+# $Id: Makefile,v 1.61.2.1 2005/11/17 14:26:37 doligez Exp $
 
 include ../config/Makefile
 
@@ -23,7 +23,8 @@ INCLUDES=-I ../utils -I ../parsing -I ../typing -I ../bytecomp -I ../asmcomp \
 COMPFLAGS= -warn-error A $(INCLUDES)
 LINKFLAGS=$(INCLUDES)
 
-all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels 
+all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels \
+     dumpobj
 
 opt.opt: ocamldep.opt
 

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typecore.ml,v 1.176 2005/09/15 03:09:26 garrigue Exp $ *)
+(* $Id: typecore.ml,v 1.176.2.2 2005/12/11 09:56:33 xleroy Exp $ *)
 
 (* Typechecking for the core language *)
 

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: btype.mli,v 1.17 2005/03/23 03:08:37 garrigue Exp $ *)
+(* $Id: btype.mli,v 1.17.4.1 2005/12/05 13:18:43 garrigue Exp $ *)
 
 (* Basic operations on core types *)
 
@@ -81,6 +81,8 @@ val copy_kind: field_kind -> field_kind
 
 val save_desc: type_expr -> type_desc -> unit
         (* Save a type description *)
+val dup_kind: field_kind option ref -> unit
+        (* Save a None field_kind, and make it point to a fresh Fvar *)
 val cleanup_types: unit -> unit
         (* Restore type descriptions *)
 

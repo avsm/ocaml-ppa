@@ -12,7 +12,7 @@
 (*   ../../../LICENSE.                                                 *)
 (*                                                                     *)
 (***********************************************************************)
-(* $Id: pr_scheme.ml,v 1.2 2004/07/13 12:25:08 xleroy Exp $ *)
+(* $Id: pr_scheme.ml,v 1.2.6.1 2005/12/19 16:49:53 verlyck Exp $ *)
 
 open Pcaml;
 open Format;
@@ -203,7 +203,7 @@ pr_constr_decl.pr_levels :=
     pr_box ppf f x = fprintf ppf "@[%t@]" f;
     pr_rules =
       extfun Extfun.empty with
-      [ (loc, c, []) as x ->
+      [ (loc, c, []) ->
           fun ppf curr next dg k -> fprintf ppf "(@[<hv>%s%t@]" c (ks ")" k)
       | (loc, c, tl) ->
           fun ppf curr next dg k ->

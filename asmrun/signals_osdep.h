@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: signals_osdep.h,v 1.3 2005/10/14 16:41:30 xleroy Exp $ */
+/* $Id: signals_osdep.h,v 1.3.2.1 2005/12/30 08:40:56 xleroy Exp $ */
 
 /* Processor- and OS-dependent signal interface */
 
@@ -89,7 +89,7 @@
   typedef int context_reg;
   #define CONTEXT_PC (context->sc_pc)
   #define CONTEXT_EXCEPTION_POINTER (context->sc_regs[30])
-  #define CONTEXT_YOUNG_LIMIT (context->sc_regs[22]
+  #define CONTEXT_YOUNG_LIMIT (context->sc_regs[22])
   #define CONTEXT_YOUNG_PTR (context->sc_regs[23])
 
 /****************** PowerPC, MacOS X */

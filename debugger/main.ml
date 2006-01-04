@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml,v 1.16 2004/11/27 01:04:19 doligez Exp $ *)
+(* $Id: main.ml,v 1.16.4.1 2005/11/29 12:17:27 doligez Exp $ *)
 
 open Primitives
 open Misc
@@ -111,7 +111,8 @@ let speclist = [
 
 let main () =
   try
-    socket_name := "/tmp/camldebug" ^ (string_of_int (Unix.getpid ()));
+    socket_name := Filename.concat Filename.temp_dir_name
+                          ("camldebug" ^ (string_of_int (Unix.getpid ())));
     begin try
       Arg.parse speclist anonymous "";
       Arg.usage speclist
@@ -130,10 +131,10 @@ let main () =
     toplevel_loop ();                   (* Toplevel. *)
     kill_program ();
     exit 0
-  with 
+  with
     Toplevel ->
       exit 2
-  | Env.Error e -> 
+  | Env.Error e ->
       eprintf "Debugger [version %s] environment error:@ @[@;" Config.version;
       Env.report_error err_formatter e;
       eprintf "@]@.";

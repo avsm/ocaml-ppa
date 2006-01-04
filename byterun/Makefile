@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.52 2005/10/18 14:03:52 xleroy Exp $
+# $Id: Makefile,v 1.52.2.1 2005/11/29 11:57:49 doligez Exp $
 
 include ../config/Makefile
 
@@ -57,7 +57,7 @@ install:
         done
 	cp ld.conf $(LIBDIR)/ld.conf
 
-ld.conf:
+ld.conf: ../config/Makefile
 	echo "$(STUBLIBDIR)" >ld.conf
 	echo "$(LIBDIR)" >>ld.conf
 

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_sig.ml,v 1.36 2005/08/13 20:59:37 doligez Exp $ *)
+(* $Id: odoc_sig.ml,v 1.36.2.1 2005/11/10 14:44:36 guesdon Exp $ *)
 
 (** Analysis of interface files. *)
 
@@ -683,6 +683,7 @@ module Analyser =
                 m_top_deps = [] ;
 		m_code = None ;
 		m_code_intf = code_intf ;
+		m_text_only = false ;
               }
             in
             let (maybe_more, info_after_opt) =
@@ -773,6 +774,7 @@ module Analyser =
                       m_top_deps = [] ;
 		      m_code = None ;
 		      m_code_intf = code_intf ;
+		      m_text_only = false ;
 		    }
 		  in
 		  let (maybe_more, info_after_opt) =
@@ -1318,6 +1320,7 @@ module Analyser =
         m_top_deps = [] ;
 	m_code = None ;
 	m_code_intf = code_intf ;
+	m_text_only = false ;
       }
 
     end

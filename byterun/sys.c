@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: sys.c,v 1.78 2005/10/13 14:47:05 xleroy Exp $ */
+/* $Id: sys.c,v 1.78.2.1 2005/11/09 15:58:03 doligez Exp $ */
 
 /* Basic system calls */
 
@@ -33,6 +33,10 @@
 #endif
 #ifdef HAS_TIMES
 #include <sys/times.h>
+#endif
+#ifdef HAS_GETRUSAGE
+#include <sys/time.h>
+#include <sys/resource.h>
 #endif
 #ifdef HAS_GETTIMEOFDAY
 #include <sys/time.h>
@@ -247,20 +251,28 @@ CAMLprim value caml_sys_system_command(value command)
 
 CAMLprim value caml_sys_time(value unit)
 {
-#ifdef HAS_TIMES
-#ifndef CLK_TCK
-#ifdef HZ
-#define CLK_TCK HZ
+#ifdef HAS_GETRUSAGE
+  struct rusage ru;
+
+  getrusage (RUSAGE_SELF, &ru);
+  return caml_copy_double (ru.ru_utime.tv_sec + ru.ru_utime.tv_usec / 1e6
+                           + ru.ru_stime.tv_sec + ru.ru_stime.tv_usec / 1e6);
 #else
-#define CLK_TCK 60
-#endif
-#endif
-  struct tms t;
-  times(&t);
-  return caml_copy_double((double)(t.tms_utime + t.tms_stime) / CLK_TCK);
-#else
-  /* clock() is standard ANSI C */
-  return caml_copy_double((double)clock() / CLOCKS_PER_SEC);
+  #ifdef HAS_TIMES
+    #ifndef CLK_TCK
+      #ifdef HZ
+        #define CLK_TCK HZ
+      #else
+        #define CLK_TCK 60
+      #endif
+    #endif
+    struct tms t;
+    times(&t);
+    return caml_copy_double((double)(t.tms_utime + t.tms_stime) / CLK_TCK);
+  #else
+    /* clock() is standard ANSI C */
+    return caml_copy_double((double)clock() / CLOCKS_PER_SEC);
+  #endif
 #endif
 }
 

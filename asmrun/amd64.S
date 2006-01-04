@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: amd64.S,v 1.9 2004/07/13 12:18:53 xleroy Exp $ */
+/* $Id: amd64.S,v 1.9.4.1 2005/12/18 15:42:06 xleroy Exp $ */
 
 /* Asm part of the runtime system, AMD64 processor */
 /* Must be preprocessed by cpp */
@@ -52,7 +52,7 @@ FUNCTION(caml_call_gc)
         pushq   %rdi
         pushq   %rbx
         pushq   %rax
-        movq    %rsp, caml_gc_regs
+        movq    %rsp, caml_gc_regs(%rip)
     /* Save floating-point registers */
         subq    $(16*8), %rsp
         movlpd  %xmm0, 0*8(%rsp)

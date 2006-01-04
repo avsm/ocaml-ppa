@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pr_o.ml,v 1.49 2005/08/13 20:59:37 doligez Exp $ *)
+(* $Id: pr_o.ml,v 1.49.2.1 2006/01/03 18:12:30 mauny Exp $ *)
 
 open Pcaml;
 open Spretty;
@@ -1407,7 +1407,9 @@ pr_expr.pr_levels :=
         <:expr< for $_$ = $_$ $to:_$ $_$ do { $list:_$ } >> |
         <:expr< while $_$ do { $list:_$ } >> | <:expr< ($list: _$) >> |
         <:expr< let $opt:_$ $list:_$ in $_$ >> |
-        <:expr< let module $_$ = $_$ in $_$ >> as e ->
+        <:expr< let module $_$ = $_$ in $_$ >> |
+        <:expr< new $list:_$ >> | 
+        <:expr< assert $_$ >> | <:expr< lazy $_$ >> as e ->
           fun curr next dg k ->
             [: `S LO "("; `expr e "" [: `HVbox [: `S RO ")"; k :] :] :]
       | e -> fun curr next _ k -> [: `not_impl "expr" e :] ]}];

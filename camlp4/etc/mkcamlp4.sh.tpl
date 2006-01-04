@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: mkcamlp4.sh.tpl,v 1.8 2004/11/27 01:04:19 doligez Exp $
+# $Id: mkcamlp4.sh.tpl,v 1.8.4.1 2006/01/03 17:12:25 mauny Exp $
 
 OLIB="`ocamlc -where`"
 LIB="LIBDIR/camlp4"
@@ -13,15 +13,13 @@ while test "" != "$1"; do
     case "$1" in
     -I) INCL="$INCL -I $2"; shift;;
     -version) echo "mkcamlp4, version $VERSION"; exit;;
-    *)
+    [a-zA-Z]*.cmi)
         j=`basename "$1" .cmi`
-        if test "$j.cmi" = "$1"; then
-            first="`expr "$j" : '\(.\)' | tr 'a-z' 'A-Z'`"
-            rest="`expr "$j" : '.\(.*\)'`"
-            INTERFACES="$INTERFACES $first$rest"
-        else
-            OPTS="$OPTS $1"
-        fi;;
+        first="`expr "$j" : '\(.\)' | tr 'a-z' 'A-Z'`"
+        rest="`expr "$j" : '.\(.*\)'`"
+        INTERFACES="$INTERFACES $first$rest"
+        ;;
+    *) OPTS="$OPTS $1";;
     esac
     shift
 done
