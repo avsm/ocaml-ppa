@@ -1,4 +1,5 @@
 versioned_libdir
+manpages_section
 objinfo
 dumpobj
 man-ocamlmklib
