@@ -44,10 +44,15 @@ abi-sed:
 	  sed -e 's%#OcamlABI#%$(OCAMLABI)%' -e 's%#OcamlMAJOR#%$(OCAMLMAJOR)%' $$t >$${t%.in};	\
 	done
 
-# generate ocaml-native-compilers' Architecture field
-# should never be called automatically
+# Generate ocaml-native-compilers' Architecture field.
+# Should never be called automatically.
 debian/control:
 	sed -e 's/#OcamlNativeArchs#/$(NATIVE_ARCHS)/g' debian/control.in > $@
+
+# Generate list of files ocaml-source.
+# Should never be called automatically.
+debian/ocaml-source.files:
+	tar ztf ../upstream/ocaml_3.09.1.orig.tar.gz | cut -d/ -f2- | grep -v ^$$ | grep -v .*/$$ | grep -v .cvsignore > debian/ocaml-source.files
 
 
 config-stamp: configure abi-sed
@@ -70,7 +75,7 @@ config-stamp: configure abi-sed
 	touch config-stamp
 
 
-#Architecture 
+# Architecture
 build: build-arch build-indep
 
 build-arch: build-arch-stamp
