@@ -1,4 +1,4 @@
-ocaml (3.09.1-1) UNRELEASED; urgency=low
+ocaml (3.09.1-1) unstable; urgency=low
 
   [ Samuel Mimram ]
   * Removing possibly leftover /usr/lib/ocaml/ld.conf, closes: #300846.
