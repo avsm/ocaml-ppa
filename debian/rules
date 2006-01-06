@@ -117,7 +117,7 @@ clean: abi-sed unpatch
 		mv boot.debian boot;	\
 	fi
 	-$(MAKE) -C emacs clean
-	-$(MAKE) -C debian/ocaml-md5sums distclean
+	-$(MAKE) -C debian/ocaml-md5sums clean
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	-cp -f /usr/share/misc/config.sub config/gnu/config.sub
 endif
