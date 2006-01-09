@@ -292,4 +292,4 @@ binary-arch: build-arch install-arch
 	dh_builddeb -s
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch abi-sed
+.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch abi-sed build-arch
