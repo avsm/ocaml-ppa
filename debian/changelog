@@ -1,4 +1,4 @@
-ocaml (3.09.1-2) UNRELEASED; urgency=low
+ocaml (3.09.1-2) unstable; urgency=low
 
   [ Samuel Mimram ]
   * Cleaning ocaml-md5sums, closes: #346279.
@@ -11,7 +11,7 @@ ocaml (3.09.1-2) UNRELEASED; urgency=low
     gcc). This should unbreak ocamlopt -pack on alpha, and thus fix the build
     failure of camomile.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Thu, 12 Jan 2006 15:29:51 +0100
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Thu, 12 Jan 2006 15:33:00 +0100
 
 ocaml (3.09.1-1) unstable; urgency=low
 
