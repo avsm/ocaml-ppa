@@ -4,3 +4,4 @@ dumpobj
 man-ocamlmklib
 kbsd-gnu
 alpha_ld_no-relax
+call_ld_via_gcc

@@ -1,0 +1,23 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## call_ld_via_gcc.dpatch by Julien Cristau <julien.cristau@ens-lyon.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Make ocamlopt -output-obj and -pack call ld via gcc instead of 
+## DP: directly, so the options we pass to it can be the same as in the normal 
+## DP: linking case
+
+@DPATCH@
+
+--- ocaml-3.09.1.orig/Makefile	2005-09-24 18:20:36.000000000 +0200
++++ ocaml-3.09.1/Makefile	2006-01-12 10:17:42.000000000 +0100
+@@ -324,8 +324,8 @@
+             -e 's|%%BYTELINK%%|$(BYTECC) $(BYTECCLINKOPTS)|' \
+             -e 's|%%NATIVECC%%|$(NATIVECC) $(NATIVECCCOMPOPTS)|' \
+             -e 's|%%NATIVELINK%%|$(NATIVECC) $(NATIVECCLINKOPTS)|' \
+-            -e 's|%%PARTIALLD%%|ld -r $(NATIVECCLINKOPTS)|' \
+-            -e 's|%%PACKLD%%|ld -r $(NATIVECCLINKOPTS)|' \
++            -e 's|%%PARTIALLD%%|gcc -nostdlib -Wl,-r $(NATIVECCLINKOPTS)|' \
++            -e 's|%%PACKLD%%|gcc -nostdlib -Wl,-r $(NATIVECCLINKOPTS)|' \
+             -e 's|%%BYTECCLIBS%%|$(BYTECCLIBS)|' \
+             -e 's|%%NATIVECCLIBS%%|$(NATIVECCLIBS)|' \
+             -e 's|%%RANLIBCMD%%|$(RANLIBCMD)|' \

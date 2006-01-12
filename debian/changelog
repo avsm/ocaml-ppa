@@ -5,8 +5,13 @@ ocaml (3.09.1-2) UNRELEASED; urgency=low
 
   [ Julien Cristau ]
   * build-arch is a phony target.
+  * Add patch to make ocamlopt -output-obj and ocamlopt -pack call the linker
+    via gcc instead of directly, which allows us to pass the same linking
+    options in these cases and in the common case (where ocamlopt already used
+    gcc). This should unbreak ocamlopt -pack on alpha, and thus fix the build
+    failure of camomile.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Mon,  9 Jan 2006 23:43:40 +0100
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Thu, 12 Jan 2006 15:29:51 +0100
 
 ocaml (3.09.1-1) unstable; urgency=low
 
