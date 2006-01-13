@@ -9,7 +9,7 @@ FLAVOR=$1
 PACKAGE=ocaml-mode
 
 case ${FLAVOR} in
-    emacs20|emacs21|xemacs21)
+    emacs20|emacs21|xemacs21|emacs-snapshot)
 	;;
     *)
 	echo install/${PACKAGE}: Ignoring emacsen flavor ${FLAVOR}
@@ -41,7 +41,7 @@ install -m 755 -d ${ELCDIR}
 
 cd ${ELDIR}
 case "${FLAVOR}" in
-    emacs20 | emacs21)
+    emacs20 | emacs21 | emacs-snapshot)
 	FILES=`ls *.el | grep -v caml-xemacs`
 	;;
 
