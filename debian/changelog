@@ -1,3 +1,10 @@
+ocaml (3.09.1-4) UNRELEASED; urgency=low
+
+  * Remove dh_gencontrol line for ocaml-source from the binary-arch target
+    (ocaml-source is built in binary-indep).
+
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Thu,  9 Feb 2006 20:25:12 +0100
+
 ocaml (3.09.1-3) unstable; urgency=low
 
   * Enable ocaml-mode for emacs-snapshot (Closes: #347917).

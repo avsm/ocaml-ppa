@@ -286,7 +286,6 @@ binary-arch: install-arch
 	dh_gencontrol -pocaml -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_gencontrol -pocaml-base-nox -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_gencontrol -pocaml-base -- -VF:OCamlABI="$(OCAMLABI)"
-	dh_gencontrol -pocaml-source -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_gencontrol -pocaml-interp -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_gencontrol -pocaml-compiler-libs -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_md5sums -s
