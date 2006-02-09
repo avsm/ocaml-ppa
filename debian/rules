@@ -43,6 +43,7 @@ abi-sed:
 	for t in `find debian/ -name \*.in | grep -v debian/control.in`; do \
 	  sed -e 's%#OcamlABI#%$(OCAMLABI)%' -e 's%#OcamlMAJOR#%$(OCAMLMAJOR)%' $$t >$${t%.in};	\
 	done
+	touch $@
 
 # Generate ocaml-native-compilers' Architecture field.
 # Should never be called automatically.
@@ -101,14 +102,14 @@ endif
 
 build-indep: build-indep-stamp
 build-indep-stamp: patch-stamp config-stamp
-
 	# Add here commands to compile the indep part of the package.
 	#$(MAKE) doc
+	touch $@
 
 clean: abi-sed unpatch
 	dh_testdir
 	dh_testroot
-	rm -f build-arch-stamp build-indep-stamp config-stamp
+	rm -f build-arch-stamp build-indep-stamp config-stamp abi-sed
 
 	# Add here commands to clean up after the build process.
 	-$(MAKE) clean
@@ -128,7 +129,7 @@ endif
 	dh_clean debian/README.labltk camlp4/config/Makefile.cnf camlp4/config/Makefile config/m.h config/s.h config/Makefile emacs/ocamltags driver/ocamlcomp.sh
 
 install: install-indep install-arch
-install-indep:
+install-indep: build-indep
 	dh_testdir
 	dh_testroot
 	dh_clean -k -i
@@ -154,7 +155,7 @@ install-indep:
 
 	dh_install -i
 
-install-arch:
+install-arch: build-arch
 	dh_testdir
 	dh_testroot
 	dh_clean -k -a
@@ -261,14 +262,14 @@ binary-common:
 	dh_installdeb
 
 # Build architecture independant packages using the common target.
-binary-indep: build-indep install-indep
+binary-indep: install-indep
 	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
 	dh_gencontrol -i -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_md5sums -i
 	dh_builddeb -i
 
 # Build architecture dependant packages using the common target.
-binary-arch: build-arch install-arch
+binary-arch: install-arch
 	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
 	dh_shlibdeps -s
 	if [ ! -e opt-built-stamp ]; then			\
@@ -292,4 +293,4 @@ binary-arch: build-arch install-arch
 	dh_builddeb -s
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch abi-sed build-arch
+.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch build-arch
