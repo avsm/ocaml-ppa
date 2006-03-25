@@ -167,7 +167,7 @@ install-arch: build-arch
 
 	# Let's install ocaml first.
 	$(MAKE) install PREFIX=$(CURDIR)/debian/ocaml-nox/usr
-	install -m 644 debian/JoeCaml.xpm \
+	install -m 644 debian/ocaml.xpm \
 		$(CURDIR)/debian/ocaml-interp/usr/share/pixmaps
 	install -m 644 debian/ocaml-nox.override \
 		$(CURDIR)/debian/ocaml-nox/usr/share/lintian/overrides/ocaml-nox
