@@ -5,21 +5,16 @@
 ## DP: Upstream fix for camlp4 (PR#3948, debian bug 355651)
 
 @DPATCH@
-
-Index: camlp4/etc/pr_o.ml
-===================================================================
-RCS file: /net/yquem/devel/caml/repository/csl/camlp4/etc/pr_o.ml,v
-retrieving revision 1.49.2.1
-diff -u -r1.49.2.1 pr_o.ml
---- camlp4/etc/pr_o.ml	3 Jan 2006 18:12:30 -0000	1.49.2.1
-+++ camlp4/etc/pr_o.ml	5 Jan 2006 10:39:28 -0000
+diff -urNad ocaml-3.09.1~/camlp4/etc/pr_o.ml ocaml-3.09.1/camlp4/etc/pr_o.ml
+--- ocaml-3.09.1~/camlp4/etc/pr_o.ml    2006-01-03 18:12:30.000000000 +0000
++++ ocaml-3.09.1/camlp4/etc/pr_o.ml     2006-03-25 13:42:35.000000000 +0000
 @@ -1408,7 +1408,8 @@
          <:expr< while $_$ do { $list:_$ } >> | <:expr< ($list: _$) >> |
          <:expr< let $opt:_$ $list:_$ in $_$ >> |
          <:expr< let module $_$ = $_$ in $_$ >> |
 -        <:expr< new $list:_$ >> | 
-+	(* Note: `new' is treated differently in pa_o and in pa_r,
-+	   and should not occur at this level *)
++       (* Note: `new' is treated differently in pa_o and in pa_r,
++          and should not occur at this level *)
          <:expr< assert $_$ >> | <:expr< lazy $_$ >> as e ->
            fun curr next dg k ->
              [: `S LO "("; `expr e "" [: `HVbox [: `S RO ")"; k :] :] :]
