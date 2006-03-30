@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: win32.c,v 1.42.2.1 2005/12/07 12:30:59 xleroy Exp $ */
+/* $Id: win32.c,v 1.42.2.2 2006/03/22 13:13:45 xleroy Exp $ */
 
 /* Thread interface for Win32 threads */
 
@@ -256,7 +256,8 @@ static DWORD WINAPI caml_thread_tick(void * arg)
 {
   while(1) {
     Sleep(Thread_timeout);
-    pending_signals[SIGTIMER] = 1;
+    caml_pending_signals[SIGTIMER] = 1;
+    caml_signals_are_pending = 1;
 #ifdef NATIVE_CODE
     young_limit = young_end;
 #else

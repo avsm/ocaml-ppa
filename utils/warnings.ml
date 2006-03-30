@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: warnings.ml,v 1.23 2005/09/15 03:09:26 garrigue Exp $ *)
+(* $Id: warnings.ml,v 1.23.2.1 2006/02/18 04:43:27 garrigue Exp $ *)
 
 (* Please keep them in alphabetical order *)
 
@@ -147,7 +147,8 @@ let message = function
   | Not_principal s -> s^" is not principal."
   | Without_principality s -> s^" without principality."
   | Unused_argument -> "this argument will not be used by the function."
-  | Nonreturning_statement -> "this statement never returns."
+  | Nonreturning_statement ->
+      "this statement never returns (or has an unsound type.)"
   | Camlp4 s -> s
   | All_clauses_guarded ->
       "bad style, all clauses in this pattern-matching are guarded."

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit.mlp,v 1.41 2005/10/14 16:41:06 xleroy Exp $ *)
+(* $Id: emit.mlp,v 1.41.2.1 2006/03/29 14:49:19 doligez Exp $ *)
 
 module LabelSet =
   Set.Make(struct type t = Linearize.label let compare = compare end)
@@ -281,7 +281,7 @@ let emit_call_gc gc =
 let rdata_section =
   match Config.system with
     "digital" -> ".rdata"
-  | "linux" | "openbsd" | "netbsd" | "freebsd" -> ".section .rodata"
+  | "linux" | "openbsd" | "netbsd" | "freebsd" | "gnu" -> ".section .rodata"
   | _ -> assert false
 
 (* Names of various instructions *)

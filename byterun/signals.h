@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: signals.h,v 1.25 2005/10/12 12:33:47 xleroy Exp $ */
+/* $Id: signals.h,v 1.25.2.1 2006/03/22 13:13:45 xleroy Exp $ */
 
 #ifndef CAML_SIGNALS_H
 #define CAML_SIGNALS_H
@@ -24,6 +24,7 @@
 
 /* <private> */
 extern value caml_signal_handlers;
+CAMLextern intnat volatile caml_signals_are_pending;
 CAMLextern intnat volatile caml_pending_signals[];
 CAMLextern int volatile caml_something_to_do;
 extern int volatile caml_force_major_slice;

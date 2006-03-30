@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit.mlp,v 1.23 2005/10/07 09:34:19 garrigue Exp $ *)
+(* $Id: emit.mlp,v 1.23.2.1 2006/03/29 14:49:19 doligez Exp $ *)
 
 (* Emission of Sparc assembly code *)
 
@@ -76,7 +76,8 @@ let emit_size lbl =
     `	.size	{emit_symbol lbl},.-{emit_symbol lbl}\n`
 
 let rodata () =
-  if Config.system = "solaris" (* || Config.system = "linux" *) then
+  if Config.system = "solaris" (* || Config.system = "linux" *)
+  (* || Config.system = "gnu" *) then
     `	.section \".rodata\"\n`
   else
     `	.data\n`

@@ -11,9 +11,10 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: checkstack.c,v 1.2 2002/08/09 11:10:34 xleroy Exp $ */
+/* $Id: checkstack.c,v 1.2.16.1 2006/01/23 17:36:47 doligez Exp $ */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/resource.h>

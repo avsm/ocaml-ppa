@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: opterrors.ml,v 1.18 2003/06/19 15:53:49 xleroy Exp $ *)
+(* $Id: opterrors.ml,v 1.18.10.1 2006/02/09 14:12:18 doligez Exp $ *)
 
 (* WARNING: if you change something in this file, you must look at
    errors.ml to see if you need to make the same changes there.
@@ -65,7 +65,7 @@ let report_error ppf exn =
   | Sys_error msg ->
       fprintf ppf "I/O error: %s" msg
   | Warnings.Errors (n) ->
-      fprintf ppf "@.Error: %d error-enabled warnings occurred." n
+      fprintf ppf "@.Error: error-enabled warnings (%d occurrences)" n
   | x -> fprintf ppf "@]"; raise x in
 
   fprintf ppf "@[%a@]@." report exn

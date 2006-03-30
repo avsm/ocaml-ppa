@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit.mlp,v 1.10.2.1 2005/12/17 16:23:09 xleroy Exp $ *)
+(* $Id: emit.mlp,v 1.10.2.2 2006/03/29 14:49:19 doligez Exp $ *)
 
 (* Emission of x86-64 (AMD 64) assembly code *)
 
@@ -578,7 +578,7 @@ let emit_float_constant (lbl, cst) =
 
 let emit_profile () =
   match Config.system with
-  | "linux" ->
+  | "linux" | "gnu" ->
       (* mcount preserves rax, rcx, rdx, rsi, rdi, r8, r9 explicitly
          and rbx, rbp, r12-r15 like all C functions.
          We need to preserve r10 and r11 ourselves, since Caml can
