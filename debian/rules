@@ -46,10 +46,10 @@ abi-sed:
 	touch $@
 
 abi-sed-clean:
+	rm -f abi-sed
 	for t in `find debian/ -name \*.in | grep -v debian/control.in`; do \
 	  rm -f $${t%.in}; \
 	done
-	rm -f abi-sed
 
 # Generate ocaml-native-compilers' Architecture field.
 # Should never be called automatically.
@@ -82,7 +82,7 @@ config-stamp: configure abi-sed
 	touch config-stamp
 
 
-patch: abi-sed
+patch-stamp: abi-sed
 # Architecture
 build: build-arch build-indep
 
