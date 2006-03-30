@@ -45,6 +45,12 @@ abi-sed:
 	done
 	touch $@
 
+abi-sed-clean:
+	for t in `find debian/ -name \*.in | grep -v debian/control.in`; do \
+	  rm -f $${t%.in}; \
+	done
+	rm -f abi-sed
+
 # Generate ocaml-native-compilers' Architecture field.
 # Should never be called automatically.
 debian/control:
@@ -127,6 +133,7 @@ ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 endif
 
 	dh_clean debian/README.labltk camlp4/config/Makefile.cnf camlp4/config/Makefile config/m.h config/s.h config/Makefile emacs/ocamltags driver/ocamlcomp.sh
+	debian/rules abi-sed-clean
 
 install: install-indep install-arch
 install-indep: build-indep
@@ -292,4 +299,4 @@ binary-arch: install-arch
 	dh_builddeb -s
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch build-arch
+.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch build-arch abi-sed-clean
