@@ -21,7 +21,7 @@ exit 0
 diff -ur ocaml.orig/camlp4/config/configure_batch ocaml/camlp4/config/configure_batch
 --- ocaml.orig/camlp4/config/configure_batch.orig	2003-09-30 18:11:57.000000000 +0200
 +++ ocaml/camlp4/config/configure_batch	2003-09-30 18:12:51.000000000 +0200
-@@ -94,13 +94,13 @@
+@@ -103,13 +103,13 @@
     *) echo "BINDIR=$bindir" >> Makefile.cnf;;
  esac
  case "$libdir" in
@@ -42,7 +42,7 @@ diff -ur ocaml.orig/camlp4/config/configure_batch ocaml/camlp4/config/configure_
 diff -ur ocaml.orig/configure ocaml/configure
 --- ocaml.orig/configure	2003-09-30 18:09:47.000000000 +0200
 +++ ocaml/configure	2003-09-30 18:10:12.000000000 +0200
-@@ -149,8 +149,8 @@
+@@ -146,8 +146,8 @@
     *) echo "BINDIR=$bindir" >> Makefile;;
  esac
  case "$libdir" in

@@ -7,18 +7,18 @@
 ## DP: gcc.
 
 @DPATCH@
-
---- ocaml-3.09.1.orig/Makefile	2005-09-24 18:20:36.000000000 +0200
-+++ ocaml-3.09.1/Makefile	2006-01-12 10:17:42.000000000 +0100
+diff -urNad ocaml-3.09.1+3.09.2rc1~/Makefile ocaml-3.09.1+3.09.2rc1/Makefile
+--- ocaml-3.09.1+3.09.2rc1~/Makefile	2006-03-30 17:40:58.000000000 +0200
++++ ocaml-3.09.1+3.09.2rc1/Makefile	2006-03-30 17:41:00.000000000 +0200
 @@ -313,6 +313,7 @@
  partialclean::
-        rm -f ocaml toplevel/toplevellib.cma
+ 	rm -f ocaml toplevel/toplevellib.cma
  
 +Wl = -Wl,
  # The configuration file
  
  utils/config.ml: utils/config.mlp config/Makefile
-@@ -324,8 +324,8 @@
+@@ -324,8 +325,8 @@
              -e 's|%%BYTELINK%%|$(BYTECC) $(BYTECCLINKOPTS)|' \
              -e 's|%%NATIVECC%%|$(NATIVECC) $(NATIVECCCOMPOPTS)|' \
              -e 's|%%NATIVELINK%%|$(NATIVECC) $(NATIVECCLINKOPTS)|' \
