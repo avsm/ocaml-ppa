@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selectgen.mli,v 1.6 2002/11/04 16:25:09 xleroy Exp $ *)
+(* $Id: selectgen.mli,v 1.6.18.1 2006/03/01 13:46:56 xleroy Exp $ *)
 
 (* Selection of pseudo-instructions, assignment of pseudo-registers,
    sequentialization. *)
@@ -28,6 +28,8 @@ class virtual selector_generic : object
   method virtual select_addressing :
     Cmm.expression -> Arch.addressing_mode * Cmm.expression
     (* Must be defined to select addressing modes *)
+  method is_simple_expr: Cmm.expression -> bool
+    (* Can be overriden to reflect special extcalls known to be pure *)
   method select_operation :
     Cmm.operation ->
     Cmm.expression list -> Mach.operation * Cmm.expression list

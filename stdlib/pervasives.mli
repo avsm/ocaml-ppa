@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pervasives.mli,v 1.104 2005/10/25 18:34:07 doligez Exp $ *)
+(* $Id: pervasives.mli,v 1.104.2.1 2006/02/01 14:32:00 doligez Exp $ *)
 
 (** The initially opened module.
 
@@ -172,10 +172,12 @@ external ( mod ) : int -> int -> int = "%modint"
    [x = (x / y) * y + x mod y] and
    [abs(x mod y) <= abs(y)-1].
    If [y = 0], [x mod y] raises [Division_by_zero].
-   Notice that [x mod y] is negative if and only if [x < 0]. *)
+   Notice that [x mod y] is nonpositive if and only if [x < 0].
+   Raise [Division_by_zero] if [y] is zero. *)
 
 val abs : int -> int
-(** Return the absolute value of the argument. *)
+(** Return the absolute value of the argument.  Note that this may be
+  negative if the argument is [min_int]. *)
 
 val max_int : int
 (** The greatest representable integer. *)

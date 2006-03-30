@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: stack.h,v 1.29 2005/09/22 14:21:47 xleroy Exp $ */
+/* $Id: stack.h,v 1.29.2.1 2006/03/01 13:46:56 xleroy Exp $ */
 
 /* Machine-dependent interface with the asm code */
 
@@ -34,7 +34,11 @@
 
 #ifdef TARGET_i386
 #define Saved_return_address(sp) *((intnat *)((sp) - 4))
+#ifdef SYS_macosx
+#define Callback_link(sp) ((struct caml_context *)((sp) + 16))
+#else
 #define Callback_link(sp) ((struct caml_context *)((sp) + 8))
+#endif
 #endif
 
 #ifdef TARGET_mips

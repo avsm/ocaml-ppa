@@ -11,12 +11,13 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: md5.c,v 1.19 2005/09/22 14:21:50 xleroy Exp $ */
+/* $Id: md5.c,v 1.19.2.1 2006/03/22 12:59:58 doligez Exp $ */
 
 #include <string.h>
 #include "alloc.h"
 #include "fail.h"
 #include "md5.h"
+#include "memory.h"
 #include "mlvalues.h"
 #include "io.h"
 #include "reverse.h"
@@ -36,6 +37,7 @@ CAMLprim value caml_md5_string(value str, value ofs, value len)
 
 CAMLprim value caml_md5_chan(value vchan, value len)
 {
+  CAMLparam2 (vchan, len);
   struct channel * chan = Channel(vchan);
   struct MD5Context ctx;
   value res;
@@ -63,7 +65,7 @@ CAMLprim value caml_md5_chan(value vchan, value len)
   res = caml_alloc_string(16);
   caml_MD5Final(&Byte_u(res, 0), &ctx);
   Unlock(chan);
-  return res;
+  CAMLreturn (res);
 }
 
 /*
@@ -163,7 +165,7 @@ CAMLexport void caml_MD5Update(struct MD5Context *ctx, unsigned char *buf,
 }
 
 /*
- * Final wrapup - pad to 64-byte boundary with the bit pattern 
+ * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
 CAMLexport void caml_MD5Final(unsigned char *digest, struct MD5Context *ctx)

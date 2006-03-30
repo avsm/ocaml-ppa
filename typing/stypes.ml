@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stypes.ml,v 1.8 2003/07/25 18:00:40 doligez Exp $ *)
+(* $Id: stypes.ml,v 1.8.20.1 2006/01/05 15:59:35 doligez Exp $ *)
 
 (* Recording and dumping (partial) type information *)
 
@@ -107,7 +107,7 @@ let print_info pp ti =
       fprintf pp "@.type(@.  ";
       printtyp_reset_maybe loc;
       Printtyp.mark_loops typ;
-      Printtyp.type_expr pp typ;
+      Printtyp.type_sch pp typ;
       fprintf pp "@.)@.";
 ;;
 
