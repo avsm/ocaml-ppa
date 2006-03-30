@@ -82,6 +82,7 @@ config-stamp: configure abi-sed
 	touch config-stamp
 
 
+patch: abi-sed
 # Architecture
 build: build-arch build-indep
 
