@@ -2,7 +2,7 @@ versioned_libdir
 objinfo
 dumpobj
 man-ocamlmklib
-kbsd-gnu
+#kbsd-gnu
 alpha_ld_no-relax
 call_ld_with_proper_flags
-pr_o
+#pr_o

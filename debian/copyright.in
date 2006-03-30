@@ -1,9 +1,8 @@
 This package was debianized by Sven Luther <luther@debian.org> on
 Fri, 14 Dec 2001 12:44:03 +0100.
 
-It was downloaded from
-
-  http://caml.inria.fr/pub/distrib/ocaml-#OcamlMAJOR#/ocaml-#OcamlABI#.tar.gz
+It was downloaded from :pserver:anoncvs@camlcvs.inria.fr/caml
+(module ocaml, tag ocaml3092rc1).
 
 Upstream Authors: Xavier Leroy, Jerome Vouillon and Damien Doligez
 Upstream Author for the camlp4 part: Daniel de Rauglaudre
