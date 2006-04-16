@@ -17,6 +17,7 @@ Bug fixes:
 - otherlibs/labltk: ocamlbrowser ignores its command line options PR#3961
 - otherlibs/unix: Unix.times wrong under Mac OS X PR#3960
 - otherlibs/unix: wrong doc for execvp and execvpe PR#3973
+- otherlibs/win32unix: random crash in Unix.stat PR#3998
 - stdlib: update_mod not found under Windows PR#3847
 - stdlib: Filename.dirname/basename wrong on Win32 PR#3933
 - stdlib: incomplete documentation of Pervasives.abs PR#3967
@@ -2037,4 +2038,4 @@ Caml Special Light 1.06:
 
 * First public release.
 
-$Id: Changes,v 1.156.2.5 2006/03/30 12:06:17 doligez Exp $
+$Id: Changes,v 1.156.2.6 2006/04/14 09:53:47 doligez Exp $
