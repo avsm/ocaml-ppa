@@ -9,7 +9,7 @@
 include /usr/share/dpatch/dpatch.make
 PACKAGE = ocaml
 OCAMLMAJOR = 3.09
-OCAMLMINOR = 2+rc1
+OCAMLMINOR = 2
 OCAMLABI = $(OCAMLMAJOR).$(OCAMLMINOR)
 STDLIBDIR = /usr/lib/ocaml/$(OCAMLABI)
 MD5SUMSDIR = /var/lib/ocaml/md5sums
@@ -59,7 +59,7 @@ debian/control:
 # Generate list of files ocaml-source.
 # Should never be called automatically.
 debian/ocaml-source.files:
-	tar ztf ../upstream/ocaml_3.09.1+3.09.2rc1.orig.tar.gz | cut -d/ -f2- | grep -v ^$$ | grep -v .*/$$ | grep -v .cvsignore > debian/ocaml-source.files
+	tar ztf ../upstream/ocaml_3.09.2.orig.tar.gz | cut -d/ -f2- | grep -v ^$$ | grep -v .*/$$ | grep -v .cvsignore > debian/ocaml-source.files
 
 
 config-stamp: configure abi-sed
