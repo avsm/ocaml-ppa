@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arch.ml,v 1.12 2003/02/25 15:50:12 xleroy Exp $ *)
+(* $Id: arch.ml,v 1.12.18.1 2006/03/01 13:46:56 xleroy Exp $ *)
 
 (* Machine-specific command-line options *)
 
@@ -145,3 +145,10 @@ let print_specific_operation printreg op ppf arg =
         printreg ppf arg.(i)
       done
       
+(* Stack alignment constraints *)
+
+let stack_alignment =
+  match Config.system with
+  | "macosx" -> 16
+  | _ -> 4
+

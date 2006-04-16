@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: parser.mly,v 1.123 2005/03/23 03:08:37 garrigue Exp $ */
+/* $Id: parser.mly,v 1.123.4.1 2006/01/24 13:47:51 doligez Exp $ */
 
 /* The parser definition */
 
@@ -1296,6 +1296,10 @@ simple_core_type2:
       { mktyp(Ptyp_class($5, List.rev $2, $6)) }
   | LBRACKET tag_field RBRACKET
       { mktyp(Ptyp_variant([$2], true, None)) }
+/* PR#3835: this is not LR(1), would need lookahead=2
+  | LBRACKET simple_core_type2 RBRACKET
+      { mktyp(Ptyp_variant([$2], true, None)) }
+*/
   | LBRACKET BAR row_field_list RBRACKET
       { mktyp(Ptyp_variant(List.rev $3, true, None)) }
   | LBRACKET row_field BAR row_field_list RBRACKET

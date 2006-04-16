@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unix.mli,v 1.81.4.1 2005/11/22 11:58:47 doligez Exp $ *)
+(* $Id: unix.mli,v 1.81.4.2 2006/03/21 15:50:29 doligez Exp $ *)
 
 (** Interface to the Unix system *)
 
@@ -165,11 +165,11 @@ val execve : string -> string array -> string array -> 'a
    environment to the program executed. *)
 
 val execvp : string -> string array -> 'a
-(** Same as {!Unix.execv} respectively, except that
+(** Same as {!Unix.execv}, except that
    the program is searched in the path. *)
 
 val execvpe : string -> string array -> string array -> 'a
-(** Same as {!Unix.execvp} respectively, except that
+(** Same as {!Unix.execve}, except that
    the program is searched in the path. *)
 
 val fork : unit -> int

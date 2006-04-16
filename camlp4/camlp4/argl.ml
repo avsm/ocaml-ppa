@@ -1,5 +1,5 @@
 (* camlp4r q_MLast.cmo *)
-(* $Id: argl.ml,v 1.18 2005/10/21 10:55:32 mauny Exp $ *)
+(* $Id: argl.ml,v 1.18.2.1 2006/01/11 17:44:58 mauny Exp $ *)
 
 open Printf;
 
@@ -132,6 +132,8 @@ value print_warning loc s =
 
 value rec parse_file pa getdir useast =
   let name = Pcaml.input_file.val in
+  let (_,_,fname) = Pcaml.position.val in
+  let () = fname.val := name in
   do {
     Pcaml.warning.val := print_warning;
     let ic = if name = "-" then stdin else open_in_bin name in

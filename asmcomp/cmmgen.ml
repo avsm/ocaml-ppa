@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: cmmgen.ml,v 1.103.2.2 2005/12/11 10:21:12 xleroy Exp $ *)
+(* $Id: cmmgen.ml,v 1.103.2.3 2006/03/23 15:22:55 xleroy Exp $ *)
 
 (* Translation from closed lambda to C-- *)
 
@@ -1684,6 +1684,7 @@ let emit_all_constants cont =
     (fun (lbl, cst) -> c := Cdata(emit_constant lbl cst []) :: !c)
     !structured_constants;
   structured_constants := [];
+  Hashtbl.clear immstrings;   (* PR#3979 *)
   List.iter
     (fun (symb, fundecls) ->
         c := Cdata(emit_constant_closure symb fundecls []) :: !c)

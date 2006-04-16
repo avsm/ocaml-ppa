@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pr_o.ml,v 1.49.2.1 2006/01/03 18:12:30 mauny Exp $ *)
+(* $Id: pr_o.ml,v 1.49.2.2 2006/01/05 10:44:21 mauny Exp $ *)
 
 open Pcaml;
 open Spretty;
@@ -1408,7 +1408,8 @@ pr_expr.pr_levels :=
         <:expr< while $_$ do { $list:_$ } >> | <:expr< ($list: _$) >> |
         <:expr< let $opt:_$ $list:_$ in $_$ >> |
         <:expr< let module $_$ = $_$ in $_$ >> |
-        <:expr< new $list:_$ >> | 
+	(* Note: `new' is treated differently in pa_o and in pa_r,
+	   and should not occur at this level *)
         <:expr< assert $_$ >> | <:expr< lazy $_$ >> as e ->
           fun curr next dg k ->
             [: `S LO "("; `expr e "" [: `HVbox [: `S RO ")"; k :] :] :]

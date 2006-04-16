@@ -11,7 +11,7 @@
 ;*                                                                   *
 ;*********************************************************************
 
-; $Id: hppa.S,v 1.25 2004/05/16 09:09:22 xleroy Exp $
+; $Id: hppa.S,v 1.25.8.1 2006/03/29 14:49:19 doligez Exp $
 
 ; Asm part of the runtime system for the HP PA-RISC processor.
 ; Must be preprocessed by cpp
@@ -30,7 +30,7 @@
 #define LOWLABEL(x) RR%x
 #endif
 
-#ifdef SYS_linux
+#if defined(SYS_linux) || defined(SYS_gnu)
 #define G(x) x
 #define CODESPACE .text
 #define CODE_ALIGN 8
@@ -69,7 +69,7 @@ caml_exception_pointer       .comm 8
 caml_required_size           .comm 8
 #endif
 
-#ifdef SYS_linux
+#if defined(SYS_linux) || defined(SYS_gnu)
 	.align	8
 	.comm	G(young_limit), 4
 	.comm	G(young_ptr), 4

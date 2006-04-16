@@ -12,7 +12,7 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: main.c,v 1.19 2004/11/27 01:04:19 doligez Exp $ */
+/* $Id: main.c,v 1.19.4.1 2006/01/23 17:38:43 doligez Exp $ */
 
 #include <signal.h>
 #include <string.h>
@@ -157,6 +157,7 @@ void getargs(int argc, char **argv)
         {
         case '\0':
             input_file = stdin;
+            file_prefix = "stdin";
             if (i + 1 < argc) usage();
             return;
 

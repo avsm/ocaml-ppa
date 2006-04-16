@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printtyp.ml,v 1.139.2.2 2005/12/07 23:37:27 garrigue Exp $ *)
+(* $Id: printtyp.ml,v 1.139.2.3 2006/02/09 01:19:26 garrigue Exp $ *)
 
 (* Printing functions *)
 
@@ -835,7 +835,7 @@ let signature ppf sg =
 
 let type_expansion t ppf t' =
   if t == t' then type_expr ppf t else
-  let t' = if proxy t = proxy t' then unalias t' else t' in
+  let t' = if proxy t == proxy t' then unalias t' else t' in
   fprintf ppf "@[<2>%a@ =@ %a@]" type_expr t type_expr t'
 
 let rec trace fst txt ppf = function
