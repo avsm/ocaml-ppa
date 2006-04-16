@@ -1,14 +1,17 @@
 This package was debianized by Sven Luther <luther@debian.org> on
 Fri, 14 Dec 2001 12:44:03 +0100.
 
-It was downloaded from
-
-  http://caml.inria.fr/pub/distrib/ocaml-#OcamlMAJOR#/ocaml-#OcamlABI#.tar.gz
+It was downloaded from :pserver:anoncvs@camlcvs.inria.fr/caml
+(module ocaml, tag ocaml3092rc1).
 
 Upstream Authors: Xavier Leroy, Jerome Vouillon and Damien Doligez
 Upstream Author for the camlp4 part: Daniel de Rauglaudre
 
-Copyright:
+Copyright 1996-2006 Institut National de Recherche en Informatique et en
+Automatique.
+Emacs mode copyright 1996-1998 Ian T Zimmerman <itz@rahul.net>.
+Tcl/tk binding copyright 1999-2002 Institut National de Recherche en
+Informatique et en Automatique and Kyoto University.
 
 In the following, "the Library" refers to all files marked "Copyright
 INRIA" in the following directories and their sub-directories:
@@ -22,7 +25,7 @@ following directories and their sub-directories:
   tools, toplevel, typing, utils, yacc
 
 and the "emacs bindings" refer to all files marked "Copyright INRIA" in
-the followin directory :
+the following directory:
 
   emacs
 
