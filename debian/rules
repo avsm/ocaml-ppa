@@ -59,7 +59,7 @@ debian/control:
 # Generate list of files ocaml-source.
 # Should never be called automatically.
 debian/ocaml-source.files:
-	tar ztf ../upstream/ocaml_3.09.2.orig.tar.gz | cut -d/ -f2- | grep -v ^$$ | grep -v .*/$$ | grep -v .cvsignore > debian/ocaml-source.files
+	tar ztf ../upstream/ocaml_$(OCAMLABI).orig.tar.gz | cut -d/ -f2- | grep -v ^$$ | grep -v .*/$$ | grep -v .cvsignore > debian/ocaml-source.files
 
 
 config-stamp: configure abi-sed
