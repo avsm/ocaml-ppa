@@ -1,10 +1,10 @@
 ocaml (3.09.2-1) experimental; urgency=low
 
   * New upstream release.
-  * Added no_rpath.dpatch in order for caml not to put rpath in generated
-    shared libraries, closes: #361865.
+  * Added no_rpath.dpatch (taken from Red Hat) in order for caml not to put
+    rpath in generated shared libraries, closes: #361865.
 
- -- Samuel Mimram <smimram@debian.org>  Sun, 16 Apr 2006 23:32:02 +0000
+ -- Samuel Mimram <smimram@debian.org>  Tue, 18 Apr 2006 17:14:59 +0000
 
 ocaml (3.09.1+3.09.2rc1-1) experimental; urgency=low
 
