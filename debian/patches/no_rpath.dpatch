@@ -1,0 +1,37 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## no_rpath.dpatch by Red Hat people
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Don't use rpath. This was shamelessly taken from
+## DP: http://cvs.fedora.redhat.com/lxr/extras/source/devel/ocaml/ocaml-rpath.patch
+
+@DPATCH@
+diff -urNad ocaml-3.09.2~/tools/Makefile ocaml-3.09.2/tools/Makefile
+--- ocaml-3.09.2~/tools/Makefile	2006-04-18 14:25:24.000000000 +0000
++++ ocaml-3.09.2/tools/Makefile	2006-04-18 14:32:09.000000000 +0000
+@@ -102,9 +102,6 @@
+ 	sed -e "s|%%BINDIR%%|$(BINDIR)|" \
+             -e "s|%%SUPPORTS_SHARED_LIBRARIES%%|$(SUPPORTS_SHARED_LIBRARIES)|" \
+             -e "s|%%MKSHAREDLIB%%|$(MKSHAREDLIB)|" \
+-            -e "s|%%BYTECCRPATH%%|$(BYTECCRPATH)|" \
+-            -e "s|%%NATIVECCRPATH%%|$(NATIVECCRPATH)|" \
+-            -e "s|%%MKSHAREDLIBRPATH%%|$(MKSHAREDLIBRPATH)|" \
+             -e "s|%%RANLIB%%|$(RANLIB)|" \
+           ocamlmklib.mlp >> ocamlmklib.ml
+ 
+diff -urNad ocaml-3.09.2~/tools/ocamlmklib.mlp ocaml-3.09.2/tools/ocamlmklib.mlp
+--- ocaml-3.09.2~/tools/ocamlmklib.mlp	2004-11-27 01:04:19.000000000 +0000
++++ ocaml-3.09.2/tools/ocamlmklib.mlp	2006-04-18 14:32:09.000000000 +0000
+@@ -17,9 +17,9 @@
+ let bindir = "%%BINDIR%%"
+ and supports_shared_libraries = %%SUPPORTS_SHARED_LIBRARIES%%
+ and mksharedlib = "%%MKSHAREDLIB%%"
+-and bytecc_rpath = "%%BYTECCRPATH%%"
+-and nativecc_rpath = "%%NATIVECCRPATH%%"
+-and mksharedlib_rpath = "%%MKSHAREDLIBRPATH%%"
++and bytecc_rpath = ""
++and nativecc_rpath = ""
++and mksharedlib_rpath = ""
+ and ranlib = "%%RANLIB%%"
+ 
+ let bytecode_objs = ref []  (* .cmo,.cma,.ml,.mli files to pass to ocamlc *)
