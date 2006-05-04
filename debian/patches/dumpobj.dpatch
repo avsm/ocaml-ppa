@@ -22,23 +22,23 @@ diff -urNad ocaml-3.09.1~/man/ocamldumpobj.m ocaml-3.09.1/man/ocamldumpobj.m
 --- ocaml-3.09.1~/man/ocamldumpobj.m	1970-01-01 01:00:00.000000000 +0100
 +++ ocaml-3.09.1/man/ocamldumpobj.m	2006-01-04 20:44:49.000000000 +0100
 @@ -0,0 +1,20 @@
-+.TH OCAMLDUMOBJ 1 "January 4, 2006"
++.TH OCAMLDUMPOBJ 1 "January 4, 2006"
 +.SH NAME
 +ocamldumpobj \- disassembler for OCaml executable and .cmo object files
-+
++.
 +.SH SYNOPSIS
 +.B ocamldumpobj
 +.RI file\ ...
-+
++.
 +.SH DESCRIPTION
 +Disassembler for executable and .cmo object files compiled by OCaml.
-+
++.
 +.SH SEE ALSO
 +.BR ocamlc (1),
 +.BR ocamlopt (1),
 +.BR ocamlobjinfo (1).
 +.br
-+
++.
 +.SH AUTHOR
 +This manual page was written by Samuel Mimram <smimram@debian.org>,
 +for the Debian GNU/Linux system (but may be used by others).

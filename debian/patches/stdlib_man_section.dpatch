@@ -1,0 +1,19 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## stdlib_man_section.dpatch by Julien Cristau <julien.cristau@ens-lyon.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Put manpages in section 3o instead of 3.
+
+@DPATCH@
+diff -urNad ocaml-3.09.2~/ocamldoc/Makefile ocaml-3.09.2/ocamldoc/Makefile
+--- ocaml-3.09.2~/ocamldoc/Makefile	2005-11-10 15:44:36.000000000 +0100
++++ ocaml-3.09.2/ocamldoc/Makefile	2006-05-04 00:07:52.000000000 +0200
+@@ -314,7 +314,7 @@
+ stdlib_man/Pervasives.3o: $(STDLIB_MLIS)
+ 	$(MKDIR) stdlib_man
+ 	$(OCAMLDOC_RUN) -man -d stdlib_man $(INCLUDES) \
+-	-t "OCaml library" -man-mini \
++	-t "OCaml library" -man-mini -man-section 3o \
+ 	$(STDLIB_MLIS)
+ 
+ autotest_stdlib: dummy

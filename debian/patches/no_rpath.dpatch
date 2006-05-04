@@ -7,9 +7,9 @@
 
 @DPATCH@
 diff -urNad ocaml-3.09.2~/tools/Makefile ocaml-3.09.2/tools/Makefile
---- ocaml-3.09.2~/tools/Makefile	2006-04-18 14:25:24.000000000 +0000
-+++ ocaml-3.09.2/tools/Makefile	2006-04-18 14:32:09.000000000 +0000
-@@ -102,9 +102,6 @@
+--- ocaml-3.09.2~/tools/Makefile	2006-05-04 00:05:39.000000000 +0200
++++ ocaml-3.09.2/tools/Makefile	2006-05-04 00:05:40.000000000 +0200
+@@ -104,9 +104,6 @@
  	sed -e "s|%%BINDIR%%|$(BINDIR)|" \
              -e "s|%%SUPPORTS_SHARED_LIBRARIES%%|$(SUPPORTS_SHARED_LIBRARIES)|" \
              -e "s|%%MKSHAREDLIB%%|$(MKSHAREDLIB)|" \
@@ -20,8 +20,8 @@ diff -urNad ocaml-3.09.2~/tools/Makefile ocaml-3.09.2/tools/Makefile
            ocamlmklib.mlp >> ocamlmklib.ml
  
 diff -urNad ocaml-3.09.2~/tools/ocamlmklib.mlp ocaml-3.09.2/tools/ocamlmklib.mlp
---- ocaml-3.09.2~/tools/ocamlmklib.mlp	2004-11-27 01:04:19.000000000 +0000
-+++ ocaml-3.09.2/tools/ocamlmklib.mlp	2006-04-18 14:32:09.000000000 +0000
+--- ocaml-3.09.2~/tools/ocamlmklib.mlp	2006-05-04 00:01:58.000000000 +0200
++++ ocaml-3.09.2/tools/ocamlmklib.mlp	2006-05-04 00:05:40.000000000 +0200
 @@ -17,9 +17,9 @@
  let bindir = "%%BINDIR%%"
  and supports_shared_libraries = %%SUPPORTS_SHARED_LIBRARIES%%
