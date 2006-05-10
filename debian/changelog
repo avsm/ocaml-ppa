@@ -1,10 +1,14 @@
 ocaml (3.09.2-2) experimental; urgency=low
 
+  [ Julien Cristau ]
   * Add a patch to put stdlib manpages in section 3o.
   * Fix typo in ocamldumpobj(1).
   * Add symlinks so that ocamldep.opt(1) and ocamllex.opt(1) exist.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Thu,  4 May 2006 13:08:00 +0200
+  [ Samuel Mimram ]
+  * Updated standards version to 3.7.2, no changes needed.
+
+ -- Samuel Mimram <smimram@debian.org>  Wed, 10 May 2006 21:32:57 +0000
 
 ocaml (3.09.2-1) experimental; urgency=low
 
