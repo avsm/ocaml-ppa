@@ -1,3 +1,9 @@
+ocaml (3.09.2-3) unstable; urgency=low
+
+  * Uploading to unstable.
+
+ -- Samuel Mimram <smimram@debian.org>  Mon, 15 May 2006 20:40:39 +0000
+
 ocaml (3.09.2-2) experimental; urgency=low
 
   [ Julien Cristau ]
