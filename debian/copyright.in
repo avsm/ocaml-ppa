@@ -1,8 +1,8 @@
 This package was debianized by Sven Luther <luther@debian.org> on
 Fri, 14 Dec 2001 12:44:03 +0100.
 
-It was downloaded from :pserver:anoncvs@camlcvs.inria.fr/caml
-(module ocaml, tag ocaml3092rc1).
+It was downloaded from:
+http://caml.inria.fr/pub/distrib/ocaml-3.09/ocaml-3.09.2.tar.gz
 
 Upstream Authors: Xavier Leroy, Jerome Vouillon and Damien Doligez
 Upstream Author for the camlp4 part: Daniel de Rauglaudre
