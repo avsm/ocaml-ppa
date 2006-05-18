@@ -1,8 +1,9 @@
 ocaml (3.09.2-3+SVN) UNRELEASED; urgency=low
 
   * Update reference to upstream tarball location in debian/copyright.
+  * Actually apply the patch to fix the stdlib manpages' section.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Thu, 18 May 2006 10:17:22 +0200
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Thu, 18 May 2006 10:44:52 +0200
 
 ocaml (3.09.2-3) unstable; urgency=low
 
