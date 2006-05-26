@@ -1,9 +1,12 @@
-%.html: %.xml
-	xsltproc --nonet --output $@ \
-	/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/html/docbook.xsl \
-	$^ 
+all: html text
 
-all: ocaml_packaging_policy.html 
+html:
+	docbook2html ocaml_packaging_policy.xml -o packaging-policy-html
+
+text:
+	docbook2txt ocaml_packaging_policy.xml
 
 clean:
-	$(RM) ocaml_packaging_policy.html
+	$(RM) -rf packaging-policy-html ocaml_packaging_policy.txt
+
+.PHONY: html text

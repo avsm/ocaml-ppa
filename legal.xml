@@ -1,29 +1,29 @@
-  <copyright>
-   <year>2002</year><year>2003</year>
-   <holder>Sven LUTHER, Stefano ZACCHIROLI and Sylvain LE GALL</holder>
-   <legalnotice>
+<copyright>
+    <year>2002</year><year>2003</year><year>2004</year><year>2005</year><year>2006</year>
+    <holder>Sylvain LE GALL, Sven LUTHER, Samuel MIMRAM and Stefano ZACCHIROLI</holder>
+</copyright>
+<legalnotice>
     <para>
-	  This manual is free software; you can redistribute it and/or
-	  modify it under the terms of the GNU General Public License
-	  as published by the Free Software Foundation; either version
-	  2 of the License, or (at your option) any later version.
+        This manual is free software; you can redistribute it and/or
+        modify it under the terms of the GNU General Public License
+        as published by the Free Software Foundation; either version
+        2 of the License, or (at your option) any later version.
     </para>
     <para>
-	  This is distributed in the hope that it will be useful, but
-	  WITHOUT ANY WARRANTY; without even the implied warranty of
-	  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-	  the GNU General Public License for more details.
+        This is distributed in the hope that it will be useful, but
+        WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+        the GNU General Public License for more details.
     </para>
     <para>
-	  A copy of the GNU General Public License is available as
-	  <tt>/usr/share/common-licenses/GPL</tt> in the Debian GNU/Linux
-	  distribution or on the World Wide Web at 
-	  <ulink url="http://www.gnu.org/copyleft/gpl.html">The GNU Public Licence</ulink>.
+        A copy of the GNU General Public License is available as
+        <filename>/usr/share/common-licenses/GPL</filename> in the Debian GNU/Linux
+        distribution or on the World Wide Web at 
+        <ulink url="http://www.gnu.org/copyleft/gpl.html">The GNU Public Licence</ulink>.
     </para>
     <para>
-	  You can also obtain it by writing to the
-	  Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-	  Boston, MA 02111-1307, USA.
+        You can also obtain it by writing to the
+        Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+        Boston, MA 02111-1307, USA.
     </para>
-   </legalnotice>
-  </copyright>
+</legalnotice>
