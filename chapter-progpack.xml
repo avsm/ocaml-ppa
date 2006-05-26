@@ -1,6 +1,25 @@
 <section>
-    <title>Packaging OCaml prgrams</title>
+    <title>Creating a package for an OCaml program</title>
     <para>
-        blah
+        Any package providing executables built from OCaml source should conform
+     the following regulations.
+
+     <itemizedlist>
+         <listitem>
+             <para>
+                 The package should use the name of the upstream package, without modification.
+             </para>
+         </listitem>
+         <listitem>
+             <para>
+                 The package's <filename>debian/rules</filename> should build the native code executable if supported on the architecture it is built on, and fall back to building the bytecode version if no working native code compiler is available. The availability of a native compiler can be tested by <code>[ -e /usr/bin/ocamlopt ]</code>. Exceptions to this are the executables who are small or not time critical, which may be built only as bytecode. It is the decision of the individual maintainers to choose this, maybe guided by the practice of the upstream author.
+             </para>
+         </listitem>
+         <listitem>
+             <para>
+                 All bytecode executables should be link dynamically, so as to not bloat the archive. However, there may be special cases, were using statically linked bytecode is necessary, in these cases, it is naturally ok to link statically. That said, often the upstream authors will favor statically linked bytecode executables, because so they don't need to worry about the presence of the dll stub libraries and such. This will never be a valid reason to use statically linked bytecode in a Debian package. If statically linked bytecode is provided, a justification of this use should be provided in the <filename>README.Debian</filename> file.
+             </para>
+         </listitem>
+     </itemizedlist>
     </para>
 </section>

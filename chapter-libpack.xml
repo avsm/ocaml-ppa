@@ -1,3 +1,50 @@
+<section>
+    <title>Creating a package for a library</title>
+
+    <para>
+        A package which provides an OCaml library <filename>xxx</filename> should be split as follows:
+
+        <itemizedlist>
+            <listitem>
+                <para>
+                    For libraries which are not purely programmed in OCaml (e.g. C bindings), <filename>libxxx-ocaml</filename> should provide the shared library stubs (<filename>dll*.so</filename>), and all other stuff needed to run a bytecode executable that links into this library. It should depend on <filename>ocaml-base-&ocaml-version;</filename> (or <filename>ocaml-base-nox-&ocaml-version;</filename>) as well as any other library needed.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <filename>libxxx-ocaml-dev</filename> should provide the rest of the library package, in fact anything needed to develop programs using the library. If the library uses other libraries or C libraries, this package should depend on them.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </para>
+
+    <para>
+        Optionally, two other packages may be created:
+        <itemizedlist>
+            <listitem>
+                <para>
+                    <filename>libxxx-ocaml-bin</filename> may include binaries provided by the library source package if they are numerous. This package should conform with the same regulations as other packages providing ocaml programs. It is only needed to split off this package if there is a significant number of programs included in the library, if not, the programs should go into <filename>libxxx-ocaml-dev</filename>.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <filename>libxxx-ocaml-doc</filename> may include any kind of documentation provided by the library source package or as separate documentation. Again, if there is only little documentation, they should go with the <filename>-dev</filename> package.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </para>
+
+    <para>
+        It is recommended that libraries use the <option>-pack</option> option to pack all the modules provided by the library into one module. We are not sure this really works right now for libraries, and we don't think upstream libraries will be moving to this scheme anytime soon (unless we actively lobby for it) so this is just a recommendation for now.
+    </para>
+</section>
+
+<section>
+    <title>Handling dependencies on OCaml</title>
+    <para>
+    </para>
+</section>
+
 <section id="library-path">
     <title>Paths for libraries</title>
 
@@ -59,6 +106,7 @@
     </para>
 </section>
 
+<!--
 <section id="ocamldoc-base-path">
     <title>&ocamldoc; specific generated documentation</title>
 
@@ -106,19 +154,20 @@
         author to have a well commented source.
     </para>
 </section>
+-->
 
 <section id="camlp4-path">
     <title>&camlp4;</title>
     <para>
         Actually, &camlp4; extensions are stored in
         <filename>/usr/lib/ocaml/&ocaml-version;/camlp4/</filename>. In order to do something
-        cleaner, &ocaml-force; propose to put this files in their own directory, even in their
-        own package. It is not mandatory, but it could ease a lot, the user of camlp4, by avoiding
-        name clash.
+        cleaner, &ocaml-force; proposes to put this files in their own directory, even in their
+        own package. It is not mandatory, but it could ease a lot by avoiding
+        name clashes.
     </para>
 
     <para>
-        You just have to consider &camlp4; file just as standard library, except that you
+        You just have to consider a &camlp4; file just as a standard library, except that you
         prefix them with <varname>-syntax</varname>. For example: the syntax
         extension coming with <application>libokey-ocaml-dev</application> should be stored
         in <filename>/usr/lib/ocaml/&ocaml-version;/okey-syntax/</filename>, the package
@@ -141,35 +190,34 @@
     <title>Documentation</title>
     <para>
         The documentation is a joint effort of  &ocaml-force; and usptream. 
-        There is many way to have documentation : 
+        There are many ways to have documentation:
         <itemizedlist>
-            <listitem><para>Header files (<filename>*.mli</filename>)</para></listitem>
-            <listitem><para>Source files (<filename>*.ml</filename>)</para></listitem>
-            <listitem><para>Specific documentation provided by the upstream</para></listitem>
-            <listitem><para>OCamldoc generated documentation</para></listitem>
+            <listitem><para>header files (<filename>*.mli</filename>),</para></listitem>
+            <listitem><para>source files (<filename>*.ml</filename>),</para></listitem>
+            <listitem><para>specific documentation provided by the upstream,</para></listitem>
+            <listitem><para>OCamldoc generated documentation</para>.</listitem>
         </itemizedlist>
     </para>
 
     <para>
-        This documentation should be browse by different mean, from the
-        most simple to the most complex. At least, they could all be browsed with
-        simple text editor. Specific and &ocamldoc; generated documentation should
-        be browse by using different viewer ( like <application>advi</application>,
-        HTML browser...). There is also at least two
+        This documentation should be browsable by different mean, from the
+        most simple to the most complex. At least, they should all be readable with
+        simple text editor. Specific and &ocamldoc; generated documentations should be provided in HTML format.
+        There are also at least two
         specific &ocaml-name; browser : <application>docbrowse</application> shipped
         with <application>cameleon</application> and <application>ocamlbrowser</application>
-        shipped with &ocaml-name; itself. The first one, need specific
+        shipped with &ocaml-name; itself. The first one, needs specific
         &ocamldoc; generated documentation. The second one enables
-        the user to browse directly the prototype of each function shipped in the cmi gives
+        the user to browse directly the prototype of each function shipped in the <filename>cmi</filename> gives
         to the application.
     </para>
 
     <para>
-        You can generate &ocamldoc; specific documentation by using
+        You can generate &ocamldoc;-specific documentation by using
         the <option>-dump</option> of this application. By using this, you dump the
         intermediary representation of the document that will be generated by ocamldoc.
         This can be used to generate HTML documentation and manpages, by reloading this
-        file ( using <option>-load</option> ).
+        file (using <option>-load</option>).
     </para>
 
     <para>
