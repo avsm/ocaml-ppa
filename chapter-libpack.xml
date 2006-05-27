@@ -7,7 +7,7 @@
         <itemizedlist>
             <listitem>
                 <para>
-                    For libraries which are not purely programmed in OCaml (e.g. C bindings), <filename>libxxx-ocaml</filename> should provide the shared library stubs (<filename>dll*.so</filename>), and all other stuff needed to run a bytecode executable that links into this library. It should depend on <filename>ocaml-base-&ocaml-version;</filename> (or <filename>ocaml-base-nox-&ocaml-version;</filename>) as well as any other library needed.
+                    For libraries which are not purely programmed in OCaml (e.g. C bindings), <filename>libxxx-ocaml</filename> should provide the shared library stubs (<filename>dll*.so</filename>), and all other stuff needed to run a bytecode executable that links into this library. It should depend on <filename>ocaml-base-&ocaml-version;</filename> (or <filename>ocaml-base-nox-&ocaml-version;</filename>) as well as any other library needed. The <emphasis>versionned</emphasis> dependency on <filename>ocaml-base</filename> is important since libraries are binary incompatible between releases of OCaml: basically, a library compiled with OCaml 3.08 cannot be used with OCaml &ocaml-version;.
                 </para>
             </listitem>
             <listitem>
@@ -39,12 +39,6 @@
     </para>
 </section>
 
-<section>
-    <title>Handling dependencies on OCaml</title>
-    <para>
-    </para>
-</section>
-
 <section id="library-path">
     <title>Paths for libraries</title>
 
@@ -57,11 +51,48 @@
     </para>
 
     <para>
-        If upstream developpers don't use this scheme, packagers are encouraged not
-        to install this library in the standard library directory. They should create
-        at least a subdirectory per source package (in order to avoid name clashes). Packagers should also consider to do a larger separation by creating a subdirectory per binary package (in order to avoid META name clash).
-        A suggested rule to choose name for this subdirectory is to use either the package
-        name provided by the META of the upstream, or the name of the library itself.
+        If upstream developpers don't use this scheme, packagers are encouraged not to install this library in the standard library directory. They should create at least a subdirectory per source package (in order to avoid name clashes). Packagers should also consider to do a larger separation by creating a subdirectory per binary package (in order to avoid META name clash). A suggested rule to choose name for this subdirectory is to use either the package name provided by the META of the upstream, or the name of the library itself.
+    </para>
+</section>
+
+<section>
+    <title>Handling dependencies on OCaml</title>
+    <para>
+        Some parts of the package need to know the current version of OCaml. For example, libraries should be installed <filename>/usr/local/lib/ocaml/&ocaml-version;/</filename>. However, <emphasis>the version of OCaml should never be hardcoded in the package</emphasis> (&ocaml-version; here). This would make a binNMU impossible if the version of OCaml has changed. Instead <filename>.in</filename> files should be used where <varname>@OCamlABI@</varname> is replaced at <emphasis>build-time</emphasis> by the current OCaml version.
+    </para>
+
+    <para>
+        For example, the package <filename>ocaml-mad</filename> would normally contain a file <filename>libmad-ocaml-dev.install</filename> for installing files with <filename>dh_install</filename>, containing:
+        <programlisting>
+usr/lib/ocaml/&ocaml-version;/mad/META
+usr/lib/ocaml/&ocaml-version;/mad/*.a
+usr/lib/ocaml/&ocaml-version;/mad/*.cm*
+usr/lib/ocaml/&ocaml-version;/mad/*.ml*
+        </programlisting>
+        In order to avoid the explicit mention of the version of OCaml (&ocaml-version;), the package actually contains instead a file <filename>libmad-ocaml-dev.install.in</filename> which contains:
+        <programlisting>
+usr/lib/ocaml/@OCamlABI@/mad/META
+usr/lib/ocaml/@OCamlABI@/mad/*.a
+usr/lib/ocaml/@OCamlABI@/mad/*.cm*
+usr/lib/ocaml/@OCamlABI@/mad/*.ml*
+        </programlisting>
+        The string <varname>@OCamlABI@</varname> is substituted at build-time by the version of OCaml. Here are the relevant parts of the <filename>debian/rules</filename> file:
+        <programlisting>
+OCAMLABI := $(shell ocamlc -version)
+OFILES := $(patsubst %.in,%,$(wildcard debian/*.in))
+
+ocamlinit:
+        for f in $(OFILES); do sed -e 's/@OCamlABI@/$(OCAMLABI)/g' $$f.in > $$f; done
+
+config.status: ocamlinit configure
+        [...]
+
+.PHONY: build clean binary-indep binary-arch binary install ocamlinit
+        </programlisting>
+    </para>
+
+    <para>
+        The only exception to this rule is the <filename>debian/control</filename> file, which should never be generated at build-time. As <link linkend='bytecode-native-prog'>explained before</link>, the dependency should nevertheless not hardcode the version of OCaml: the <filename>debian/control</filename> file should have a <varname>Depends: ocaml-base-nox-${F:OCamlABI}</varname> which is filled by a <code>dh_gencontrol -s -- -VF:OCamlABI="$(OCAMLABI)"</code> in the <filename>debian/rules</filename> file.
     </para>
 </section>
 

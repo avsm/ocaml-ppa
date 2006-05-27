@@ -1,0 +1,85 @@
+<section>
+    <title>How to obtain a copy of the pkg-ocaml-maint SVN archive</title>
+    <para>
+        FIXME: to be filled in
+    </para>
+</section>
+
+<section>
+    <title>Structure of the pkg-ocaml-maint SVN archive</title>
+    <para>
+        We keep all files of the debian subdirectory under svn control, and
+upstream only as a compressed tarball. The rationale behind this is
+that changes to upstream files should be managed by the dpatch patch
+manager. Hence, all the diffs to upstream files are kept in a
+subdirectory of debian/, and it is not necessary to manage upstream on
+file-by-file basis.
+</para>
+
+<para>
+The structure of the pkg-ocaml-maint svn archive is as follows, where
+generic names are indicated in angular brackets <varname>[ .. ]</varname>, and where the
+contents of subdirectories not directly relevant for package management
+are not detailed:
+<programlisting>
+ tags
+   packages
+     [package1]
+       [version1]
+       [version2]
+       ...
+     [package2]
+       [version1]
+       ...
+     ...
+   projects
+ test
+ trunk
+   packages
+     [package1]
+       trunk
+         debian
+       upstream
+         [upstream-tarball-version1]
+         [upstream-tarball-version2]
+         ...
+     [package2]
+     ...
+   policy
+   projects
+   tools
+</programlisting>
+    </para>
+</section>
+
+<section>
+    <title>How to add a new package to the SVN archive</title>
+    <para>
+        Place yourself in the directory trunk/packages of your working copy of
+        the svn repository. Create a directory with the same name as your
+        source package (let's say, my-package), and subdirectories "upstream"
+        and "trunk".  Put the current upstream tarball in "upstream", and the
+        current debian directory with all its relevant files in "trunk". This
+        should now look like this:
+        <programlisting>
+ trunk/packages/my_package
+   upstream
+     my_package_1.2.3.orig.tar.gz
+   trunk
+     debian
+       changelog
+       control
+       copyright
+       patches
+         00_list
+         01_patch1.dpatch
+         ...
+       ...
+   </programlisting>
+   </para>
+
+   <para>
+   If everything is in order you can do a "svn add my_package" from the 
+"trunk/packages" directory, and eventually "svn commit".
+    </para>
+</section>

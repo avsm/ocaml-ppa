@@ -17,7 +17,7 @@
     </para>
 </section>
 
-<section>
+<section id="bytecode-native-prog">
     <title>Bytecode and native versions of programs</title>
     <para>
         As <link linkend='bytecode-native'>explained before</link>, native OCaml compilers are not available everywhere. For architecture having no native compiler, a bytecode version of the program should be provided.
@@ -36,6 +36,6 @@
     </para>
 
     <para>
-        Bytecode versions of the programs should depend on <filename>ocaml-base-nox-&ocaml-version;</filename> (or <filename>ocaml-base-&ocaml-version;</filename> the program either uses the <code>Graphics</code> or the <code>LablTk</code> module). In order for the package to be able to be rebuilt or even binNMUed without a change in the packaging, this version should not be really hardocoded in the <filename>debian/control</filename> file. Instead, the package should depend on <varname>ocaml-base-nox-${F:OCamlABI}</varname> and use <code>OCAMLABI := $(shell ocamlc -version)</code> and <code>dh_gencontrol -s -- -VF:OCamlABI="$(OCAMLABI)"</code> in the <filename>debian/rules</filename> file.
+        Bytecode versions of the programs should depend on <filename>ocaml-base-nox-&ocaml-version;</filename> (or <filename>ocaml-base-&ocaml-version;</filename> the program either uses the <code>Graphics</code> or the <code>LablTk</code> module). In order for the package to be able to be rebuilt or even binNMUed without a change in the packaging, <emphasis>this version should not be hardcoded in the <filename>debian/control</filename> file.</emphasis> Instead, the package should depend on <varname>ocaml-base-nox-${F:OCamlABI}</varname> and use <code>OCAMLABI := $(shell ocamlc -version)</code> and <code>dh_gencontrol -s -- -VF:OCamlABI="$(OCAMLABI)"</code> in the <filename>debian/rules</filename> file.
     </para>
 </section>

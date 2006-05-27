@@ -23,8 +23,8 @@
 <!ENTITY chapter-libpack     SYSTEM "chapter-libpack.xml">
 <!ENTITY chapter-progpack    SYSTEM "chapter-progpack.xml">
 <!ENTITY chapter-liblocal    SYSTEM "chapter-liblocal.xml">
-<!ENTITY appendix-transition SYSTEM "appendix-transition.xml">
 <!ENTITY appendix-resources  SYSTEM "appendix-resources.xml">
+<!ENTITY appendix-svn        SYSTEM "appendix-svn.xml">
 ]>
 <book>
     <bookinfo>
@@ -49,13 +49,13 @@
         &chapter-libpack;
     </chapter>
 
-    <appendix id="transition">
-        <title>Managing version transition</title>
-        &appendix-transition;
-    </appendix>
-
     <appendix id="resources">
         <title>&ocaml-force; resources</title>
         &appendix-resources;
+    </appendix>
+
+    <appendix>
+        <title>Using the SVN repository</title>
+        &appendix-svn;
     </appendix>
 </book>
