@@ -1,27 +1,27 @@
 <section>
-    <title>How to obtain a copy of the pkg-ocaml-maint SVN archive</title>
+    <title>How to obtain a copy of the SVN archive</title>
     <para>
         FIXME: to be filled in
     </para>
 </section>
 
 <section>
-    <title>Structure of the pkg-ocaml-maint SVN archive</title>
+    <title>Structure of the SVN archive</title>
     <para>
         We keep all files of the debian subdirectory under svn control, and
-upstream only as a compressed tarball. The rationale behind this is
-that changes to upstream files should be managed by the dpatch patch
-manager. Hence, all the diffs to upstream files are kept in a
-subdirectory of debian/, and it is not necessary to manage upstream on
-file-by-file basis.
-</para>
+        upstream only as a compressed tarball. The rationale behind this is
+        that changes to upstream files should be managed by the <application>dpatch</application> patch
+        manager. Hence, all the diffs to upstream files are kept in a
+        subdirectory of <filename>debian/</filename>, and it is not necessary to manage upstream on
+        file-by-file basis.
+    </para>
 
-<para>
-The structure of the pkg-ocaml-maint svn archive is as follows, where
-generic names are indicated in angular brackets <varname>[ .. ]</varname>, and where the
-contents of subdirectories not directly relevant for package management
-are not detailed:
-<programlisting>
+    <para>
+        The structure of the pkg-ocaml-maint svn archive is as follows, where
+        generic names are indicated in square brackets <varname>[ .. ]</varname>, and where the
+        contents of subdirectories not directly relevant for package management
+        are not detailed:
+        <programlisting>
  tags
    packages
      [package1]
@@ -48,18 +48,18 @@ are not detailed:
    policy
    projects
    tools
-</programlisting>
+        </programlisting>
     </para>
 </section>
 
 <section>
     <title>How to add a new package to the SVN archive</title>
     <para>
-        Place yourself in the directory trunk/packages of your working copy of
+        Place yourself in the directory <filename>trunk/packages</filename> of your working copy of
         the svn repository. Create a directory with the same name as your
-        source package (let's say, my-package), and subdirectories "upstream"
-        and "trunk".  Put the current upstream tarball in "upstream", and the
-        current debian directory with all its relevant files in "trunk". This
+        source package (let's say, my-package), and subdirectories <filename>upstream</filename>
+        and <filename>trunk</filename>.  Put the current upstream tarball in <filename>upstream</filename>, and the
+        current debian directory with all its relevant files in <filename>trunk</filename>. This
         should now look like this:
         <programlisting>
  trunk/packages/my_package
@@ -75,11 +75,146 @@ are not detailed:
          01_patch1.dpatch
          ...
        ...
-   </programlisting>
+       </programlisting>
    </para>
 
    <para>
-   If everything is in order you can do a "svn add my_package" from the 
-"trunk/packages" directory, and eventually "svn commit".
+       If everything is in order you can do a <command>svn add my_package</command> from the <filename>trunk/packages</filename> directory, and eventually <command>svn commit</command>.
+    </para>
+</section>
+
+<section>
+    <title>How to set up your package for use with <application>svn-buildpackage</application></title>
+
+    <para>
+        Please see the <application>svn-buildpackage</application> documentation for complete
+        information. The important issues here are:
+        <itemizedlist>
+            <listitem>
+                <para>
+                    Since we keep upstream as a tarball we have to use <application>svn-buildpackage</application> in
+                    so-called merge mode. This means that, before compiling the package,
+                    the debianized source tree is constructed by untarring the orig tarball, and then merging the contents of the trunk subdirectory in it.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    The structure of our svn repository is not among the default structures
+                    of <application>svn-buildpackage</application>. Hence, we have to override the default location of some
+                    directories.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </para>
+
+    <para>
+        Place yourself in <filename>trunk/packages/my_packages/trunk</filename>, and do the following:
+        <command>svn propset mergeWithUpstream 1 debian</command>.
+        This registers the property "mergeWithUpstream" with the current
+        directory, such that svn-buildpackage knows that it has to use merge
+        mode as explained above.
+    </para>
+
+    <para>
+        Create a file <filename>debian/svn-deblayout</filename> with the following contents:
+        <programlisting>
+origDir=../upstream
+origUrl=svn+ssh://svn.debian.org/svn/pkg-ocaml-maint/trunk/packages/my_package/upstream
+tagsUrl=svn+ssh://svn.debian.org/svn/pkg-ocaml-maint/tags/packages/my_package
+        </programlisting>
+    </para>
+
+    <para>
+        Remember that "my_package" has to be replaced by the name of your
+        actual package. <application>svn-buildpackage</application> will not include this file in the
+        source package when actually building the package.
+    </para>
+
+    <para>
+        If you tried <application>svn-buildpackage</application> before writing your <filename>debian/svn-deblayout</filename> remember
+        to delete <filename>.svn/deb-layout</filename>, since <application>svn-buildpackages</application> caches here the content
+        of <filename>svn-deblayout</filename> (that would be empty in this case) and will ignore
+        your <filename>debian/svn-deblayout</filename>.
+    </para>
+</section>
+
+<section>
+    <title>How to build a package with <application>svn-buildpackage</application></title>
+
+    <para>
+        Please refer to the <application>svn-builpackage</application> documentation for more complete
+        information. Here is just a quick guide.
+    </para>
+
+    <para>
+        All options, except those starting on <option>--svn</option>, are passed to
+        <application>dpkg-buildpackage</application>. Hence, basic usage should be something like this
+        (from the <filename>trunk/packages/my_package/trunk</filename> directory): <command>svn-buildpackage -rfakeroot -uc -us</command>.
+    </para>
+
+    <para>
+        svn-buildpackage will complain when your copy of the debian directory
+        is not in sync with the repository. You may use the option
+        <option>--svn-ignore-new</option> to override this behaviour. The package will be
+        build in the directory <filename>../build-area</filename>.
+    </para>
+
+    <para>
+        If your package is ready for upload you may use the <option>--svn-tag</option> option
+        for the final build. This will put a tag in the svn-repository on the
+        current version, and add a new entry in the changlog to start working
+        on the upcomming next version: <command>svn-buildpackage --svn-tag</command>.
+        Provided you have commited all your changes to the svn repository, this
+        will after a successful build of the package create a tag for the current
+        version in <filename>tags/packages/my_package</filename>. The tagging is done directly in the
+        svn repository.
+    </para>
+
+    <tip>
+        <para>
+            Some useful aliases took from the svn-buildpackage HOWTO:
+            <programlisting>
+alias svn-b='svn-buildpackage -rfakeroot --svn-dont-clean -us -uc --svn-ignore'
+alias svn-bt='svn-buildpackage -rfakeroot --svn-lintian --svn-dont-clean --svn-tag'
+            </programlisting>
+        </para>
+
+        <para>
+            The former (<command>svn-b</command>) is to be used for test builds, while you are
+            working on your package; while the latter (<command>svn-bt</command>) is to be used at
+            the end, after you commit your changes and just before uploading a new
+            version of the package to the debian archive.
+        </para>
+
+        <para>
+            Adding -k&lt;your gpg id&gt; to the svn-bt alias may also be useful when working on
+            collaboratively maintained packages:
+            <programlisting>
+alias svn-bt='svn-buildpackage -rfakeroot -k&lt;gpgid&gt; --svn-lintian --svn-dont-clean --svn-tag'
+            </programlisting>
+        </para>
+    </tip>
+</section>
+
+<section>
+    <title>dpatch</title>
+
+    <para>
+        dpatch will work properly ad package build time with the svn structure
+        described above since all the build process will be carried on in a fresh
+        directory. However, invoking <filename>debian/rules</filename> with the "clean" target in the <filename>trunk/</filename>
+        directory will fail since dpatch is unable to deapply patches, passing
+        <option>--svn-dont-clean</option> to <application>svn-buildpackage</application> fixes this misbehaviour (aliases suggested
+        above alredy include this flag).
+    </para>
+
+    <para>
+        If you want to use dpatch-edit-patch to handle patches, you will need to invoke
+        it in "debian only mode" (<option>-b</option> flag, see man dpatch-edit-patch) and to tell him
+        where to find the upstream tarball. Adding the following line to your
+        <filename>~/.dpatch.conf</filename> will be enough:
+        <programlisting>
+conf_origtargzpath=../upstream
+        </programlisting>
     </para>
 </section>
