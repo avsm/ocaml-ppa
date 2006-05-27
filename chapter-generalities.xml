@@ -5,64 +5,64 @@
     </para>
 
     <para>
-        The <filename>ocaml</filename> package depends on all the basic packages needed to develop programs with OCaml. More specifically, the packaging of OCaml is split into smaller packages. The <filename>-nox</filename> packages contain libraries which don't need X (i.e. for the programs which don't use the <code>Graphics</code> or <code>LablTk</code> modules) in order to avoid too big dependencies for users who don't have and X server installed.
+        The <filename>ocaml</filename> package depends on all the basic packages needed to develop programs with OCaml. More specifically, the packaging of OCaml is split into smaller packages. The <filename>-nox</filename> packages contain libraries which don't need X (i.e. for the programs which don't use the <code>Graphics</code> or <code>LablTk</code> modules) in order to avoid too big dependencies for users who don't have an X server installed.
         <itemizedlist>
             <listitem>
                 <para>
-                    The <filename>ocaml</filename> and <filename>ocaml-nox</filename> package contain the compiler and its libraries.
+                    The <filename>ocaml</filename> and <filename>ocaml-nox</filename> packages contain the compiler and its libraries.
                 </para>
             </listitem>
             <listitem>
                 <para>
-                    The <filename>ocaml-native-compilers</filename> contains the OCaml compiler built in native mode.
+                    The <filename>ocaml-native-compilers</filename> package contains the OCaml compiler built in native mode (<filename>ocamlc.opt</filename> and <filename>ocamlopt.opt</filename>).
                 </para>
             </listitem>
             <listitem>
                 <para>
-                    The <filename>ocaml-base</filename> and <filename>ocaml-base-nox</filename> packages contain the runtime libraries needed by bytecode programs compiled with OCaml (in particular it contains the <filename>ocamlrun</filename> program).
+                    The <filename>ocaml-base</filename> and <filename>ocaml-base-nox</filename> packages contain the runtime libraries needed by bytecode programs compiled with OCaml (in particular, the package <filename>ocaml-base-nox</filename> contains the <filename>ocamlrun</filename> program).
                 </para>
             </listitem>
             <listitem>
                 <para>
-                    The <filename>ocaml-interp</filename> contains the interactive command-line interpreter.
+                    The <filename>ocaml-interp</filename> package contains the interactive command-line interpreter (<filename>ocaml</filename>).
                 </para>
             </listitem>
             <listitem>
                 <para>
-                    The <filename>ocaml-mode</filename> contains the OCaml emacs mode (the one provided with OCaml, not the tuareg mode).
+                    The <filename>ocaml-mode</filename> package contains the OCaml emacs mode (the one provided with OCaml, not the tuareg mode which is in the package <filename>tuareg-mode</filename>).
                 </para>
             </listitem>
             <listitem>
                 <para>
-                    The <filename>ocaml-source</filename> contains the sources of the OCaml compiler.
+                    The <filename>ocaml-source</filename> package contains the sources of the OCaml compiler.
                 </para>
             </listitem>
             <listitem>
                 <para>
-                    The <filename>ocaml-compiler-libs</filename> contains some internal libraries of the OCaml compiler (it is needed only in very rare cases).
+                    The <filename>ocaml-compiler-libs</filename> package contains some internal libraries of the OCaml compiler (it is needed only in very rare cases).
                 </para>
             </listitem>
         </itemizedlist>
     </para>
 
     <para>
-        Since the libraries produced by OCaml are binary incompatible when compiled with two different releases of OCaml, versionned virtual packages are provided: <filename>ocaml-&ocaml-version;</filename>, <filename>ocaml-nox-&ocaml-version;</filename>, <filename>ocaml-base-&ocaml-version;</filename>, <filename>ocaml-base-nox-&ocaml-version;</filename>.
+        Since the libraries produced by OCaml are binary incompatible when compiled with two different releases of OCaml, versionned virtual packages are also provided: <filename>ocaml-&ocaml-version;</filename>, <filename>ocaml-nox-&ocaml-version;</filename>, <filename>ocaml-base-&ocaml-version;</filename>, <filename>ocaml-base-nox-&ocaml-version;</filename>.
     </para>
 </section>
 
-<section>
-    <title>Native and bytecode programs</title>
+<section id="bytecode-native">
+    <title>Bytecode and native programs</title>
 
     <para>
         The OCaml compiler can produce two kinds of executables: bytecode and native. The native executables (compiled with <filename>ocamlopt</filename>) are generally faster since they are compiled specifically for an achitecture. The bytecode executables (compiled with <filename>ocamlc</filename>) have the advantage of being portable, which means that a bytecode program can be run on any achitecture without needing to be rebuilt. It should be noted that native OCaml compilers are not provided for every achitecture. Only the following are suported: alpha, amd64, arm, i386, ia64, kfreebsd-i386, powerpc and sparc.
     </para>
 
     <para>
-        Package providing both native and bytecode versions of a program <filename>prog</filename> usually name them respectively <filename>prog.opt</filename> and <filename>prog.byte</filename> and provide a symbolic link <filename>prog</filename> to the best available version (generally <filename>prog.opt</filename>).
+        Packages providing both native and bytecode versions of a program <filename>prog</filename> usually name them respectively <filename>prog.opt</filename> and <filename>prog.byte</filename> and provide a symbolic link <filename>prog</filename> to the best available version (generally <filename>prog.opt</filename>).
     </para>
 
     <para>
-        The <filename>ocaml-native-compilers</filename> package contains the OCaml compiler built in native mode (<filename>ocamlc.opt</filename> and <filename>ocamlopt.opt</filename>). Compiling with this version of the compiler is generally faster but, as explained before, the <filename>ocaml-native-compilers</filename> package is not available on every architecture. In order to build big programs and benefit from this natively built compiler, packages should depend on <filename>ocaml-best-compilers</filename> which depends on <filename>ocaml-native-compilers</filename> where available and on <filename>ocaml</filename> elsewhere.
+        The <filename>ocaml-native-compilers</filename> package contains the OCaml compiler built in native mode (<filename>ocamlc.opt</filename> and <filename>ocamlopt.opt</filename>). Compiling with this version of the compiler is generally faster but, as explained before, the <filename>ocaml-native-compilers</filename> package is not available on every architecture. Packages should therefore never depend directly on this package. In order to build big programs and benefit from this natively built compiler, packages should depend on <filename>ocaml-best-compilers</filename> which itself depends on <filename>ocaml-native-compilers</filename> where available and on <filename>ocaml</filename> elsewhere. Since it is a virtual package, it cannot (yet) be a versioned dependency. The version dependency should thus be carried by the <filename>ocaml</filename> dependency.
     </para>
 </section>
 

@@ -1,6 +1,22 @@
+<!--
 <section>
     <title>Where to find the &ocaml-force;</title>
     <para>
         blah
     </para>
 </section>
+-->
+<para>
+    <itemizedlist>
+        <listitem><para>The &ocaml-force;'s website: <ulink url="http://pkg-ocaml-maint.alioth.debian.org/">http://pkg-ocaml-maint.alioth.debian.org/</ulink></para></listitem>
+        <listitem><para>The &ocaml-force;'s mailing list: <ulink url="mailto:debian-ocaml-maint@lists.debian.org">debian-ocaml-maint@lists.debian.org</ulink></para></listitem>
+        <listitem><para></para></listitem>
+        <listitem><para></para></listitem>
+        <listitem><para></para></listitem>
+        <listitem><para></para></listitem>
+        <listitem><para></para></listitem>
+        <listitem><para></para></listitem>
+        <listitem><para></para></listitem>
+        <listitem><para></para></listitem>
+    </itemizedlist>
+</para>

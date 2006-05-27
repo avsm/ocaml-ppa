@@ -195,7 +195,7 @@
             <listitem><para>header files (<filename>*.mli</filename>),</para></listitem>
             <listitem><para>source files (<filename>*.ml</filename>),</para></listitem>
             <listitem><para>specific documentation provided by the upstream,</para></listitem>
-            <listitem><para>OCamldoc generated documentation</para>.</listitem>
+            <listitem><para>OCamldoc generated documentation.</para></listitem>
         </itemizedlist>
     </para>
 
