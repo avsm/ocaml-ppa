@@ -43,7 +43,7 @@
     <title>Paths for libraries</title>
 
     <para>
-        Libraries should be installed in <filename>/usr/local/lib/ocaml/&ocaml-version;/</filename> or in a subdirectory of this directory. This includes in particular bytecode libraries (<filename>*.cma</filename>), native libraries (<filename>*.cmxa</filename>), bytecode object files (<filename>*.cmo</filename>), native object files (<filename>*.cmx</filename>), static libraries (<filename>*.a</filename>) and <filename>META</filename> files. The only exception to this rule is for shared libraries (<filename>dll*.so</filename>) which should be installed in <filename>/usr/local/lib/ocaml/&ocaml-version;/stublibs</filename>, as can it be seen in the <filename>/usr/lib/ocaml/&ocaml-version;/ld.conf</filename> file.
+        Libraries should be installed in <filename>/usr/lib/ocaml/&ocaml-version;/</filename> or in a subdirectory of this directory. This includes in particular bytecode libraries (<filename>*.cma</filename>), native libraries (<filename>*.cmxa</filename>), bytecode object files (<filename>*.cmo</filename>), native object files (<filename>*.cmx</filename>), static libraries (<filename>*.a</filename>) and <filename>META</filename> files. The only exception to this rule is for shared libraries (<filename>dll*.so</filename>) which should be installed in <filename>/usr/lib/ocaml/&ocaml-version;/stublibs</filename>, as can it be seen in the <filename>/usr/lib/ocaml/&ocaml-version;/ld.conf</filename> file.
     </para>
 
     <para>
@@ -58,7 +58,7 @@
 <section>
     <title>Handling dependencies on OCaml</title>
     <para>
-        Some parts of the package need to know the current version of OCaml. For example, libraries should be installed <filename>/usr/local/lib/ocaml/&ocaml-version;/</filename>. However, <emphasis>the version of OCaml should never be hardcoded in the package</emphasis> (&ocaml-version; here). This would make a binNMU impossible if the version of OCaml has changed. Instead <filename>.in</filename> files should be used where <varname>@OCamlABI@</varname> is replaced at <emphasis>build-time</emphasis> by the current OCaml version.
+        Some parts of the package need to know the current version of OCaml. For example, libraries should be installed <filename>/usr/lib/ocaml/&ocaml-version;/</filename>. However, <emphasis>the version of OCaml should never be hardcoded in the package</emphasis> (&ocaml-version; here). This would make a binNMU impossible if the version of OCaml has changed. Instead <filename>.in</filename> files should be used where <varname>@OCamlABI@</varname> is replaced at <emphasis>build-time</emphasis> by the current OCaml version.
     </para>
 
     <para>
