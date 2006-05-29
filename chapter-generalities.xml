@@ -5,7 +5,7 @@
     </para>
 
     <para>
-        The <filename>ocaml</filename> package depends on all the basic packages needed to develop programs with OCaml. More specifically, the packaging of OCaml is split into smaller packages. The <filename>-nox</filename> packages contain libraries which don't need X (i.e. for the programs which don't use the <code>Graphics</code> or <code>LablTk</code> modules) in order to avoid too big dependencies for users who don't have an X server installed.
+        The <filename>ocaml</filename> package depends on all the basic packages needed to develop programs with OCaml. More specifically, the packaging of OCaml is split into smaller packages. The <filename>-nox</filename> packages contain libraries which don't need X (i.e., for the programs which don't use the <code>Graphics</code> or <code>LablTk</code> modules) in order to avoid dependencies on big packages for users who do not need to run graphical applications.
         <itemizedlist>
             <listitem>
                 <para>

@@ -1,7 +1,13 @@
 <section>
     <title>How to obtain a copy of the SVN archive</title>
     <para>
-        FIXME: to be filled in
+      You can obtain a copy of debian-ocaml-maint SVN archive by
+      <programlisting>
+svn co svn+ssh://svn.debian.org/svn/pkg-ocaml-maint
+      </programlisting>
+      You must be member of the
+      <ulink url="http://pkg-ocaml-maint.alioth.debian.org/">Debian
+      OCaml Task Force</ulink> in order to have write access to this archive. 
     </para>
 </section>
 
@@ -200,13 +206,16 @@ alias svn-bt='svn-buildpackage -rfakeroot -k&lt;gpgid&gt; --svn-lintian --svn-do
     <title>dpatch</title>
 
     <para>
-        dpatch will work properly ad package build time with the svn structure
-        described above since all the build process will be carried on in a fresh
-        directory. However, invoking <filename>debian/rules</filename> with the "clean" target in the <filename>trunk/</filename>
-        directory will fail since dpatch is unable to deapply patches, passing
-        <option>--svn-dont-clean</option> to <application>svn-buildpackage</application> fixes this misbehaviour (aliases suggested
-        above alredy include this flag).
-    </para>
+        dpatch will work properly at package build time with the svn
+        structure described above since all of the build process will be
+        carried out in a fresh directory. However, invoking
+        <filename>debian/rules</filename> with the "clean" target in
+        the <filename>trunk/</filename> directory will fail since
+        dpatch is unable to de-apply patches. Passing
+        <option>--svn-dont-clean</option> to
+        <application>svn-buildpackage</application> fixes this
+        misbehaviour (aliases suggested above already include this
+        flag).  </para>
 
     <para>
         If you want to use dpatch-edit-patch to handle patches, you will need to invoke
