@@ -2,18 +2,24 @@
     <title>Creating a package for a library</title>
 
     <para>
-        A package which provides an OCaml library <filename>xxx</filename> should be split as follows:
+        A package which provides an OCaml library called <filename>xxx</filename> should be split as follows:
 
         <itemizedlist>
             <listitem>
                 <para>
-                    For libraries which are not purely programmed in OCaml (e.g. C bindings), <filename>libxxx-ocaml</filename> should provide the shared library stubs (<filename>dll*.so</filename>), and all other stuff needed to run a bytecode executable that links into this library. It should depend on <filename>ocaml-base-&ocaml-version;</filename> (or <filename>ocaml-base-nox-&ocaml-version;</filename>) as well as any other library needed. The <emphasis>versionned</emphasis> dependency on <filename>ocaml-base</filename> is important since libraries are binary incompatible between releases of OCaml: basically, a library compiled with OCaml 3.08 cannot be used with OCaml &ocaml-version;.
+                    For libraries which are not purely programmed in OCaml (e.g. C bindings), <filename>libxxx-ocaml</filename> should provide the shared library stubs (<filename>dll*.so</filename>), and all other stuff needed to run a bytecode executable that links into this library. It should depend on <filename>ocaml-base-&ocaml-version;</filename> (or <filename>ocaml-base-nox-&ocaml-version;</filename>) as well as any other library needed. The <emphasis>versioned</emphasis> dependency on <filename>ocaml-base</filename> is important since libraries are binary incompatible between releases of OCaml.
                 </para>
+		<para>
+		  <filename>libxxx-ocaml</filename> packages should be in <code>Section: libs</code>
+		</para>
             </listitem>
             <listitem>
                 <para>
                     <filename>libxxx-ocaml-dev</filename> should provide the rest of the library package, in fact anything needed to develop programs using the library. If the library uses other libraries or C libraries, this package should depend on them.
                 </para>
+		<para>
+		  <filename>libxxx-ocaml-dev</filename> packages should be in <code>Section: libdevel</code>
+		</para>
             </listitem>
         </itemizedlist>
     </para>
@@ -35,7 +41,14 @@
     </para>
 
     <para>
-        It is recommended that libraries use the <option>-pack</option> option to pack all the modules provided by the library into one module. We are not sure this really works right now for libraries, and we don't think upstream libraries will be moving to this scheme anytime soon (unless we actively lobby for it) so this is just a recommendation for now.
+      It is recommended that libraries use the <option>-pack</option> option to pack all the modules provided by the library into one module.
+      <!-- ZACK: yes, it works, it has been fixed in ocaml 3.09.1 IIRC -->
+      <!--We are not sure this really works right now for libraries, and-->
+      We don't think upstream libraries will be moving to this scheme anytime soon (unless we actively lobby for it) so this is just a recommendation for now.
+    </para>
+
+    <para>
+      It is recommended that each library package ships a <filename>META</filename> file in order to make the library usable via <filename>ocamlfind</filename> (see the Debian package <filename>ocaml-findlib</filename>). See <xref linkend="META" /> for more information on this.
     </para>
 </section>
 
@@ -47,52 +60,52 @@
     </para>
 
     <para>
-        If upstream developpers already use a subdirectory of the OCaml standard library path, this path should be preserved in the Debian package but made relative to the standard library path of OCaml. Before using the provided subdirectory, packagers should obviously check if there is no subdirectory name clash with another OCaml library.
+        If upstream developers already use a subdirectory of the OCaml standard library path, this path should be preserved in the Debian package but made relative to the standard library path of OCaml. Before using the provided subdirectory, packagers should obviously check if there is no subdirectory name clash with another OCaml library.
     </para>
 
     <para>
-        If upstream developpers don't use this scheme, packagers are encouraged not to install this library in the standard library directory. They should create at least a subdirectory per source package (in order to avoid name clashes). Packagers should also consider to do a larger separation by creating a subdirectory per binary package (in order to avoid META name clash). A suggested rule to choose name for this subdirectory is to use either the package name provided by the META of the upstream, or the name of the library itself.
+        If upstream developers don't use this scheme, packagers are encouraged not to install this library in the standard library directory. They should create at least a subdirectory per source package (in order to avoid name clashes). Packagers should also consider to do a larger separation by creating a subdirectory per binary package (in order to avoid META name clash). A suggested rule to choose name for this subdirectory is to use either the package name provided by the META of the upstream, or the name of the library itself.
     </para>
 </section>
 
 <section>
     <title>Handling dependencies on OCaml</title>
     <para>
-        Some parts of the package need to know the current version of OCaml. For example, libraries should be installed <filename>/usr/lib/ocaml/&ocaml-version;/</filename>. However, <emphasis>the version of OCaml should never be hardcoded in the package</emphasis> (&ocaml-version; here). This would make a binNMU impossible if the version of OCaml has changed. Instead <filename>.in</filename> files should be used where <varname>@OCamlABI@</varname> is replaced at <emphasis>build-time</emphasis> by the current OCaml version.
+        Some parts of the package need to know the current version of OCaml. For example, libraries should be installed <filename>/usr/lib/ocaml/&ocaml-version;/</filename>. However, <emphasis>the current version of OCaml should never be hardcoded in the package</emphasis> (&ocaml-version; here). This would make a binNMU impossible when the version of OCaml changes. Instead <filename>.in</filename> files should be used where <varname>@OCamlABI@</varname> is replaced at <emphasis>build-time</emphasis> by the current OCaml version.
     </para>
 
     <para>
         For example, the package <filename>ocaml-mad</filename> would normally contain a file <filename>libmad-ocaml-dev.install</filename> for installing files with <filename>dh_install</filename>, containing:
         <programlisting>
-usr/lib/ocaml/&ocaml-version;/mad/META
-usr/lib/ocaml/&ocaml-version;/mad/*.a
-usr/lib/ocaml/&ocaml-version;/mad/*.cm*
-usr/lib/ocaml/&ocaml-version;/mad/*.ml*
+	usr/lib/ocaml/&ocaml-version;/mad/META
+	usr/lib/ocaml/&ocaml-version;/mad/*.a
+	usr/lib/ocaml/&ocaml-version;/mad/*.cm*
+	usr/lib/ocaml/&ocaml-version;/mad/*.ml*
         </programlisting>
         In order to avoid the explicit mention of the version of OCaml (&ocaml-version;), the package actually contains instead a file <filename>libmad-ocaml-dev.install.in</filename> which contains:
         <programlisting>
-usr/lib/ocaml/@OCamlABI@/mad/META
-usr/lib/ocaml/@OCamlABI@/mad/*.a
-usr/lib/ocaml/@OCamlABI@/mad/*.cm*
-usr/lib/ocaml/@OCamlABI@/mad/*.ml*
+	usr/lib/ocaml/@OCamlABI@/mad/META
+	usr/lib/ocaml/@OCamlABI@/mad/*.a
+	usr/lib/ocaml/@OCamlABI@/mad/*.cm*
+	usr/lib/ocaml/@OCamlABI@/mad/*.ml*
         </programlisting>
         The string <varname>@OCamlABI@</varname> is substituted at build-time by the version of OCaml. Here are the relevant parts of the <filename>debian/rules</filename> file:
         <programlisting>
-OCAMLABI := $(shell ocamlc -version)
-OFILES := $(patsubst %.in,%,$(wildcard debian/*.in))
+	OCAMLABI := $(shell ocamlc -version)
+	OFILES := $(filter-out debian/control,(patsubst %.in,%,$(wildcard debian/*.in)))
 
-ocamlinit:
-        for f in $(OFILES); do sed -e 's/@OCamlABI@/$(OCAMLABI)/g' $$f.in > $$f; done
+	ocamlinit:
+		for f in $(OFILES); do sed -e 's/@OCamlABI@/$(OCAMLABI)/g' $$f.in > $$f; done
 
-config.status: ocamlinit configure
-        [...]
+	config.status: ocamlinit configure
+		[...]
 
-.PHONY: build clean binary-indep binary-arch binary install ocamlinit
+	.PHONY: build clean binary-indep binary-arch binary install ocamlinit
         </programlisting>
     </para>
 
     <para>
-        The only exception to this rule is the <filename>debian/control</filename> file, which should never be generated at build-time. As <link linkend='bytecode-native-prog'>explained before</link>, the dependency should nevertheless not hardcode the version of OCaml: the <filename>debian/control</filename> file should have a <varname>Depends: ocaml-base-nox-${F:OCamlABI}</varname> which is filled by a <code>dh_gencontrol -s -- -VF:OCamlABI="$(OCAMLABI)"</code> in the <filename>debian/rules</filename> file.
+      The only exception to this rule (properly handled by the example above) is the <filename>debian/control</filename> file, which should never be generated at build-time. As explained in <xref linkend='bytecode-native-prog'/>, the dependency should nevertheless not hardcode the version of OCaml: the <filename>debian/control</filename> file should have a <varname>Depends: ocaml-base-nox-${F:OCamlABI}</varname> which is filled by a <code>dh_gencontrol -s -- -VF:OCamlABI="$(OCAMLABI)"</code> in the <filename>debian/rules</filename> file.
     </para>
 </section>
 
@@ -106,8 +119,8 @@ config.status: ocamlinit configure
     <para>
         By default, &ocamlfind; will look for <filename>META</filename> in this order:
         <itemizedlist>
-            <listitem><para><filename>/usr/lib/ocaml/&ocaml-version;/META/</filename></para></listitem>
-            <listitem><para><filename>/usr/lib/ocaml/&ocaml-version;/package/</filename></para></listitem>
+	    <listitem><para><filename>&ocaml-metas-dir;/</filename></para></listitem>
+	    <listitem><para><filename>&ocaml-sys-dir;/package/</filename></para></listitem>
         </itemizedlist>
     </para>
 
@@ -122,7 +135,7 @@ config.status: ocamlinit configure
             </listitem>
             <listitem>
                 <para>
-                    If the <filename>META</filename> file is placed in <filename>/usr/lib/ocaml/&ocaml-version;/META/</filename>, it should be called <filename>META.packagename</filename>, where <filename>packagename</filename> is the name of the subdirectory where the library is stored.
+		  If the <filename>META</filename> file is placed in <filename>&ocaml-metas-dir;/</filename>, it should be called <filename>META.packagename</filename>, where <filename>packagename</filename> is the name of the subdirectory where the library is stored.
                 </para>
             </listitem>
         </itemizedlist>
@@ -133,7 +146,7 @@ config.status: ocamlinit configure
     </para>
 
     <para>
-        If upstream doesn't provide a <filename>META</filename>, packagers are encouraged to create one. In this case, the <filename>META</filename> should be sent to upstream authors, in order to have it included in the next version of the upstream source. For more information about <filename>META</filename> files, have a look at the <ulink url="http://www.ocaml-programming.de/packages/documentation/findlib/">Findlib manual</ulink>, at the several META files provided by other packages (e.g. <filename>lablgtk</filename>, <filename>pxp</filename>, <filename>pcre</filename>, <filename>netstring</filename>, <filename>lablgl</filename>, ...) or ask on the debian-ocaml-maint ML for help.
+        If upstream doesn't provide a <filename>META</filename>, packagers are encouraged to create one. In this case, the <filename>META</filename> should be sent to upstream authors, in order to have it included in the next version of the upstream source. For more information about <filename>META</filename> files, have a look at the <ulink url="http://www.ocaml-programming.de/packages/documentation/findlib/">Findlib manual</ulink>, at the several META files provided by other packages (e.g. <filename>lablgtk</filename>, <filename>pxp</filename>, <filename>pcre</filename>, <filename>netstring</filename>, <filename>lablgl</filename>, ...) or ask on the debian-ocaml-maint mailing list for help.
     </para>
 </section>
 

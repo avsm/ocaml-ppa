@@ -2,6 +2,10 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "/usr/share/sgml/docbook/dtd/xml/4.3/docbookx.dtd" [
 <!ENTITY ocaml-version "3.09.2">
+<!ENTITY ocaml-sys-dir-base "/usr/lib/ocaml">
+<!ENTITY ocaml-sys-dir "&ocaml-sys-dir-base;/&ocaml-version;">
+<!ENTITY ocaml-metas-dir "&ocaml-sys-dir;/METAS">
+<!ENTITY supported-archs "alpha, amd64, arm, i386, ia64, kfreebsd-i386, powerpc, sparc">
 <!ENTITY ocaml-compat  "1">
 <!ENTITY ocaml-pkg       "<application>ocaml</application>">
 <!ENTITY ocaml-vpkg      "<application>ocaml-&ocaml-version;</application>">
@@ -14,7 +18,7 @@
 <!ENTITY ocamlopt        "<application>ocamlopt</application>">
 <!ENTITY ocamldoc        "<application>ocamldoc</application>">
 <!ENTITY ocamlfind       "<application>ocamlfind</application>">
-<!ENTITY camlp4          "<application>camlp4</application>">
+<!ENTITY camlp4          "<application>CamlP4</application>">
 <!ENTITY debian-name     "Debian">
 <!ENTITY authors             SYSTEM "authors.xml">
 <!ENTITY legal               SYSTEM "legal.xml">
