@@ -56,7 +56,7 @@
     <title>Paths for libraries</title>
 
     <para>
-        Libraries should be installed in <filename>/usr/lib/ocaml/&ocaml-version;/</filename> or in a subdirectory of this directory. This includes in particular bytecode libraries (<filename>*.cma</filename>), native libraries (<filename>*.cmxa</filename>), bytecode object files (<filename>*.cmo</filename>), native object files (<filename>*.cmx</filename>), static libraries (<filename>*.a</filename>) and <filename>META</filename> files. The only exception to this rule is for shared libraries (<filename>dll*.so</filename>) which should be installed in <filename>/usr/lib/ocaml/&ocaml-version;/stublibs</filename>, as can it be seen in the <filename>/usr/lib/ocaml/&ocaml-version;/ld.conf</filename> file.
+        Libraries should be installed in <filename>&ocaml-sys-dir;/</filename> or in a subdirectory of this directory. This includes in particular bytecode libraries (<filename>*.cma</filename>), native libraries (<filename>*.cmxa</filename>), bytecode object files (<filename>*.cmo</filename>), native object files (<filename>*.cmx</filename>), static libraries (<filename>*.a</filename>) and <filename>META</filename> files. The only exception to this rule is for shared libraries (<filename>dll*.so</filename>) which should be installed in <filename>&ocaml-sys-dir;/stublibs</filename>, as can it be seen in the <filename>&ocaml-sys-dir;/ld.conf</filename> file.
     </para>
 
     <para>
@@ -71,7 +71,7 @@
 <section>
     <title>Handling dependencies on OCaml</title>
     <para>
-        Some parts of the package need to know the current version of OCaml. For example, libraries should be installed <filename>/usr/lib/ocaml/&ocaml-version;/</filename>. However, <emphasis>the current version of OCaml should never be hardcoded in the package</emphasis> (&ocaml-version; here). This would make a binNMU impossible when the version of OCaml changes. Instead <filename>.in</filename> files should be used where <varname>@OCamlABI@</varname> is replaced at <emphasis>build-time</emphasis> by the current OCaml version.
+        Some parts of the package need to know the current version of OCaml. For example, libraries should be installed <filename>&ocaml-sys-dir;/</filename>. However, <emphasis>the current version of OCaml should never be hardcoded in the package</emphasis> (&ocaml-version; here). This would make a binNMU impossible when the version of OCaml changes. Instead <filename>.in</filename> files should be used where <varname>@OCamlABI@</varname> is replaced at <emphasis>build-time</emphasis> by the current OCaml version.
     </para>
 
     <para>
@@ -142,7 +142,7 @@
     </para>
 
     <para>
-        For example, the <filename>META</filename> file for the lablgtk library is named <filename>META</filename> and has path <filename>/usr/lib/ocaml/&ocaml-version;/lablgtk/META</filename>, where <filename>/usr/lib/ocaml/&ocaml-version;</filename> is the main OCaml installation directory and <filename>lablgtk</filename> is the lablgtk library directory.
+        For example, the <filename>META</filename> file for the lablgtk library is named <filename>META</filename> and has path <filename>&ocaml-sys-dir;/lablgtk/META</filename>, where <filename>&ocaml-sys-dir;</filename> is the main OCaml installation directory and <filename>lablgtk</filename> is the lablgtk library directory.
     </para>
 
     <para>
@@ -204,7 +204,7 @@
     <title>&camlp4;</title>
     <para>
         Actually, &camlp4; extensions are stored in
-        <filename>/usr/lib/ocaml/&ocaml-version;/camlp4/</filename>. In order to do something
+        <filename>&ocaml-sys-dir;/camlp4/</filename>. In order to do something
         cleaner, &ocaml-force; proposes to put this files in their own directory, even in their
         own package. It is not mandatory, but it could ease a lot by avoiding
         name clashes.
@@ -214,7 +214,7 @@
         You just have to consider a &camlp4; file just as a standard library, except that you
         prefix them with <varname>-syntax</varname>. For example: the syntax
         extension coming with <application>libokey-ocaml-dev</application> should be stored
-        in <filename>/usr/lib/ocaml/&ocaml-version;/okey-syntax/</filename>, the package
+        in <filename>&ocaml-sys-dir;/okey-syntax/</filename>, the package
         containing it should be called <application>libokey-syntax-ocaml-dev</application>.
     </para>
 

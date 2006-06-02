@@ -58,7 +58,7 @@
 	The root of all installed OCaml libraries is the <emphasis>OCaml
 	  standard library directory</emphasis>, which is
 	<filename>/usr/lib/ocaml/VERSION/</filename>, at the time of writing
-	<filename>/usr/lib/ocaml/&ocaml-version;</filename>. It can be output
+	<filename>&ocaml-sys-dir;</filename>. It can be output
 	by the OCaml compiler invoking it as <code>ocamlc -where</code>.
       </para>
 
