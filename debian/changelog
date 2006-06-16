@@ -1,4 +1,4 @@
-ocaml (3.09.2-4) UNRELEASED; urgency=low
+ocaml (3.09.2-4) unstable; urgency=low
 
   [ Julien Cristau ]
   * Update reference to upstream tarball location in debian/copyright.

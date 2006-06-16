@@ -239,7 +239,7 @@ install-arch: build-arch
 	 done)
 
 	# Remove .opt manpages from ocaml-nox
-	rm -f $(wildcard debian/ocaml-nox/usr/share/man/man1/*.opt.1) $(wildcard debian/ocaml-nox/usr/share/man/man1/*.opt.1.gz)
+	rm -f debian/ocaml-nox/usr/share/man/man1/*.opt.1
 
 	# make some symbolic links
 	cd debian/ocaml-nox/usr/include; ln -sf /usr/lib/ocaml/$(ocamlabi)/caml .
