@@ -1,7 +1,0 @@
-#!/bin/sh -e
-
-rm -f /usr/share/doc/ocaml-nox/Changes.gz
-rm -f /usr/share/doc/ocaml-nox/README.gz
-rm -f /usr/share/doc/ocaml-nox/ocaml_packaging_policy.gz
-
-#DEBHELPER#

@@ -1,3 +1,4 @@
 Changes
 README
-debian/ocaml_packaging_policy
+debian/policy/ocaml_packaging_policy
+debian/policy/ocaml_packaging_policy-html

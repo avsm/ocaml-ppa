@@ -3,8 +3,8 @@ Section: devel
 Priority: optional
 Maintainer: Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>
 Uploaders: Sven Luther <luther@debian.org>, Stefano Zacchiroli <zack@debian.org>, Julien Cristau <julien.cristau@ens-lyon.org>, Samuel Mimram <smimram@debian.org>
-Build-Depends: debhelper (>> 4.0.2), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2, chrpath
-Standards-Version: 3.6.2
+Build-Depends: debhelper (>> 4.0.2), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2, docbook-utils
+Standards-Version: 3.7.2
 
 Package: ocaml-nox
 Architecture: any

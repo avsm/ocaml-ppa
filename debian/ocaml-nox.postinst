@@ -1,11 +1,5 @@
 #!/bin/sh -e
 
-ln -sf /usr/lib/ocaml/#OcamlABI#/caml /usr/include/caml
-
-ln -sf ../ocaml-base-nox/Changes.gz /usr/share/doc/ocaml-nox
-ln -sf ../ocaml-base-nox/README.gz /usr/share/doc/ocaml-nox
-ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz /usr/share/doc/ocaml-nox
-
 if [ "$1" = "configure" ]; then
   ocaml-md5sums update
 

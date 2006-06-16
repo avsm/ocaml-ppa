@@ -1,9 +1,17 @@
-ocaml (3.09.2-3+SVN) UNRELEASED; urgency=low
+ocaml (3.09.2-4) UNRELEASED; urgency=low
 
+  [ Julien Cristau ]
   * Update reference to upstream tarball location in debian/copyright.
   * Actually apply the patch to fix the stdlib manpages' section.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Thu, 18 May 2006 10:44:52 +0200
+  [ Samuel Mimram ]
+  * Integrate the ocaml policy in the package. Added a build dependency on
+    docbook-utils to build it.
+  * Put the symbolic links directly in the packages instead of using postinst.
+  * Put forgotten ocamldep.opt in ocaml-native-compilers.
+  * We don't need to remove rpaths anymore.
+
+ -- Samuel Mimram <smimram@debian.org>  Fri, 16 Jun 2006 09:11:02 +0000
 
 ocaml (3.09.2-3) unstable; urgency=low
 

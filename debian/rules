@@ -105,6 +105,7 @@ endif
 	else								\
 		$(MAKE) -C debian/ocaml-md5sums all;			\
 	fi
+	$(MAKE) -C debian/policy
 	touch build-arch-stamp
 
 build-indep: build-indep-stamp
@@ -126,6 +127,7 @@ clean: abi-sed unpatch
 	fi
 	-$(MAKE) -C emacs clean
 	-$(MAKE) -C debian/ocaml-md5sums clean
+	-$(MAKE) -C debian/policy clean
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	-cp -f /usr/share/misc/config.sub config/gnu/config.sub
 endif
@@ -151,8 +153,7 @@ install-indep: build-indep
 	fi
 	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-mode/usr/bin install-ocamltags
 
-	# Add here commands to install the indep part of the package into
-	# debian/<package>-doc.
+	# Build the archive for ocaml-source
 	for i in `cat debian/ocaml-source.files`; do			\
 		install -m 644 -D $$i					\
 		debian/ocaml-source/usr/src/ocaml-$(OCAMLABI)/$$i;	\
@@ -169,10 +170,6 @@ install-arch: build-arch
 	dh_clean -k -a
 	dh_installdirs -a
 
-	# Add here commands to install the arch part of the package into
-	# debian/tmp.
-	#$(MAKE) install prefix=$(CURDIR)/debian/ocaml/usr
-
 	# Let's install ocaml first.
 	$(MAKE) install PREFIX=$(CURDIR)/debian/ocaml-nox/usr
 	install -m 644 debian/ocaml.xpm \
@@ -185,10 +182,11 @@ install-arch: build-arch
 		$(CURDIR)/debian/README.labltk
 	install -m 644 config/Makefile \
 		$(CURDIR)/debian/ocaml-nox/usr/lib/ocaml/$(OCAMLABI)/config/Makefile
-	# install the list of archs with ocamlopt
+
+	# Install the list of archs with ocamlopt
 	install -m 644 debian/native-archs $(CURDIR)/debian/ocaml-nox$(STDLIBDIR)
 
-	# now move the graphics files over
+	# Now move the graphics files over
 	if [ -e opt-built-stamp ]; then					\
 		dh_movefiles -pocaml					\
 			--sourcedir=debian/ocaml-nox			\
@@ -198,13 +196,12 @@ install-arch: build-arch
 			--sourcedir=debian/ocaml-nox;			\
 	fi
 
-
 	# Then move the ocaml-base-nox package.
 	dh_movefiles -pocaml-base-nox --sourcedir=debian/ocaml-nox
 	install -m 644 debian/ld.conf \
 		$(CURDIR)/debian/ocaml-base-nox/usr/lib/ocaml/$(OCAMLABI)
 
-	# and base's corresponding graphics stuff.
+	# And base's corresponding graphics stuff.
 	dh_movefiles -pocaml-base --sourcedir=debian/ocaml-nox
 
 	# The ocaml-native-compilers, if available.
@@ -216,8 +213,7 @@ install-arch: build-arch
 	fi
 
 	# The interpreter files
-	dh_movefiles -pocaml-interp					\
-			--sourcedir=debian/ocaml-nox
+	dh_movefiles -pocaml-interp --sourcedir=debian/ocaml-nox
 
 	# Some extra stuff
 	install -m 644 utils/*.mli utils/*.cmi utils/*.cmo		\
@@ -230,11 +226,6 @@ install-arch: build-arch
 			$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/$(OCAMLABI)/compiler-libs; \
 	fi
 
-	# Delete rpath in DLLs
-	chrpath -d $(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(OCAMLABI)/stublibs/dllgraphics.so	\
-		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(OCAMLABI)/stublibs/dlllabltk.so		\
-		$(CURDIR)/debian/ocaml-base/usr/lib/ocaml/$(OCAMLABI)/stublibs/dlltkanim.so
-
 	# install ocaml-md5sums
 	$(MAKE) -C debian/ocaml-md5sums install DESTDIR=$(CURDIR)/debian/ocaml-base-nox/usr/bin
 
@@ -246,6 +237,38 @@ install-arch: build-arch
 		./feeding.sh $$pkg $(STDLIBDIR) $(OCAMLABI) ../$$pkg$(STDLIBDIR) >	\
 			../$$pkg$(MD5SUMSDIR)/$$pkg.md5sums;				\
 	 done)
+
+	# Remove .opt manpages from ocaml-nox
+	rm -f $(wildcard debian/ocaml-nox/usr/share/man/man1/*.opt.1) $(wildcard debian/ocaml-nox/usr/share/man/man1/*.opt.1.gz)
+
+	# make some symbolic links
+	cd debian/ocaml-nox/usr/include; ln -sf /usr/lib/ocaml/$(ocamlabi)/caml .
+	cd debian/ocaml-native-compilers/usr/share/man/man1; \
+		ln -sf /usr/share/man/man1/ocamlc.1.gz ocamlc.opt.1.gz; \
+		ln -sf /usr/share/man/man1/ocamlopt.1.gz ocamlopt.opt.1.gz; \
+		ln -sf /usr/share/man/man1/ocamllex.1.gz ocamllex.opt.1.gz; \
+		ln -sf /usr/share/man/man1/ocamldoc.1.gz ocamldoc.opt.1.gz; \
+		ln -sf /usr/share/man/man1/ocamldep.1.gz ocamldep.opt.1.gz; \
+		ln -sf /usr/share/man/man1/camlp4r.1.gz camlp4r.opt.1.gz; \
+		ln -sf /usr/share/man/man1/camlp4o.1.gz camlp4o.opt.1.gz
+	cd debian/ocaml/usr/share/doc/ocaml; \
+		ln -sf ../ocaml-base-nox/changes.gz .; \
+		ln -sf ../ocaml-base-nox/readme.gz .; \
+		ln -sf ../ocaml-base-nox/readme.debian .; \
+		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz .; \
+		ln -sf ../ocaml-base-nox/ocaml_packaging_policy-html .
+	cd debian/ocaml-nox/usr/share/doc/ocaml-nox; \
+		ln -sf ../ocaml-base-nox/changes.gz .; \
+		ln -sf ../ocaml-base-nox/readme.gz .; \
+		ln -sf ../ocaml-base-nox/readme.debian .; \
+		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz .; \
+		ln -sf ../ocaml-base-nox/ocaml_packaging_policy-html .
+	cd debian/ocaml-base/usr/share/doc/ocaml-base; \
+		ln -sf ../ocaml-base-nox/changes.gz .; \
+		ln -sf ../ocaml-base-nox/readme.gz .; \
+		ln -sf ../ocaml-base-nox/readme.debian .; \
+		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz .; \
+		ln -sf ../ocaml-base-nox/ocaml_packaging_policy-html .
 
 	dh_install -a
 
