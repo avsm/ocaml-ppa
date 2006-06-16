@@ -1,3 +1,9 @@
+ocaml (3.09.2-5) unstable; urgency=low
+
+  * Added a missing dependency on docbook, closes: #373996.
+
+ -- Samuel Mimram <smimram@debian.org>  Fri, 16 Jun 2006 17:58:35 +0000
+
 ocaml (3.09.2-4) unstable; urgency=low
 
   [ Julien Cristau ]
