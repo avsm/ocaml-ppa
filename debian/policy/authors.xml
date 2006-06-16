@@ -1,0 +1,30 @@
+  <!--author>
+   <firstname>Sven</firstname>
+   <surname>Luther</surname>
+   <affiliation>
+    <orgname>The Debian Project</orgname>
+    <address><email>luther@debian.org</email></address>
+   </affiliation>
+  </author>
+  <author>
+   <firstname>Stefano</firstname>
+   <surname>Zacchiroli</surname>
+   <affiliation>
+    <orgname>The Debian Project</orgname>
+    <address><email>zack@debian.orgcs.unibo.it</email></address>
+   </affiliation>
+  </author>
+  <author>
+   <firstname>Sylvain</firstname>
+   <surname>Le Gall</surname>
+   <affiliation>
+    <orgname>The NM Debian Project</orgname>
+    <address><email>sylvain.le-gall@polytechnique.org</email></address>
+   </affiliation>
+  </author-->
+<author>
+    <affiliation>
+        <orgname>The Debian OCaml Task Force</orgname>
+        <address><email>debian-ocaml-maint@lists.debian.org</email></address>
+    </affiliation>
+</author>

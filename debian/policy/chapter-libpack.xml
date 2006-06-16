@@ -1,0 +1,272 @@
+<section>
+    <title>Creating a package for a library</title>
+
+    <para>
+        A package which provides an OCaml library called <filename>xxx</filename> should be split as follows:
+
+        <itemizedlist>
+            <listitem>
+                <para>
+                    For libraries which are not purely programmed in OCaml (e.g. C bindings), <filename>libxxx-ocaml</filename> should provide the shared library stubs (<filename>dll*.so</filename>), and all other stuff needed to run a bytecode executable that links into this library. It should depend on <filename>ocaml-base-&ocaml-version;</filename> (or <filename>ocaml-base-nox-&ocaml-version;</filename>) as well as any other library needed. The <emphasis>versioned</emphasis> dependency on <filename>ocaml-base</filename> is important since libraries are binary incompatible between releases of OCaml.
+                </para>
+		<para>
+		  <filename>libxxx-ocaml</filename> packages should be in <code>Section: libs</code>
+		</para>
+            </listitem>
+            <listitem>
+                <para>
+                    <filename>libxxx-ocaml-dev</filename> should provide the rest of the library package, in fact anything needed to develop programs using the library. If the library uses other libraries or C libraries, this package should depend on them.
+                </para>
+		<para>
+		  <filename>libxxx-ocaml-dev</filename> packages should be in <code>Section: libdevel</code>
+		</para>
+            </listitem>
+        </itemizedlist>
+    </para>
+
+    <para>
+        Optionally, two other packages may be created:
+        <itemizedlist>
+            <listitem>
+                <para>
+                    <filename>libxxx-ocaml-bin</filename> may include binaries provided by the library source package if they are numerous. This package should conform with the same regulations as other packages providing ocaml programs. It is only needed to split off this package if there is a significant number of programs included in the library, if not, the programs should go into <filename>libxxx-ocaml-dev</filename>.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <filename>libxxx-ocaml-doc</filename> may include any kind of documentation provided by the library source package or as separate documentation. Again, if there is only little documentation, they should go with the <filename>-dev</filename> package.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </para>
+
+    <para>
+      It is recommended that libraries use the <option>-pack</option> option to pack all the modules provided by the library into one module.
+      <!-- ZACK: yes, it works, it has been fixed in ocaml 3.09.1 IIRC -->
+      <!--We are not sure this really works right now for libraries, and-->
+      We don't think upstream libraries will be moving to this scheme anytime soon (unless we actively lobby for it) so this is just a recommendation for now.
+    </para>
+
+    <para>
+      It is recommended that each library package ships a <filename>META</filename> file in order to make the library usable via <filename>ocamlfind</filename> (see the Debian package <filename>ocaml-findlib</filename>). See <xref linkend="META" /> for more information on this.
+    </para>
+</section>
+
+<section id="library-path">
+    <title>Paths for libraries</title>
+
+    <para>
+        Libraries should be installed in <filename>&ocaml-sys-dir;/</filename> or in a subdirectory of this directory. This includes in particular bytecode libraries (<filename>*.cma</filename>), native libraries (<filename>*.cmxa</filename>), bytecode object files (<filename>*.cmo</filename>), native object files (<filename>*.cmx</filename>), static libraries (<filename>*.a</filename>) and <filename>META</filename> files. The only exception to this rule is for shared libraries (<filename>dll*.so</filename>) which should be installed in <filename>&ocaml-sys-dir;/stublibs</filename>, as can it be seen in the <filename>&ocaml-sys-dir;/ld.conf</filename> file.
+    </para>
+
+    <para>
+        If upstream developers already use a subdirectory of the OCaml standard library path, this path should be preserved in the Debian package but made relative to the standard library path of OCaml. Before using the provided subdirectory, packagers should obviously check if there is no subdirectory name clash with another OCaml library.
+    </para>
+
+    <para>
+        If upstream developers don't use this scheme, packagers are encouraged not to install this library in the standard library directory. They should create at least a subdirectory per source package (in order to avoid name clashes). Packagers should also consider to do a larger separation by creating a subdirectory per binary package (in order to avoid META name clash). A suggested rule to choose name for this subdirectory is to use either the package name provided by the META of the upstream, or the name of the library itself.
+    </para>
+</section>
+
+<section>
+    <title>Handling dependencies on OCaml</title>
+    <para>
+        Some parts of the package need to know the current version of OCaml. For example, libraries should be installed <filename>&ocaml-sys-dir;/</filename>. However, <emphasis>the current version of OCaml should never be hardcoded in the package</emphasis> (&ocaml-version; here). This would make a binNMU impossible when the version of OCaml changes. Instead <filename>.in</filename> files should be used where <varname>@OCamlABI@</varname> is replaced at <emphasis>build-time</emphasis> by the current OCaml version.
+    </para>
+
+    <para>
+        For example, the package <filename>ocaml-mad</filename> would normally contain a file <filename>libmad-ocaml-dev.install</filename> for installing files with <filename>dh_install</filename>, containing:
+        <programlisting>
+	usr/lib/ocaml/&ocaml-version;/mad/META
+	usr/lib/ocaml/&ocaml-version;/mad/*.a
+	usr/lib/ocaml/&ocaml-version;/mad/*.cm*
+	usr/lib/ocaml/&ocaml-version;/mad/*.ml*
+        </programlisting>
+        In order to avoid the explicit mention of the version of OCaml (&ocaml-version;), the package actually contains instead a file <filename>libmad-ocaml-dev.install.in</filename> which contains:
+        <programlisting>
+	usr/lib/ocaml/@OCamlABI@/mad/META
+	usr/lib/ocaml/@OCamlABI@/mad/*.a
+	usr/lib/ocaml/@OCamlABI@/mad/*.cm*
+	usr/lib/ocaml/@OCamlABI@/mad/*.ml*
+        </programlisting>
+        The string <varname>@OCamlABI@</varname> is substituted at build-time by the version of OCaml. Here are the relevant parts of the <filename>debian/rules</filename> file:
+        <programlisting>
+	OCAMLABI := $(shell ocamlc -version)
+	OFILES := $(filter-out debian/control,(patsubst %.in,%,$(wildcard debian/*.in)))
+
+	ocamlinit:
+		for f in $(OFILES); do sed -e 's/@OCamlABI@/$(OCAMLABI)/g' $$f.in > $$f; done
+
+	config.status: ocamlinit configure
+		[...]
+
+	.PHONY: build clean binary-indep binary-arch binary install ocamlinit
+        </programlisting>
+    </para>
+
+    <para>
+      The only exception to this rule (properly handled by the example above) is the <filename>debian/control</filename> file, which should never be generated at build-time. As explained in <xref linkend='bytecode-native-prog'/>, the dependency should nevertheless not hardcode the version of OCaml: the <filename>debian/control</filename> file should have a <varname>Depends: ocaml-base-nox-${F:OCamlABI}</varname> which is filled by a <code>dh_gencontrol -s -- -VF:OCamlABI="$(OCAMLABI)"</code> in the <filename>debian/rules</filename> file.
+    </para>
+</section>
+
+<section id="META">
+    <title>Providing <filename>META</filename> files</title>
+
+    <para>
+        The <filename>ocaml-findlib</filename> provides a tool (named <filename>ocamlfind</filename>) to handle OCaml libraries and store information about libraries dependencies, compiler flags, linking options, etc. Meta informations regarding a library are contained in files (usually one for each library), named <filename>META</filename> files, contained in the library directory. The distribution of <filename>META</filename> files is the best way to make more easy to use the Debian-specific oragnization of libraries. Packages distributing <filename>META</filename> files should suggest the use of &ocamlfind;, that is have a <varname>Suggest: ocaml-findlib</varname>.
+    </para>
+
+    <para>
+        By default, &ocamlfind; will look for <filename>META</filename> in this order:
+        <itemizedlist>
+	    <listitem><para><filename>&ocaml-metas-dir;/</filename></para></listitem>
+	    <listitem><para><filename>&ocaml-sys-dir;/package/</filename></para></listitem>
+        </itemizedlist>
+    </para>
+
+    <para>
+        The naming scheme of <filename>META</filename> is pretty simple.
+        <itemizedlist>
+            <listitem>
+                <para>
+                    If the <filename>META</filename> file is placed in the subdirectory
+                    of the package, it should be called <filename>META</filename>.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+		  If the <filename>META</filename> file is placed in <filename>&ocaml-metas-dir;/</filename>, it should be called <filename>META.packagename</filename>, where <filename>packagename</filename> is the name of the subdirectory where the library is stored.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </para>
+
+    <para>
+        For example, the <filename>META</filename> file for the lablgtk library is named <filename>META</filename> and has path <filename>&ocaml-sys-dir;/lablgtk/META</filename>, where <filename>&ocaml-sys-dir;</filename> is the main OCaml installation directory and <filename>lablgtk</filename> is the lablgtk library directory.
+    </para>
+
+    <para>
+        If upstream doesn't provide a <filename>META</filename>, packagers are encouraged to create one. In this case, the <filename>META</filename> should be sent to upstream authors, in order to have it included in the next version of the upstream source. For more information about <filename>META</filename> files, have a look at the <ulink url="http://www.ocaml-programming.de/packages/documentation/findlib/">Findlib manual</ulink>, at the several META files provided by other packages (e.g. <filename>lablgtk</filename>, <filename>pxp</filename>, <filename>pcre</filename>, <filename>netstring</filename>, <filename>lablgl</filename>, ...) or ask on the debian-ocaml-maint mailing list for help.
+    </para>
+</section>
+
+<!--
+<section id="ocamldoc-base-path">
+    <title>&ocamldoc; specific generated documentation</title>
+
+    <para>
+        Even if this way of producing documentation is not mandatory, packagers are
+        encouraged to use it, in order to ship lighter documentation, which could
+        be processed by &ocaml-name; tools.
+    </para>
+
+    <para>
+        By default, &ocamldoc-base; will look for <filename>*.odoc</filename> in this order :
+        <variablelist>
+            <varlistentry>
+                <term><varname>local</varname></term>
+                <listitem><para><filename>/usr/local/share/ocamldoc/&ocaml-version;/</filename></para></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><varname>core</varname></term>
+                <listitem><para><filename>/usr/share/ocamldoc/&ocaml-version;/</filename></para></listitem>
+            </varlistentry>
+        </variablelist>
+    </para>
+
+    <para>
+        As for library, the naming scheme of the <filename>*.odoc</filename> should be 
+        at least the name of the source package from which the documentation was
+        generated. If a source package is split in many binary package and the
+        documentation comes only in one <filename>*.odoc</filename>, packagers are 
+        encouraged to create a separate package and to <varname>Suggest:</varname> it
+        in each binary package which he described. If this could not be met, it is at 
+        least a good practice to <varname>Suggest:</varname> the package containing
+        the documentation.
+        The packager should consider to ship one <filename>*.odoc</filename> per 
+        library package.
+    </para>
+
+    <para>
+        By doing this, &ocaml-force; is trying to build a clear way of distributing
+        documentation. It should help user to find and exploit the documentation 
+        coming from the source. Generating &ocamldoc; documentation is not so hard,
+        and should take a one line call. Commenting the code in order to generate
+        fully functional documentation is however an upstream task. Packager are encouraged
+        to patch <filename>Makefile</filename> in order to have a target 
+        <varname>odoc</varname>, generating this documentation and to contact upstream
+        author to have a well commented source.
+    </para>
+</section>
+-->
+
+<section id="camlp4-path">
+    <title>&camlp4;</title>
+    <para>
+        Actually, &camlp4; extensions are stored in
+        <filename>&ocaml-sys-dir;/camlp4/</filename>. In order to do something
+        cleaner, &ocaml-force; proposes to put this files in their own directory, even in their
+        own package. It is not mandatory, but it could ease a lot by avoiding
+        name clashes.
+    </para>
+
+    <para>
+        You just have to consider a &camlp4; file just as a standard library, except that you
+        prefix them with <varname>-syntax</varname>. For example: the syntax
+        extension coming with <application>libokey-ocaml-dev</application> should be stored
+        in <filename>&ocaml-sys-dir;/okey-syntax/</filename>, the package
+        containing it should be called <application>libokey-syntax-ocaml-dev</application>.
+    </para>
+
+    <para>
+        It is recommended to use <filename>META</filename> to specify how to handle this
+        extension.
+    </para>
+
+    <para>
+        All definition is taken from previous text considering syntax extension as a standalone
+        library.
+    </para>
+
+</section>
+
+<section id="documentation">
+    <title>Documentation</title>
+    <para>
+        The documentation is a joint effort of  &ocaml-force; and usptream. 
+        There are many ways to have documentation:
+        <itemizedlist>
+            <listitem><para>header files (<filename>*.mli</filename>),</para></listitem>
+            <listitem><para>source files (<filename>*.ml</filename>),</para></listitem>
+            <listitem><para>specific documentation provided by the upstream,</para></listitem>
+            <listitem><para>OCamldoc generated documentation.</para></listitem>
+        </itemizedlist>
+    </para>
+
+    <para>
+        This documentation should be browsable by different mean, from the
+        most simple to the most complex. At least, they should all be readable with
+        simple text editor. Specific and &ocamldoc; generated documentations should be provided in HTML format.
+        There are also at least two
+        specific &ocaml-name; browser : <application>docbrowse</application> shipped
+        with <application>cameleon</application> and <application>ocamlbrowser</application>
+        shipped with &ocaml-name; itself. The first one, needs specific
+        &ocamldoc; generated documentation. The second one enables
+        the user to browse directly the prototype of each function shipped in the <filename>cmi</filename> gives
+        to the application.
+    </para>
+
+    <para>
+        You can generate &ocamldoc;-specific documentation by using
+        the <option>-dump</option> of this application. By using this, you dump the
+        intermediary representation of the document that will be generated by ocamldoc.
+        This can be used to generate HTML documentation and manpages, by reloading this
+        file (using <option>-load</option>).
+    </para>
+
+    <para>
+        As of today, there is no way to post-process &ocamldoc;
+        specific documentation. A &debian-name; package is under construction to do this
+        task. It will be referred as &ocamldoc-base;.
+    </para>
+</section>

@@ -1,0 +1,149 @@
+<section>
+  <title>OCaml in Debian</title>
+  <para>
+      At the time of this writing, the latest version of OCaml in Debian is &ocaml-version;.
+  </para>
+
+    <para>
+        The <filename>ocaml</filename> package depends on all the basic packages needed to develop programs with OCaml. More specifically, the packaging of OCaml is split into smaller packages. The packages with suffix <filename>-nox</filename> contain libraries which don't need X (i.e., for the programs which don't use the <code>Graphics</code> or <code>LablTk</code> modules) in order to avoid dependencies on big packages for users who do not need to run graphical applications. Here is the list of binary packages in which OCaml is split:
+        <orderedlist>
+            <listitem>
+                <para>
+                    The <filename>ocaml</filename> and <filename>ocaml-nox</filename> packages contain the compiler and its libraries.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+		  The <filename>ocaml-native-compilers</filename> package contains the OCaml compilers built in native mode (<filename>ocamlc.opt</filename> and <filename>ocamlopt.opt</filename>).
+		</para>
+		<note>
+		  <para>The compilers themselves are built in native mode, nonetheless, both compilers for compiling toward bytecode and native code are contained in this package.</para>
+		</note>
+            </listitem>
+            <listitem>
+                <para>
+                    The <filename>ocaml-base</filename> and <filename>ocaml-base-nox</filename> packages contain the interpreter and runtime libraries needed by bytecode programs compiled with OCaml (in particular, the package <filename>ocaml-base-nox</filename> contains the <filename>ocamlrun</filename> program).
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    The <filename>ocaml-interp</filename> package contains the toplevel system for OCaml (<filename>ocaml</filename>), that enables interactive use of the language.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    The <filename>ocaml-mode</filename> package contains the OCaml Emacs mode (the one provided with OCaml, not the tuareg mode which is in the package <filename>tuareg-mode</filename>).
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    The <filename>ocaml-source</filename> package contains the sources of the OCaml compiler.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    The <filename>ocaml-compiler-libs</filename> package contains some internal libraries of the OCaml compiler (needed only in very rare cases, e.g. for developing languages which reuse OCaml internals).
+                </para>
+            </listitem>
+        </orderedlist>
+    </para>
+
+    <para>
+        Since libraries produced by OCaml are binary incompatible when compiled with different releases of OCaml, versioned virtual packages are also provided by packages at items (1) and (2): <filename>ocaml-&ocaml-version;</filename>, <filename>ocaml-nox-&ocaml-version;</filename>, <filename>ocaml-base-&ocaml-version;</filename>, <filename>ocaml-base-nox-&ocaml-version;</filename>.
+    </para>
+
+    <section>
+      <title>OCaml location</title>
+      <para>
+	The root of all installed OCaml libraries is the <emphasis>OCaml
+	  standard library directory</emphasis>, which is
+	<filename>/usr/lib/ocaml/VERSION/</filename>, at the time of writing
+	<filename>&ocaml-sys-dir;</filename>. It can be output
+	by the OCaml compiler invoking it as <code>ocamlc -where</code>.
+      </para>
+
+  </section>
+
+</section>
+
+<section id="bytecode-native">
+    <title>Bytecode and native programs</title>
+
+    <para>
+        The OCaml compiler can produce two kinds of executables: bytecode and native. The native executables (compiled with <filename>ocamlopt</filename>) are generally faster since they are compiled specifically for an achitecture. The bytecode executables (compiled with <filename>ocamlc</filename>) have the advantage of being portable, which means that a bytecode program can be run on any achitecture without needing to be rebuilt. It should be noted that native OCaml compilers are not provided for every achitecture. Only the following are suported: &supported-archs;.
+    </para>
+
+    <para>
+        Packages providing both native and bytecode versions of a program <filename>prog</filename> usually name them respectively <filename>prog.opt</filename> and <filename>prog.byte</filename> and provide a symbolic link <filename>prog</filename> to the best available version (generally <filename>prog.opt</filename>).
+    </para>
+
+    <para>
+        The <filename>ocaml-native-compilers</filename> package contains the OCaml compiler built in native mode (<filename>ocamlc.opt</filename>, which outputs bytecode, and <filename>ocamlopt.opt</filename>, which output native code). Compiling with those versions of the compilers is generally faster. Unfortunately the <filename>ocaml-native-compilers</filename> package is not available on every architecture. <emphasis>Packages should therefore never depend directly on this package.</emphasis> In order to build big programs and benefit from this natively built compiler, packages should depend on <filename>ocaml-best-compilers</filename> which itself depends on <filename>ocaml-native-compilers</filename> where available and on <filename>ocaml</filename> elsewhere. Since it is a virtual package, it cannot (yet) be a versioned dependency. The version dependency should thus be carried by the <filename>ocaml</filename> dependency.
+    </para>
+</section>
+
+<section id="files">
+    <title>Files used by the OCaml compiler</title>
+
+    <para>
+        The &ocaml-name; compiler can produce or use the following kind of files:
+        <itemizedlist>
+            <listitem><para>bytecode executables (they can be recognised since they start with the shebang line <code>#!/usr/bin/ocamlrun</code>)</para></listitem>
+	    <listitem>
+	      <para>bytecode executables linked in <emphasis>custom mode</emphasis>. They are generated by <filename>ocamlc</filename> (or <filename>ocamlc.opt</filename>), when the <code>-custom</code> flag is given at link time. Those executables are in ELF format and include both the final bytecode and the bytecode interpreter. <filename>strip</filename> should never be invoked on them, since it will remove the bytecode part.
+	      </para>
+	    </listitem>
+            <listitem><para>native executables (in ELF format)</para></listitem>
+            <listitem><para>bytecode libraries (<filename>*.cma</filename>)</para></listitem>
+            <listitem><para>native libraries (<filename>*.cmxa</filename>)</para></listitem>
+	    <listitem><para>shared libraries (for C bindings) (<filename>dll*.so</filename>, <filename>lib*.so</filename>)</para></listitem>
+            <listitem><para>static libraries (for C bindings) (<filename>lib*.a</filename>)</para></listitem>
+            <listitem><para>bytecode object files (<filename>*.cmo</filename>)</para></listitem>
+            <listitem><para>native object files (<filename>*.cmx</filename>)</para></listitem>
+            <listitem><para>configuration files for handling libraries with <filename>ocamlfind</filename> (<filename>META</filename>)</para></listitem>
+	    <!-- ZACK: do we really need to differentiate them? They are plain
+	    objects or library after all ... -->
+	    <!--<listitem><para>&camlp4; related files (<filename>*.cm[ao]</filename>)</para></listitem>-->
+        </itemizedlist>
+    </para>
+</section>
+
+<section id="liblocal-path">
+    <title>Locally installing OCaml programs and libraries</title>
+
+    <para>
+        Installation and use of locally installed OCaml related programs is out of the scope of this document. However, in order to have it work with a standard Debian installation, you should follow some guidelines.
+        <itemizedlist>
+            <listitem>
+                <para>
+                    Executable files should be installed in <filename>/usr/local/bin</filename>.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Shared libraries (for C bindings) should be installed in <filename>/usr/local/lib/ocaml/&ocaml-version;/stublibs/</filename>
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Basically, every other file should be installed in <filename>/usr/local/lib/ocaml/&ocaml-version;/</filename>. This includes in particular bytecode libraries (<filename>*.cma</filename>), native libraries (<filename>*.cmxa</filename>), bytecode object files (<filename>*.cmo</filename>), native object files (<filename>*.cmx</filename>), static libraries (<filename>*.a</filename>) and <filename>META</filename> files.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </para>
+
+    <para>
+      The default configuration of <filename>ocamlfind</filename> (the OCaml
+      library manager recommended in Debian) first looks for a local
+      installation of libraries and then for libraries installed by Debian
+      packages. The next section describes the standard paths for files
+      contained in Debian packages.
+    </para>
+
+    <warning>
+      <para>
+         The <varname>+</varname> preceding any library in the <option>-I</option> of ocamlc or ocamlopt won't be expanded to the local standard library path. You need to specify the path entirely.
+      </para>
+    </warning>
+
+</section>

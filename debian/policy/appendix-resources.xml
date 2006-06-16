@@ -1,0 +1,6 @@
+<para>
+    <itemizedlist>
+        <listitem><para>&ocaml-force;'s website: <ulink url="http://pkg-ocaml-maint.alioth.debian.org/">http://pkg-ocaml-maint.alioth.debian.org/</ulink> (it's an <ulink url="http://alioth.debian.org/projects/pkg-ocaml-maint/">Alioth project</ulink>)</para></listitem>
+        <listitem><para>&ocaml-force;'s mailing list: <ulink url="mailto:debian-ocaml-maint@lists.debian.org">debian-ocaml-maint@lists.debian.org</ulink> (<ulink url="http://lists.debian.org/debian-ocaml-maint/">archives</ulink>)</para></listitem>
+    </itemizedlist>
+</para>

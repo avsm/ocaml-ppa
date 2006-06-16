@@ -1,0 +1,85 @@
+<section>
+    <title>Creating a package for an OCaml program</title>
+    <para>
+        Any package providing executables built from OCaml source should conform to the following guidelines.
+    </para>
+
+    <para>
+	The source package should, if possible, use the name of the upstream
+	package without modifications.
+    </para>
+
+    <para>
+      Programs which are not particularly CPU angry should be compiled in
+      bytecode form and the corresponding binary packages should be
+      <code>Architecture: all</code> in order to minimize archive usage and
+      avoid the need of rebuilding them on all architectures.  Other programs
+      should be compiled in native form on architectures where the native
+      compiler is available, and in bytecode on other architectures.
+      See <xref linkend="bytecode-native-prog" /> for details on how to achieve
+      this.  The corresponding binary packages should be <code>Architecture:
+	any</code> and will need to be built on any architecture.
+    </para>
+
+    <para>
+      All bytecode executables should be linked dynamically against the shared libraries for C bindings, so as to not bloat the archive.
+      <!-- ZACK: which cases? -->
+      <!--However, there may be special cases, were using statically linked bytecode is necessary, in these cases, it is naturally ok to link statically.-->
+      That said, often the upstream authors will favor statically linked bytecode executables, because so they don't need to worry about the presence of the dll stub libraries and such. This is not a valid reason to use statically linked bytecode in a Debian package.
+      <!-- ZACK: related to the commented stuff above -->
+      <!--If statically linked bytecode is provided, a justification of this use should be provided in the <filename>README.Debian</filename> file.-->
+    </para>
+</section>
+
+<section id="bytecode-native-prog">
+    <title>Bytecode and native versions of programs</title>
+    <para>
+      As explained in <xref linkend='bytecode-native' />, native OCaml compilers are not available everywhere. For architectures missing native compiler, a bytecode version of the program should be provided.
+    </para>
+
+    <para>
+        The package's <filename>debian/rules</filename> should build the native code executable if supported on the architecture it is built on, and fall back to building the bytecode version if no working native code compiler is available. Exceptions to this are the executables who are small or not time critical, which may be built only as bytecode. It is the decision of the individual maintainers to choose this, maybe guided by the practice of the upstream author.
+    </para>
+
+    <para>
+      The availability of the native compiler can be tested in the <filename>debian/rules</filename> file by testing the possibility of executing <filename>/usr/bin/ocamlopt</filename>, and build the bytecode version or the native version of the program according to the result of the test. This is a sample snippet of <filename>debian/rules</filename> doing so:
+      <programlisting>
+	build-stamp:
+		dh_testdir
+
+		if [ -x /usr/bin/ocamlopt ]; then \
+			$(MAKE) opt; \
+		else; \
+			$(MAKE) all; \
+		fi
+      </programlisting>
+    </para>
+
+    <para>
+        The bytecode versions are portable. In order to spare the buildds and the Debian archive, bytecode versions should be compiled once for all for big packages (which either take a lot of place on disks or take a lot of time to build). For example, the <filename>spamoracle</filename> package provides the <filename>spamoracle-byte</filename> package which is <varname>Architecture: all</varname> and contains the bytecode version of spamoracle, and the <filename>spamoracle</filename> package which contains the native version of spamoracle and is available only where a native OCaml compiler is available (<varname>Architecture: alpha amd64 arm i386 ia64 kfreebsd-i386 powerpc sparc</varname>).
+    </para>
+
+    <para>
+        Bytecode versions of the programs should depend on <filename>ocaml-base-nox-&ocaml-version;</filename> (or <filename>ocaml-base-&ocaml-version;</filename> the program either uses the <code>Graphics</code> or the <code>LablTk</code> module). In order for the package to be able to be rebuilt or even binNMUed without a change in the packaging, <emphasis>this version should not be hardcoded in the <filename>debian/control</filename> file.</emphasis> Instead, the package should depend on <varname>ocaml-base-nox-${F:OCamlABI}</varname> and use <code>OCAMLABI := $(shell ocamlc -version)</code> and <code>dh_gencontrol -- -VF:OCamlABI="$(OCAMLABI)"</code> in the <filename>debian/rules</filename> file.
+    </para>
+
+    <para>The following is a snippet of a sample <filename>debian/control</filename>:
+      <programlisting>
+	Package: spamoracle-byte
+	Architecture: all
+	Depends: ocaml-base-nox-${F:OCamlABI}
+	Provides: spamoracle
+	Conflicts: spamoracle
+	Replaces: spamoracle
+      </programlisting>
+    </para>
+    <para>The following its pairing <filename>debian/rules</filename> snippet:
+      <programlisting>
+	OCAMLABI := $(shell ocamlc -version)
+	...
+	binary-indep: build install
+	dh_gencontrol -i -- -VF:OCamlABI="$(OCAMLABI)"
+      </programlisting>
+    </para>
+
+</section>
