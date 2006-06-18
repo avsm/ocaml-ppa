@@ -252,21 +252,21 @@ install-arch: build-arch
 		ln -sf /usr/share/man/man1/camlp4r.1.gz camlp4r.opt.1.gz; \
 		ln -sf /usr/share/man/man1/camlp4o.1.gz camlp4o.opt.1.gz
 	cd debian/ocaml/usr/share/doc/ocaml; \
-		ln -sf ../ocaml-base-nox/changes.gz .; \
-		ln -sf ../ocaml-base-nox/readme.gz .; \
-		ln -sf ../ocaml-base-nox/readme.debian .; \
+		ln -sf ../ocaml-base-nox/Changes.gz .; \
+		ln -sf ../ocaml-base-nox/README.gz .; \
+		ln -sf ../ocaml-base-nox/README.Debian .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy-html .
 	cd debian/ocaml-nox/usr/share/doc/ocaml-nox; \
-		ln -sf ../ocaml-base-nox/changes.gz .; \
-		ln -sf ../ocaml-base-nox/readme.gz .; \
-		ln -sf ../ocaml-base-nox/readme.debian .; \
+		ln -sf ../ocaml-base-nox/Changes.gz .; \
+		ln -sf ../ocaml-base-nox/README.gz .; \
+		ln -sf ../ocaml-base-nox/README.Debian .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy-html .
 	cd debian/ocaml-base/usr/share/doc/ocaml-base; \
-		ln -sf ../ocaml-base-nox/changes.gz .; \
-		ln -sf ../ocaml-base-nox/readme.gz .; \
-		ln -sf ../ocaml-base-nox/readme.debian .; \
+		ln -sf ../ocaml-base-nox/Changes.gz .; \
+		ln -sf ../ocaml-base-nox/README.gz .; \
+		ln -sf ../ocaml-base-nox/README.Debian .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy-html .
 

@@ -1,3 +1,10 @@
+ocaml (3.09.2-6) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+  * Corrected symbolic links in documentation directories.
+
+ -- Samuel Mimram <smimram@debian.org>  Sun, 18 Jun 2006 11:47:08 +0000
+
 ocaml (3.09.2-5) unstable; urgency=low
 
   * Added a missing dependency on docbook-xml, closes: #373996.
