@@ -242,7 +242,7 @@ install-arch: build-arch
 	rm -f debian/ocaml-nox/usr/share/man/man1/*.opt.1
 
 	# make some symbolic links
-	cd debian/ocaml-nox/usr/include; ln -sf /usr/lib/ocaml/$(ocamlabi)/caml .
+	cd debian/ocaml-nox/usr/include; ln -sf /usr/lib/ocaml/$(OCAMLABI)/caml .
 	cd debian/ocaml-native-compilers/usr/share/man/man1; \
 		ln -sf /usr/share/man/man1/ocamlc.1.gz ocamlc.opt.1.gz; \
 		ln -sf /usr/share/man/man1/ocamlopt.1.gz ocamlopt.opt.1.gz; \
@@ -256,19 +256,19 @@ install-arch: build-arch
 		ln -sf ../ocaml-base-nox/README.gz .; \
 		ln -sf ../ocaml-base-nox/README.Debian .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz .; \
-		ln -sf ../ocaml-base-nox/ocaml_packaging_policy-html .
+		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.html .
 	cd debian/ocaml-nox/usr/share/doc/ocaml-nox; \
 		ln -sf ../ocaml-base-nox/Changes.gz .; \
 		ln -sf ../ocaml-base-nox/README.gz .; \
 		ln -sf ../ocaml-base-nox/README.Debian .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz .; \
-		ln -sf ../ocaml-base-nox/ocaml_packaging_policy-html .
+		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.html .
 	cd debian/ocaml-base/usr/share/doc/ocaml-base; \
 		ln -sf ../ocaml-base-nox/Changes.gz .; \
 		ln -sf ../ocaml-base-nox/README.gz .; \
 		ln -sf ../ocaml-base-nox/README.Debian .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz .; \
-		ln -sf ../ocaml-base-nox/ocaml_packaging_policy-html .
+		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.html .
 
 	dh_install -a
 
