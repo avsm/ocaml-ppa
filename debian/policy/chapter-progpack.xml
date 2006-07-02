@@ -10,7 +10,7 @@
     </para>
 
     <para>
-      Programs which are not particularly CPU angry should be compiled in
+      Programs which are not particularly CPU hungry should be compiled in
       bytecode form and the corresponding binary packages should be
       <code>Architecture: all</code> in order to minimize archive usage and
       avoid the need of rebuilding them on all architectures.  Other programs
@@ -49,7 +49,7 @@
 
 		if [ -x /usr/bin/ocamlopt ]; then \
 			$(MAKE) opt; \
-		else; \
+		else \
 			$(MAKE) all; \
 		fi
       </programlisting>
