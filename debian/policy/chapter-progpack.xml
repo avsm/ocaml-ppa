@@ -1,5 +1,5 @@
 <section>
-    <title>Creating a package for an OCaml program</title>
+    <title>Creating Packages for OCaml Programs</title>
     <para>
         Any package providing executables built from OCaml source should conform to the following guidelines.
     </para>
@@ -10,12 +10,18 @@
     </para>
 
     <para>
-      Programs which are not particularly CPU hungry should be compiled in
-      bytecode form and the corresponding binary packages should be
-      <code>Architecture: all</code> in order to minimize archive usage and
-      avoid the need of rebuilding them on all architectures.  Other programs
-      should be compiled in native form on architectures where the native
-      compiler is available, and in bytecode on other architectures.
+      Programs which are not particularly CPU hungry should be
+      compiled into bytecode form, and the corresponding binary packages
+      should be <code>Architecture: all</code> in order to minimize
+      archive usage and avoid the need of rebuilding them on all
+      architectures. See <xref linkend="bytecode-prog" /> for details on
+      this kind of packages.
+    </para>
+
+    <para>
+      Other programs
+      should be compiled into native form on architectures where the native
+      compiler is available, and into bytecode on other architectures.
       See <xref linkend="bytecode-native-prog" /> for details on how to achieve
       this.  The corresponding binary packages should be <code>Architecture:
 	any</code> and will need to be built on any architecture.
@@ -29,6 +35,44 @@
       <!-- ZACK: related to the commented stuff above -->
       <!--If statically linked bytecode is provided, a justification of this use should be provided in the <filename>README.Debian</filename> file.-->
     </para>
+</section>
+
+<section id="bytecode-prog">
+<title>Bytecode Packages</title>
+<para>
+A bytecode package has all
+its binaries compiled into bytecode. It depends on a package
+containing the OCaml runtime system. By consequence, such a package
+has its architecture field set to <code>all</code>.
+</para>
+
+<para>
+A bytecode package must depend on
+<filename>ocaml-base-nox-&ocaml-version;</filename> (or
+<filename>ocaml-base-&ocaml-version;</filename> if the program either
+uses the <code>Graphics</code> or the <code>LablTk</code> module). In
+order for the package to be able to be rebuilt or even binNMUed
+without a change in the packaging, <emphasis>this version should not
+be hardcoded in the <filename>debian/control</filename>
+file.</emphasis> Instead, the package should depend on
+<varname>ocaml-base-nox-${F:OCamlABI}</varname> and use <code>OCAMLABI
+:= $(shell ocamlc -version)</code> and <code>dh_gencontrol --
+-VF:OCamlABI="$(OCAMLABI)"</code> in the
+<filename>debian/rules</filename> file.  
+</para>
+
+<para>
+A bytecode package must build-depend-indep on
+<filename>ocaml-nox-&ocaml-version;</filename> (or
+<filename>ocaml-&ocaml-version;</filename> if the program either uses
+the <code>Graphics</code> or the <code>LablTk</code> module).  The
+current version number of OCaml should <emphasis>not</emphasis> be hardcoded
+into the build-dependency (this is a deviation from a practice which
+used be recommended but is depreciated now). Of course, if it is
+necessary to ensure that the version of OCaml has a certain value then
+version constraints can be used. However, this should be justified by
+the requirements of the compilation of the program.
+</para>
 </section>
 
 <section id="bytecode-native-prog">
