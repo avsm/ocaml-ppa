@@ -18,3 +18,6 @@ in having ocaml_packaging_policy.html...
 
 Sylvain LE GALL
 Sat, 18 October 2003
+
+In order to compile the xml documents you need to install the package
+docbook-utils.  [Ralf, 5/7/2006]
