@@ -178,7 +178,7 @@ tagsUrl=svn+ssh://svn.debian.org/svn/pkg-ocaml-maint/tags/packages/my_package
 
     <tip>
         <para>
-            Some useful aliases took from the svn-buildpackage HOWTO:
+            Some useful aliases taken from the svn-buildpackage HOWTO:
             <programlisting>
 alias svn-b='svn-buildpackage -rfakeroot --svn-dont-clean -us -uc --svn-ignore'
 alias svn-bt='svn-buildpackage -rfakeroot --svn-lintian --svn-dont-clean --svn-tag'
