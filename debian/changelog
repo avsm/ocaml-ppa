@@ -1,10 +1,10 @@
-ocaml (3.09.2-6) UNRELEASED; urgency=low
+ocaml (3.09.2-6) unstable; urgency=low
 
-  [ Samuel Mimram ]
-  * Correct /usr/include/caml symbolic link (Closes: #379271).
+  * Correct /usr/include/caml symbolic link, closes: #379271.
   * Correct symbolic links in documentation directories.
+  * Updated policy.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Sun, 23 Jul 2006 12:42:18 +0200
+ -- Samuel Mimram <smimram@debian.org>  Sun, 23 Jul 2006 14:37:36 +0000
 
 ocaml (3.09.2-5) unstable; urgency=low
 
