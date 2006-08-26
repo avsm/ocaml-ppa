@@ -73,6 +73,10 @@ necessary to ensure that the version of OCaml has a certain value then
 version constraints can be used. However, this should be justified by
 the requirements of the compilation of the program.
 </para>
+
+<para>
+    Bytecode programs which are compiled by <code>ocamlc -custom</code> must not be stripped. In particular, their package should be excluded from the <filename>dh_strip</filename> script. When compiled this way, an elf executable is generated containing the ocaml interpreter, and the bytecode of the program in a section which is removed when the program is stripped. For more information, see the bug <ulink url="http://bugs.debian.org/256900">256900</ulink>. An override for the lintian warning is considered as acceptable in this situation.
+</para>
 </section>
 
 <section id="bytecode-native-prog">

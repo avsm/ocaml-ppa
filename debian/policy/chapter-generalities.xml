@@ -112,8 +112,10 @@
 
   <para>
       At the time of this writing, the latest version of OCaml in
-  Debian is &ocaml-version;.  </para>
+      Debian is &ocaml-version;.  </para>
 
+  <section>
+      <title>Packages for OCaml</title>
     <para>
     The <filename>ocaml</filename> package depends on all the basic
     packages needed to develop programs with OCaml. More specifically,
@@ -175,7 +177,8 @@
     <filename>ocaml-nox-&ocaml-version;</filename>,
     <filename>ocaml-base-&ocaml-version;</filename>,
     <filename>ocaml-base-nox-&ocaml-version;</filename>.
-    </para>
+</para>
+</section>
 
     <section>
       <title>OCaml Location</title>
