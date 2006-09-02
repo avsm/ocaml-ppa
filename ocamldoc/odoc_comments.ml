@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_comments.ml,v 1.4.12.1 2005/11/07 15:59:04 doligez Exp $ *)
+(* $Id: odoc_comments.ml,v 1.4.12.2 2006/07/31 14:19:35 guesdon Exp $ *)
 
 (** Analysis of comments. *)
 
@@ -333,12 +333,13 @@ let info_of_string s =
     None -> dummy
   | Some i -> i
 
-let info_of_comment_file f =
+let info_of_comment_file modlist f =
   try
     let s = Odoc_misc.input_file_as_string f in
-    info_of_string s
+    let i = info_of_string s in
+    Odoc_cross.assoc_comments_info "" modlist i
   with
     Sys_error s ->
       failwith s
 
-(* eof $Id: odoc_comments.ml,v 1.4.12.1 2005/11/07 15:59:04 doligez Exp $ *)
+(* eof $Id: odoc_comments.ml,v 1.4.12.2 2006/07/31 14:19:35 guesdon Exp $ *)

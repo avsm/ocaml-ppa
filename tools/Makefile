@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.61.2.1 2005/11/17 14:26:37 doligez Exp $
+# $Id: Makefile,v 1.61.2.2 2006/07/25 09:00:15 doligez Exp $
 
 include ../config/Makefile
 
@@ -195,7 +195,9 @@ clean::
 	rm -f dumpobj
 
 opnames.ml: ../byterun/instruct.h
-	unset LC_ALL LC_CTYPE LC_COLLATE LANG; \
+	unset LC_ALL || : ; \
+	unset LC_CTYPE || : ; \
+	unset LC_COLLATE LANG || : ; \
 	sed -e '/\/\*/d' \
             -e '/^#/d' \
             -e 's/enum \(.*\) {/let names_of_\1 = [|/' \

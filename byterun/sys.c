@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: sys.c,v 1.78.2.1 2005/11/09 15:58:03 doligez Exp $ */
+/* $Id: sys.c,v 1.78.2.2 2006/08/30 09:37:57 doligez Exp $ */
 
 /* Basic system calls */
 
@@ -311,7 +311,10 @@ CAMLprim value caml_sys_read_directory(value path)
   struct ext_table tbl;
 
   caml_ext_table_init(&tbl, 50);
-  if (caml_read_directory(String_val(path), &tbl) == -1) caml_sys_error(path);
+  if (caml_read_directory(String_val(path), &tbl) == -1){
+    caml_ext_table_free(&tbl, 1);
+    caml_sys_error(path);
+  }
   caml_ext_table_add(&tbl, NULL);
   result = caml_copy_string_array((char const **) tbl.contents);
   caml_ext_table_free(&tbl, 1);

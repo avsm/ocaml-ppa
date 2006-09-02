@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamldep.ml,v 1.36 2005/03/24 17:20:54 doligez Exp $ *)
+(* $Id: ocamldep.ml,v 1.36.4.1 2006/05/02 14:54:35 guesdon Exp $ *)
 
 open Format
 open Location
@@ -58,7 +58,7 @@ let find_dependency modname (byt_deps, opt_deps) =
   try
     let filename = find_file (modname ^ ".mli") in
     let basename = Filename.chop_suffix filename ".mli" in
-    let optname = 
+    let optname =
       if Sys.file_exists (basename ^ ".ml")
       then basename ^ ".cmx"
       else basename ^ ".cmi" in

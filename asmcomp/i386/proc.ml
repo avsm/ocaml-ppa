@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc.ml,v 1.9 2004/08/12 13:37:12 xleroy Exp $ *)
+(* $Id: proc.ml,v 1.9.4.1 2006/07/25 08:31:56 xleroy Exp $ *)
 
 (* Description of the Intel 386 processor *)
 
@@ -124,7 +124,7 @@ let calling_conventions first_int last_int first_float last_float make_stack
           ofs := !ofs + size_float
         end
   done;
-  (loc, max 0 !ofs)
+  (loc, Misc.align stack_alignment (max 0 !ofs))
 
 let incoming ofs = Incoming ofs
 let outgoing ofs = Outgoing ofs
