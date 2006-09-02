@@ -1,3 +1,9 @@
+ocaml (3.09.3~rc1-1) experimental; urgency=low
+
+  * New upstream release candidate.
+
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Sat,  2 Sep 2006 10:38:43 +0200
+
 ocaml (3.09.2-6) unstable; urgency=low
 
   * Correct /usr/include/caml symbolic link, closes: #379271.
