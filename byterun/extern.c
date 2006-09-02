@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: extern.c,v 1.58.2.1 2005/11/22 11:50:34 doligez Exp $ */
+/* $Id: extern.c,v 1.58.2.2 2006/06/10 09:02:40 xleroy Exp $ */
 
 /* Structured output */
 
@@ -536,17 +536,23 @@ CAMLprim value caml_output_value_to_string(value v, value flags)
 {
   intnat len, ofs;
   value res;
-  struct output_block * blk;
+  struct output_block * blk, * nextblk;
 
   init_extern_output();
   len = extern_value(v, flags);
+  /* PR#4030: it is prudent to save extern_output_first before allocating
+     the result, as in caml_output_val */
+  blk = extern_output_first;
   res = caml_alloc_string(len);
-  for (ofs = 0, blk = extern_output_first; blk != NULL; blk = blk->next) {
+  ofs = 0;
+  while (blk != NULL) {
     int n = blk->end - blk->data;
     memmove(&Byte(res, ofs), blk->data, n);
     ofs += n;
+    nextblk = blk->next;
+    free(blk);
+    blk = nextblk;
   }
-  free_extern_output();
   return res;
 }
 

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: includemod.mli,v 1.12 2000/03/06 22:12:00 weis Exp $ *)
+(* $Id: includemod.mli,v 1.12.42.1 2006/06/23 01:22:27 garrigue Exp $ *)
 
 (* Inclusion checks for the module language *)
 
@@ -40,6 +40,7 @@ type error =
   | Class_declarations of
       Ident.t * class_declaration * class_declaration *
       Ctype.class_match_failure list
+  | Unbound_modtype_path of Path.t
 
 exception Error of error list
 

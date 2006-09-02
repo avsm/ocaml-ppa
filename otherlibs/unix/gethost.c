@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: gethost.c,v 1.26 2005/10/13 14:50:37 xleroy Exp $ */
+/* $Id: gethost.c,v 1.26.2.1 2006/06/10 09:10:41 xleroy Exp $ */
 
 #include <string.h>
 #include <mlvalues.h>
@@ -62,7 +62,12 @@ static value alloc_host_entry(struct hostent *entry)
 
   Begin_roots4 (name, aliases, addr_list, adr);
     name = copy_string((char *)(entry->h_name));
-    aliases = copy_string_array((const char**)entry->h_aliases);
+    /* PR#4043: protect against buggy implementations of gethostbyname()
+       that return a NULL pointer in h_aliases */
+    if (entry->h_aliases)
+      aliases = copy_string_array((const char**)entry->h_aliases);
+    else
+      aliases = Atom(0);
     entry_h_length = entry->h_length;
 #ifdef h_addr
     addr_list = alloc_array(alloc_one_addr, (const char**)entry->h_addr_list);

@@ -8,7 +8,7 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (***********************************************************************)
 
-(* $Id: odoc_texi.ml,v 1.19.4.2 2005/11/10 14:44:36 guesdon Exp $ *)
+(* $Id: odoc_texi.ml,v 1.19.4.3 2006/07/31 14:19:35 guesdon Exp $ *)
 
 (** Generation of Texinfo documentation. *)
 
@@ -1105,7 +1105,8 @@ class texi =
         | Some f ->
             nl chan ;
             puts_nl chan
-              (self#texi_of_info (Some (Odoc_info.info_of_comment_file f)))
+              (self#texi_of_info
+		 (Some (Odoc_info.info_of_comment_file m_list f)))
       end ;
 
       (* write a top menu *)

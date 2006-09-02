@@ -9,9 +9,12 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_cross.mli,v 1.2 2003/11/24 10:39:30 starynke Exp $ *)
+(* $Id: odoc_cross.mli,v 1.2.12.1 2006/07/31 14:19:35 guesdon Exp $ *)
 
 (** Cross-referencing. *)
 
 val associate : Odoc_module.t_module list -> unit
 
+val assoc_comments_info :
+    string -> Odoc_module.t_module list ->
+      Odoc_types.info -> Odoc_types.info

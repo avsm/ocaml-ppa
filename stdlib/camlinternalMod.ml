@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: camlinternalMod.ml,v 1.4 2005/10/25 18:34:07 doligez Exp $ *)
+(* $Id: camlinternalMod.ml,v 1.4.2.1 2006/05/06 07:27:40 xleroy Exp $ *)
 
 type shape =
   | Function
@@ -45,7 +45,7 @@ let rec update_mod shape o n =
   match shape with
   | Function ->
       if Obj.tag n = Obj.closure_tag && Obj.size n <= Obj.size o
-      then overwrite o n
+      then begin overwrite o n; Obj.truncate o (Obj.size n) (* PR #4008 *) end
       else overwrite o (Obj.repr (fun x -> (Obj.obj n : _ -> _) x))
   | Lazy ->
       assert (Obj.tag n = Obj.lazy_tag);

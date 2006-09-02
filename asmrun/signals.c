@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: signals.c,v 1.93.2.1 2006/03/22 13:13:45 xleroy Exp $ */
+/* $Id: signals.c,v 1.93.2.2 2006/08/01 01:02:07 xleroy Exp $ */
 
 #if defined(TARGET_amd64) && defined (SYS_linux)
 #define _GNU_SOURCE
@@ -152,9 +152,6 @@ void caml_record_signal(int signal_number)
 
 void caml_garbage_collection(void)
 {
-  int signal_number;
-  intnat signal_state;
-
   caml_young_limit = caml_young_start;
   if (caml_young_ptr < caml_young_start || caml_force_major_slice) {
     caml_minor_collection();

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typecore.ml,v 1.176.2.4 2006/02/21 00:58:10 garrigue Exp $ *)
+(* $Id: typecore.ml,v 1.176.2.5 2006/05/01 01:16:28 garrigue Exp $ *)
 
 (* Typechecking for the core language *)
 
@@ -917,16 +917,18 @@ let rec type_exp env sexp =
         end_def ();
         generalize_structure funct.exp_type
       end;
-      let rec lower_args ty_fun =
-        match (expand_head env ty_fun).desc with
-          Tarrow (l, ty, ty_fun, com) ->
-            unify_var env (newvar()) ty;
-            lower_args ty_fun
+      let rec lower_args seen ty_fun =
+        let ty = expand_head env ty_fun in
+        if List.memq ty seen then () else
+        match ty.desc with
+          Tarrow (l, ty_arg, ty_fun, com) ->
+            unify_var env (newvar()) ty_arg;
+            lower_args (ty::seen) ty_fun
         | _ -> ()
       in
       let ty = instance funct.exp_type in
       end_def ();
-      lower_args ty;
+      lower_args [] ty;
       begin_def ();
       let (args, ty_res) = type_application env funct sargs in
       end_def ();
