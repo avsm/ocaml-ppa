@@ -1,20 +1,74 @@
+
 <section>
-    <title>How to obtain a copy of the SVN archive</title>
-    <para>
-      You can obtain a copy of debian-ocaml-maint SVN archive by
+  <title>Use SVN and let your users know about it</title>
+  <para>
+    (Hopefully) All OCaml-related Debian packages are maintained using a
+    centralized <ulink url="http://subversion.tigris.org/">Subversion</ulink>
+    (<acronym>SVN</acronym> for short) repository. This practice reduce the
+    efforts needed to contribute work inside &ocaml-force; and, in case of
+    need, provides a place where to massively perform changes to all
+    OCaml-related Debian packages.
+  </para>
+  <para>
+    Nonetheless, Debian users can benefit knowing we are using a SVN
+    repository (they can for instance subscribe to the RSS feed for changes
+    or have a place where to look for finding patches corresponding to bugs
+    tagged "pending" in the BTS).
+  </para>
+  <para>
+    For this reason <emphasis>it is recommended to add the
+    <code>XS-X-Vcs-Svn</code> field to the <filename>debian/control</filename>
+    of packages maintained in &ocaml-force; SVN repository</emphasis>. Its name
+  specifies that we are using Subversion as our Version Control System
+  (<acronym>VCS</acronym>); its value is the URL pointing to the package's
+  trunk directory.
+  </para>
+  <para>
+    The general scheme for using the field is thus:
+    <programlisting>
+  XS-X-Vcs-Svn: svn://svn.debian.org/svn/pkg-ocaml-maint/trunk/packages/<emphasis>PACKAGE_NAME</emphasis>
+    </programlisting>
+    <example>
+      <title>Usage example of the XS-X-Vcs-Svn field, from the
+        <application>findlib</application> package
+      </title>
       <programlisting>
-svn co svn+ssh://svn.debian.org/svn/pkg-ocaml-maint
+  Source: findlib
+  Section: devel
+  Priority: optional
+  Maintainer: Stefano Zacchiroli &lt;zack@debian.org&gt;
+  Build-Depends: debhelper (>> 4.0.0), ocaml (>= 3.09.2), m4, gawk | awk, dpatch, cdbs
+  Standards-Version: 3.7.2
+  <emphasis>XS-X-Vcs-Svn: svn://svn.debian.org/svn/pkg-ocaml-maint/trunk/packages/findlib</emphasis>
+
+  Package: ocaml-findlib
+  Section: devel
+  Architecture: any
+  Depends: ocaml-nox-${F:OCamlABI}, ${shlibs:Depends}, ${misc:Depends}
+  Description: Management tool for OCaml programming language libraries
+  ...
+      </programlisting>
+    </example>
+  </para>
+</section>
+
+<section>
+    <title>How to obtain a copy of the SVN repository</title>
+    <para>
+      You can obtain a copy of debian-ocaml-maint SVN repository by
+      <programlisting>
+  svn co svn+ssh://svn.debian.org/svn/pkg-ocaml-maint
       </programlisting>
       You must be member of the
       <ulink url="http://pkg-ocaml-maint.alioth.debian.org/">Debian
-      OCaml Task Force</ulink> in order to have write access to this archive. 
+      OCaml Task Force</ulink> in order to have write access to the repository. 
     </para>
 </section>
 
 <section>
-    <title>Structure of the SVN archive</title>
+    <title>Structure of the SVN repository</title>
     <para>
-        We keep all files of the debian subdirectory under svn control, and
+        We keep all files of the debian subdirectory under SVN control, and
         upstream only as a compressed tarball. The rationale behind this is
         that changes to upstream files should be managed by the <application>dpatch</application> patch
         manager. Hence, all the diffs to upstream files are kept in a
@@ -23,7 +77,7 @@ svn co svn+ssh://svn.debian.org/svn/pkg-ocaml-maint
     </para>
 
     <para>
-        The structure of the pkg-ocaml-maint svn archive is as follows, where
+        The structure of the pkg-ocaml-maint SVN repository is as follows, where
         generic names are indicated in square brackets <varname>[ .. ]</varname>, and where the
         contents of subdirectories not directly relevant for package management
         are not detailed:
@@ -59,10 +113,10 @@ svn co svn+ssh://svn.debian.org/svn/pkg-ocaml-maint
 </section>
 
 <section>
-    <title>How to add a new package to the SVN archive</title>
+    <title>How to add a new package to the SVN repository</title>
     <para>
         Place yourself in the directory <filename>trunk/packages</filename> of your working copy of
-        the svn repository. Create a directory with the same name as your
+        the SVN repository. Create a directory with the same name as your
         source package (let's say, my-package), and subdirectories <filename>upstream</filename>
         and <filename>trunk</filename>.  Put the current upstream tarball in <filename>upstream</filename>, and the
         current debian directory with all its relevant files in <filename>trunk</filename>. This
@@ -105,7 +159,7 @@ svn co svn+ssh://svn.debian.org/svn/pkg-ocaml-maint
             </listitem>
             <listitem>
                 <para>
-                    The structure of our svn repository is not among the default structures
+                    The structure of our SVN repository is not among the default structures
                     of <application>svn-buildpackage</application>. Hence, we have to override the default location of some
                     directories.
                 </para>
@@ -117,8 +171,8 @@ svn co svn+ssh://svn.debian.org/svn/pkg-ocaml-maint
         Place yourself in <filename>trunk/packages/my_packages/trunk</filename>, and do the following:
         <command>svn propset mergeWithUpstream 1 debian</command>.
         This registers the property "mergeWithUpstream" with the current
-        directory, such that svn-buildpackage knows that it has to use merge
-        mode as explained above.
+	directory, such that <application>svn-buildpackage</application> knows
+	that it has to use merge mode as explained above.
     </para>
 
     <para>
@@ -159,10 +213,11 @@ tagsUrl=svn+ssh://svn.debian.org/svn/pkg-ocaml-maint/tags/packages/my_package
     </para>
 
     <para>
-        svn-buildpackage will complain when your copy of the debian directory
-        is not in sync with the repository. You may use the option
-        <option>--svn-ignore-new</option> to override this behaviour. The package will be
-        build in the directory <filename>../build-area</filename>.
+      <application>svn-buildpackage</application> will complain when your copy
+      of the debian directory is not in sync with the repository. You may use
+      the option <option>--svn-ignore-new</option> to override this behaviour.
+      The package will be build in the directory
+      <filename>../build-area</filename>.
     </para>
 
     <para>
@@ -173,12 +228,13 @@ tagsUrl=svn+ssh://svn.debian.org/svn/pkg-ocaml-maint/tags/packages/my_package
         Provided you have commited all your changes to the svn repository, this
         will after a successful build of the package create a tag for the current
         version in <filename>tags/packages/my_package</filename>. The tagging is done directly in the
-        svn repository.
+        SVN repository.
     </para>
 
     <tip>
         <para>
-            Some useful aliases taken from the svn-buildpackage HOWTO:
+	  Some useful aliases taken from the
+	  <application>svn-buildpackage</application> HOWTO:
             <programlisting>
 alias svn-b='svn-buildpackage -rfakeroot --svn-dont-clean -us -uc --svn-ignore'
 alias svn-bt='svn-buildpackage -rfakeroot --svn-lintian --svn-dont-clean --svn-tag'
@@ -206,7 +262,7 @@ alias svn-bt='svn-buildpackage -rfakeroot -k&lt;gpgid&gt; --svn-lintian --svn-do
     <title>dpatch</title>
 
     <para>
-        dpatch will work properly at package build time with the svn
+        dpatch will work properly at package build time with the SVN
         structure described above since all of the build process will be
         carried out in a fresh directory. However, invoking
         <filename>debian/rules</filename> with the "clean" target in
@@ -227,3 +283,4 @@ conf_origtargzpath=../upstream
         </programlisting>
     </para>
 </section>
+

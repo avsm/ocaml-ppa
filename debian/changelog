@@ -1,8 +1,13 @@
-ocaml (3.09.3~rc1-1) experimental; urgency=low
+ocaml (3.09.3~rc1-1) unstable; urgency=low
 
   * New upstream release candidate.
 
- -- Julien Cristau <julien.cristau@ens-lyon.org>  Sat,  2 Sep 2006 10:38:43 +0200
+  [ Stefano Zacchiroli ]
+  * Updated policy (now at version 0.7.1); changes:
+    - added a best-practice section about using the XS-X-Vcs-Svn field in
+      debian/control of OCaml related packages
+
+ -- Stefano Zacchiroli <zack@debian.org>  Tue,  5 Sep 2006 12:06:25 +0200
 
 ocaml (3.09.2-6) unstable; urgency=low
 

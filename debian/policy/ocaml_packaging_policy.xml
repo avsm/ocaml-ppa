@@ -33,7 +33,7 @@
 <book>
     <bookinfo>
         <title>&debian-name; &ocaml-name; Packaging Policy for OCaml &ocaml-version;</title>
-        <releaseinfo>Revision 0.7</releaseinfo>
+        <releaseinfo>Revision 0.7.1</releaseinfo>
         &authors;
         &legal;
     </bookinfo>
