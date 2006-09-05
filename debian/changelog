@@ -6,6 +6,8 @@ ocaml (3.09.3~rc1-1) unstable; urgency=low
   * Updated policy (now at version 0.7.1); changes:
     - added a best-practice section about using the XS-X-Vcs-Svn field in
       debian/control of OCaml related packages
+    - fixed typo in the suggested debian/rules line to fill the OFILES
+      variable
 
  -- Stefano Zacchiroli <zack@debian.org>  Tue,  5 Sep 2006 12:06:25 +0200
 

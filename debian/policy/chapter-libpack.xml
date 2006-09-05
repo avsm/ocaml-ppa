@@ -92,7 +92,7 @@
         The string <varname>@OCamlABI@</varname> is substituted at build-time by the version of OCaml. Here are the relevant parts of the <filename>debian/rules</filename> file:
         <programlisting>
 	OCAMLABI := $(shell ocamlc -version)
-	OFILES := $(filter-out debian/control,(patsubst %.in,%,$(wildcard debian/*.in)))
+	OFILES := $(filter-out debian/control,$(patsubst %.in,%,$(wildcard debian/*.in)))
 
 	ocamlinit:
 		for f in $(OFILES); do sed -e 's/@OCamlABI@/$(OCAMLABI)/g' $$f.in > $$f; done
