@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>
 Uploaders: Sven Luther <luther@debian.org>, Stefano Zacchiroli <zack@debian.org>, Julien Cristau <julien.cristau@ens-lyon.org>, Samuel Mimram <smimram@debian.org>
-Build-Depends: debhelper (>> 4.0.2), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2, docbook-utils
+Build-Depends: debhelper (>> 4.0.2), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2, docbook-xml, docbook-utils
 Standards-Version: 3.7.2
 XS-X-Vcs-Svn: svn://svn.debian.org/svn/pkg-ocaml-maint/trunk/packages/ocaml
 
@@ -99,6 +99,7 @@ Package: ocaml-native-compilers
 Architecture: #OcamlNativeArchs#
 Depends: ocaml-nox (= ${Source-Version}), ocaml-nox-${F:OCamlABI}, gcc, binutils, ${shlibs:Depends}
 Provides: ocaml-best-compilers
+Replaces: ocaml-nox (<= 3.09.2-3)
 Description: Native code compilers of the ocaml suite (the .opt ones)
  Objective Caml is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
