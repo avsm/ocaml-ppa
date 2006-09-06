@@ -128,6 +128,25 @@ the requirements of the compilation of the program.
 	binary-indep: build install
 	dh_gencontrol -i -- -VF:OCamlABI="$(OCAMLABI)"
       </programlisting>
-    </para>
+  </para>
+
+  <para>
+      In the case where there is only one package, which provides either a native version where available or a bytecode version otherwise, the dependency on <varname>ocaml-base-nox-&ocaml-version;</varname> should be added only when the package is built in native mode. For example, the <filename>debian/control</filename> of <filename>approx</filename> contains:
+      <programlisting>
+	Package: approx
+	Architecture: any
+	Depends: ${shlibs:Depends}, ${F:OCamlRun}, adduser, bzip2, curl
+      </programlisting>
+      and the corresponding <filename>debian/rules</filename> contains:
+      <programlisting>
+	OCAMLABI = $(shell ocamlc -version)
+	BYTECODE = $(shell [ -x /usr/bin/ocamlopt ] || echo yes)
+	OCAMLRUN = $(if $(BYTECODE),ocaml-base-nox-$(OCAMLABI))
+	...
+	binary-arch:
+		...
+		dh_gencontrol -- -VF:OCamlRun="$(OCAMLRUN)"
+      </programlisting>
+  </para>
 
 </section>
