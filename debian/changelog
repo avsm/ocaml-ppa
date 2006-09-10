@@ -1,5 +1,6 @@
-ocaml (3.09.3~rc1-1) unstable; urgency=low
+ocaml (3.09.3~rc1-1) experimental; urgency=low
 
+  [ Julien Cristau ]
   * New upstream release candidate.
 
   [ Stefano Zacchiroli ]
@@ -9,7 +10,11 @@ ocaml (3.09.3~rc1-1) unstable; urgency=low
     - fixed typo in the suggested debian/rules line to fill the OFILES
       variable
 
- -- Stefano Zacchiroli <zack@debian.org>  Tue,  5 Sep 2006 12:06:25 +0200
+  [ Samuel Mimram ]
+  * Updated to policy (section 2.3) to explain how to add a conditional
+    dependency on ocaml-base-nox-VERSION for native/bytecode packages.
+
+ -- Samuel Mimram <smimram@debian.org>  Sun, 10 Sep 2006 23:11:31 +0000
 
 ocaml (3.09.2-6) unstable; urgency=low
 
