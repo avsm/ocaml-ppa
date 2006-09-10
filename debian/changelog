@@ -11,7 +11,7 @@ ocaml (3.09.3~rc1-1) experimental; urgency=low
       variable
 
   [ Samuel Mimram ]
-  * Updated to policy (section 2.3) to explain how to add a conditional
+  * Updated policy (section 2.3) to explain how to add a conditional
     dependency on ocaml-base-nox-VERSION for native/bytecode packages.
 
  -- Samuel Mimram <smimram@debian.org>  Sun, 10 Sep 2006 23:11:31 +0000
