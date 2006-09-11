@@ -3,13 +3,13 @@
 # GNU copyright 1997 to 1999 by Joey Hess.
 #
 # Modified to make a template file for a multi-binary package with separated
-# build-arch and build-indep targets  by Bill Allombert 2001
+# build-arch and build-indep targets by Bill Allombert 2001
 
 # We want to use dpatch.
 include /usr/share/dpatch/dpatch.make
 PACKAGE = ocaml
 OCAMLMAJOR = 3.09
-OCAMLMINOR = 3~rc1
+OCAMLMINOR = 3-rc1
 OCAMLABI = $(OCAMLMAJOR).$(OCAMLMINOR)
 STDLIBDIR = /usr/lib/ocaml/$(OCAMLABI)
 MD5SUMSDIR = /var/lib/ocaml/md5sums
