@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml-vars.mk 3110 2006-09-13 13:40:53Z zack $
+# $Id: ocaml-vars.mk 3149 2006-09-16 14:06:54Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -43,6 +43,11 @@ OCAML_IN_FILES := $(filter-out debian/control,$(patsubst %.in,%,$(wildcard debia
 # 'yes' if native code compilation is available on the build architecture, 'no' otherwise.
 # For debian/rules writers.
 OCAML_HAVE_OCAMLOPT := $(shell if test -x /usr/bin/ocamlopt ; then echo "yes" ; else echo "no" ; fi)
+
+# space separated list of Debian architectures supporting OCaml native code
+# compilation.
+# Used internally by ocaml.mk, may be useful to debian/rules writers as well
+OCAML_NATIVE_ARCHS := $(shell cat $(OCAML_STDLIB_DIR)/native-archs)
 
 endif
 

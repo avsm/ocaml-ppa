@@ -1,3 +1,13 @@
+ocaml (3.09.3~rc1-2) experimental; urgency=low
+
+  [ Stefano Zacchiroli ]
+  * Added .txt suffix to the textual version of the policy
+  * Ship CDBS class for building OCaml related packages in
+    /usr/share/cdbs/1/ (permission granted by the CDBS maintainers to
+    ship files there, see #387299), closes: #387299.
+
+ -- Stefano Zacchiroli <zack@debian.org>  Sat, 16 Sep 2006 17:10:14 +0200
+
 ocaml (3.09.3~rc1-1) experimental; urgency=low
 
   [ Julien Cristau ]
@@ -9,7 +19,6 @@ ocaml (3.09.3~rc1-1) experimental; urgency=low
       debian/control of OCaml related packages
     - fixed typo in the suggested debian/rules line to fill the OFILES
       variable
-  * Added .txt suffix to the textual version of the policy
 
   [ Samuel Mimram ]
   * Updated policy (section 2.3) to explain how to add a conditional

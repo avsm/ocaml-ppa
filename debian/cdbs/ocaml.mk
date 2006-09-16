@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 3110 2006-09-13 13:40:53Z zack $
+# $Id: ocaml.mk 3149 2006-09-16 14:06:54Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -24,6 +24,9 @@ _cdbs_class_path ?= /usr/share/cdbs/1/class
 
 ifndef _cdbs_class_ocaml
 _cdbs_class_ocaml = 1
+
+# needed by debian/control:: rule below
+include $(_cdbs_rules_path)/buildcore.mk$(_cdbs_makefile_suffix)
 
 # to ensure invocations and tests on /usr/bin/ocaml* are meaningful
 CDBS_BUILD_DEPENDS := $(CDBS_BUILD_DEPENDS), ocaml-nox
@@ -34,6 +37,7 @@ include $(_cdbs_class_path)/ocaml-vars.mk$(_cdbs_makefile_suffix)
 # ensure dpkg-gencontrol will fill F:OCamlABI fields with the proper value
 ifdef _cdbs_rules_debhelper
 DEB_DH_GENCONTROL_ARGS += -- -VF:OCamlABI="$(OCAML_ABI)"
+DEB_DH_GENCONTROL_ARGS +=    -VF:OCamlNativeArchs="$(OCAML_NATIVE_ARCHS)"
 endif
 
 # generate .in files counterpars before building, substituting @OCamlABI@
@@ -41,10 +45,22 @@ endif
 pre-build:: ocamlinit
 ocamlinit: ocamlinit-stamp
 ocamlinit-stamp:
-	for f in $(OCAML_IN_FILES); do sed -e 's/@OCamlABI@/$(OCAML_ABI)/g' $$f.in > $$f; done
+	for f in $(OCAML_IN_FILES) ; do \
+		sed -e 's/@OCamlABI@/$(OCAML_ABI)/g' $$f.in > $$f ; \
+	done
 	touch $@
 clean::
 	rm -f ocamlinit-stamp
+
+# update debian/control substituting @OCamlNativeArchs@
+# XXX ASSUMPTION: debian/control has already been generated, i.e. this rule is
+# executed after the debian/control:: rule in builcore.mk
+ifneq ($(DEB_AUTO_UPDATE_DEBIAN_CONTROL),)
+debian/control::
+	if test -f debian/control && test -f debian/control.in ; then \
+		sed -i -e "s/@OCamlNativeArchs@/$(OCAML_NATIVE_ARCHS)/g" $@ ; \
+	fi
+endif
 
 endif
 
