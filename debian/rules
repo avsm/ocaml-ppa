@@ -254,19 +254,19 @@ install-arch: build-arch
 		ln -sf ../ocaml-base-nox/Changes.gz .; \
 		ln -sf ../ocaml-base-nox/README.gz .; \
 		ln -sf ../ocaml-base-nox/README.Debian .; \
-		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz .; \
+		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.txt.gz .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.html .
 	cd debian/ocaml-nox/usr/share/doc/ocaml-nox; \
 		ln -sf ../ocaml-base-nox/Changes.gz .; \
 		ln -sf ../ocaml-base-nox/README.gz .; \
 		ln -sf ../ocaml-base-nox/README.Debian .; \
-		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz .; \
+		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.txt.gz .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.html .
 	cd debian/ocaml-base/usr/share/doc/ocaml-base; \
 		ln -sf ../ocaml-base-nox/Changes.gz .; \
 		ln -sf ../ocaml-base-nox/README.gz .; \
 		ln -sf ../ocaml-base-nox/README.Debian .; \
-		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.gz .; \
+		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.txt.gz .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.html .
 
 	dh_install -a

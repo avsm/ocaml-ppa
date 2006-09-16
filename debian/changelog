@@ -9,6 +9,7 @@ ocaml (3.09.3~rc1-1) experimental; urgency=low
       debian/control of OCaml related packages
     - fixed typo in the suggested debian/rules line to fill the OFILES
       variable
+  * Added .txt suffix to the textual version of the policy
 
   [ Samuel Mimram ]
   * Updated policy (section 2.3) to explain how to add a conditional
