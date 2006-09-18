@@ -164,9 +164,6 @@ install-indep: build-indep
 		-C debian/ocaml-source/usr/src ocaml-$(OCAMLABI)
 	rm -rf debian/ocaml-source/usr/src/ocaml-$(OCAMLABI)
 
-	# Install dh_ocaml
-	$(MAKE) -C debian/dh-ocaml install DESTDIR=$(CURDIR)/debian/ocaml-nox
-
 	dh_install -i
 
 install-arch: build-arch
@@ -231,10 +228,10 @@ install-arch: build-arch
 			$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/$(OCAMLABI)/compiler-libs; \
 	fi
 
-	# install ocaml-md5sums
+	# Install ocaml-md5sums
 	$(MAKE) -C debian/ocaml-md5sums install DESTDIR=$(CURDIR)/debian/ocaml-base-nox/usr/bin
 
-	# compute core entries of the ocaml md5sums registry and install them
+	# Compute core entries of the ocaml md5sums registry and install them
 	(cd debian/ocaml-md5sums &&									\
 	 chmod +x feeding.sh &&									\
 	 for pkg in ocaml-nox ocaml ocaml-compiler-libs; do					\
@@ -242,6 +239,9 @@ install-arch: build-arch
 		./feeding.sh $$pkg $(STDLIBDIR) $(OCAMLABI) ../$$pkg$(STDLIBDIR) >	\
 			../$$pkg$(MD5SUMSDIR)/$$pkg.md5sums;				\
 	 done)
+
+	# Install dh_ocaml
+	$(MAKE) -C debian/dh-ocaml install DESTDIR=$(CURDIR)/debian/ocaml-nox
 
 	# Remove .opt manpages from ocaml-nox
 	rm -f debian/ocaml-nox/usr/share/man/man1/*.opt.1
