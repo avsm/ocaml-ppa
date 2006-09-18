@@ -1,4 +1,7 @@
-ocaml (3.09.3~rc1-2) experimental; urgency=low
+ocaml (3.09.3-1) experimental; urgency=low
+
+  [ Samuel Mimram ]
+  * New upstream release.
 
   [ Stefano Zacchiroli ]
   * Added .txt suffix to the textual version of the policy
@@ -6,7 +9,7 @@ ocaml (3.09.3~rc1-2) experimental; urgency=low
     /usr/share/cdbs/1/ (permission granted by the CDBS maintainers to
     ship files there, see #387299), closes: #387299.
 
- -- Stefano Zacchiroli <zack@debian.org>  Sat, 16 Sep 2006 17:10:14 +0200
+ -- Samuel Mimram <smimram@debian.org>  Mon, 18 Sep 2006 14:44:32 +0200
 
 ocaml (3.09.3~rc1-1) experimental; urgency=low
 
