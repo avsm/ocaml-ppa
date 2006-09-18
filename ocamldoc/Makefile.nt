@@ -9,7 +9,7 @@
 #(*                                                                     *)
 #(***********************************************************************)
 
-# $Id: Makefile.nt,v 1.25 2004/04/23 14:10:51 guesdon Exp $
+# $Id: Makefile.nt,v 1.25.10.1 2006/09/11 08:57:29 xleroy Exp $
 
 include ../config/Makefile
 
@@ -87,7 +87,6 @@ CMOFILES= odoc_config.cmo \
 	odoc_parser.cmo\
 	odoc_lexer.cmo\
 	odoc_see_lexer.cmo\
-	odoc_comments.cmo\
 	odoc_env.cmo\
 	odoc_merge.cmo\
 	odoc_sig.cmo\
@@ -97,6 +96,7 @@ CMOFILES= odoc_config.cmo \
 	odoc_search.cmo\
 	odoc_scan.cmo\
 	odoc_cross.cmo\
+	odoc_comments.cmo\
 	odoc_dep.cmo\
 	odoc_analyse.cmo\
 	odoc_info.cmo
