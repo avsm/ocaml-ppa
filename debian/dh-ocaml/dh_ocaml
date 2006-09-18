@@ -1,12 +1,14 @@
 #!/usr/bin/perl -w
+# vim: set ai sw=2: VIM modeline
 #
 # dh_ocaml - debhelper which computes OCaml md5sums and calculates OCaml
-#	     dependencies
+#            dependencies
 #
-# Copyright (C) 2005, Stefano Zacchiroli <zack@debian.org>
+# Copyright (C) 2005-2006, Stefano Zacchiroli <zack@debian.org>
+#                          Samuel Mimram <smimram@debian.org>
 #
-# Created:	  Fri, 01 Apr 2005 19:50:48 +0200 zack
-# Last-Modified:  Sat, 20 Aug 2005 09:46:04 +0200 zack
+# Created:        Fri, 01 Apr 2005 19:50:48 +0200 zack
+# Last-Modified:  $Id: dh_ocaml 3180 2006-09-18 17:25:50Z smimram $
 #
 # This is free software, you can redistribute it and/or modify it under the
 # terms of the GNU General Public License version 2 or above as published by the
@@ -20,7 +22,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
-#
 
 # TODO ask joeyh for a O_PARAMS and s/M_PARAMS/O_PARAMS/
 
@@ -54,9 +55,9 @@ B<dh_ocaml> [S<I<debhelper options>>]
 =head1 DESCRIPTION
 
 dh_ocaml is a debhelper program that is responsible for filling the
-${ocaml:Depends} substitutions and adding them to substvars files. It also adds
-postinst and postrm scripts for maintaining system registry of OCaml md5sums
-where required.
+${ocaml:Provides} and ${ocaml:Depends} substitutions and adding them to
+substvars files. It also adds postinst and postrm scripts for maintaining
+system registry of OCaml md5sums where required.
 
 dh_ocaml acts on two kinds of binary packages: those shipping development part
 of OCaml libraries (usually named libXXX-ocaml-dev), and those shipping OCaml
@@ -71,7 +72,10 @@ used to automatically create the OCaml md5sums registry entry for your package,
 e.g.  /var/lib/ocaml/md5sums/libXXX-ocaml-dev.md5sums. Information about
 imported units will instead be used as keys in the OCaml md5sums registry for
 retrieving dependency information for the package. Those information will then
-be used to fill the "${ocaml:Depends}" substvar.
+be used to fill the "${ocaml:Depends}" substvars. They will also be used to
+fill the "${ocaml:Provides}" substvar which will be replaced by a name of the
+form libXXX-ocaml-dev-NNNN, where NNNN is an md5sum computed from the
+interfaces of the modules provided by the library.
 
 dh_ocaml takes also care of creating postinst and postrm autoscripts which
 update the global system registry (/var/lib/ocaml/md5sums/MD5SUMS) with the
@@ -83,7 +87,7 @@ units. Extracted information will then be used for filling "${ocaml:Depends}" as
 discussed for the library case.
 
 In addition to dependencies extracted from the system md5sum registry, dh_ocaml
-will add:
+will add in ${ocaml:Provides}:
 
 =over
 
@@ -150,9 +154,9 @@ OCaml packaging policy)
 
 =head1 CONFORMS TO
 
-Debian policy, version 3.6.1.1
+Debian policy, version 3.7.2
 
-OCaml packaging policy, version 0.6
+OCaml packaging policy, version 1.0.0
 
 =cut
 
@@ -184,29 +188,44 @@ sub add_ocaml_dep($$$) {
 # fill the ocaml:Depends substvar, reading info from file
 sub fill_ocaml_depends($$$$$) {
   my ($package, $tmp, $fname, $is_library, $runtime) = @_;
-  delsubstvar $package, "ocaml:Depends";  # for idempotency
+  delsubstvar $package, "ocaml:Depends"; # for idempotency
   if (-f $fname) {
     open DEPS, "< $fname" or die "can't open $fname";
     while (my $line = <DEPS>) {
       chomp $line;
       if ($line =~ /^\s*(.+)\s+(.+)\s+(.+)\s*$/) {
-	# matched groups: dev_dep, runtime_dep, dep_version
-	if ($is_library) {
-	  add_ocaml_dep $package, $1, ">= $3";
-	  add_ocaml_dep $package, $runtime, "= $dh{VERSION}" if $runtime;
-	  if (`find $tmp -type f -name "META*"` ne "" and not $dh{D_FLAG}) {
-	    # package has META and findlib dependency has not been forbidden
-	    add_ocaml_dep $package, "ocaml-findlib", "-"
-	  }
-	  add_ocaml_dep $runtime, $2, ">= $3";
-	} else {
-	  add_ocaml_dep $package, $2, ">= $3";
-	}
+        # matched groups: dev_dep, runtime_dep, dep_version
+        if ($is_library) {
+          add_ocaml_dep $package, $1, ">= $3";
+          add_ocaml_dep $package, $runtime, "= $dh{VERSION}" if $runtime;
+          if (`find $tmp -type f -name "META*"` ne "" and not $dh{D_FLAG}) {
+            # package has META and findlib dependency has not been forbidden
+            add_ocaml_dep $package, "ocaml-findlib", "-"
+          }
+          add_ocaml_dep $runtime, $2, ">= $3";
+        } else {
+          add_ocaml_dep $package, $2, ">= $3";
+        }
       }
     }
     close DEPS;
   }
   add_ocaml_dep $package, "ocaml-base-nox-$ocaml_version", "-" unless $is_library;
+}
+
+# fill the ocaml:Provides substvar
+sub fill_ocaml_provides($$$$) {
+  my ($package, $tmp, $fname, $is_library) = @_;
+  return if (not $is_library);
+  delsubstvar $package, "ocaml:Provides"; # for idempotency
+  if (-f $fname) {
+    open PROV, "< $fname" or die "can't open $fname";
+    while (my $lin = <PROV>) {
+      chomp $line;
+      addsubstvar $package, "ocaml:Provides", $line;
+    }
+    close PROV;
+  }
 }
 
 # check if a given binary package exists in debian/control
@@ -255,9 +274,10 @@ exit 0 if $dh{NO_ACT};
 foreach my $package (@{$dh{DOPACKAGES}}) {
   my $tmp = tmpdir $package;
   my $ext = pkgext $package;
-  isnative($package);	# sets $dh{VERSION}
+  isnative($package); # sets $dh{VERSION}
   my $oinfo = "debian/$ext" . "oinfo.debhelper"; # ocaml objects info
   my $olist = "debian/$ext" . "olist.debhelper"; # ocaml object list
+  my $oprovides = "debian/$ext" . "oprovides.debhelper"; # provided package
   $olist = $dh{M_PARAMS} if $dh{M_PARAMS}; # override object list with -m
   my $odeps = "debian/$ext" . "odeps.debhelper"; # ocaml dependencies
   if (is_library $package, $dh{L_PARAMS}) {  # ocaml library package
@@ -268,21 +288,22 @@ foreach my $package (@{$dh{DOPACKAGES}}) {
     complex_doit "find $tmp$ocaml_lib_dir -type f -name '*.cm[ao]' > $olist"
       unless $dh{M_PARAMS};
     complex_doit "mkdir -p $tmp$md5dir";
-    complex_doit("$omd5 $flags --dump-info $oinfo compute < $olist"
+    complex_doit("$omd5 $flags --dump-info $oinfo --dump-provides $oprovides compute < $olist"
       . " | sort -k 2"  # optional pass, just for "pretty" printing
       . " > $tmp$md5dir/$package$md5ext");
     autoscript $package, "postinst", "postinst-ocaml";
     autoscript $package, "postrm", "postrm-ocaml";
-    complex_doit "$omd5 --load-info $oinfo dep < $olist > $odeps"; #compute deps
+    complex_doit "$omd5 --load-info $oinfo dep < $olist > $odeps"; # compute deps
     fill_ocaml_depends $package, $tmp, $odeps, 1, $runtime;
+    fill_ocaml_provides $package, $tmp, $oprovides, 1;
   } elsif (is_binary $package, $dh{L_PARAMS}) {  # ocaml binary package
     my @binaries = find_ocaml_bc_binaries $tmp;
     next unless @binaries;  # nothing to do if no bytecode binary has been found
     complex_doit "> $odeps";
     if (not $dh{M_PARAMS}) {
       foreach my $bin (@binaries) { # try to find .cmo of bc binaries
-	my $guess = basename $bin . ".cm[ao]";
-	complex_doit "find . -type f -name '$guess' >> $olist"
+        my $guess = basename $bin . ".cm[ao]";
+        complex_doit "find . -type f -name '$guess' >> $olist"
       }
     }
     complex_doit "$omd5 dep < $olist > $odeps"; # compute deps
@@ -296,9 +317,8 @@ L<ocamlobjinfo(1)>, L<debhelper(7)>, L<ocaml-md5sums(1)>
 
 This program is a part of debhelper.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Stefano Zacchiroli <zack@debian.org>
+Stefano Zacchiroli <zack@debian.org>, Samuel Mimram <smimram@debian.org>
 
 =cut
-

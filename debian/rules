@@ -105,6 +105,7 @@ endif
 	else								\
 		$(MAKE) -C debian/ocaml-md5sums all;			\
 	fi
+	$(MAKE) -C debian/dh-ocaml
 	$(MAKE) -C debian/policy
 	touch build-arch-stamp
 
@@ -127,6 +128,7 @@ clean: abi-sed unpatch
 	fi
 	-$(MAKE) -C emacs clean
 	-$(MAKE) -C debian/ocaml-md5sums clean
+	-$(MAKE) -C debian/dh-ocaml clean
 	-$(MAKE) -C debian/policy clean
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	-cp -f /usr/share/misc/config.sub config/gnu/config.sub
@@ -161,6 +163,9 @@ install-indep: build-indep
 	tar cjf debian/ocaml-source/usr/src/ocaml-source-$(OCAMLABI).tar.bz2	\
 		-C debian/ocaml-source/usr/src ocaml-$(OCAMLABI)
 	rm -rf debian/ocaml-source/usr/src/ocaml-$(OCAMLABI)
+
+	# Install dh_ocaml
+	$(MAKE) -C debian/dh-ocaml install DESTDIR=$(CURDIR)/debian/ocaml-nox
 
 	dh_install -i
 
