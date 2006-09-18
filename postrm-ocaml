@@ -1,5 +1,0 @@
-if [ "$1" = "remove" ]; then
-  if [ -x /usr/bin/ocaml-md5sums ]; then
-    /usr/bin/ocaml-md5sums update
-  fi
-fi

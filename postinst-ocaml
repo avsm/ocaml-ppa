@@ -1,3 +1,0 @@
-if [ "$1" = "configure" ]; then
-  /usr/bin/ocaml-md5sums update
-fi
