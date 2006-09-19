@@ -7,7 +7,7 @@ INSTALL_STUFF =				\
 all: html text
 
 # to be used on alioth for updating policy linked by pkg-ocaml-maint home page
-install:
+install: all
 	cp -r $(INSTALL_STUFF) ~/pkg-ocaml-maint/htdocs/
 
 html: ocaml_packaging_policy.html/index.html
