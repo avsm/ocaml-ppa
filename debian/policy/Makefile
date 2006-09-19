@@ -1,4 +1,14 @@
+NULL =
+INSTALL_STUFF =				\
+	ocaml_packaging_policy.html/	\
+	ocaml_packaging_policy.txt	\
+	$(NULL)
+
 all: html text
+
+# to be used on alioth for updating policy linked by pkg-ocaml-maint home page
+install:
+	cp -r $(INSTALL_STUFF) ~/pkg-ocaml-maint/htdocs/
 
 html: ocaml_packaging_policy.html/index.html
 text: ocaml_packaging_policy.txt
