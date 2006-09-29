@@ -9,7 +9,10 @@ ocaml (3.09.3-1) experimental; urgency=low
     /usr/share/cdbs/1/ (permission granted by the CDBS maintainers to
     ship files there, see #387299), closes: #387299.
 
- -- Samuel Mimram <smimram@debian.org>  Mon, 18 Sep 2006 14:44:32 +0200
+  [ Julien Cristau ]
+  * Fix typo in ocaml-base description (Closes: #390224).
+
+ -- Julien Cristau <julien.cristau@ens-lyon.org>  Sat, 30 Sep 2006 01:15:16 +0200
 
 ocaml (3.09.3~rc1-1) experimental; urgency=low
 
