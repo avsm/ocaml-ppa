@@ -1,3 +1,10 @@
+ocaml (3.09.3-2) UNRELEASED; urgency=low
+
+  [ Samuel Mimram ]
+  * Ship dh_ocaml into ocaml-nox
+
+ -- Stefano Zacchiroli <zack@debian.org>  Tue, 26 Sep 2006 15:05:02 +0200
+
 ocaml (3.09.3-1) experimental; urgency=low
 
   [ Samuel Mimram ]
