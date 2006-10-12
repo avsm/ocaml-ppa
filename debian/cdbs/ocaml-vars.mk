@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml-vars.mk 3149 2006-09-16 14:06:54Z zack $
+# $Id: ocaml-vars.mk 3235 2006-10-12 06:52:48Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -46,8 +46,22 @@ OCAML_HAVE_OCAMLOPT := $(shell if test -x /usr/bin/ocamlopt ; then echo "yes" ; 
 
 # space separated list of Debian architectures supporting OCaml native code
 # compilation.
-# Used internally by ocaml.mk, may be useful to debian/rules writers as well
+# Used internally by ocaml.mk and substituted in debian/control.in for the
+# @OCamlNativeArchs@ marker; may be useful to debian/rules writers as well
 OCAML_NATIVE_ARCHS := $(shell cat $(OCAML_STDLIB_DIR)/native-archs)
+
+# comma separated list of members of the OCaml team.
+# Substituted in debian/control.in for the @OCamlTeam@ marker
+OCAML_TEAM =
+
+OCAML_TEAM += Julien Cristau <julien.cristau@ens-lyon.org>,
+OCAML_TEAM += Ralf Treinen <treinen@debian.org>,
+OCAML_TEAM += Remi Vanicat <vanicat@debian.org>,
+OCAML_TEAM += Samuel Mimram <smimram@debian.org>,
+OCAML_TEAM += Stefano Zacchiroli <zack@debian.org>,
+OCAML_TEAM += Sven Luther <luther@debian.org>,
+OCAML_TEAM += Sylvain Le Gall <gildor@debian.org>
+# no trailing "," (comma) on the last name
 
 endif
 
