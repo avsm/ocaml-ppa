@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml-vars.mk 3235 2006-10-12 06:52:48Z zack $
+# $Id: ocaml-vars.mk 3237 2006-10-13 08:27:10Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -26,11 +26,13 @@ ifndef _cdbs_class_ocaml_vars
 _cdbs_class_ocaml = 1
 
 # current OCaml ABI version (ATM 3.09.2).
-# Used internally by ocaml.mk, may be useful to debian/rules writers as well
+# Used internally by ocaml.mk (substituted for @OCamlABI@ in $(OCAML_IN_FILES)
+# below), may be useful to debian/rules writers as well
 OCAML_ABI := $(shell /usr/bin/ocamlc -version)
 
 # OCaml standard library location.
-# For debian/rules writers.
+# Used internally by ocaml.mk (substituted for @OCamlStdlibDir@ in
+# $(OCAML_IN_FILES) below), may be useful to debian/rules writers as well
 OCAML_STDLIB_DIR := $(shell /usr/bin/ocamlc -where)
 
 # list of .in files contained (non-recursively) in debian/ that requires

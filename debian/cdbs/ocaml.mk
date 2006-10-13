@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 3235 2006-10-12 06:52:48Z zack $
+# $Id: ocaml.mk 3237 2006-10-13 08:27:10Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -46,7 +46,10 @@ pre-build:: ocamlinit
 ocamlinit: ocamlinit-stamp
 ocamlinit-stamp:
 	for f in $(OCAML_IN_FILES) ; do \
-		sed -e 's/@OCamlABI@/$(OCAML_ABI)/g' $$f.in > $$f ; \
+		sed \
+			-e 's/@OCamlABI@/$(OCAML_ABI)/g' \
+			-e 's/@OCamlStdlibDir@/$(OCAML_STDLIB_DIR)/g' \
+			$$f.in > $$f ; \
 	done
 	touch $@
 clean::
