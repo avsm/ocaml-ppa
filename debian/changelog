@@ -10,15 +10,6 @@ ocaml (3.09.3-1) experimental; urgency=low
   [ Samuel Mimram ]
   * New upstream release.
 
-  [ Stefano Zacchiroli ]
-  * Added .txt suffix to the textual version of the policy
-  * Ship CDBS class for building OCaml related packages in
-    /usr/share/cdbs/1/ (permission granted by the CDBS maintainers to
-    ship files there, see #387299), closes: #387299.
-
-  [ Julien Cristau ]
-  * Fix typo in ocaml-base description (Closes: #390224).
-
  -- Julien Cristau <julien.cristau@ens-lyon.org>  Sat, 30 Sep 2006 01:15:16 +0200
 
 ocaml (3.09.3~rc1-1) experimental; urgency=low
@@ -26,9 +17,22 @@ ocaml (3.09.3~rc1-1) experimental; urgency=low
   [ Julien Cristau ]
   * New upstream release candidate.
 
+ -- Samuel Mimram <smimram@debian.org>  Sun, 10 Sep 2006 23:11:31 +0000
+
+ocaml (3.09.2-7) unstable; urgency=low
+
+  [ Julien Cristau ]
+  * Fix typo in ocaml-base description (Closes: #390224).
+
   [ Stefano Zacchiroli ]
+  * debian/control
+    - added XS-Vcs-Svn field to let users know where our svn repository is
+  * Added .txt suffix to the textual version of the policy
+  * Ship CDBS class for building OCaml related packages in
+    /usr/share/cdbs/1/; permission granted by the CDBS maintainers to
+    ship files there, see #387299. (Closes: #387299).
   * Updated policy (now at version 0.7.1); changes:
-    - added a best-practice section about using the XS-X-Vcs-Svn field in
+    - added a best-practice section about using the XS-Vcs-Svn field in
       debian/control of OCaml related packages
     - fixed typo in the suggested debian/rules line to fill the OFILES
       variable
@@ -37,7 +41,7 @@ ocaml (3.09.3~rc1-1) experimental; urgency=low
   * Updated policy (section 2.3) to explain how to add a conditional
     dependency on ocaml-base-nox-VERSION for native/bytecode packages.
 
- -- Samuel Mimram <smimram@debian.org>  Sun, 10 Sep 2006 23:11:31 +0000
+ -- Stefano Zacchiroli <zack@debian.org>  Sat, 28 Oct 2006 15:42:08 +0200
 
 ocaml (3.09.2-6) unstable; urgency=low
 
