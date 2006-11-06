@@ -2,7 +2,7 @@
 ## for_pack_static.dpatch by Alain Frisch and Xavier Leroy
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
-## DP: Crrect interaction between -for-pack and static approximations.
+## DP: Correct interaction between -for-pack and static approximations.
 ## DP: See http://caml.inria.fr/mantis/view.php?id=3825.
 
 @DPATCH@
