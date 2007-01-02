@@ -3,7 +3,15 @@ ocaml (3.09.3-2) UNRELEASED; urgency=low
   [ Samuel Mimram ]
   * Ship dh_ocaml into ocaml-nox
 
- -- Stefano Zacchiroli <zack@debian.org>  Tue, 26 Sep 2006 15:05:02 +0200
+  [ Stefano Zacchiroli ]
+  * CDBS class
+    - added support for the OCAML_DLL_DIR variable, pointing ATM to the
+      stublibs/ subdirectory of the standard library directory. It's
+      substituted for @OCamlDllDir@ in .in files
+    - remove files which have been generated from their .in counterparts upon
+      clean target invocation
+
+ -- Stefano Zacchiroli <zack@debian.org>  Tue,  2 Jan 2007 19:35:02 +0100
 
 ocaml (3.09.3-1) experimental; urgency=low
 

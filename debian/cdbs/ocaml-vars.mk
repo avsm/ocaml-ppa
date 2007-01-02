@@ -1,7 +1,7 @@
 #
 # Description: Useful CDBS variables for OCaml related packages
 #
-# Copyright © 2006 Stefano Zacchiroli <zack@debian.org>
+# Copyright © 2006-2007 Stefano Zacchiroli <zack@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml-vars.mk 3352 2006-11-18 17:52:10Z zack $
+# $Id: ocaml-vars.mk 3440 2007-01-02 18:38:11Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -34,6 +34,11 @@ OCAML_ABI := $(shell /usr/bin/ocamlc -version)
 # Used internally by ocaml.mk (substituted for @OCamlStdlibDir@ in
 # $(OCAML_IN_FILES) below), may be useful to debian/rules writers as well
 OCAML_STDLIB_DIR := $(shell /usr/bin/ocamlc -where)
+
+# OCaml stublibs (i.e. DLLs) location.
+# Used internally by ocaml.mk (substituted for @OCamlDllDir@) in
+# $(OCAML_IN_FILES) below), may be useful to debian/rules writers as well
+OCAML_DLL_DIR := $(OCAML_STDLIB_DIR)/stublibs
 
 # list of .in files contained (non-recursively) in debian/ that requires
 # pre-build filling.

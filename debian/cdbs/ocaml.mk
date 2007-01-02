@@ -1,7 +1,7 @@
 #
 # Description: CDBS class for OCaml related packages
 #
-# Copyright © 2006 Stefano Zacchiroli <zack@debian.org>
+# Copyright © 2006-2007 Stefano Zacchiroli <zack@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 3288 2006-10-28 13:40:52Z zack $
+# $Id: ocaml.mk 3440 2007-01-02 18:38:11Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -49,11 +49,12 @@ ocamlinit-stamp:
 		sed \
 			-e 's,@OCamlABI@,$(OCAML_ABI),g' \
 			-e 's,@OCamlStdlibDir@,$(OCAML_STDLIB_DIR),g' \
+			-e 's,@OCamlDllDir@,$(OCAML_DLL_DIR),g' \
 			$$f.in > $$f ; \
 	done
 	touch $@
 clean::
-	rm -f ocamlinit-stamp
+	rm -f ocamlinit-stamp $(OCAML_IN_FILES)
 
 # update debian/control substituting @OCamlNativeArchs@
 # XXX ASSUMPTION: debian/control has already been generated, i.e. this rule is
