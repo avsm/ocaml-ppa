@@ -75,8 +75,15 @@ the requirements of the compilation of the program.
 </para>
 
 <para>
-    Bytecode programs which are compiled by <code>ocamlc -custom</code> must not be stripped. In particular, their package should be excluded from the <filename>dh_strip</filename> script. When compiled this way, an elf executable is generated containing the ocaml interpreter, and the bytecode of the program in a section which is removed when the program is stripped. For more information, see the bug <ulink url="http://bugs.debian.org/256900">256900</ulink>. An override for the lintian warning is considered as acceptable in this situation.
+    Bytecode programs which are compiled by <userinput>ocamlc -custom</userinput> must not be stripped. In particular, their package should be excluded from the <command>dh_strip</command> script. When compiled this way, an elf executable is generated containing the ocaml interpreter, and the bytecode of the program in a section which is removed when the program is stripped. For more information, see the bug <ulink url="http://bugs.debian.org/256900">256900</ulink>. An override for the lintian warning is considered as acceptable in this situation.
 </para>
+
+<para>
+  Bytecode programs should not be compiled for debugging, i.e. they should not
+  be compiled passing the <option>-g</option> option to
+  <command>ocamlc</command> (or <command>ocamlc.opt</command>).
+</para>
+
 </section>
 
 <section id="bytecode-native-prog">

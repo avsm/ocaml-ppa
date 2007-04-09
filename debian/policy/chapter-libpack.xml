@@ -1,5 +1,5 @@
 <section>
-    <title>Creating a package for a library</title>
+    <title>Creating Packages for OCaml Libraries</title>
 
     <para>
         A package which provides an OCaml library called <filename>xxx</filename> should be split as follows:
@@ -19,6 +19,14 @@
                 </para>
 		<para>
 		  <filename>libxxx-ocaml-dev</filename> packages should be in <code>Section: libdevel</code>
+		</para>
+		<para>
+		  All &ocaml-name; bytecode libraries
+		  (<filename>*.cma</filename>) and bytecode object files
+		  (<filename>*.cmo</filename>) should be compiled for
+		  debugging, i.e. they should be compiled passing the
+		  <option>-g</option> option to <command>ocamlc</command> (or
+		  <command>ocamlc.opt</command>).
 		</para>
             </listitem>
         </itemizedlist>
