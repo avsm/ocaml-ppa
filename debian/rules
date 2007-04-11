@@ -71,7 +71,7 @@ config-stamp: configure abi-sed
 		-tklibs "-L/usr/lib -ltk8.4 -ltcl8.4"
 	sed -e "s%MANDIR=.*$$%MANDIR=\$$(PREFIX)/share/man%g"      	\
 	    -e "s%LIBDIR=.*$$%LIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAMLABI)%g" \
-	    -e "s%STUBLIBDIR=.*$$%STUBLIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAMLABI)/sublibs%g" \
+	    -e "s%STUBLIBDIR=.*$$%STUBLIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAMLABI)/stublibs%g" \
 		config/Makefile >config/Makefile.debian
 	mv config/Makefile.debian config/Makefile
 	if test -z "`grep "OTHERLIBRARIES.*labltk" config/Makefile`"; then\
