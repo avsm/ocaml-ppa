@@ -18,8 +18,19 @@ ocaml (3.10.0~beta-1) UNRELEASED; urgency=low
   * Policy
     - mandate the compilation of *.cm[ao] with debugging information for
       libraries and forbid it for bytecode programs
+  
+  [Ralf Treinen]
+  * debian/patches/*
+    - added: install_scripts_config: use a patched config.sh since PREFIX is
+      diferent at compile time and at installation time
+    - added: ocaml-interp_manpage, fixes typo in ocaml manpage 
+      (closes: Bug#417847).
+  * debian/rules:
+    - added creation of config/config.debian.install
+    - Patch LIBDIR and STBLIBDIR setting in config/Makefile after invokation
+      of configure
 
- -- Stefano Zacchiroli <zack@debian.org>  Wed, 11 Apr 2007 11:13:11 +0200
+ -- Ralf Treinen <treinen@debian.org>  Wed, 11 Apr 2007 16:37:21 +0200
 
 ocaml (3.09.3-1) experimental; urgency=low
 

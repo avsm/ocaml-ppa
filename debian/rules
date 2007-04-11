@@ -70,6 +70,8 @@ config-stamp: configure abi-sed
 		-tkdefs "-I/usr/include/tcl8.4"				\
 		-tklibs "-L/usr/lib -ltk8.4 -ltcl8.4"
 	sed -e "s%MANDIR=.*$$%MANDIR=\$$(PREFIX)/share/man%g"      	\
+	    -e "s%LIBDIR=.*$$%LIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAMLABI)%g" \
+	    -e "s%STUBLIBDIR=.*$$%STUBLIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAMLABI)/sublibs%g" \
 		config/Makefile >config/Makefile.debian
 	mv config/Makefile.debian config/Makefile
 	if test -z "`grep "OTHERLIBRARIES.*labltk" config/Makefile`"; then\
@@ -173,6 +175,7 @@ install-arch: build-arch
 	dh_installdirs -a
 
 	# Let's install ocaml first.
+	sed -e 's|PREFIX=\"/.*\"|PREFIX=\"$(CURDIR)/debian/usr\"|' < config/config.sh > config/config.debian.install.sh
 	$(MAKE) install PREFIX=$(CURDIR)/debian/ocaml-nox/usr
 	install -m 644 debian/ocaml.xpm \
 		$(CURDIR)/debian/ocaml-interp/usr/share/pixmaps

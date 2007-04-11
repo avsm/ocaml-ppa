@@ -8,3 +8,7 @@ call_ld_with_proper_flags
 #pr_o
 no_rpath
 stdlib_man_section
+install_scripts_config
+ocaml-interp_manpage
+
+
