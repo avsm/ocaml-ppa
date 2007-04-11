@@ -8,8 +8,8 @@
 # We want to use dpatch.
 include /usr/share/dpatch/dpatch.make
 PACKAGE = ocaml
-OCAMLMAJOR = 3.09
-OCAMLMINOR = 3
+OCAMLMAJOR = 3.10
+OCAMLMINOR = 0
 OCAMLABI = $(OCAMLMAJOR).$(OCAMLMINOR)
 STDLIBDIR = /usr/lib/ocaml/$(OCAMLABI)
 MD5SUMSDIR = /var/lib/ocaml/md5sums
