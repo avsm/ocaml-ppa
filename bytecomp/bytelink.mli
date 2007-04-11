@@ -10,13 +10,13 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bytelink.mli,v 1.11 2002/06/11 14:15:11 xleroy Exp $ *)
+(* $Id: bytelink.mli,v 1.12 2006/05/11 15:50:53 xleroy Exp $ *)
 
 (* Link .cmo files and produce a bytecode executable. *)
 
 val link: string list -> string -> unit
 
-val check_consistency: string -> Emitcode.compilation_unit -> unit
+val check_consistency: string -> Cmo_format.compilation_unit -> unit
 
 val extract_crc_interfaces: unit -> (string * Digest.t) list
 

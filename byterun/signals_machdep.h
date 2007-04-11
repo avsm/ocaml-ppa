@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: signals_machdep.h,v 1.2 2005/07/29 12:47:45 doligez Exp $ */
+/* $Id: signals_machdep.h,v 1.3 2007/02/23 09:43:14 xleroy Exp $ */
 
 /* Processor-specific operation: atomic "read and clear" */
 
@@ -37,6 +37,16 @@
 #define Read_and_clear(dst,src) \
   asm("0: lwarx %0, 0, %1\n\t" \
       "stwcx. %2, 0, %1\n\t" \
+      "bne- 0b" \
+      : "=&r" (dst) \
+      : "r" (&(src)), "r" (0) \
+      : "cr0", "memory")
+
+#elif defined(__GNUC__) && defined(__ppc64__)
+
+#define Read_and_clear(dst,src) \
+  asm("0: ldarx %0, 0, %1\n\t" \
+      "stdcx. %2, 0, %1\n\t" \
       "bne- 0b" \
       : "=&r" (dst) \
       : "r" (&(src)), "r" (0) \

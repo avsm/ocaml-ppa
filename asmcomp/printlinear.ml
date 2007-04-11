@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printlinear.ml,v 1.12 2000/04/21 08:10:35 weis Exp $ *)
+(* $Id: printlinear.ml,v 1.13 2007/01/29 12:10:50 xleroy Exp $ *)
 
 (* Pretty-printing of linearized machine code *)
 
@@ -23,7 +23,7 @@ let label ppf l =
   Format.fprintf ppf "L%i" l
 
 let instr ppf i =
-  match i.desc with
+  begin match i.desc with
   | Lend -> ()
   | Lop op ->
       begin match op with
@@ -64,6 +64,9 @@ let instr ppf i =
       fprintf ppf "pop trap"
   | Lraise ->
       fprintf ppf "raise %a" reg i.arg.(0)
+  end;
+  if i.dbg != Debuginfo.none then
+    fprintf ppf " %s" (Debuginfo.to_string i.dbg)
 
 let rec all_instr ppf i =
   match i.desc with

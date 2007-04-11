@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: liveness.ml,v 1.14 2000/08/11 19:50:52 maranget Exp $ *)
+(* $Id: liveness.ml,v 1.15 2007/01/29 12:10:50 xleroy Exp $ *)
 
 (* Liveness analysis.
    Annotate mach code with the set of regs live at each point. *)
@@ -98,7 +98,7 @@ let rec live i finally =
       let across_after = Reg.diff_set_array (live i.next finally) i.res in
       let across =
         match i.desc with
-          Iop(Icall_ind) | Iop(Icall_imm _) | Iop(Iextcall(_, _))
+          Iop Icall_ind | Iop(Icall_imm _) | Iop(Iextcall _)
         | Iop(Iintop Icheckbound) | Iop(Iintop_imm(Icheckbound, _)) ->
             (* The function call may raise an exception, branching to the
                nearest enclosing try ... with. Similarly for bounds checks.

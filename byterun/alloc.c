@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: alloc.c,v 1.28 2004/01/01 16:42:34 doligez Exp $ */
+/* $Id: alloc.c,v 1.29 2007/02/09 13:31:15 doligez Exp $ */
 
 /* 1. Allocation functions doing the same work as the macros in the
       case where [Setup_for_gc] and [Restore_after_gc] are no-ops.
@@ -153,13 +153,34 @@ CAMLprim value caml_alloc_dummy(value size)
   return caml_alloc (wosize, 0);
 }
 
+CAMLprim value caml_alloc_dummy_float (value size)
+{
+  mlsize_t wosize = Int_val(size) * Double_wosize;
+
+  if (wosize == 0) return Atom(0);
+  return caml_alloc (wosize, 0);
+}
+
 CAMLprim value caml_update_dummy(value dummy, value newval)
 {
   mlsize_t size, i;
+  tag_t tag;
+
   size = Wosize_val(newval);
+  tag = Tag_val (newval);
   Assert (size == Wosize_val(dummy));
-  Tag_val(dummy) = Tag_val(newval);
-  for (i = 0; i < size; i++)
-    caml_modify(&Field(dummy, i), Field(newval, i));
+  Assert (tag < No_scan_tag || tag == Double_array_tag);
+
+  Tag_val(dummy) = tag;
+  if (tag == Double_array_tag){
+    size = Wosize_val (newval) / Double_wosize;
+    for (i = 0; i < size; i++){
+      Store_double_field (dummy, i, Double_field (newval, i));
+    }
+  }else{
+    for (i = 0; i < size; i++){
+      caml_modify (&Field(dummy, i), Field(newval, i));
+    }
+  }
   return Val_unit;
 }

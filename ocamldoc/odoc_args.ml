@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* cvsid $Id: odoc_args.ml,v 1.18.4.2 2006/08/10 12:34:02 guesdon Exp $ *)
+(* cvsid $Id: odoc_args.ml,v 1.20.6.1 2007/03/02 08:55:05 guesdon Exp $ *)
 
 (** Command-line arguments. *)
 
@@ -221,6 +221,7 @@ let options = ref [
   "-rectypes", Arg.Set recursive_types, M.rectypes ;
   "-nolabels", Arg.Unit (fun () -> classic := true), M.nolabels ;
   "-warn-error", Arg.Set Odoc_global.warn_error, M.werr ;
+  "-hide-warnings", Arg.Clear Odoc_config.print_warnings, M.hide_warnings ;
   "-o", Arg.String (fun s -> out_file := s), M.out_file ;
   "-d", Arg.String (fun s -> target_dir := s), M.target_dir ;
   "-sort", Arg.Unit (fun () -> sort_modules := true), M.sort_modules ;

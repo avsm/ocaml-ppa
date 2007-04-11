@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: topdirs.ml,v 1.64 2004/11/29 02:27:25 garrigue Exp $ *)
+(* $Id: topdirs.ml,v 1.66 2006/09/28 21:36:38 xleroy Exp $ *)
 
 (* Toplevel directives *)
 
@@ -19,7 +19,7 @@ open Misc
 open Longident
 open Path
 open Types
-open Emitcode
+open Cmo_format
 open Trace
 open Toploop
 
@@ -105,7 +105,7 @@ let load_file ppf name =
         List.iter
           (fun dllib ->
             let name = Dll.extract_dll_name dllib in
-            try Dll.open_dlls [name]
+            try Dll.open_dlls Dll.For_execution [name]
             with Failure reason ->
               fprintf ppf
                 "Cannot load required shared library %s.@.Reason: %s.@."

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: reloadgen.ml,v 1.5 2000/08/11 19:50:55 maranget Exp $ *)
+(* $Id: reloadgen.ml,v 1.6 2007/01/29 12:10:50 xleroy Exp $ *)
 
 (* Insert load/stores for pseudoregs that got assigned to stack locations. *)
 
@@ -94,19 +94,19 @@ method private reload i =
   | Iop(Itailcall_ind) ->
       let newarg = self#makereg1 i.arg in
       insert_moves i.arg newarg
-        (instr_cons_live i.desc newarg i.res i.live i.next)
-  | Iop(Icall_imm _ | Iextcall(_, _)) ->
-      instr_cons_live i.desc i.arg i.res i.live (self#reload i.next)
+        {i with arg = newarg}
+  | Iop(Icall_imm _ | Iextcall _) ->
+      {i with next = self#reload i.next}
   | Iop(Icall_ind) ->
       let newarg = self#makereg1 i.arg in
       insert_moves i.arg newarg
-        (instr_cons_live i.desc newarg i.res i.live (self#reload i.next))
+        {i with arg = newarg; next = self#reload i.next}
   | Iop op ->
       let (newarg, newres) = self#reload_operation op i.arg i.res in
       insert_moves i.arg newarg
-        (instr_cons_live i.desc newarg newres i.live
+        {i with arg = newarg; res = newres; next =
           (insert_moves newres i.res
-            (self#reload i.next)))
+            (self#reload i.next))}
   | Iifthenelse(tst, ifso, ifnot) ->
       let newarg = self#reload_test tst i.arg in
       insert_moves i.arg newarg      

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: bng_ppc.c,v 1.2 2003/10/27 08:41:46 xleroy Exp $ */
+/* $Id: bng_ppc.c,v 1.3 2006/05/31 08:16:34 xleroy Exp $ */
 
 /* Code specific to the PowerPC architecture. */
 
@@ -79,8 +79,16 @@
       : "=&r" (res), "=&r" (carryaccu)                                      \
       : "r" (arg1), "r" (arg2), "r" (arg3), "1" (carryaccu))
 
+#ifdef __ppc64__
+#define BngMult(resh,resl,arg1,arg2)                                        \
+  asm("mulld %0, %2, %3 \n\t"                                               \
+      "mulhdu %1, %2, %3"                                                   \
+      : "=&r" (resl), "=r" (resh)                                           \
+      : "r" (arg1), "r" (arg2))
+#else
 #define BngMult(resh,resl,arg1,arg2)                                        \
   asm("mullw %0, %2, %3 \n\t"                                               \
       "mulhwu %1, %2, %3"                                                   \
       : "=&r" (resl), "=r" (resh)                                           \
       : "r" (arg1), "r" (arg2))
+#endif

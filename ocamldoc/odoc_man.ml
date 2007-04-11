@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_man.ml,v 1.25.2.2 2005/11/10 10:28:50 guesdon Exp $ *)
+(* $Id: odoc_man.ml,v 1.26 2006/01/04 16:55:50 doligez Exp $ *)
 
 (** The man pages generator. *)
 open Odoc_info

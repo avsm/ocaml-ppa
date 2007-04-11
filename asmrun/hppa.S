@@ -11,7 +11,7 @@
 ;*                                                                   *
 ;*********************************************************************
 
-; $Id: hppa.S,v 1.25.8.1 2006/03/29 14:49:19 doligez Exp $
+; $Id: hppa.S,v 1.26 2006/04/16 23:28:15 doligez Exp $
 
 ; Asm part of the runtime system for the HP PA-RISC processor.
 ; Must be preprocessed by cpp

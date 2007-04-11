@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: gettimeofday.c,v 1.6 2001/12/07 13:40:44 xleroy Exp $ */
+/* $Id: gettimeofday.c,v 1.7 2007/03/01 13:51:24 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -24,12 +24,13 @@ static DWORD initial_tickcount;
 
 CAMLprim value unix_gettimeofday(value unit)
 {
-  if (initial_time == 0) {
-    initial_tickcount = GetTickCount();
+  DWORD tickcount = GetTickCount();
+  if (initial_time == 0 || tickcount < initial_tickcount) {
+    initial_tickcount = tickcount;
     initial_time = time(NULL);
     return copy_double((double) initial_time);
   } else {
-    return copy_double(initial_time +
-                       (GetTickCount() - initial_tickcount) * 1e-3);
+    return copy_double((double) initial_time +
+		       (double) (tickcount - initial_tickcount) * 1e-3);
   }
 }

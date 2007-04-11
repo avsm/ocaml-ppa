@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asmlink.mli,v 1.10 2002/06/11 14:15:11 xleroy Exp $ *)
+(* $Id: asmlink.mli,v 1.11 2006/10/17 12:33:58 xleroy Exp $ *)
 
 (* Link a set of .cmx/.o files and produce an executable *)
 
@@ -31,6 +31,7 @@ type error =
   | Assembler_error of string
   | Linking_error
   | Multiple_definition of string * string * string
+  | Missing_cmx of string * string
 
 exception Error of error
 

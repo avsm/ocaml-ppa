@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: output.ml,v 1.25 2004/02/12 17:29:04 maranget Exp $ *)
+(* $Id: output.ml,v 1.26 2007/01/29 16:44:16 maranget Exp $ *)
 
 (* Output the DFA tables and its entry points *)
 
@@ -95,7 +95,7 @@ let output_entry sourcefile ic oc oci e =
     (fun (num, env, loc) ->
       fprintf oc "  | ";
       fprintf oc "%d ->\n" num;
-      output_env oc env;
+      output_env sourcefile ic oc oci env;
       copy_chunk sourcefile ic oc oci loc true;
       fprintf oc "\n")
     e.auto_actions;

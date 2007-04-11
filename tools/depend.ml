@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: depend.ml,v 1.9 2005/03/23 03:08:37 garrigue Exp $ *)
+(* $Id: depend.ml,v 1.10 2006/04/05 02:28:13 garrigue Exp $ *)
 
 open Format
 open Location
@@ -87,7 +87,7 @@ let rec add_class_type bv cty =
 
 and add_class_type_field bv = function
     Pctf_inher cty -> add_class_type bv cty
-  | Pctf_val(_, _, oty, _) -> add_opt add_type bv oty
+  | Pctf_val(_, _, _, ty, _) -> add_type bv ty
   | Pctf_virt(_, _, ty, _) -> add_type bv ty
   | Pctf_meth(_, _, ty, _) -> add_type bv ty
   | Pctf_cstr(ty1, ty2, _) -> add_type bv ty1; add_type bv ty2
@@ -280,6 +280,7 @@ and add_class_expr bv ce =
 and add_class_field bv = function
     Pcf_inher(ce, _) -> add_class_expr bv ce
   | Pcf_val(_, _, e, _) -> add_expr bv e
+  | Pcf_valvirt(_, _, ty, _)
   | Pcf_virt(_, _, ty, _) -> add_type bv ty
   | Pcf_meth(_, _, e, _) -> add_expr bv e
   | Pcf_cstr(ty1, ty2, _) -> add_type bv ty1; add_type bv ty2

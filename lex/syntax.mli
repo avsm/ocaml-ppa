@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: syntax.mli,v 1.8 2002/12/09 10:44:46 maranget Exp $ *)
+(* $Id: syntax.mli,v 1.9 2007/01/29 16:44:16 maranget Exp $ *)
 
 (* The shallow abstract syntax *)
 
@@ -27,7 +27,7 @@ type regular_expression =
   | Sequence of regular_expression * regular_expression
   | Alternative of regular_expression * regular_expression
   | Repetition of regular_expression
-  | Bind of regular_expression * string
+  | Bind of regular_expression * (string * location)
 
 type ('arg,'action) entry =
   {name:string ;

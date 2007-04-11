@@ -10,13 +10,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: translclass.mli,v 1.11 2004/08/12 12:55:11 xleroy Exp $ *)
+(* $Id: translclass.mli,v 1.12 2006/04/05 02:28:12 garrigue Exp $ *)
 
 open Typedtree
 open Lambda
 
 val transl_class :
-  Ident.t list -> Ident.t -> int -> string list -> class_expr -> lambda;;
+  Ident.t list -> Ident.t ->
+  int -> string list -> class_expr -> Asttypes.virtual_flag -> lambda;;
 
 type error = Illegal_class_expr | Tags of string * string
 

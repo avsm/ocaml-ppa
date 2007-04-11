@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: random.mli,v 1.16 2003/06/24 09:50:23 xleroy Exp $ *)
+(* $Id: random.mli,v 1.17 2007/02/09 13:31:15 doligez Exp $ *)
 
 (** Pseudo-random number generators (PRNG). *)
 
@@ -33,7 +33,7 @@ val bits : unit -> int
 
 val int : int -> int
 (** [Random.int bound] returns a random integer between 0 (inclusive)
-     and [bound] (exclusive).  [bound] must be more than 0 and less
+     and [bound] (exclusive).  [bound] must be greater than 0 and less
      than 2{^30}. *)
 
 val int32 : Int32.t -> Int32.t;;

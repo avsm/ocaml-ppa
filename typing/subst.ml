@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: subst.ml,v 1.48.4.1 2005/12/05 13:18:43 garrigue Exp $ *)
+(* $Id: subst.ml,v 1.50 2006/04/05 02:28:13 garrigue Exp $ *)
 
 (* Substitutions *)
 
@@ -178,7 +178,8 @@ let type_declaration s decl =
 
 let class_signature s sign =
   { cty_self = typexp s sign.cty_self;
-    cty_vars = Vars.map (function (m, t) -> (m, typexp s t)) sign.cty_vars;
+    cty_vars =
+      Vars.map (function (m, v, t) -> (m, v, typexp s t)) sign.cty_vars;
     cty_concr = sign.cty_concr;
     cty_inher =
       List.map (fun (p, tl) -> (type_path s p, List.map (typexp s) tl))

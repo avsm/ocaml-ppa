@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ccomp.mli,v 1.9 2002/04/18 07:27:47 garrigue Exp $ *)
+(* $Id: ccomp.mli,v 1.11 2006/09/23 08:51:31 xleroy Exp $ *)
 
 (* Compiling C files and building C libraries *)
 
@@ -20,3 +20,5 @@ val compile_file: string -> int
 val create_archive: string -> string list -> int
 val expand_libname: string -> string
 val quote_files: string list -> string
+val make_link_options: string list -> string
+val merge_manifest: string -> int

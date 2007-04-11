@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: dynlink.c,v 1.15 2005/09/22 14:21:50 xleroy Exp $ */
+/* $Id: dynlink.c,v 1.17 2006/10/03 11:52:15 xleroy Exp $ */
 
 /* Dynamic loading of C primitives. */
 
@@ -123,7 +123,7 @@ static void open_shared_lib(char * name)
   realname = caml_search_dll_in_path(&caml_shared_libs_path, name);
   caml_gc_message(0x100, "Loading shared library %s\n",
                   (uintnat) realname);
-  handle = caml_dlopen(realname);
+  handle = caml_dlopen(realname, 1);
   if (handle == NULL)
     caml_fatal_error_arg2("Fatal error: cannot load shared library %s\n", name,
                           "Reason: %s\n", caml_dlerror());
@@ -194,12 +194,14 @@ void caml_build_primitive_table_builtin(void)
 
 #define Handle_val(v) (*((void **) (v)))
 
-CAMLprim value caml_dynlink_open_lib(value filename)
+CAMLprim value caml_dynlink_open_lib(value mode, value filename)
 {
   void * handle;
   value result;
 
-  handle = caml_dlopen(String_val(filename));
+  caml_gc_message(0x100, "Opening shared library %s\n",
+                  (uintnat) String_val(filename));
+  handle = caml_dlopen(String_val(filename), Int_val(mode));
   if (handle == NULL) caml_failwith(caml_dlerror());
   result = caml_alloc_small(1, Abstract_tag);
   Handle_val(result) = handle;

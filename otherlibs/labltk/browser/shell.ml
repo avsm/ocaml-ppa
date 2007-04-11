@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: shell.ml,v 1.39.16.1 2005/12/09 12:29:55 garrigue Exp $ *)
+(* $Id: shell.ml,v 1.41 2006/01/18 13:26:03 garrigue Exp $ *)
 
 open StdLabels
 module Unix = UnixLabels
@@ -152,7 +152,7 @@ object (self)
     if reading then reading <- false
     else Text.mark_set textw ~mark:"input"
         ~index:(`Mark"insert",[`Linestart;`Char 1]);
-    Text.mark_set textw ~mark:"insert"~index:(`Mark"insert",[`Line 1]);
+    Text.mark_set textw ~mark:"insert" ~index:(`Mark"insert",[`Lineend]);
     self#lex ~start:(`Mark"input",[`Linestart]) ();
     let s =
       (* input is one character before real input *)

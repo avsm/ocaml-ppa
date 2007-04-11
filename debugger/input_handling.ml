@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: input_handling.ml,v 1.4 1999/11/17 18:57:25 xleroy Exp $ *)
+(* $Id: input_handling.ml,v 1.5 2006/12/09 13:49:10 ertai Exp $ *)
 
 (**************************** Input control ****************************)
 
@@ -113,36 +113,3 @@ let resume_user_input () =
       end;
     add_file !user_channel exit_main_loop
     end
-
-(* Ask user a yes or no question. *)
-let yes_or_no message =
-  if !interactif then
-    let old_prompt = !current_prompt in
-      try
-        current_prompt := message ^ " ? (y or n) ";
-        let answer =
-          let rec ask () =
-            resume_user_input ();
-            let line =
-              string_trim (Lexer.line (Lexing.from_function read_user_input))
-            in
-              stop_user_input ();
-              match (if String.length line > 0 then line.[0] else ' ') with
-                'y' -> true
-              | 'n' -> false
-              | _ ->
-                print_string "Please answer y or n.";
-                print_newline ();
-                ask ()
-          in
-            ask ()
-        in
-          current_prompt := old_prompt;
-          answer
-      with
-        x ->
-          current_prompt := old_prompt;
-          stop_user_input ();
-          raise x
-  else
-    false

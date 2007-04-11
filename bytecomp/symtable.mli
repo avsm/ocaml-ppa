@@ -10,11 +10,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: symtable.mli,v 1.14 2004/02/22 15:07:50 xleroy Exp $ *)
+(* $Id: symtable.mli,v 1.15 2006/05/11 15:50:53 xleroy Exp $ *)
 
 (* Assign locations and numbers to globals and primitives *)
 
-open Emitcode
+open Cmo_format
 
 (* Functions for batch linking *)
 

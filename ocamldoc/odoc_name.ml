@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_name.ml,v 1.9 2004/03/26 09:09:50 guesdon Exp $ *)
+(* $Id: odoc_name.ml,v 1.10 2006/07/06 07:19:06 pouillar Exp $ *)
 
 (** Representation of element names. *)
 
@@ -172,5 +172,5 @@ let to_path n =
     None -> raise (Failure "to_path")
   | Some p -> p
 
-let from_longident longident = String.concat "." (Longident.flatten longident)
+let from_longident = Odoc_misc.string_of_longident
 

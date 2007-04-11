@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: program_management.ml,v 1.11 2002/11/02 22:36:42 doligez Exp $ *)
+(* $Id: program_management.ml,v 1.12 2006/12/09 13:49:10 ertai Exp $ *)
 
 (* Manage the loading of the program *)
 
@@ -24,6 +24,7 @@ open Instruct
 open Primitives
 open Parameters
 open Input_handling
+open Question
 open Debugcom
 open Program_loading
 open Time_travel

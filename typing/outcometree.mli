@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: outcometree.mli,v 1.14 2005/03/23 03:08:37 garrigue Exp $ *)
+(* $Id: outcometree.mli,v 1.15 2006/04/05 02:28:13 garrigue Exp $ *)
 
 (* Module [Outcometree]: results displayed by the toplevel *)
 
@@ -71,7 +71,7 @@ type out_class_type =
 and out_class_sig_item =
   | Ocsg_constraint of out_type * out_type
   | Ocsg_method of string * bool * bool * out_type
-  | Ocsg_value of string * bool * out_type
+  | Ocsg_value of string * bool * bool * out_type
 
 type out_module_type =
   | Omty_abstract

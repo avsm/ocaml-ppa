@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_misc.ml,v 1.19.4.1 2005/11/07 15:59:04 doligez Exp $ *)
+(* $Id: odoc_misc.ml,v 1.21 2006/07/06 07:19:06 pouillar Exp $ *)
 
 let no_blanks s =
   let len = String.length s in
@@ -70,7 +70,12 @@ let list_concat sep =
   in
   iter
 
-let string_of_longident li = String.concat "." (Longident.flatten li)
+let rec string_of_longident li =
+  match li with
+  | Longident.Lident s -> s
+  | Longident.Ldot(li, s) -> string_of_longident li ^ "." ^ s
+  | Longident.Lapply(l1, l2) ->
+      string_of_longident l1 ^ "(" ^ string_of_longident l2 ^ ")"
 
 let get_fields type_expr =
   let (fields, _) = Ctype.flatten_fields (Ctype.object_fields type_expr) in

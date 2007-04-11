@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: includemod.ml,v 1.37.2.1 2006/06/23 01:22:26 garrigue Exp $ *)
+(* $Id: includemod.ml,v 1.38 2006/09/20 11:14:37 doligez Exp $ *)
 
 (* Inclusion checks for the module language *)
 

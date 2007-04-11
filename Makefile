@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.199.2.1 2006/02/09 09:17:23 garrigue Exp $
+# $Id: Makefile,v 1.207.4.1 2007/03/05 09:18:22 pouillar Exp $
 
 # The main Makefile
 
@@ -68,7 +68,8 @@ BYTECOMP=bytecomp/meta.cmo bytecomp/instruct.cmo bytecomp/bytegen.cmo \
   bytecomp/bytesections.cmo bytecomp/dll.cmo bytecomp/symtable.cmo \
   bytecomp/bytelink.cmo bytecomp/bytelibrarian.cmo bytecomp/bytepackager.cmo
 
-ASMCOMP=asmcomp/arch.cmo asmcomp/cmm.cmo asmcomp/printcmm.cmo \
+ASMCOMP=asmcomp/arch.cmo asmcomp/debuginfo.cmo \
+  asmcomp/cmm.cmo asmcomp/printcmm.cmo \
   asmcomp/reg.cmo asmcomp/mach.cmo asmcomp/proc.cmo \
   asmcomp/clambda.cmo asmcomp/compilenv.cmo \
   asmcomp/closure.cmo asmcomp/cmmgen.cmo \
@@ -123,7 +124,7 @@ defaultentry:
 
 # Recompile the system using the bootstrap compiler
 all: runtime ocamlc ocamllex ocamlyacc ocamltools library ocaml \
-  otherlibraries camlp4out $(DEBUGGER) ocamldoc
+  otherlibraries ocamlbuild.byte camlp4out $(DEBUGGER) ocamldoc
 
 # The compilation of ocaml will fail if the runtime has changed.
 # Never mind, just do make bootstrap to reach fixpoint again.
@@ -223,12 +224,12 @@ cleanboot:
 
 # Compile the native-code compiler
 opt-core:runtimeopt ocamlopt libraryopt
-opt: runtimeopt ocamlopt libraryopt otherlibrariesopt camlp4opt
+opt: runtimeopt ocamlopt libraryopt otherlibrariesopt
 
 # Native-code versions of the tools
 opt.opt: checkstack runtime core ocaml opt-core ocamlc.opt otherlibraries \
-	 camlp4out $(DEBUGGER) ocamldoc ocamlopt.opt otherlibrariesopt \
-	 camlp4opt ocamllex.opt ocamltoolsopt.opt camlp4optopt ocamldoc.opt
+	 ocamlbuild.byte camlp4out $(DEBUGGER) ocamldoc ocamlopt.opt otherlibrariesopt \
+	 ocamllex.opt ocamltoolsopt.opt ocamlbuild.native camlp4opt ocamldoc.opt
 
 # Installation
 install: FORCE
@@ -257,10 +258,10 @@ install: FORCE
         done
 	cd ocamldoc; $(MAKE) install
 	if test -f ocamlopt; then $(MAKE) installopt; else :; fi
-	cd camlp4; $(MAKE) install BINDIR=$(BINDIR) LIBDIR=$(LIBDIR) MANDIR=$(MANDIR)
 	if test -f debugger/ocamldebug; then (cd debugger; $(MAKE) install); \
 	   else :; fi
 	cp config/Makefile $(LIBDIR)/Makefile.config
+	./build/partial-install.sh
 
 # Installation of the native-code compiler
 installopt:
@@ -324,8 +325,8 @@ utils/config.ml: utils/config.mlp config/Makefile
             -e 's|%%BYTELINK%%|$(BYTECC) $(BYTECCLINKOPTS)|' \
             -e 's|%%NATIVECC%%|$(NATIVECC) $(NATIVECCCOMPOPTS)|' \
             -e 's|%%NATIVELINK%%|$(NATIVECC) $(NATIVECCLINKOPTS)|' \
-            -e 's|%%PARTIALLD%%|ld -r $(NATIVECCLINKOPTS)|' \
-            -e 's|%%PACKLD%%|ld -r $(NATIVECCLINKOPTS)|' \
+            -e 's|%%PARTIALLD%%|$(PARTIALLD) $(NATIVECCLINKOPTS)|' \
+            -e 's|%%PACKLD%%|$(PARTIALLD) $(NATIVECCLINKOPTS) -o |' \
             -e 's|%%BYTECCLIBS%%|$(BYTECCLIBS)|' \
             -e 's|%%NATIVECCLIBS%%|$(NATIVECCLIBS)|' \
             -e 's|%%RANLIBCMD%%|$(RANLIBCMD)|' \
@@ -604,16 +605,23 @@ alldepend::
 
 # Camlp4
 
-camlp4out: ocamlc
-	cd camlp4; $(MAKE) all
-camlp4opt: ocamlopt
-	cd camlp4; $(MAKE) opt
-camlp4optopt: ocamlopt
-	cd camlp4; $(MAKE) opt.opt
+camlp4out: ocamlc otherlibraries ocamlbuild-partial-boot ocamlbuild.byte
+	./build/camlp4-byte-only.sh
+camlp4opt: ocamlopt otherlibrariesopt ocamlbuild-partial-boot ocamlbuild.native
+	./build/camlp4-native-only.sh
+
+# Ocamlbuild
+
+ocamlbuild.byte: ocamlc otherlibraries ocamlbuild-partial-boot
+	./build/ocamlbuild-byte-only.sh
+ocamlbuild.native: ocamlopt otherlibrariesopt ocamlbuild-partial-boot
+	./build/ocamlbuild-native-only.sh
+
+.PHONY: ocamlbuild-partial-boot
+ocamlbuild-partial-boot:
+	./build/partial-boot.sh
 partialclean::
-	cd camlp4; $(MAKE) clean
-alldepend::
-	cd camlp4; $(MAKE) depend
+	rm -rf _build
 
 # Check that the stack limit is reasonable.
 

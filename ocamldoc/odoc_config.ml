@@ -9,8 +9,10 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_config.ml,v 1.1 2004/01/28 13:36:20 guesdon Exp $ *)
+(* $Id: odoc_config.ml,v 1.1.20.2 2007/03/07 08:50:24 xleroy Exp $ *)
 
-let custom_generators_path = 
-  Filename.concat Config.standard_library 
+let custom_generators_path =
+  Filename.concat Config.standard_library
     (Filename.concat "ocamldoc" "custom")
+
+let print_warnings = ref true

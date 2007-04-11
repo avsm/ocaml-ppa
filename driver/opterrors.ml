@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: opterrors.ml,v 1.18.10.1 2006/02/09 14:12:18 doligez Exp $ *)
+(* $Id: opterrors.ml,v 1.19 2006/04/16 23:28:21 doligez Exp $ *)
 
 (* WARNING: if you change something in this file, you must look at
    errors.ml to see if you need to make the same changes there.

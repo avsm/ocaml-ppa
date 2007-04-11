@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: misc.mli,v 1.25 2004/07/13 12:25:20 xleroy Exp $ *)
+(* $Id: misc.mli,v 1.26 2007/02/23 13:44:51 ertai Exp $ *)
 
 (* Miscellaneous useful types and functions *)
 
@@ -85,6 +85,13 @@ val no_overflow_lsl: int -> bool
 val chop_extension_if_any: string -> string
         (* Like Filename.chop_extension but returns the initial file
            name if it has no extension *)
+
+val chop_extensions: string -> string
+        (* Return the given file name without its extensions. The extensions
+           is the longest suffix starting with a period and not including
+           a directory separator, [.xyz.uvw] for instance.
+
+           Return the given name if it does not contain an extension. *)
 
 val search_substring: string -> string -> int -> int
         (* [search_substring pat str start] returns the position of the first

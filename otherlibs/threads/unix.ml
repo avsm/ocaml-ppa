@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unix.ml,v 1.19 2005/03/24 17:20:53 doligez Exp $ *)
+(* $Id: unix.ml,v 1.20 2006/09/21 13:54:26 xleroy Exp $ *)
 
 (* An alternate implementation of the Unix module from ../unix
    which is safe in conjunction with bytecode threads. *)
@@ -274,6 +274,7 @@ type stats =
 external stat : string -> stats = "unix_stat"
 external lstat : string -> stats = "unix_lstat"
 external fstat : file_descr -> stats = "unix_fstat"
+external isatty : file_descr -> bool = "unix_isatty"
 external unlink : string -> unit = "unix_unlink"
 external rename : string -> string -> unit = "unix_rename"
 external link : string -> string -> unit = "unix_link"

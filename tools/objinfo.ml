@@ -10,12 +10,12 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: objinfo.ml,v 1.10 2005/06/22 12:45:55 doligez Exp $ *)
+(* $Id: objinfo.ml,v 1.11 2006/07/05 12:09:18 pouillar Exp $ *)
 
 (* Dump a compilation unit description *)
 
 open Config
-open Emitcode
+open Cmo_format
 
 let print_digest d =
   for i = 0 to String.length d - 1 do

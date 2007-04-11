@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: weak.ml,v 1.13 2004/01/01 16:42:41 doligez Exp $ *)
+(* $Id: weak.ml,v 1.14 2007/02/16 16:05:36 doligez Exp $ *)
 
 
 (** Weak array operations *)
@@ -145,7 +145,7 @@ module Make (H : Hashtbl.HashedType) : (S with type data = H.t) = struct
       fold (fun d () -> add newt d) t ();
    (* assert Array.length newt.table = newlen; *)
       t.table <- newt.table;
-      t.limit <- t.limit + 2;
+   (* t.limit <- t.limit + 2; -- performance bug *)
     end
 
   and add_aux t d index =

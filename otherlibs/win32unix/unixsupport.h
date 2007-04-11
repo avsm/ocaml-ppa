@@ -11,15 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: unixsupport.h,v 1.16 2005/09/22 14:21:50 xleroy Exp $ */
+/* $Id: unixsupport.h,v 1.19 2007/02/07 14:45:46 doligez Exp $ */
 
 #define WIN32_LEAN_AND_MEAN
 #include <wtypes.h>
 #include <winbase.h>
 #include <stdlib.h>
-/* Include io.h in current dir, which is a copy of the system's io.h,
-   not io.h from ../../byterun */
-/*#include "io.h"*/
 #include <direct.h>
 #include <process.h>
 #include <sys/types.h>
@@ -42,11 +39,13 @@ struct filedescr {
 extern value win_alloc_handle_or_socket(HANDLE);
 extern value win_alloc_handle(HANDLE);
 extern value win_alloc_socket(SOCKET);
+extern int win_CRT_fd_of_filedescr(value handle);
 
 #define NO_CRT_FD (-1)
 #define Nothing ((value) 0)
 
 extern void win32_maperr(DWORD errcode);
+extern value unix_error_of_code (int errcode);
 extern void unix_error (int errcode, char * cmdname, value arg);
 extern void uerror (char * cmdname, value arg);
 extern value unix_freeze_buffer (value);

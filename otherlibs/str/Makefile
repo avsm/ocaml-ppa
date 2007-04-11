@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.33 2004/11/29 14:53:32 doligez Exp $
+# $Id: Makefile,v 1.34 2007/01/29 12:11:16 xleroy Exp $
 
 # Makefile for the str library
 
@@ -22,7 +22,7 @@ CC=$(BYTECC)
 CFLAGS=-O -I../../byterun $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)
 CAMLC=../../ocamlcomp.sh
 CAMLOPT=../../ocamlcompopt.sh
-COMPFLAGS=-warn-error A
+COMPFLAGS=-warn-error A -g
 COBJS=strstubs.o
 MKLIB=../../boot/ocamlrun ../../tools/ocamlmklib
 

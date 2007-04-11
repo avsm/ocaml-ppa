@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.21 2005/10/19 11:56:24 xleroy Exp $
+# $Id: Makefile,v 1.23 2007/02/07 10:31:36 ertai Exp $
 
 include ../../config/Makefile
 
@@ -20,7 +20,7 @@ CFLAGS=-I../../byterun -O $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)
 CAMLC=../../ocamlcomp.sh -I ../unix
 CAMLOPT=../../ocamlcompopt.sh -I ../unix
 MKLIB=../../boot/ocamlrun ../../tools/ocamlmklib
-COMPFLAGS=-warn-error A
+COMPFLAGS=-warn-error A -g
 
 C_OBJS=bigarray_stubs.o mmap_unix.o
 
@@ -54,7 +54,7 @@ partialclean:
 	rm -f *.cm* 
 
 clean: partialclean
-	rm -f libbigarray.* *.o bigarray.a *.so
+	rm -f *.o *.so *.a
 
 .SUFFIXES: .ml .mli .cmo .cmi .cmx
 

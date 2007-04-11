@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typedtree.mli,v 1.34 2003/11/25 09:20:43 garrigue Exp $ *)
+(* $Id: typedtree.mli,v 1.35 2006/04/05 02:28:13 garrigue Exp $ *)
 
 (* Abstract syntax tree after typing *)
 
@@ -107,7 +107,8 @@ and class_structure =
 and class_field =
     Cf_inher of class_expr * (string * Ident.t) list * (string * Ident.t) list
     (* Inherited instance variables and concrete methods *)
-  | Cf_val of string * Ident.t * expression
+  | Cf_val of string * Ident.t * expression option * bool
+        (* None = virtual, true = override *)
   | Cf_meth of string * expression
   | Cf_let of rec_flag * (pattern * expression) list *
               (Ident.t * expression) list
@@ -141,7 +142,8 @@ and structure_item =
   | Tstr_recmodule of (Ident.t * module_expr) list
   | Tstr_modtype of Ident.t * module_type
   | Tstr_open of Path.t
-  | Tstr_class of (Ident.t * int * string list * class_expr) list
+  | Tstr_class of
+      (Ident.t * int * string list * class_expr * virtual_flag) list
   | Tstr_cltype of (Ident.t * cltype_declaration) list
   | Tstr_include of module_expr * Ident.t list
 

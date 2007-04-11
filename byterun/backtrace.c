@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: backtrace.c,v 1.23 2005/10/25 16:22:38 doligez Exp $ */
+/* $Id: backtrace.c,v 1.24 2007/01/29 12:11:15 xleroy Exp $ */
 
 /* Stack backtrace for uncaught exceptions */
 
@@ -170,7 +170,7 @@ static value event_for_location(value events, code_t pc)
 
 static void print_location(value events, int index)
 {
-  code_t pc = caml_backtrace_buffer[index];
+   code_t pc = caml_backtrace_buffer[index];
   char * info;
   value ev;
 

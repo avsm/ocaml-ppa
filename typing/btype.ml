@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: btype.ml,v 1.37.4.1 2005/12/05 13:18:42 garrigue Exp $ *)
+(* $Id: btype.ml,v 1.39 2006/04/05 02:28:13 garrigue Exp $ *)
 
 (* Basic operations on core types *)
 
@@ -330,7 +330,7 @@ let unmark_type_decl decl =
 
 let unmark_class_signature sign =
   unmark_type sign.cty_self;
-  Vars.iter (fun l (m, t) -> unmark_type t) sign.cty_vars
+  Vars.iter (fun l (m, v, t) -> unmark_type t) sign.cty_vars
 
 let rec unmark_class_type =
   function

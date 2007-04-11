@@ -10,7 +10,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id: caml-types.el,v 1.32 2005/08/13 20:59:37 doligez Exp $ *)
+;(* $Id: caml-types.el,v 1.33 2007/02/09 13:31:15 doligez Exp $ *)
 
 ; An emacs-lisp complement to the "-dtypes" option of ocamlc and ocamlopt.
 
@@ -45,7 +45,7 @@ Their format is:
        at least two space characters.
 
 - in each block, the two positions are respectively the start and the
-- end of the range described by the block.
+  end of the range described by the block.
 - in a position, the filename is the name of the file, the first num
   is the line number, the second num is the offset of the beginning
   of the line, the third num is the offset of the position itself.

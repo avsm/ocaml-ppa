@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: dumpobj.ml,v 1.35.2.2 2006/01/04 09:22:50 xleroy Exp $ *)
+(* $Id: dumpobj.ml,v 1.37 2006/05/15 09:00:48 weis Exp $ *)
 
 (* Disassembler for executable and .cmo object files *)
 
@@ -23,6 +23,7 @@ open Location
 open Obj
 open Opcodes
 open Opnames
+open Cmo_format
 open Printf
 
 (* Read signed and unsigned integers *)

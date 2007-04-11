@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: warnings.mli,v 1.16 2005/09/15 03:09:26 garrigue Exp $ *)
+(* $Id: warnings.mli,v 1.18 2006/09/21 14:54:54 maranget Exp $ *)
 
 open Format
 
@@ -18,7 +18,7 @@ type t =                             (* A is all *)
   | Comment_start                    (* C *)
   | Comment_not_end
   | Deprecated                       (* D *)
-  | Fragile_pat of string            (* E *)
+  | Fragile_match of string            (* E *)
   | Partial_application              (* F *)
   | Labels_omitted                   (* L *)
   | Method_override of string list   (* M *)
@@ -26,7 +26,7 @@ type t =                             (* A is all *)
   | Statement_type                   (* S *)
   | Unused_match                     (* U *)
   | Unused_pat
-  | Hide_instance_variable of string (* V *)
+  | Instance_variable_override of string (* V *)
   | Illegal_backslash                (* X *)
   | Implicit_public_methods of string list
   | Unerasable_optional_argument

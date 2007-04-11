@@ -1,4 +1,4 @@
-(* $Id: addlabels.ml,v 1.10 2003/11/25 09:20:45 garrigue Exp $ *)
+(* $Id: addlabels.ml,v 1.11 2006/05/29 03:55:36 garrigue Exp $ *)
 
 open StdLabels
 open Asttypes
@@ -307,7 +307,7 @@ let rec add_labels_class ~text ~classes ~values ~methods cl =
           | Pcf_init e ->
               add_labels_expr ~text ~classes ~values e;
               values
-          | Pcf_inher _ | Pcf_virt _ | Pcf_cstr _ -> values
+          | Pcf_inher _ | Pcf_valvirt _ | Pcf_virt _ | Pcf_cstr _ -> values
           | Pcf_let _ -> values (* not in the grammar *)
         end;
       ()

@@ -10,14 +10,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: symtable.ml,v 1.38 2004/11/30 07:28:00 garrigue Exp $ *)
+(* $Id: symtable.ml,v 1.39 2006/05/11 15:50:53 xleroy Exp $ *)
 
 (* To assign numbers to globals and primitives *)
 
 open Misc
 open Asttypes
 open Lambda
-open Emitcode
+open Cmo_format
 
 (* Functions for batch linking *)
 

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: time_travel.ml,v 1.19 2005/08/25 15:35:16 doligez Exp $ *)
+(* $Id: time_travel.ml,v 1.21 2006/12/09 16:23:37 ertai Exp $ *)
 
 (**************************** Time travel ******************************)
 
@@ -26,8 +26,10 @@ open Trap_barrier
 open Input_handling
 open Debugger_config
 open Program_loading
+open Question
 
 exception Current_checkpoint_lost
+exception Current_checkpoint_lost_start_at of int64 * int64
 
 let remove_1st key list =
   let rec remove =
@@ -385,16 +387,21 @@ let forget_process fd pid =
     find (function c -> c.c_pid = pid) (!current_checkpoint::!checkpoints)
   in
     Printf.eprintf "Lost connection with process %d" pid;
-    if checkpoint == !current_checkpoint then begin
-      Printf.eprintf " (active process)\n";
-      match !current_checkpoint.c_state with
-        C_stopped ->
-          Printf.eprintf "at time %Ld" !current_checkpoint.c_time
-      | C_running duration ->
-          Printf.eprintf "between time %Ld and time %Ld"
-                         !current_checkpoint.c_time
-                         (!current_checkpoint.c_time ++ duration)
-      end;
+    let kont =
+      if checkpoint == !current_checkpoint then begin
+        Printf.eprintf " (active process)\n";
+        match !current_checkpoint.c_state with
+          C_stopped ->
+            Printf.eprintf "at time %Ld" !current_checkpoint.c_time;
+            fun () -> raise Current_checkpoint_lost
+        | C_running duration ->
+            Printf.eprintf "between time %Ld and time %Ld"
+                          !current_checkpoint.c_time
+                          (!current_checkpoint.c_time ++ duration);
+            fun () -> raise (Current_checkpoint_lost_start_at
+                              (!current_checkpoint.c_time, duration))
+        end
+      else ignore in
     Printf.eprintf "\n"; flush stderr;
     Input_handling.remove_file fd;
     close_io checkpoint.c_fd;
@@ -403,8 +410,7 @@ let forget_process fd pid =
     checkpoint.c_pid <- -1;             (* Don't exist anymore *)
     if checkpoint.c_parent.c_pid > 0 then
       wait_child checkpoint.c_parent.c_fd;
-    if checkpoint == !current_checkpoint then
-      raise Current_checkpoint_lost
+    kont ()
 
 (* Try to recover when the current checkpoint is lost. *)
 let recover () =

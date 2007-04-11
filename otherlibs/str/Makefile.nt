@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt,v 1.14 2002/12/09 14:05:18 xleroy Exp $
+# $Id: Makefile.nt,v 1.15 2007/01/29 12:11:16 xleroy Exp $
 
 # Makefile for the str library
 
@@ -22,6 +22,7 @@ CC=$(BYTECC)
 CFLAGS=-I../../byterun
 CAMLC=../../boot/ocamlrun ../../ocamlc -I ../../boot
 CAMLOPT=../../boot/ocamlrun ../../ocamlopt -I ../../stdlib
+COMPFLAGS=-warn-error A -g
 DCOBJS=strstubs.$(DO)
 SCOBJS=strstubs.$(SO)
 

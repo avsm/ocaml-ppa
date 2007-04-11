@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: sys.h,v 1.15 2003/12/16 18:09:43 doligez Exp $ */
+/* $Id: sys.h,v 1.16 2007/02/25 12:38:36 xleroy Exp $ */
 
 #ifndef CAML_SYS_H
 #define CAML_SYS_H
@@ -21,6 +21,7 @@
 #define NO_ARG Val_int(0)
 
 CAMLextern void caml_sys_error (value);
+CAMLextern void caml_sys_io_error (value);
 extern void caml_sys_init (char * exe_name, char ** argv);
 CAMLextern value caml_sys_exit (value);
 

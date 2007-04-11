@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: sys.mli,v 1.47 2005/10/25 18:34:07 doligez Exp $ *)
+(* $Id: sys.mli,v 1.49 2007/02/26 14:21:57 xleroy Exp $ *)
 
 (** System interface. *)
 
@@ -26,6 +26,11 @@ val executable_name : string
 
 external file_exists : string -> bool = "caml_sys_file_exists"
 (** Test if a file with the given name exists. *)
+
+external is_directory : string -> bool = "caml_sys_is_directory"
+(** Returns [true] if the given name refers to a directory,
+    [false] if it refers to another kind of file.
+    Raise [Sys_error] if no file exists with the given name. *)
 
 external remove : string -> unit = "caml_sys_remove"
 (** Remove the given file name from the file system. *)
@@ -193,7 +198,7 @@ val catch_break : bool -> unit
 
 val ocaml_version : string;;
 (** [ocaml_version] is the version of Objective Caml.
-    It is a string of the form ["major.minor[.patchlevel][+additional-info]"]
-    Where [major], [minor], and [patchlevel] are integers, and
-    [additional-info] is an arbitrary string.  The [[.patchlevel]] and
+    It is a string of the form ["major.minor[.patchlevel][+additional-info]"],
+    where [major], [minor], and [patchlevel] are integers, and
+    [additional-info] is an arbitrary string. The [[.patchlevel]] and
     [[+additional-info]] parts may be absent. *)

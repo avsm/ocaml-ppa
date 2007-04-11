@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: string.ml,v 1.25 2003/12/16 18:09:43 doligez Exp $ *)
+(* $Id: string.ml,v 1.26 2007/01/30 09:34:36 xleroy Exp $ *)
 
 (* String operations *)
 
@@ -174,4 +174,4 @@ let contains s c = contains_from s 0 c;;
 
 type t = string
 
-let compare = (Pervasives.compare: t -> t -> int)
+let compare (x: t) (y: t) = Pervasives.compare x y

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: input_handling.mli,v 1.2 1999/11/17 18:57:25 xleroy Exp $ *)
+(* $Id: input_handling.mli,v 1.3 2006/12/09 13:49:10 ertai Exp $ *)
 
 (***************************** Input control ***************************)
 
@@ -58,6 +58,3 @@ val stop_user_input : unit -> unit
 
 (* Resume reading user input. *)
 val resume_user_input : unit -> unit
-
-(* Ask user a yes or no question. *)
-val yes_or_no : string -> bool
