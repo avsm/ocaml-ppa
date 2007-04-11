@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unix.ml,v 1.65 2005/10/12 14:55:40 xleroy Exp $ *)
+(* $Id: unix.ml,v 1.66 2006/09/21 13:54:26 xleroy Exp $ *)
 
 type error =
     E2BIG
@@ -223,6 +223,7 @@ type stats =
 external stat : string -> stats = "unix_stat"
 external lstat : string -> stats = "unix_lstat"
 external fstat : file_descr -> stats = "unix_fstat"
+external isatty : file_descr -> bool = "unix_isatty"
 external unlink : string -> unit = "unix_unlink"
 external rename : string -> string -> unit = "unix_rename"
 external link : string -> string -> unit = "unix_link"

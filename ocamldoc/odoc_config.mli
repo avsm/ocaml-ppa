@@ -9,9 +9,12 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_config.mli,v 1.1 2004/01/28 13:36:20 guesdon Exp $ *)
+(* $Id: odoc_config.mli,v 1.1.20.2 2007/03/07 08:50:05 xleroy Exp $ *)
 
 (** Ocamldoc configuration contants. *)
 
 (** Default path to search for custom generators and to install them. *)
 val custom_generators_path : string
+
+(** A flag to indicate whether to print ocamldoc warnings or not. *)
+val print_warnings : bool ref

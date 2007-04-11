@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.34 2005/01/21 14:15:44 maranget Exp $
+# $Id: Makefile,v 1.35 2007/01/29 12:11:16 xleroy Exp $
 
 # Makefile for the "num" (exact rational arithmetic) library
 
@@ -24,7 +24,7 @@ CFLAGS=-O -I../../byterun $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS) \
 CAMLC=../../ocamlcomp.sh
 CAMLOPT=../../ocamlcompopt.sh
 MKLIB=../../boot/ocamlrun ../../tools/ocamlmklib
-COMPFLAGS=-warn-error A
+COMPFLAGS=-warn-error A -g
 
 CAMLOBJS=int_misc.cmo nat.cmo big_int.cmo arith_flags.cmo \
   ratio.cmo num.cmo arith_status.cmo

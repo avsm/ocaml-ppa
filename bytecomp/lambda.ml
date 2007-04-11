@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lambda.ml,v 1.44 2005/08/25 15:35:16 doligez Exp $ *)
+(* $Id: lambda.ml,v 1.45 2007/02/09 13:31:15 doligez Exp $ *)
 
 open Misc
 open Path
@@ -28,6 +28,7 @@ type primitive =
   | Psetfield of int * bool
   | Pfloatfield of int
   | Psetfloatfield of int
+  | Pduprecord of Types.record_representation * int
   (* External call *)
   | Pccall of Primitive.description
   (* Exceptions *)
@@ -251,7 +252,7 @@ let rec iter f = function
   | Lprim(p, args) ->
       List.iter f args
   | Lswitch(arg, sw) ->
-      f arg; 
+      f arg;
       List.iter (fun (key, case) -> f case) sw.sw_consts;
       List.iter (fun (key, case) -> f case) sw.sw_blocks;
       begin match sw.sw_failaction with

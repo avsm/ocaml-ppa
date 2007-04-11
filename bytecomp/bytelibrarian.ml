@@ -10,13 +10,13 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bytelibrarian.ml,v 1.18 2002/04/18 22:55:36 garrigue Exp $ *)
+(* $Id: bytelibrarian.ml,v 1.19 2006/05/11 15:50:53 xleroy Exp $ *)
 
 (* Build libraries of .cmo files *)
 
 open Misc
 open Config
-open Emitcode
+open Cmo_format
 
 type error =
     File_not_found of string

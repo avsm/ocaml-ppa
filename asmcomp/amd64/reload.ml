@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: reload.ml,v 1.2.2.1 2006/08/01 01:01:43 xleroy Exp $ *)
+(* $Id: reload.ml,v 1.5 2007/01/29 12:10:50 xleroy Exp $ *)
 
 open Cmm
 open Arch
@@ -19,12 +19,12 @@ open Mach
 
 (* Reloading for the AMD64 *)
 
-(* Summary of instruction set constraints: 
+(* Summary of instruction set constraints:
    "S" means either stack or register, "R" means register only.
    Operation                    Res     Arg1    Arg2
      Imove                      R       S
                              or S       R
-     Iconst_int                 S
+     Iconst_int                 S if 32-bit signed, R otherwise
      Iconst_float               R
      Iconst_symbol (not PIC)    S
      Iconst_symbol (PIC)        R

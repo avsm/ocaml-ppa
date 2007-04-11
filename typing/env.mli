@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: env.mli,v 1.30 2005/08/13 20:59:37 doligez Exp $ *)
+(* $Id: env.mli,v 1.31 2006/06/26 09:38:06 garrigue Exp $ *)
 
 (* Environment handling *)
 
@@ -128,6 +128,7 @@ type error =
   | Corrupted_interface of string
   | Illegal_renaming of string * string
   | Inconsistent_import of string * string * string
+  | Need_recursive_types of string * string
 
 exception Error of error
 

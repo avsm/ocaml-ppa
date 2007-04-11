@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: format.mli,v 1.71 2005/10/25 18:34:07 doligez Exp $ *)
+(* $Id: format.mli,v 1.74 2006/11/17 08:37:07 weis Exp $ *)
 
 (** Pretty printing.
 
@@ -23,13 +23,6 @@
    For a gentle introduction to the basics of pretty-printing using
    [Format], read
    {{:http://caml.inria.fr/resources/doc/guides/format.html}http://caml.inria.fr/resources/doc/guides/format.html}.
-
-   Warning: the material output by the following functions is delayed
-   in the pretty-printer queue in order to compute the proper line
-   breaking. Hence, you should not mix calls to the printing functions
-   of the basic I/O system with calls to the functions of this module:
-   this could result in some strange output seemingly unrelated with
-   the evaluation order of printing commands.
 
    You may consider this module as providing an extension to the
    [printf] facility to provide automatic line breaking. The addition of
@@ -70,6 +63,13 @@
    flushes all pending text (as with the [print_newline] function)
    after each phrase. Each phrase is therefore executed in the initial
    state of the pretty-printer.
+
+   Warning: the material output by the following functions is delayed
+   in the pretty-printer queue in order to compute the proper line
+   breaking. Hence, you should not mix calls to the printing functions
+   of the basic I/O system with calls to the functions of this module:
+   this could result in some strange output seemingly unrelated with
+   the evaluation order of printing commands.
 *)
 
 
@@ -590,7 +590,7 @@ val fprintf : formatter -> ('a, formatter, unit) format -> 'a;;
      [nspaces] and [offset] parameters of the break may be
      optionally specified with the following syntax:
      the [<] character, followed by an integer [nspaces] value,
-     then an integer offset, and a closing [>] character.
+     then an integer [offset], and a closing [>] character.
      If no parameters are provided, the good break defaults to a
      space.
    - [@?]: flush the pretty printer as with [print_flush ()].
@@ -655,6 +655,10 @@ val kfprintf : (formatter -> 'a) -> formatter ->
               ('b, formatter, unit, 'a) format4 -> 'b;;
 (** Same as [fprintf] above, but instead of returning immediately,
    passes the formatter to its first argument at the end of printing. *)
+
+val ifprintf : formatter -> ('a, formatter, unit) format -> 'a;;
+(** Same as [fprintf] above, but does not print anything.
+   Useful to ignore some material when conditionally printing. *)
 
 val ksprintf : (string -> 'a) -> ('b, unit, string, 'a) format4 -> 'b;;
 (** Same as [sprintf] above, but instead of returning the string,

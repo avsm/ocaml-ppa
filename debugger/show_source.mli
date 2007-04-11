@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: show_source.mli,v 1.4 2005/08/25 15:35:16 doligez Exp $ *)
+(* $Id: show_source.mli,v 1.5 2006/12/09 13:49:10 ertai Exp $ *)
 
 (* Print the line containing the point *)
 val show_point : Instruct.debug_event -> bool -> unit;;
@@ -20,4 +20,4 @@ val show_point : Instruct.debug_event -> bool -> unit;;
 val show_no_point : unit -> unit;;
 
 (* Display part of the source. *)
-val show_listing : string -> int -> int -> int -> bool -> unit;;
+val show_listing : Lexing.position -> string -> int -> int -> int -> bool -> unit;;

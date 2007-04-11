@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: compilenv.ml,v 1.22 2005/08/01 15:51:09 xleroy Exp $ *)
+(* $Id: compilenv.ml,v 1.23 2006/10/17 12:33:58 xleroy Exp $ *)
 
 (* Compilation environments for compilation units *)
 
@@ -154,6 +154,9 @@ let get_global_info global_ident =
       Hashtbl.add global_infos_table modname infos;
       infos
   end
+
+let cache_unit_info ui =
+  Hashtbl.add global_infos_table ui.ui_name (Some ui)
 
 (* Return the approximation of a global identifier *)
 

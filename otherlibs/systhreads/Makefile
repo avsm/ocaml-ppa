@@ -11,14 +11,14 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.37 2004/11/29 14:53:32 doligez Exp $
+# $Id: Makefile,v 1.40.4.1 2007/03/06 16:02:09 xleroy Exp $
 
 include ../../config/Makefile
 
 CAMLC=../../ocamlcomp.sh -I ../unix
 CAMLOPT=../../ocamlcompopt.sh -I ../unix
 MKLIB=../../boot/ocamlrun ../../tools/ocamlmklib
-COMPFLAGS=-warn-error A
+COMPFLAGS=-warn-error A -g
 
 BYTECODE_C_OBJS=posix_b.o
 NATIVECODE_C_OBJS=posix_n.o
@@ -55,7 +55,7 @@ threads.cma: $(THREAD_OBJS)
 # See remark above: force static linking of libthreadsnat.a
 threads.cmxa: $(THREAD_OBJS:.cmo=.cmx)
 	$(CAMLOPT) -a -o threads.cmxa $(THREAD_OBJS:.cmo=.cmx) \
-          -cclib -lthreadsnat -cclib -lunix -cclib "$(PTHREAD_LINK)"
+          -cclib -lthreadsnat -cclib -lunix $(PTHREAD_LINK)
 
 $(THREAD_OBJS:.cmo=.cmx): ../../ocamlopt
 
@@ -90,13 +90,13 @@ installopt:
 	$(CAMLC) -c $(COMPFLAGS) $<
 
 .ml.cmo:
-	$(CAMLC) -c -g $(COMPFLAGS) $<
+	$(CAMLC) -c $(COMPFLAGS) $<
 
 .ml.cmx:
 	$(CAMLOPT) -c $(COMPFLAGS) $<
 
 depend: $(GENFILES)
-	gcc -MM -I../../byterun *.c > .depend
+	-gcc -MM -I../../byterun *.c > .depend
 	../../boot/ocamlrun ../../tools/ocamldep *.mli *.ml >> .depend
 
 include .depend

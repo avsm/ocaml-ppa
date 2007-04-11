@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_text_lexer.mll,v 1.8.10.1 2005/11/07 15:59:04 doligez Exp $ *)
+(* $Id: odoc_text_lexer.mll,v 1.9 2006/01/04 16:55:50 doligez Exp $ *)
 
 (** The lexer for string to build text structures. *)
 

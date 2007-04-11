@@ -11,13 +11,13 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: source.mli,v 1.2 1999/11/17 18:57:28 xleroy Exp $ *)
+(* $Id: source.mli,v 1.3 2006/12/09 13:49:10 ertai Exp $ *)
 
 (************************ Source management ****************************)
 
 (*** Conversion function. ***)
 
-val source_of_module: string -> string
+val source_of_module: Lexing.position -> string -> string
 
 (*** buffer cache ***)
 
@@ -27,7 +27,7 @@ val buffer_max_count : int ref
 
 val flush_buffer_list : unit -> unit
 
-val get_buffer : string -> buffer
+val get_buffer : Lexing.position -> string -> buffer
 
 val buffer_content : buffer -> string
 val buffer_length : buffer -> int

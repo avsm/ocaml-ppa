@@ -11,13 +11,14 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: startup.c,v 1.32 2005/09/22 14:21:47 xleroy Exp $ */
+/* $Id: startup.c,v 1.33 2007/01/29 12:10:52 xleroy Exp $ */
 
 /* Start-up code */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "callback.h"
+#include "backtrace.h"
 #include "custom.h"
 #include "fail.h"
 #include "gc.h"
@@ -110,6 +111,7 @@ static void parse_camlrunparam(void)
       case 'o': scanmult (opt, &percent_free_init); break;
       case 'O': scanmult (opt, &max_percent_free_init); break;
       case 'v': scanmult (opt, &caml_verb_gc); break;
+      case 'b': caml_init_backtrace(); break;
       case 'p': caml_parser_trace = 1; break;
       }
     }

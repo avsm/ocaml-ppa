@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arch.ml,v 1.11 2004/06/19 16:13:32 xleroy Exp $ *)
+(* $Id: arch.ml,v 1.12 2006/05/31 08:16:34 xleroy Exp $ *)
 
 (* Specific operations for the PowerPC processor *)
 
@@ -39,8 +39,11 @@ type addressing_mode =
 
 let big_endian = true
 
-let size_addr = 4
-let size_int = 4
+let ppc64 =
+  match Config.model with "ppc64" -> true | _ -> false
+
+let size_addr = if ppc64 then 8 else 4
+let size_int = size_addr
 let size_float = 8
 
 (* Operations on addressing modes *)

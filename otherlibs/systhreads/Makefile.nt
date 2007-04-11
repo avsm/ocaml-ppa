@@ -11,13 +11,14 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt,v 1.29 2002/06/27 11:36:02 xleroy Exp $
+# $Id: Makefile.nt,v 1.30 2007/01/29 12:11:17 xleroy Exp $
 
 include ../../config/Makefile
 
 # Compilation options
 CAMLC=../../boot/ocamlrun ../../ocamlc -I ../../stdlib -I ../win32unix
 CAMLOPT=../../boot/ocamlrun ../../ocamlopt -I ../../stdlib -I ../win32unix
+COMPFLAGS=-warn-error A -g
 
 THREAD_OBJS=thread.cmo mutex.cmo condition.cmo event.cmo threadUnix.cmo
 

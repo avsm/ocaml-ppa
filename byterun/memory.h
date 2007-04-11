@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: memory.h,v 1.54.2.3 2006/07/25 09:13:16 doligez Exp $ */
+/* $Id: memory.h,v 1.56 2007/02/09 13:31:15 doligez Exp $ */
 
 /* Allocation macros and functions */
 
@@ -277,11 +277,13 @@ CAMLextern struct caml__roots_block *caml_local_roots;  /* defined in roots.c */
   return; \
 }while (0)
 
-#define CAMLreturn(result) do{ \
-  value caml__temp_result = (result); \
+#define CAMLreturnT(type, result) do{ \
+  type caml__temp_result = (result); \
   caml_local_roots = caml__frame; \
   return (caml__temp_result); \
 }while(0)
+
+#define CAMLreturn(result) CAMLreturnT(value, result)
 
 #define CAMLnoreturn ((void) caml__frame)
 

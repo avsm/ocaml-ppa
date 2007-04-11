@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlcp.ml,v 1.39 2005/05/09 13:39:17 doligez Exp $ *)
+(* $Id: ocamlcp.ml,v 1.40 2006/11/28 15:59:35 doligez Exp $ *)
 
 open Printf
 
@@ -96,7 +96,7 @@ let add_profarg s =
 
 let optlist =
     ("-p", Arg.String add_profarg,
-           "[afilmt]  Profile constructs specified by argument:\n\
+           "[afilmt]  Profile constructs specified by argument (default fm):\n\
         \032     a  Everything\n\
         \032     f  Function calls and method calls\n\
         \032     i  if ... then ... else\n\

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: predef.mli,v 1.14 2003/07/05 11:13:24 xleroy Exp $ *)
+(* $Id: predef.mli,v 1.16 2006/10/24 20:54:58 weis Exp $ *)
 
 (* Predefined type constructors (with special typing rules in typecore) *)
 
@@ -40,7 +40,7 @@ val path_unit: Path.t
 val path_exn: Path.t
 val path_array: Path.t
 val path_list: Path.t
-val path_format4: Path.t
+val path_format6: Path.t
 val path_option: Path.t
 val path_nativeint: Path.t
 val path_int32: Path.t

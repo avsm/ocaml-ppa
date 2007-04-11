@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_comments.ml,v 1.4.12.2 2006/07/31 14:19:35 guesdon Exp $ *)
+(* $Id: odoc_comments.ml,v 1.6 2006/09/20 11:14:36 doligez Exp $ *)
 
 (** Analysis of comments. *)
 
@@ -341,5 +341,3 @@ let info_of_comment_file modlist f =
   with
     Sys_error s ->
       failwith s
-
-(* eof $Id: odoc_comments.ml,v 1.4.12.2 2006/07/31 14:19:35 guesdon Exp $ *)

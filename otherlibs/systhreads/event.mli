@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: event.mli,v 1.9 2001/12/07 13:40:19 xleroy Exp $ *)
+(* $Id: event.mli,v 1.10 2006/01/12 03:24:56 garrigue Exp $ *)
 
 (** First-class synchronous communication.
 
@@ -27,7 +27,7 @@ type 'a channel
 val new_channel : unit -> 'a channel
 (** Return a new channel. *)
 
-type 'a event
+type +'a event
 (** The type of communication events returning a result of type ['a]. *)
 
 (** [send ch v] returns the event consisting in sending the value [v]

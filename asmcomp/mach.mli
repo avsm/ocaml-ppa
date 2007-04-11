@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: mach.mli,v 1.17 2000/08/11 19:50:53 maranget Exp $ *)
+(* $Id: mach.mli,v 1.18 2007/01/29 12:10:50 xleroy Exp $ *)
 
 (* Representation of machine code by sequences of pseudoinstructions *)
 
@@ -60,6 +60,7 @@ type instruction =
     next: instruction;
     arg: Reg.t array;
     res: Reg.t array;
+    dbg: Debuginfo.t;
     mutable live: Reg.Set.t }
 
 and instruction_desc =
@@ -85,8 +86,8 @@ val end_instr: unit -> instruction
 val instr_cons: 
       instruction_desc -> Reg.t array -> Reg.t array -> instruction ->
         instruction
-val instr_cons_live: 
-      instruction_desc -> Reg.t array -> Reg.t array -> Reg.Set.t ->
+val instr_cons_debug: 
+      instruction_desc -> Reg.t array -> Reg.t array -> Debuginfo.t ->
         instruction -> instruction
 val instr_iter: (instruction -> unit) -> instruction -> unit
 

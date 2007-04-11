@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: interp.c,v 1.95 2005/10/25 18:34:07 doligez Exp $ */
+/* $Id: interp.c,v 1.96 2006/08/18 14:51:59 xleroy Exp $ */
 
 /* The bytecode interpreter */
 #include <stdio.h>
@@ -139,7 +139,7 @@ sp is a local copy of the global variable caml_extern_sp. */
 #define SP_REG asm("%edi")
 #define ACCU_REG
 #endif
-#ifdef __ppc__
+#if defined(__ppc__) || defined(__ppc64__)
 #define PC_REG asm("26")
 #define SP_REG asm("27")
 #define ACCU_REG asm("28")

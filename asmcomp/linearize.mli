@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: linearize.mli,v 1.13 2002/01/09 19:40:48 xleroy Exp $ *)
+(* $Id: linearize.mli,v 1.14 2007/01/29 12:10:50 xleroy Exp $ *)
 
 (* Transformation of Mach code into a list of pseudo-instructions. *)
 
@@ -22,6 +22,7 @@ type instruction =
     mutable next: instruction;
     arg: Reg.t array;
     res: Reg.t array;
+    dbg: Debuginfo.t;
     live: Reg.Set.t }
 
 and instruction_desc =

@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.61.2.2 2006/07/25 09:00:15 doligez Exp $
+# $Id: Makefile,v 1.64 2007/02/07 10:31:36 ertai Exp $
 
 include ../config/Makefile
 
@@ -88,8 +88,13 @@ clean::
 
 # To help building mixed-mode libraries (Caml + C)
 
-ocamlmklib: ocamlmklib.cmo
-	$(CAMLC) $(LINKFLAGS) -o ocamlmklib ocamlmklib.cmo
+ocamlmklib: myocamlbuild_config.cmo ocamlmklib.cmo
+	$(CAMLC) $(LINKFLAGS) -o ocamlmklib myocamlbuild_config.cmo ocamlmklib.cmo
+
+ocamlmklib.cmo: myocamlbuild_config.cmi
+myocamlbuild_config.ml: ../config/Makefile
+	../build/mkmyocamlbuild_config.sh
+	cp ../myocamlbuild_config.ml .
 
 install::
 	cp ocamlmklib $(BINDIR)/ocamlmklib

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unused_var.ml,v 1.4.10.2 2005/12/28 17:27:46 doligez Exp $ *)
+(* $Id: unused_var.ml,v 1.6 2006/04/05 02:28:13 garrigue Exp $ *)
 
 open Parsetree
 
@@ -245,7 +245,7 @@ and class_field ppf tbl cf =
   match cf with
   | Pcf_inher (ce, _) -> class_expr ppf tbl ce;
   | Pcf_val (_, _, e, _) -> expression ppf tbl e;
-  | Pcf_virt _ -> ()
+  | Pcf_virt _ | Pcf_valvirt _ -> ()
   | Pcf_meth (_, _, e, _) -> expression ppf tbl e;
   | Pcf_cstr _ -> ()
   | Pcf_let (recflag, pel, _) -> let_pel ppf tbl recflag pel None;

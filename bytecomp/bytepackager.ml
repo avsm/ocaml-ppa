@@ -10,14 +10,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bytepackager.ml,v 1.4 2004/04/09 13:32:27 xleroy Exp $ *)
+(* $Id: bytepackager.ml,v 1.6 2007/02/23 13:44:51 ertai Exp $ *)
 
 (* "Package" a set of .cmo files into one .cmo file having the
    original compilation units as sub-modules. *)
 
 open Misc
 open Instruct
-open Emitcode
+open Cmo_format
 
 type error =
     Forward_reference of string * Ident.t
@@ -81,7 +81,7 @@ type pack_member =
 
 let read_member_info file =
   let name =
-    String.capitalize(Filename.basename(chop_extension_if_any file)) in
+    String.capitalize(Filename.basename(chop_extensions file)) in
   let kind =
     if Filename.check_suffix file ".cmo" then begin
     let ic = open_in_bin file in
@@ -224,7 +224,7 @@ let package_files files targetfile =
         try find_in_path !Config.load_path f
         with Not_found -> raise(Error(File_not_found f)))
       files in
-  let prefix = chop_extension_if_any targetfile in
+  let prefix = chop_extensions targetfile in
   let targetcmi = prefix ^ ".cmi" in
   let targetname = String.capitalize(Filename.basename prefix) in
   try

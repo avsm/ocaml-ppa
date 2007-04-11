@@ -10,13 +10,13 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: primreq.ml,v 1.4 2005/06/22 13:53:34 doligez Exp $ *)
+(* $Id: primreq.ml,v 1.5 2006/07/05 12:09:18 pouillar Exp $ *)
 
 (* Determine the set of C primitives required by the given .cmo and .cma
    files *)
 
 open Config
-open Emitcode
+open Cmo_format
 
 module StringSet = Set.Make(struct type t = string let compare = compare end)
 

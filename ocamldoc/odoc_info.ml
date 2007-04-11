@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_info.ml,v 1.22.2.1 2005/11/07 15:59:04 doligez Exp $ *)
+(* $Id: odoc_info.ml,v 1.23.6.1 2007/03/02 08:55:05 guesdon Exp $ *)
 
 (** Interface for analysing documented OCaml source files and to the collected information. *)
 
@@ -175,6 +175,7 @@ let verbose s =
     ()
 
 let warning s = Odoc_messages.pwarning s
+let print_warnings = Odoc_config.print_warnings
 
 let errors = Odoc_global.errors
 

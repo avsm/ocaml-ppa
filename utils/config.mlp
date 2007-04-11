@@ -10,9 +10,9 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: config.mlp,v 1.198 2005/08/01 15:51:09 xleroy Exp $ *)
+(* $Id: config.mlp,v 1.201 2007/02/07 14:49:42 doligez Exp $ *)
 
-(* The main OCaml version string has moved to stdlib/sys.ml *)
+(* The main OCaml version string has moved to ../VERSION *)
 let version = Sys.ocaml_version
 
 let standard_library_default = "%%LIBDIR%%"
@@ -43,10 +43,10 @@ let exec_magic_number = "Caml1999X008"
 and cmi_magic_number = "Caml1999I010"
 and cmo_magic_number = "Caml1999O006"
 and cma_magic_number = "Caml1999A007"
-and cmx_magic_number = "Caml1999Y010"
+and cmx_magic_number = "Caml1999Y011"
 and cmxa_magic_number = "Caml1999Z010"
-and ast_impl_magic_number = "Caml1999M010"
-and ast_intf_magic_number = "Caml1999N009"
+and ast_impl_magic_number = "Caml1999M011"
+and ast_intf_magic_number = "Caml1999N010"
 
 let load_path = ref ([] : string list)
 

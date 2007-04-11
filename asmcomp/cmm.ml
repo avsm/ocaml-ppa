@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: cmm.ml,v 1.20 2002/11/24 15:55:24 xleroy Exp $ *)
+(* $Id: cmm.ml,v 1.21 2007/01/29 12:10:50 xleroy Exp $ *)
 
 type machtype_component =
     Addr
@@ -67,8 +67,8 @@ type memory_chunk =
   | Double_u
 
 type operation =
-    Capply of machtype
-  | Cextcall of string * machtype * bool
+    Capply of machtype * Debuginfo.t
+  | Cextcall of string * machtype * bool * Debuginfo.t
   | Cload of memory_chunk
   | Calloc
   | Cstore of memory_chunk
@@ -81,8 +81,8 @@ type operation =
   | Caddf | Csubf | Cmulf | Cdivf
   | Cfloatofint | Cintoffloat
   | Ccmpf of comparison
-  | Craise
-  | Ccheckbound
+  | Craise of Debuginfo.t
+  | Ccheckbound of Debuginfo.t
 
 type expression =
     Cconst_int of int

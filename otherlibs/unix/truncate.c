@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: truncate.c,v 1.10 2005/03/24 17:20:53 doligez Exp $ */
+/* $Id: truncate.c,v 1.11 2007/02/09 13:31:15 doligez Exp $ */
 
 #include <sys/types.h>
 #include <mlvalues.h>
@@ -41,6 +41,9 @@ CAMLprim value unix_truncate_64(value path, value len)
 #else
 
 CAMLprim value unix_truncate(value path, value len)
+{ invalid_argument("truncate not implemented"); }
+
+CAMLprim value unix_truncate_64(value path, value len)
 { invalid_argument("truncate not implemented"); }
 
 #endif

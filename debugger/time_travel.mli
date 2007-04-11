@@ -11,13 +11,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: time_travel.mli,v 1.5 2002/10/29 17:53:24 doligez Exp $ *)
+(* $Id: time_travel.mli,v 1.6 2006/11/20 10:29:45 ertai Exp $ *)
 
 (**************************** Time travel ******************************)
 
 open Primitives
 
 exception Current_checkpoint_lost
+exception Current_checkpoint_lost_start_at of int64 * int64
 
 val new_checkpoint : int -> io_channel -> unit
 val set_file_descriptor : int -> io_channel -> bool

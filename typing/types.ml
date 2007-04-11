@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: types.ml,v 1.25 2004/12/09 12:40:53 garrigue Exp $ *)
+(* $Id: types.ml,v 1.26 2006/04/05 02:28:13 garrigue Exp $ *)
 
 (* Representation of types and declarations *)
 
@@ -90,7 +90,8 @@ and value_kind =
   | Val_prim of Primitive.description   (* Primitive *)
   | Val_ivar of mutable_flag * string   (* Instance variable (mutable ?) *)
   | Val_self of (Ident.t * type_expr) Meths.t ref *
-                (Ident.t * Asttypes.mutable_flag * type_expr) Vars.t ref *
+                (Ident.t * Asttypes.mutable_flag *
+                 Asttypes.virtual_flag * type_expr) Vars.t ref *
                 string * type_expr
                                         (* Self *)
   | Val_anc of (string * Ident.t) list * string
@@ -156,7 +157,8 @@ type class_type =
 
 and class_signature =
   { cty_self: type_expr;
-    cty_vars: (Asttypes.mutable_flag * type_expr) Vars.t;
+    cty_vars:
+      (Asttypes.mutable_flag * Asttypes.virtual_flag * type_expr) Vars.t;
     cty_concr: Concr.t;
     cty_inher: (Path.t * type_expr list) list }
 

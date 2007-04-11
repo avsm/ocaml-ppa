@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_comments.mli,v 1.3.12.2 2006/07/31 14:19:35 guesdon Exp $ *)
+(* $Id: odoc_comments.mli,v 1.5 2006/09/20 11:14:36 doligez Exp $ *)
 
 (** Analysis of comments. *)
 

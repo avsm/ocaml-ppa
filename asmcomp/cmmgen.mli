@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: cmmgen.mli,v 1.12 2004/05/26 11:10:28 garrigue Exp $ *)
+(* $Id: cmmgen.mli,v 1.14 2007/02/15 18:36:08 frisch Exp $ *)
 
 (* Translation from closed lambda to C-- *)
 

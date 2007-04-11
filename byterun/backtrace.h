@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: backtrace.h,v 1.6 2003/12/31 14:20:35 doligez Exp $ */
+/* $Id: backtrace.h,v 1.7 2007/01/29 12:11:15 xleroy Exp $ */
 
 #ifndef CAML_BACKTRACE_H
 #define CAML_BACKTRACE_H
@@ -24,7 +24,9 @@ CAMLextern code_t * caml_backtrace_buffer;
 CAMLextern value caml_backtrace_last_exn;
 
 extern void caml_init_backtrace(void);
+#ifndef NATIVE_CODE
 extern void caml_stash_backtrace(value exn, code_t pc, value * sp);
+#endif
 CAMLextern void caml_print_exception_backtrace(void);
 
 #endif /* CAML_BACKTRACE_H */

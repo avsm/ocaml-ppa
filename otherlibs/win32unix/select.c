@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: select.c,v 1.10 2003/01/07 16:16:44 xleroy Exp $ */
+/* $Id: select.c,v 1.12 2006/10/18 08:26:54 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -54,6 +54,7 @@ CAMLprim value unix_select(value readfds, value writefds, value exceptfds, value
   int retcode;
   value res;
   value read_list = Val_unit, write_list = Val_unit, except_list = Val_unit;
+  DWORD err = 0;
 
   Begin_roots3 (readfds, writefds, exceptfds)
   Begin_roots3 (read_list, write_list, except_list)
@@ -79,10 +80,11 @@ CAMLprim value unix_select(value readfds, value writefds, value exceptfds, value
 	tvp = &tv;
       }
       enter_blocking_section();
-      retcode = select(FD_SETSIZE, &read, &write, &except, tvp);
+      if (select(FD_SETSIZE, &read, &write, &except, tvp) == -1)
+        err = WSAGetLastError();
       leave_blocking_section();
-      if (retcode == -1) {
-	win32_maperr(WSAGetLastError());
+      if (err) {
+	win32_maperr(err);
 	uerror("select", Nothing);
       }
       read_list = fdset_to_fdlist(readfds, &read);

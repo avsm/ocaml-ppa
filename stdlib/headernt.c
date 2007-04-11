@@ -11,14 +11,14 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: headernt.c,v 1.19 2002/07/23 14:12:01 doligez Exp $ */
+/* $Id: headernt.c,v 1.20 2007/02/07 10:31:36 ertai Exp $ */
 
 #define STRICT
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include "../byterun/mlvalues.h"
-#include "../byterun/exec.h"
+#include "mlvalues.h"
+#include "exec.h"
 
 #ifndef __MINGW32__
 #pragma comment(linker , "/entry:headerentry")
