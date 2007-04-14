@@ -1,0 +1,4 @@
+debian/cdbs/*.mk                /usr/share/cdbs/1/class/
+debian/ocaml-nox.override	/usr/share/lintian/overrides/ocaml-nox
+config/Makefile			/usr/lib/ocaml/#OcamlABI#/config/Makefile
+debian/native-archs		/usr/lib/ocaml/#OcamlABI#/
