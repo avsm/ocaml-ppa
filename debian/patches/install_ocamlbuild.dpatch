@@ -1,0 +1,25 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## foo.dpatch by Stefano Zacchiroli <zack@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Install ocamlbuild uniformly with other ocaml binaries: bytecode version
+## DP: with no extension, native version (if any) with .opt extension, avoid
+## DP: installing the "best" binary
+
+@DPATCH@
+diff -urNad ocaml-3.10.0~beta~/build/partial-install.sh ocaml-3.10.0~beta/build/partial-install.sh
+--- ocaml-3.10.0~beta~/build/partial-install.sh	2007-03-06 10:48:38.000000000 +0100
++++ ocaml-3.10.0~beta/build/partial-install.sh	2007-04-15 17:38:04.000000000 +0200
+@@ -139,9 +139,9 @@
+ 
+ echo "Installing ocamlbuild..."
+ 
+-installbin ocamlbuild/ocamlbuild.byte$EXE $BINDIR/ocamlbuild.byte$EXE
+-installbin ocamlbuild/ocamlbuild.native$EXE $BINDIR/ocamlbuild.native$EXE
+-installbestbin ocamlbuild/ocamlbuild.native$EXE ocamlbuild/ocamlbuild.byte$EXE $BINDIR/ocamlbuild$EXE
++installbin ocamlbuild/ocamlbuild.byte$EXE $BINDIR/ocamlbuild$EXE
++installbin ocamlbuild/ocamlbuild.native$EXE $BINDIR/ocamlbuild.opt$EXE
++#installbestbin ocamlbuild/ocamlbuild.native$EXE ocamlbuild/ocamlbuild.byte$EXE $BINDIR/ocamlbuild$EXE
+ 
+ installlibdir \
+   ocamlbuild/ocamlbuildlib.$A ocamlbuild/ocamlbuildlib.p.$A \
