@@ -57,12 +57,6 @@ abi-sed-clean:
 debian/control:
 	sed -e 's/#OcamlNativeArchs#/$(NATIVE_ARCHS)/g' debian/control.in > $@
 
-# Generate list of files ocaml-source.
-# Should never be called automatically.
-debian/ocaml-source.files:
-	tar ztf ../upstream/ocaml_$(OCAMLABI).orig.tar.gz | cut -d/ -f2- | grep -v ^$$ | grep -v .*/$$ | grep -v .cvsignore > debian/ocaml-source.files
-
-
 config-stamp: configure abi-sed
 	dh_testdir
 	# Add here commands to configure the package.
@@ -157,15 +151,6 @@ install-indep: build-indep
 		sed -i -e '1 i #!/bin/sh' emacs/ocamltags.in; \
 	fi
 	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-mode/usr/bin install-ocamltags
-
-	# Build the archive for ocaml-source
-	for i in `cat debian/ocaml-source.files`; do			\
-		install -m 644 -D $$i					\
-		debian/ocaml-source/usr/src/ocaml-$(OCAMLABI)/$$i;	\
-	done
-	tar cjf debian/ocaml-source/usr/src/ocaml-source-$(OCAMLABI).tar.bz2	\
-		-C debian/ocaml-source/usr/src ocaml-$(OCAMLABI)
-	rm -rf debian/ocaml-source/usr/src/ocaml-$(OCAMLABI)
 
 	dh_install -i
 

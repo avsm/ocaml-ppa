@@ -20,6 +20,8 @@ ocaml (3.10.0~beta-1) UNRELEASED; urgency=low
       libraries and forbid it for bytecode programs
   * debian/rules
     - delegated more installation stuff to dh_install
+  * debian/control
+    - get rid of the no longer needed ocaml-source package
 
   [Ralf Treinen]
   * debian/patches/*
@@ -32,7 +34,7 @@ ocaml (3.10.0~beta-1) UNRELEASED; urgency=low
     - Patch LIBDIR and STBLIBDIR setting in config/Makefile after invokation
       of configure
 
- -- Stefano Zacchiroli <zack@debian.org>  Sat, 14 Apr 2007 20:22:15 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Sun, 15 Apr 2007 17:26:45 +0200
 
 ocaml (3.09.3-1) experimental; urgency=low
 
