@@ -9,6 +9,8 @@ ocaml (3.10.0~beta-1) UNRELEASED; urgency=low
     - removed: versioned_libdir (no longer needed with this upstream)
     - ported to this upstream: call_ld_with_proper_flags, alpha_ld_no-relax,
       no_rpath
+    - added: build_wo_debug_info.dpatch (avoid building camlp4/ocamldoc with
+      debug info, wont be needed for the stable release)
   * CDBS class
     - added support for the OCAML_DLL_DIR variable, pointing ATM to the
       stublibs/ subdirectory of the standard library directory. It's
@@ -34,7 +36,7 @@ ocaml (3.10.0~beta-1) UNRELEASED; urgency=low
     - Patch LIBDIR and STBLIBDIR setting in config/Makefile after invokation
       of configure
 
- -- Stefano Zacchiroli <zack@debian.org>  Sun, 15 Apr 2007 17:26:45 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Mon, 16 Apr 2007 15:19:03 +0200
 
 ocaml (3.09.3-1) experimental; urgency=low
 

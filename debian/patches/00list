@@ -9,3 +9,4 @@ stdlib_man_section.dpatch
 install_scripts_config.dpatch
 ocaml-interp_manpage.dpatch
 install_ocamlbuild.dpatch
+build_wo_debug_info.dpatch
