@@ -1,4 +1,4 @@
-ocaml (3.10.0~beta-1) UNRELEASED; urgency=low
+ocaml (3.10.0~beta-1) experimental; urgency=low
 
   [ Samuel Mimram ]
   * Ship dh_ocaml into ocaml-nox
@@ -36,7 +36,7 @@ ocaml (3.10.0~beta-1) UNRELEASED; urgency=low
     - Patch LIBDIR and STBLIBDIR setting in config/Makefile after invokation
       of configure
 
- -- Stefano Zacchiroli <zack@debian.org>  Mon, 16 Apr 2007 15:19:03 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Tue, 17 Apr 2007 09:57:47 +0200
 
 ocaml (3.09.3-1) experimental; urgency=low
 
