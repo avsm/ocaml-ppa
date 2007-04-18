@@ -1,4 +1,4 @@
 debian/ocaml-compiler-libs.override	/usr/share/lintian/overrides/ocaml-compiler-libs
-parsing/*				/usr/lib/ocaml/#OcamlABI#/compiler-libs/
-typing/*				/usr/lib/ocaml/#OcamlABI#/compiler-libs/
-utils/*					/usr/lib/ocaml/#OcamlABI#/compiler-libs/
+parsing/*				/usr/lib/ocaml/#OcamlABI#/compiler-libs/parsing/
+typing/*				/usr/lib/ocaml/#OcamlABI#/compiler-libs/typing/
+utils/*					/usr/lib/ocaml/#OcamlABI#/compiler-libs/utils/

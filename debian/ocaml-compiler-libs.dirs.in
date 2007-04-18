@@ -1,2 +1,4 @@
-usr/lib/ocaml/#OcamlABI#/compiler-libs
+usr/lib/ocaml/#OcamlABI#/compiler-libs/parsing
+usr/lib/ocaml/#OcamlABI#/compiler-libs/typing
+usr/lib/ocaml/#OcamlABI#/compiler-libs/utils
 usr/share/lintian/overrides
