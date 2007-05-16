@@ -14,8 +14,10 @@ ocaml (3.09.3-2) UNRELEASED; urgency=low
     - mandate the compilation of *.cm[ao] with debugging information for
       libraries and forbid it for bytecode programs
     - update the Vcs-Svn info to the latest PTS documentation
+    - describe dependencies from a -dev package to its companion shared stub
+      package (if any) and suggest the usage of ${binary:Version}
 
- -- Stefano Zacchiroli <zack@debian.org>  Wed, 16 May 2007 13:09:25 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Wed, 16 May 2007 13:22:23 +0200
 
 ocaml (3.09.3-1) experimental; urgency=low
 

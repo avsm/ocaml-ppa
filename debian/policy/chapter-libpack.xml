@@ -18,6 +18,41 @@
                     <filename>libxxx-ocaml-dev</filename> should provide the rest of the library package, in fact anything needed to develop programs using the library. If the library uses other libraries or C libraries, this package should depend on them.
                 </para>
 		<para>
+
+		  <filename>libxxx-ocaml-dev</filename> should depend on its
+		  companion <filename>libxxx-ocaml</filename> package (if any).
+		  The reason is that at compile time the &ocaml-name; compiler
+		  will try to load the shared library stubs, aborting the
+		  compilation in case of failure. Hence the development package
+		  is useless if the corresponding stub package is missing. To
+		  ensure compatibility the dependency among the two packages
+		  should be strictly versioned. In order for the resulting
+		  packages to be <ulink
+		    url="http://wiki.debian.org/binNMU">binNMU safe</ulink> this
+		  requirement states that the dependency should make use of a
+		  <code>${binary:Version}</code> substitution variable.
+
+		  <example>
+		    <title>Dependency from a -dev package to its companion share
+		      library stub package (if any), from the
+		      <application>pcre-ocaml</application> package</title>
+		    <programlisting>
+  Package: libpcre-ocaml
+  Architecture: any
+  Section: libs
+  Depends: ocaml-base-nox-${F:OCamlABI}, ${shlibs:Depends}, ${misc:Depends}
+  ...
+
+  Package: libpcre-ocaml-dev
+  Architecture: any
+  Section: libdevel
+  Depends: ocaml-nox-${F:OCamlABI}, libpcre3-dev (>= 4.5), <emphasis>libpcre-ocaml (= ${binary:Version})</emphasis>, ocaml-findlib (>= 1.1), ${misc:Depends}
+  ...
+		    </programlisting>
+		  </example>
+
+		</para>
+		<para>
 		  <filename>libxxx-ocaml-dev</filename> packages should be in <code>Section: libdevel</code>
 		</para>
 		<para>
