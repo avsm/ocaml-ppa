@@ -17,19 +17,24 @@
   </para>
   <para>
     For this reason <emphasis>it is recommended to add the
-    <code>XS-X-Vcs-Svn</code> field to the <filename>debian/control</filename>
-    of packages maintained in &ocaml-force; SVN repository</emphasis>. Its name
-  specifies that we are using Subversion as our Version Control System
-  (<acronym>VCS</acronym>); its value is the URL pointing to the package's
-  trunk directory.
+      <code>XS-Vcs-Svn</code> and <code>XS-Vcs-Browser</code> fields to the
+      <filename>debian/control</filename> of packages maintained in
+      &ocaml-force; SVN repository</emphasis>. Its name specifies that we are
+    using Subversion as our Version Control System (<acronym>VCS</acronym>);
+    their values are the URLs pointing to the package's trunk directory and to
+    a browsable view of the same directory. See <ulink
+      url="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=391023">Bug
+      #391023</ulink> (which contains the forthcoming text for the Debian
+    Developer's Reference) for more information about these fields.
   </para>
   <para>
-    The general scheme for using the field is thus:
+    The general scheme for using the fields are thus:
     <programlisting>
-  XS-X-Vcs-Svn: svn://svn.debian.org/svn/pkg-ocaml-maint/trunk/packages/<emphasis>PACKAGE_NAME</emphasis>
+  XS-Vcs-Svn: svn://svn.debian.org/svn/pkg-ocaml-maint/trunk/packages/<emphasis>PACKAGE_NAME</emphasis>
+  XS-Vcs-Browser: http://svn.debian.org/wsvn/pkg-ocaml-maint/trunk/packages/<emphasis>PACKAGE_NAME</emphasis>/trunk/
     </programlisting>
     <example>
-      <title>Usage example of the XS-X-Vcs-Svn field, from the
+      <title>Usage example of the XS-Vcs-* fields, from the
         <application>findlib</application> package
       </title>
       <programlisting>
@@ -39,7 +44,8 @@
   Maintainer: Stefano Zacchiroli &lt;zack@debian.org&gt;
   Build-Depends: debhelper (>> 4.0.0), ocaml (>= 3.09.2), m4, gawk | awk, dpatch, cdbs
   Standards-Version: 3.7.2
-  <emphasis>XS-X-Vcs-Svn: svn://svn.debian.org/svn/pkg-ocaml-maint/trunk/packages/findlib</emphasis>
+  <emphasis>XS-Vcs-Svn: svn://svn.debian.org/svn/pkg-ocaml-maint/trunk/packages/findlib</emphasis>
+  <emphasis>XS-Vcs-Browser: http://svn.debian.org/wsvn/pkg-ocaml-maint/trunk/packages/findlib/trunk/</emphasis>
 
   Package: ocaml-findlib
   Section: devel
