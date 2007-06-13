@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typecore.ml,v 1.190 2007/02/27 04:54:05 garrigue Exp $ *)
+(* $Id: typecore.ml,v 1.190.2.1 2007/05/02 02:10:54 garrigue Exp $ *)
 
 (* Typechecking for the core language *)
 
@@ -1812,10 +1812,16 @@ and type_expect ?in_function env sexp ty_expected =
               raise(Error(loc,
                           Too_many_arguments (in_function <> None, ty_fun)))
       in
-      if is_optional l then begin
-        try unify env ty_arg (type_option(newvar()))
-        with Unify _ -> assert false
-      end;
+      let ty_arg =
+        if is_optional l then
+          let tv = newvar() in
+          begin
+            try unify env ty_arg (type_option tv)
+            with Unify _ -> assert false
+          end;
+          type_option tv
+        else ty_arg
+      in
       let cases, partial =
         type_cases ~in_function:(loc,ty_fun) env ty_arg ty_res
           (Some sexp.pexp_loc) caselist in

@@ -22,7 +22,7 @@ open Camlp4;
 
 module Id = struct
   value name    = "Camlp4Tracer";
-  value version = "$Id: Camlp4Tracer.ml,v 1.1 2007/02/07 10:09:22 ertai Exp $";
+  value version = "$Id: Camlp4Tracer.ml,v 1.1.4.1 2007/03/10 16:58:39 pouillar Exp $";
 end;
 
 module Make (AstFilters : Camlp4.Sig.AstFilters) = struct
@@ -51,7 +51,7 @@ module Make (AstFilters : Camlp4.Sig.AstFilters) = struct
     [ <:expr@_loc< fun [ $m$ ] >> -> <:expr< fun [ $map_match_case m$ ] >>
     | x -> x ];
 
-  register_str_item_filter (new Ast.c_expr map_expr)#str_item;
+  register_str_item_filter (Ast.map_expr map_expr)#str_item;
 
 end;
 

@@ -1,3 +1,4 @@
+# $Id: targets.sh,v 1.2.4.6 2007/03/12 11:58:48 pouillar Exp $
 . config/config.sh
 . build/otherlibs-targets.sh
 . build/camlp4-targets.sh

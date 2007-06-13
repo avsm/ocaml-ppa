@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: my_unix.ml,v 1.2 2007/02/26 16:36:33 ertai Exp $ *)
+(* $Id: my_unix.ml,v 1.2.2.1 2007/03/13 10:28:53 pouillar Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format
@@ -51,7 +51,7 @@ let is_degraded = true
 let stat f =
   { stat_key = f;
     stat_file_kind =
-      if Sys.file_exists f then
+      if sys_file_exists f then
         if Sys.is_directory f then
           FK_dir
         else

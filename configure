@@ -13,7 +13,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: configure,v 1.244.4.1 2007/03/06 16:02:09 xleroy Exp $
+# $Id: configure,v 1.244.4.2 2007/05/03 12:49:56 xleroy Exp $
 
 configure_options="$*"
 prefix=/usr/local
@@ -488,7 +488,7 @@ mksharedlibrpath=''
 
 if test $withsharedlibs = "yes"; then
   case "$host" in
-    *-*-linux-gnu|*-*-linux|*-*-freebsd[3-9]*|*-*-gnu*)
+    *-*-linux-gnu|*-*-linux|*-*-freebsd[3-9]*|*-*-netbsd*|*-*-gnu*)
       sharedcccompopts="-fPIC"
       mksharedlib="$bytecc -shared -o"
       bytecclinkopts="$bytecclinkopts -Wl,-E"

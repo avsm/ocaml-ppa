@@ -1,4 +1,5 @@
 #!/bin/sh
+# $Id: mkmyocamlbuild_config.sh,v 1.5.2.1 2007/03/12 11:58:48 pouillar Exp $
 
 cd `dirname $0`/..
 

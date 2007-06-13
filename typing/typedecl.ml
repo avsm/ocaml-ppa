@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typedecl.ml,v 1.76.6.1 2007/03/05 01:24:10 garrigue Exp $ *)
+(* $Id: typedecl.ml,v 1.76.6.2 2007/03/12 13:14:26 garrigue Exp $ *)
 
 (**** Typing of type definitions ****)
 
@@ -369,6 +369,7 @@ let check_recursion env loc path decl to_check =
         Ctype.correct_abbrev env path decl.type_params body
       with Ctype.Recursive_abbrev ->
         raise(Error(loc, Recursive_abbrev (Path.name path)))
+      | Ctype.Unify trace -> raise(Error(loc, Type_clash trace))
       end;
       (* Check that recursion is regular *)
       if decl.type_params = [] then () else

@@ -1,4 +1,5 @@
 #!/bin/sh
+# $Id: otherlibs-targets.sh,v 1.2.4.1 2007/03/12 11:58:48 pouillar Exp $
 OTHERLIBS_BYTE=""
 OTHERLIBS_NATIVE=""
 OTHERLIBS_UNIX_NATIVE=""

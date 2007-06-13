@@ -22,14 +22,14 @@ open Camlp4;
 
 module Id = struct
   value name    = "Camlp4LocationStripper";
-  value version = "$Id: Camlp4LocationStripper.ml,v 1.1 2007/02/07 10:09:22 ertai Exp $";
+  value version = "$Id: Camlp4LocationStripper.ml,v 1.1.4.1 2007/03/10 16:58:39 pouillar Exp $";
 end;
 
 module Make (AstFilters : Camlp4.Sig.AstFilters) = struct
   open AstFilters;
   open Ast;
 
-  register_str_item_filter (new Ast.c_loc (fun _ -> Loc.ghost))#str_item;
+  register_str_item_filter (Ast.map_loc (fun _ -> Loc.ghost))#str_item;
 
 end;
 
