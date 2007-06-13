@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: inria.h,v 1.5 2004/06/17 07:33:44 xleroy Exp $ */
+/* $Id: inria.h,v 1.5.18.1 2007/05/12 09:20:51 xleroy Exp $ */
 
 /*------------------------------------------------------------------------
  Module:        D:\lcc\inria\inria.h
@@ -62,6 +62,14 @@
 #include <windows.h>
 #include "editbuffer.h"
 #include "history.h"
+
+#if _MSC_VER <= 1200
+#define GetWindowLongPtr GetWindowLong
+#define SetWindowLongPtr SetWindowLong
+#define DWLP_USER DWL_USER
+#define GWLP_WNDPROC GWL_WNDPROC
+#define LONG_PTR DWORD
+#endif
 
 // In this structure should go eventually all global variables scattered
 // through the program.

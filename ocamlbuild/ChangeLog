@@ -1,3 +1,86 @@
+2007-03-22  Nicolas Pouillard  <nicolas.pouillard@gmail.com>
+
+	Allow to receive the build function in {custom,file}_rule.
+
+	* rule.ml,
+	* rule.mli,
+	* signatures.mli: Ditto.
+	* ocaml_specific.ml: Update.
+
+	* command.ml,
+	* command.mli: Add a function to get string and tags.
+
+	* ocamldep.ml,
+	* ocamldep.mli: Make tag based dependencies.
+
+	* ocaml_compiler.ml: Do the pack as one command to be sure running the
+	remove.
+
+	* test/test8/myocamlbuild.ml,
+	* test/good-output: Update.
+
+2007-03-21  Nicolas Pouillard  <nicolas.pouillard@gmail.com>
+
+	Fix the previous fix.
+
+	* ocaml_compiler.ml: Remove the empty file.
+	* test/good-output: Update.
+
+2007-03-21  Nicolas Pouillard  <nicolas.pouillard@gmail.com>
+
+	[native pack] use touch instead of mv and cmp.
+
+	* ocaml_compiler.ml: This version is will force ocamlopt to do the
+	right thing.
+	* test/good-output: Update.
+
+2007-03-20  Nicolas Pouillard  <nicolas.pouillard@gmail.com>
+
+	Two bugs, two fixes.
+
+	* ocaml_tools.ml: Add pp flags to interface inference.
+	* ocaml_specific.ml: Add a rule for packing with a cmi that already
+	exists.
+	* test/good-output: Update.
+	* Makefile: Change the default location.
+
+2007-03-13  Nicolas Pouillard  <nicolas.pouillard@gmail.com>
+
+	Fix a bug in expand_module.
+
+	* ocaml_utils.ml: Handle correctly pathnames instead of just basenames.
+
+2007-03-13  Nicolas Pouillard  <nicolas.pouillard@gmail.com>
+
+	Use sys_file_exists instead of Sys.file_exists.
+
+	* my_unix.ml: Since Sys.file_exists don't treat well captial letters.
+	* my_std.ml: Fix a bug.
+	* pathname.ml: Here is a an exception to the previous rule so, put a
+	comment.
+
+2007-03-11  Nicolas Pouillard  <nicolas.pouillard@gmail.com>
+
+	Fix the List.union order.
+
+	* my_std.ml: Fix and improve List.union.
+	* pathname.ml: Use it and fix merge_include_dirs.
+	* test/good-output: Update since the union order was wrong.
+
+2007-03-11  Nicolas Pouillard  <nicolas.pouillard@gmail.com>
+
+	Re fix menhir and include dirs.
+
+	* ocaml_tools.ml: Specifiy ocamlc and -I with --ocamlc.
+
+2007-03-11  Nicolas Pouillard  <nicolas.pouillard@gmail.com>
+
+	Fix a bug: Add include directories to menhir.
+
+	* ocaml_tools.ml: Ditto.
+	* my_std.ml,
+	* signatures.mli: Specification typo.
+
 2007-03-07  Nicolas Pouillard  <nicolas.pouillard@gmail.com>
 
 	Handle specially archives files during an import.

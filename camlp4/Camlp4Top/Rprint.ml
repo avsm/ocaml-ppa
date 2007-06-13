@@ -19,7 +19,7 @@
  *)
 
 
-(* $Id: Rprint.ml,v 1.2 2006/07/08 17:21:32 pouillar Exp $ *)
+(* $Id: Rprint.ml,v 1.2.6.1 2007/05/10 13:31:21 pouillar Exp $ *)
 
 (* This file originally come from typing/oprint.ml *)
 
@@ -198,7 +198,7 @@ and print_simple_out_type ppf =
   | Otyp_record lbls ->
       fprintf ppf "@[<hv 2>{ %a }@]"
         (print_list print_out_label (fun ppf -> fprintf ppf ";@ ")) lbls
-  | Otyp_abstract -> fprintf ppf "'abstract"
+  | Otyp_abstract -> fprintf ppf "<abstract>"
   | Otyp_alias _ _ | Otyp_poly _ _
   | Otyp_arrow _ _ _ | Otyp_constr _ [_ :: _] as ty ->
       fprintf ppf "@[<1>(%a)@]" print_out_type ty ]

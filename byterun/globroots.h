@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: globroots.h,v 1.3 2003/12/15 18:10:47 doligez Exp $ */
+/* $Id: globroots.h,v 1.3.20.1 2007/03/26 18:01:20 doligez Exp $ */
 
 /* Registration of global memory roots */
 
@@ -27,11 +27,11 @@ struct global_root {
   struct global_root * forward[1]; /* variable-length array */
 };
 
-#define MAX_LEVEL 15
+#define NUM_LEVELS 17
 
 struct global_root_list {
   value * root;                 /* dummy value for layout compatibility */
-  struct global_root * forward[MAX_LEVEL]; /* forward chaining */
+  struct global_root * forward[NUM_LEVELS]; /* forward chaining */
   int level;                    /* max used level */
 };
 

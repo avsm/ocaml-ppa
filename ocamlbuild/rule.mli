@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: rule.mli,v 1.2.2.1 2007/03/07 10:36:34 pouillar Exp $ *)
+(* $Id: rule.mli,v 1.2.2.2 2007/03/23 16:34:48 pouillar Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Resource
@@ -40,7 +40,7 @@ val file_rule : string ->
   ?deps:string list ->
   ?dep:string ->
   ?insert:[`top | `before of string | `after of string | `bottom] ->
-  cache:(env -> string) ->
+  cache:(env -> builder -> string) ->
   (env -> out_channel -> unit) -> unit
 
 val custom_rule : string ->
@@ -50,7 +50,7 @@ val custom_rule : string ->
   ?deps:string list ->
   ?dep:string ->
   ?insert:[`top | `before of string | `after of string | `bottom] ->
-  cache:(env -> string) ->
+  cache:(env -> builder -> string) ->
   (env -> cached:bool -> unit) -> unit
 
 (** [copy_rule name ?insert source destination] *)

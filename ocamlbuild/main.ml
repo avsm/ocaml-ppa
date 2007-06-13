@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml,v 1.8 2007/03/01 14:40:11 pouillar Exp $ *)
+(* $Id: main.ml,v 1.8.2.1 2007/04/12 13:19:02 pouillar Exp $ *)
 (* Original author: Berke Durak *)
 open My_std
 open Log
@@ -133,6 +133,8 @@ let proceed () =
   Options.include_dirs := Pathname.current_dir_name :: List.rev !entry_include_dirs;
   dprintf 3 "include directories are:@ %a" print_string_list !Options.include_dirs;
   Options.entry := Some entry;
+
+  List.iter Configuration.parse_string !Options.tag_lines;
 
   Hooks.call_hook Hooks.Before_rules;
   Ocaml_specific.init ();

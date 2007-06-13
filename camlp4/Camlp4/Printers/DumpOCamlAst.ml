@@ -19,11 +19,11 @@
 
 module Id : Sig.Id = struct
   value name = "Camlp4Printers.DumpOCamlAst";
-  value version = "$Id: DumpOCamlAst.ml,v 1.5 2007/02/07 10:09:21 ertai Exp $";
+  value version = "$Id: DumpOCamlAst.ml,v 1.5.4.1 2007/03/30 15:50:12 pouillar Exp $";
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax)
-: Sig.Printer with module Ast = Syntax.Ast
+: (Sig.Printer Syntax.Ast).S
 = struct
   include Syntax;
   module Ast2pt = Struct.Camlp4Ast2OCamlAst.Make Ast;

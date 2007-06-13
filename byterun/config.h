@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: config.h,v 1.40 2006/09/19 12:40:29 xleroy Exp $ */
+/* $Id: config.h,v 1.40.6.1 2007/05/10 09:57:29 xleroy Exp $ */
 
 #ifndef CAML_CONFIG_H
 #define CAML_CONFIG_H
@@ -85,7 +85,7 @@ typedef struct { uint32 l, h; } uint64, int64;
    float is at byte offset [a], the next lsb at [b], ..., and the
    most significant byte at [h]. */
 
-#if defined(__arm__)
+#if defined(__arm__) && !defined(__ARM_EABI__)
 #define ARCH_FLOAT_ENDIANNESS 0x45670123
 #elif defined(ARCH_BIG_ENDIAN)
 #define ARCH_FLOAT_ENDIANNESS 0x76543210

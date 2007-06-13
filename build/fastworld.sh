@@ -1,4 +1,5 @@
 #!/bin/sh
+# $Id: fastworld.sh,v 1.2.4.2 2007/03/12 11:58:48 pouillar Exp $
 cd `dirname $0`
 set -e
 ./mkconfig.sh
