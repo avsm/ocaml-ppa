@@ -1,4 +1,4 @@
-ocaml (3.10.0-1) UNRELEASED; urgency=low
+ocaml (3.10.0-1) experimental; urgency=low
 
   [ Stefano Zacchiroli ]
   * New upstream (stable) release
@@ -15,7 +15,7 @@ ocaml (3.10.0-1) UNRELEASED; urgency=low
     - new file: list of tar exclude patterns, matching file won't be shipped
       in the ocaml source tarball
 
- -- Stefano Zacchiroli <zack@debian.org>  Wed, 13 Jun 2007 17:15:06 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Wed, 13 Jun 2007 17:19:10 +0200
 
 ocaml (3.10.0~beta-1) experimental; urgency=low
 
