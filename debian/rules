@@ -52,7 +52,15 @@ abi-sed-clean:
 debian/control:
 	sed -e 's/#OcamlNativeArchs#/$(NATIVE_ARCHS)/g' debian/control.in > $@
 
-config-stamp: configure abi-sed
+pre-config: debian/$(DISTDIR).tar.bz2
+debian/$(DISTDIR).tar.bz2:
+	ln -fs . $(DISTDIR)	# beware of the symlink recursion!
+	tar --anchored -chjf debian/$(DISTDIR).tar.bz2 \
+		--exclude=$(DISTDIR)/$(DISTDIR)	\
+		--exclude-from=debian/ocaml-source.exclude \
+		$(DISTDIR)/
+
+config-stamp: configure pre-config patch-stamp abi-sed
 	dh_testdir
 	# Add here commands to configure the package.
 	./configure --with-pthread -prefix /usr				\
@@ -79,7 +87,7 @@ patch-stamp: abi-sed
 build: build-arch build-indep
 
 build-arch: build-arch-stamp
-build-arch-stamp: patch-stamp config-stamp
+build-arch-stamp: config-stamp
 
 	# Add here commands to compile the arch part of the package.
 	if test ! -d boot.debian; then 					\
@@ -102,13 +110,8 @@ endif
 	touch build-arch-stamp
 
 build-indep: build-indep-stamp config-stamp
-build-indep-stamp: patch-stamp
+build-indep-stamp:
 	# create ocaml source tarball
-	ln -fs . $(DISTDIR)	# beware of the symlink recursion!
-	tar --anchored -chjf debian/$(DISTDIR).tar.bz2 \
-		--exclude=$(DISTDIR)/$(DISTDIR)	\
-		--exclude-from=debian/ocaml-source.exclude \
-		$(DISTDIR)/
 	touch $@
 
 clean: abi-sed unpatch
