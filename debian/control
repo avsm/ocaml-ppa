@@ -112,6 +112,18 @@ Description: Native code compilers of the ocaml suite (the .opt ones)
  For big source codes, these packages can be two to three times faster, but
  for most normal sized sources, the difference won't be noticeable.
 
+Package: ocaml-source
+Architecture: all
+Provides: ocaml-source-${F:OCamlABI}
+Description: Sources for Objective Caml
+ Objective Caml is an implementation of the ML language, based on
+ the Caml Light dialect extended with a complete class-based object system
+ and a powerful module system in the style of Standard ML.
+ .
+ This package contains the sources needed to build some packages which build
+ depend on the ocaml source. Notice that if you want to rebuild ocaml, these
+ will not work, consider using the source package instead.
+
 Package: ocaml-interp
 Architecture: any
 Provides: ocaml-interp-${F:OCamlABI}

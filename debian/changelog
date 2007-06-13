@@ -2,13 +2,20 @@ ocaml (3.10.0-1) UNRELEASED; urgency=low
 
   [ Stefano Zacchiroli ]
   * New upstream (stable) release
-  * ship ocaml-compiler-libs objects as STDLIB/ocaml-compiler-libs/{parsing/,
-    typing/, utils/} rather than as a flat dir tree
   * debian/patches/*
     - removed: ocaml-interp_manpage, build_wo_debug_info (integrated upstream)
     - updated: install_ocamlbuild
+  * ship ocaml-compiler-libs objects as STDLIB/ocaml-compiler-libs/{parsing/,
+    typing/, utils/} rather than as a flat dir tree
+  * re-enabled ocaml-source package (which ships
+    /usr/src/ocaml-3.10.0.tar.bz2), now with a better way to generate it:
+    everything in the build dir except debian/ will be copied in the resulting
+    tarball
+  * debian/ocaml-source.exclude
+    - new file: list of tar exclude patterns, matching file won't be shipped
+      in the ocaml source tarball
 
- -- Stefano Zacchiroli <zack@debian.org>  Wed, 13 Jun 2007 16:15:14 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Wed, 13 Jun 2007 17:15:06 +0200
 
 ocaml (3.10.0~beta-1) experimental; urgency=low
 
