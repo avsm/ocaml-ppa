@@ -7,5 +7,4 @@ call_ld_with_proper_flags.dpatch
 no_rpath.dpatch
 stdlib_man_section.dpatch
 install_scripts_config.dpatch
-install_ocamlbuild.dpatch
-build_wo_debug_info.dpatch
+#install_ocamlbuild.dpatch
