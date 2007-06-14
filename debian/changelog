@@ -6,8 +6,11 @@ ocaml (3.10.0-2) UNRELEASED; urgency=low
       package (if any) and suggest the usage of ${binary:Version}
   * debian/copyright
     - added in place of copyright.in, nothing to replace there
+  * debian/man/camlp4*.1
+    - added manpage for camlp4 related executables; content partially using
+      html2man, partially taken from the camlp4 wiki
 
- -- Stefano Zacchiroli <zack@debian.org>  Thu, 14 Jun 2007 20:40:44 +0100
+ -- Stefano Zacchiroli <zack@debian.org>  Thu, 14 Jun 2007 22:20:02 +0100
 
 ocaml (3.10.0-1) experimental; urgency=low
 
