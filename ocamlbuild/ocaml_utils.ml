@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_utils.ml,v 1.3.2.1 2007/03/02 17:10:27 pouillar Exp $ *)
+(* $Id: ocaml_utils.ml,v 1.3.2.2 2007/03/13 10:28:53 pouillar Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format
@@ -52,11 +52,14 @@ let module_importance modpath x =
   else if ignore_stdlib x then `just_try else `mandatory
 
 let expand_module include_dirs module_name exts =
+  let dirname = Pathname.dirname module_name in
+  let basename = Pathname.basename module_name in
+  let module_name_cap = dirname/(String.capitalize basename) in
+  let module_name_uncap = dirname/(String.uncapitalize basename) in
   List.fold_right begin fun include_dir ->
     List.fold_right begin fun ext acc ->
-      let module_name_ext = module_name-.-ext in
-      include_dir/(String.uncapitalize module_name_ext) ::
-      include_dir/(String.capitalize module_name_ext) :: acc
+      include_dir/(module_name_uncap-.-ext) ::
+      include_dir/(module_name_cap-.-ext) :: acc
     end exts
   end include_dirs []
 

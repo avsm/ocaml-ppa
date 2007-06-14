@@ -1,4 +1,5 @@
 #!/bin/sh
+# $Id: distclean.sh,v 1.4.2.5 2007/03/12 11:58:48 pouillar Exp $
 cd `dirname $0`/..
 set -ex
 (cd byterun && make clean) || :

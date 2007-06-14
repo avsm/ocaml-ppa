@@ -1,20 +1,16 @@
 #!/usr/bin/make -f
-# Sample debian/rules that uses debhelper.
-# GNU copyright 1997 to 1999 by Joey Hess.
-#
-# Modified to make a template file for a multi-binary package with separated
-# build-arch and build-indep targets by Bill Allombert 2001
-
-# We want to use dpatch.
 include /usr/share/dpatch/dpatch.make
+
 PACKAGE = ocaml
-OCAMLMAJOR = 3.09
-OCAMLMINOR = 3
+OCAMLMAJOR = 3.10
+OCAMLMINOR = 0
 OCAMLABI = $(OCAMLMAJOR).$(OCAMLMINOR)
 STDLIBDIR = /usr/lib/ocaml/$(OCAMLABI)
 MD5SUMSDIR = /var/lib/ocaml/md5sums
+INSTDIR = $(CURDIR)/debian/ocaml-nox/usr
 
 NATIVE_ARCHS = $(shell cat debian/native-archs)
+DISTDIR = $(PACKAGE)-$(OCAMLMAJOR).$(OCAMLMINOR)
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
@@ -56,13 +52,15 @@ abi-sed-clean:
 debian/control:
 	sed -e 's/#OcamlNativeArchs#/$(NATIVE_ARCHS)/g' debian/control.in > $@
 
-# Generate list of files ocaml-source.
-# Should never be called automatically.
-debian/ocaml-source.files:
-	tar ztf ../upstream/ocaml_$(OCAMLABI).orig.tar.gz | cut -d/ -f2- | grep -v ^$$ | grep -v .*/$$ | grep -v .cvsignore > debian/ocaml-source.files
+pre-config: debian/$(DISTDIR).tar.bz2
+debian/$(DISTDIR).tar.bz2:
+	ln -fs . $(DISTDIR)	# beware of the symlink recursion!
+	tar --anchored -chjf debian/$(DISTDIR).tar.bz2 \
+		--exclude=$(DISTDIR)/$(DISTDIR)	\
+		--exclude-from=debian/ocaml-source.exclude \
+		$(DISTDIR)/
 
-
-config-stamp: configure abi-sed
+config-stamp: configure pre-config patch-stamp abi-sed
 	dh_testdir
 	# Add here commands to configure the package.
 	./configure --with-pthread -prefix /usr				\
@@ -70,6 +68,8 @@ config-stamp: configure abi-sed
 		-tkdefs "-I/usr/include/tcl8.4"				\
 		-tklibs "-L/usr/lib -ltk8.4 -ltcl8.4"
 	sed -e "s%MANDIR=.*$$%MANDIR=\$$(PREFIX)/share/man%g"      	\
+	    -e "s%LIBDIR=.*$$%LIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAMLABI)%g" \
+	    -e "s%STUBLIBDIR=.*$$%STUBLIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAMLABI)/stublibs%g" \
 		config/Makefile >config/Makefile.debian
 	mv config/Makefile.debian config/Makefile
 	if test -z "`grep "OTHERLIBRARIES.*labltk" config/Makefile`"; then\
@@ -87,7 +87,7 @@ patch-stamp: abi-sed
 build: build-arch build-indep
 
 build-arch: build-arch-stamp
-build-arch-stamp: patch-stamp config-stamp
+build-arch-stamp: config-stamp
 
 	# Add here commands to compile the arch part of the package.
 	if test ! -d boot.debian; then 					\
@@ -109,10 +109,9 @@ endif
 	$(MAKE) -C debian/policy
 	touch build-arch-stamp
 
-build-indep: build-indep-stamp
-build-indep-stamp: patch-stamp config-stamp
-	# Add here commands to compile the indep part of the package.
-	#$(MAKE) doc
+build-indep: build-indep-stamp config-stamp
+build-indep-stamp:
+	# create ocaml source tarball
 	touch $@
 
 clean: abi-sed unpatch
@@ -139,6 +138,7 @@ endif
 
 	dh_clean debian/README.labltk camlp4/config/Makefile.cnf camlp4/config/Makefile config/m.h config/s.h config/Makefile emacs/ocamltags driver/ocamlcomp.sh
 	debian/rules abi-sed-clean
+	rm -f debian/$(DISTDIR).tar.bz2
 
 install: install-indep install-arch
 install-indep: build-indep
@@ -155,15 +155,6 @@ install-indep: build-indep
 	fi
 	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-mode/usr/bin install-ocamltags
 
-	# Build the archive for ocaml-source
-	for i in `cat debian/ocaml-source.files`; do			\
-		install -m 644 -D $$i					\
-		debian/ocaml-source/usr/src/ocaml-$(OCAMLABI)/$$i;	\
-	done
-	tar cjf debian/ocaml-source/usr/src/ocaml-source-$(OCAMLABI).tar.bz2	\
-		-C debian/ocaml-source/usr/src ocaml-$(OCAMLABI)
-	rm -rf debian/ocaml-source/usr/src/ocaml-$(OCAMLABI)
-
 	dh_install -i
 
 install-arch: build-arch
@@ -173,20 +164,8 @@ install-arch: build-arch
 	dh_installdirs -a
 
 	# Let's install ocaml first.
-	$(MAKE) install PREFIX=$(CURDIR)/debian/ocaml-nox/usr
-	install -m 644 debian/ocaml.xpm \
-		$(CURDIR)/debian/ocaml-interp/usr/share/pixmaps
-	install -m 644 debian/ocaml-nox.override \
-		$(CURDIR)/debian/ocaml-nox/usr/share/lintian/overrides/ocaml-nox
-	install -m 644 debian/ocaml-compiler-libs.override \
-		$(CURDIR)/debian/ocaml-compiler-libs/usr/share/lintian/overrides/ocaml-compiler-libs
-	install -m 644 otherlibs/labltk/README \
-		$(CURDIR)/debian/README.labltk
-	install -m 644 config/Makefile \
-		$(CURDIR)/debian/ocaml-nox/usr/lib/ocaml/$(OCAMLABI)/config/Makefile
-
-	# Install the list of archs with ocamlopt
-	install -m 644 debian/native-archs $(CURDIR)/debian/ocaml-nox$(STDLIBDIR)
+	sed -e 's|PREFIX=\"/.*\"|PREFIX=\"$(INSTDIR)"|' < config/config.sh > config/config.debian.install.sh
+	$(MAKE) install PREFIX=$(INSTDIR)
 
 	# Now move the graphics files over
 	if [ -e opt-built-stamp ]; then					\
@@ -200,8 +179,6 @@ install-arch: build-arch
 
 	# Then move the ocaml-base-nox package.
 	dh_movefiles -pocaml-base-nox --sourcedir=debian/ocaml-nox
-	install -m 644 debian/ld.conf \
-		$(CURDIR)/debian/ocaml-base-nox/usr/lib/ocaml/$(OCAMLABI)
 
 	# And base's corresponding graphics stuff.
 	dh_movefiles -pocaml-base --sourcedir=debian/ocaml-nox
@@ -216,17 +193,6 @@ install-arch: build-arch
 
 	# The interpreter files
 	dh_movefiles -pocaml-interp --sourcedir=debian/ocaml-nox
-
-	# Some extra stuff
-	install -m 644 utils/*.mli utils/*.cmi utils/*.cmo		\
-		typing/*.mli typing/*.cmi typing/*.cmo			\
-		parsing/*.mli parsing/*.cmi parsing/*.cmo		\
-		$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/$(OCAMLABI)/compiler-libs
-	if [ -e opt-built-stamp ]; then					\
-		install -m 644 utils/*.cmx utils/*.o typing/*.cmx	\
-			typing/*.o parsing/*.cmx parsing/*.o		\
-			$(CURDIR)/debian/ocaml-compiler-libs/usr/lib/ocaml/$(OCAMLABI)/compiler-libs; \
-	fi
 
 	# Install ocaml-md5sums
 	$(MAKE) -C debian/ocaml-md5sums install DESTDIR=$(CURDIR)/debian/ocaml-base-nox/usr/bin

@@ -1,37 +1,22 @@
 #! /bin/sh /usr/share/dpatch/dpatch-run
-## no_rpath.dpatch by Red Hat people
+## no_rpath.dpatch by Stefano Zacchiroli <zack@debian.org>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
-## DP: Don't use rpath. This was shamelessly taken from
-## DP: http://cvs.fedora.redhat.com/lxr/extras/source/devel/ocaml/ocaml-rpath.patch
+## DP: Don't use rpath.
 
 @DPATCH@
-diff -urNad ocaml-3.09.2~/tools/Makefile ocaml-3.09.2/tools/Makefile
---- ocaml-3.09.2~/tools/Makefile	2006-05-04 00:05:39.000000000 +0200
-+++ ocaml-3.09.2/tools/Makefile	2006-05-04 00:05:40.000000000 +0200
-@@ -104,9 +104,6 @@
- 	sed -e "s|%%BINDIR%%|$(BINDIR)|" \
-             -e "s|%%SUPPORTS_SHARED_LIBRARIES%%|$(SUPPORTS_SHARED_LIBRARIES)|" \
-             -e "s|%%MKSHAREDLIB%%|$(MKSHAREDLIB)|" \
--            -e "s|%%BYTECCRPATH%%|$(BYTECCRPATH)|" \
--            -e "s|%%NATIVECCRPATH%%|$(NATIVECCRPATH)|" \
--            -e "s|%%MKSHAREDLIBRPATH%%|$(MKSHAREDLIBRPATH)|" \
-             -e "s|%%RANLIB%%|$(RANLIB)|" \
-           ocamlmklib.mlp >> ocamlmklib.ml
+diff -urNad trunk~/tools/ocamlmklib.mlp trunk/tools/ocamlmklib.mlp
+--- trunk~/tools/ocamlmklib.mlp	2007-02-07 11:31:36.000000000 +0100
++++ trunk/tools/ocamlmklib.mlp	2007-04-11 11:10:26.000000000 +0200
+@@ -33,6 +33,11 @@
+ and implib = ref ""         (* windows implib flag *)
+ and verbose = ref false
  
-diff -urNad ocaml-3.09.2~/tools/ocamlmklib.mlp ocaml-3.09.2/tools/ocamlmklib.mlp
---- ocaml-3.09.2~/tools/ocamlmklib.mlp	2006-05-04 00:01:58.000000000 +0200
-+++ ocaml-3.09.2/tools/ocamlmklib.mlp	2006-05-04 00:05:40.000000000 +0200
-@@ -17,9 +17,9 @@
- let bindir = "%%BINDIR%%"
- and supports_shared_libraries = %%SUPPORTS_SHARED_LIBRARIES%%
- and mksharedlib = "%%MKSHAREDLIB%%"
--and bytecc_rpath = "%%BYTECCRPATH%%"
--and nativecc_rpath = "%%NATIVECCRPATH%%"
--and mksharedlib_rpath = "%%MKSHAREDLIBRPATH%%"
-+and bytecc_rpath = ""
-+and nativecc_rpath = ""
-+and mksharedlib_rpath = ""
- and ranlib = "%%RANLIB%%"
- 
- let bytecode_objs = ref []  (* .cmo,.cma,.ml,.mli files to pass to ocamlc *)
++(* Debian specific: inhibit rpath *)
++let byteccrpath = ""
++and nativeccrpath = ""
++and mksharedlibrpath = ""
++
+ let starts_with s pref =
+   String.length s >= String.length pref &&
+   String.sub s 0 (String.length pref) = pref

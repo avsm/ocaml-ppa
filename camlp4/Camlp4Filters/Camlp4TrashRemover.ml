@@ -22,7 +22,7 @@ open Camlp4;
 
 module Id = struct
   value name    = "Camlp4TrashRemover";
-  value version = "$Id: Camlp4TrashRemover.ml,v 1.1 2007/02/07 10:09:22 ertai Exp $";
+  value version = "$Id: Camlp4TrashRemover.ml,v 1.1.4.1 2007/03/10 16:58:39 pouillar Exp $";
 end;
 
 module Make (AstFilters : Camlp4.Sig.AstFilters) = struct
@@ -30,7 +30,7 @@ module Make (AstFilters : Camlp4.Sig.AstFilters) = struct
   open Ast;
 
   register_str_item_filter
-    (new Ast.c_str_item
+    (Ast.map_str_item
       (fun
        [ <:str_item@_loc< module Camlp4Trash = $_$ >> ->
             <:str_item<>>

@@ -1,4 +1,5 @@
 usr/bin/labltk
+usr/bin/ocamlbrowser
 usr/lib/ocaml/#OcamlABI#/graphics.cma
 usr/lib/ocaml/#OcamlABI#/graphics.cmi
 usr/lib/ocaml/#OcamlABI#/graphicsX11.cmi

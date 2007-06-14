@@ -94,7 +94,7 @@ Description: Runtime system for ocaml bytecode executables
  This package contains only the runtime system needed to run bytecode
  executables. The `ocaml' package contains the full development suite of
  Objective Caml.  You may wish to install the 'ocaml-base-nox' package if
- you do not require any graphical capilities for your runtime.
+ you do not require any graphical capabilities for your runtime.
 
 Package: ocaml-native-compilers
 Architecture: #OcamlNativeArchs#

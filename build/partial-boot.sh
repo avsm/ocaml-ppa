@@ -1,4 +1,5 @@
 #!/bin/sh
+# $Id: partial-boot.sh,v 1.2.4.8 2007/03/12 11:58:48 pouillar Exp $
 set -ex
 cd `dirname $0`/..
 OCAMLBUILD_PARTIAL="true"

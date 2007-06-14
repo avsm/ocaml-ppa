@@ -1,0 +1,28 @@
+TODO list for ocaml 3.10.0 (and beyond ...)
+- lintian warnings
+  lintian /home/srv/debian/pkg-ocaml-maint/packages/ocaml/build-area/ocaml_3.10.0-1_i386.changes
+  W: ocaml source: substvar-source-version-is-deprecated ocaml-nox
+  W: ocaml source: substvar-source-version-is-deprecated ocaml
+  W: ocaml source: substvar-source-version-is-deprecated ocaml-native-compilers
+  W: ocaml-nox: binary-without-manpage usr/bin/camlp4
+  W: ocaml-nox: binary-without-manpage usr/bin/camlp4boot
+  W: ocaml-nox: binary-without-manpage usr/bin/camlp4o
+  W: ocaml-nox: binary-without-manpage usr/bin/camlp4of
+  W: ocaml-nox: binary-without-manpage usr/bin/camlp4oof
+  W: ocaml-nox: binary-without-manpage usr/bin/camlp4orf
+  W: ocaml-nox: binary-without-manpage usr/bin/camlp4prof
+  W: ocaml-nox: binary-without-manpage usr/bin/camlp4r
+  W: ocaml-nox: binary-without-manpage usr/bin/camlp4rf
+  W: ocaml-nox: binary-without-manpage usr/bin/mkcamlp4
+  W: ocaml-nox: binary-without-manpage usr/bin/ocamlbuild.byte
+  W: ocaml-nox: binary-without-manpage usr/bin/ocamlbuild.native
+  W: ocaml-nox: script-not-executable ./usr/lib/ocaml/3.10.0/camlheader
+  W: ocaml-native-compilers: binary-without-manpage usr/bin/camlp4of.opt
+  W: ocaml-native-compilers: binary-without-manpage usr/bin/camlp4oof.opt
+  W: ocaml-native-compilers: binary-without-manpage usr/bin/camlp4orf.opt
+  W: ocaml-native-compilers: binary-without-manpage usr/bin/camlp4rf.opt
+  W: ocaml-mode: binary-without-manpage usr/bin/ocamltags
+  E: ocaml-compiler-libs: copyright-should-refer-to-common-license-file-for-gpl
+  W: ocaml-base-nox: binary-without-manpage usr/bin/ocaml-md5sums
+  W: ocaml: binary-without-manpage usr/bin/labltk
+  W: ocaml: binary-without-manpage usr/bin/ocamlbrowser

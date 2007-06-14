@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: signatures.mli,v 1.8 2007/02/26 17:05:30 ertai Exp $ *)
+(* $Id: signatures.mli,v 1.8.2.3 2007/04/12 13:19:02 pouillar Exp $ *)
 (* Original author: Nicolas Pouillard *)
 (** This module contains all module signatures that the user
     could use to build an ocamlbuild plugin. *)
@@ -64,7 +64,7 @@ module type STRING = sig
 
   val eq_sub_strings : string -> int -> string -> int -> int -> bool
 
-  (** [is_prefix u v] is v a prefix of u ? *)
+  (** [is_prefix u v] is u a prefix of v ? *)
   val is_prefix : string -> string -> bool
   (** [is_suffix u v] : is v a suffix of u ? *)
   val is_suffix : string -> string -> bool
@@ -372,6 +372,7 @@ module type OPTIONS = sig
   val program_args : string list ref
   val ignore_list : string list ref
   val tags : string list ref
+  val tag_lines : string list ref
   val show_tags : string list ref
 
   val ext_obj : string ref
@@ -452,7 +453,7 @@ module type PLUGIN = sig
     ?deps:string list ->
     ?dep:string ->
     ?insert:[`top | `before of string | `after of string | `bottom] ->
-    cache:(env -> string) ->
+    cache:(env -> builder -> string) ->
     (env -> out_channel -> unit) -> unit
 
   val custom_rule : string ->
@@ -462,7 +463,7 @@ module type PLUGIN = sig
     ?deps:string list ->
     ?dep:string ->
     ?insert:[`top | `before of string | `after of string | `bottom] ->
-    cache:(env -> string) ->
+    cache:(env -> builder -> string) ->
     (env -> cached:bool -> unit) -> unit
 
   (** [copy_rule name ?insert source destination] *)

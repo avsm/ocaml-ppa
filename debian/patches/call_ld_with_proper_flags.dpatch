@@ -1,5 +1,5 @@
 #! /bin/sh /usr/share/dpatch/dpatch-run
-## call_ld_with_proper_flags.dpatch by Julien Cristau <julien.cristau@ens-lyon.org>
+## call_ld_with_proper_flags.dpatch by Stefano Zacchiroli <zack@debian.org>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
 ## DP: Filter linkflags passed to ld by ocamlopt -pack and -output-obj
@@ -7,10 +7,10 @@
 ## DP: gcc.
 
 @DPATCH@
-diff -urNad ocaml-3.09.1+3.09.2rc1~/Makefile ocaml-3.09.1+3.09.2rc1/Makefile
---- ocaml-3.09.1+3.09.2rc1~/Makefile	2006-03-30 17:40:58.000000000 +0200
-+++ ocaml-3.09.1+3.09.2rc1/Makefile	2006-03-30 17:41:00.000000000 +0200
-@@ -313,6 +313,7 @@
+diff -urNad trunk~/Makefile trunk/Makefile
+--- trunk~/Makefile	2007-03-05 10:18:22.000000000 +0100
++++ trunk/Makefile	2007-04-11 10:51:08.000000000 +0200
+@@ -314,6 +314,7 @@
  partialclean::
  	rm -f ocaml toplevel/toplevellib.cma
  
@@ -18,14 +18,14 @@ diff -urNad ocaml-3.09.1+3.09.2rc1~/Makefile ocaml-3.09.1+3.09.2rc1/Makefile
  # The configuration file
  
  utils/config.ml: utils/config.mlp config/Makefile
-@@ -324,8 +325,8 @@
+@@ -325,8 +326,8 @@
              -e 's|%%BYTELINK%%|$(BYTECC) $(BYTECCLINKOPTS)|' \
              -e 's|%%NATIVECC%%|$(NATIVECC) $(NATIVECCCOMPOPTS)|' \
              -e 's|%%NATIVELINK%%|$(NATIVECC) $(NATIVECCLINKOPTS)|' \
--            -e 's|%%PARTIALLD%%|ld -r $(NATIVECCLINKOPTS)|' \
--            -e 's|%%PACKLD%%|ld -r $(NATIVECCLINKOPTS)|' \
-+            -e 's|%%PARTIALLD%%|ld -r $(subst $(Wl),,$(NATIVECCLINKOPTS))|' \
-+            -e 's|%%PACKLD%%|ld -r $(subst $(Wl),,$(NATIVECCLINKOPTS))|' \
+-            -e 's|%%PARTIALLD%%|$(PARTIALLD) $(NATIVECCLINKOPTS)|' \
+-            -e 's|%%PACKLD%%|$(PARTIALLD) $(NATIVECCLINKOPTS) -o |' \
++            -e 's|%%PARTIALLD%%|$(PARTIALLD) $(subst $(Wl),,$(NATIVECCLINKOPTS))|' \
++            -e 's|%%PACKLD%%|$(PARTIALLD) $(subst $(Wl),,$(NATIVECCLINKOPTS)) -o |' \
              -e 's|%%BYTECCLIBS%%|$(BYTECCLIBS)|' \
              -e 's|%%NATIVECCLIBS%%|$(NATIVECCLIBS)|' \
              -e 's|%%RANLIBCMD%%|$(RANLIBCMD)|' \

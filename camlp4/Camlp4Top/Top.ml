@@ -18,7 +18,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-(* $Id: Top.ml,v 1.1 2007/02/07 10:09:23 ertai Exp $ *)
+(* $Id: Top.ml,v 1.1.4.2 2007/04/10 13:54:03 pouillar Exp $ *)
 
 open Parsetree;
 open Lexing;
@@ -101,7 +101,9 @@ Toploop.parse_toplevel_phrase.val := wrap toplevel_phrase;
 
 Toploop.parse_use_file.val := wrap use_file;
 
-Warning.current.val :=
+current_warning.val :=
   fun loc txt ->
     Toploop.print_warning (Loc.to_ocaml_location loc) Format.err_formatter
       (Warnings.Camlp4 txt);
+
+Register.iter_and_take_callbacks (fun (_, f) -> f ());

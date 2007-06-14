@@ -1,15 +1,16 @@
 #! /bin/sh /usr/share/dpatch/dpatch-run
-## alpha_ld_no-relax.dpatch by Steve Langasek <vorlon@debian.org>
+## alpha_ld_no-relax.dpatch by Stefano Zacchiroli <zack@debian.org>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
-## DP: Pass the --no-relax option to ld to fix a segfault in initialization 
+## DP: Pass the --no-relax option to ld to fix a segfault in initialization
 ## DP: code (bug#338437)
 
+
 @DPATCH@
-diff -urNad ocaml-3.09.1+3.09.2rc1~/configure ocaml-3.09.1+3.09.2rc1/configure
---- ocaml-3.09.1+3.09.2rc1~/configure	2006-03-30 17:39:44.000000000 +0200
-+++ ocaml-3.09.1+3.09.2rc1/configure	2006-03-30 17:39:49.000000000 +0200
-@@ -268,7 +268,8 @@
+diff -urNad trunk~/configure trunk/configure
+--- trunk~/configure	2007-03-06 16:02:09.000000000 +0000
++++ trunk/configure	2007-04-10 17:08:18.000000000 +0000
+@@ -271,7 +271,8 @@
    gcc,alpha*-*-linux*)
      if cc="$bytecc" sh ./hasgot -mieee; then
        bytecccompopts="-mieee $bytecccompopts";
@@ -19,10 +20,10 @@ diff -urNad ocaml-3.09.1+3.09.2rc1~/configure ocaml-3.09.1+3.09.2rc1/configure
    cc,mips-*-irix6*)
      # Add -n32 flag to ensure compatibility with native-code compiler
      bytecccompopts="-n32"
-@@ -623,6 +624,7 @@
+@@ -630,6 +631,7 @@
                         nativecccompopts="$gcc_warnings -DSHRINKED_GNUC";;
-   *,*,rhapsody,*)
-                  nativecccompopts="$gcc_warnings -DDARWIN_VERSION_6 $dl_defs";;
+   *,*,rhapsody,*)      nativecccompopts="$gcc_warnings -DDARWIN_VERSION_6 $dl_defs"
+                        if $arch64; then partialld="ld -r -arch ppc64"; fi;;
 +  alpha,gcc*,linux*,*) nativecclinkopts="-Wl,--no-relax";;
    *,gcc*,cygwin,*)     nativecccompopts="$gcc_warnings -U_WIN32";;
    *,gcc*,*,*)          nativecccompopts="$gcc_warnings";;

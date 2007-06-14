@@ -19,7 +19,7 @@
 
 module Id = struct
   value name = "Camlp4.PreCast";
-  value version = "$Id: PreCast.ml,v 1.4 2007/02/07 10:09:21 ertai Exp $";
+  value version = "$Id: PreCast.ml,v 1.4.4.1 2007/03/30 15:50:12 pouillar Exp $";
 end;
 
 type camlp4_token = Sig.camlp4_token ==
@@ -46,14 +46,13 @@ type camlp4_token = Sig.camlp4_token ==
   | EOI ];
 
 module Loc = Struct.Loc;
-module Warning = Struct.Warning.Make Loc;
 module Ast = Struct.Camlp4Ast.Make Loc;
 module Token = Struct.Token.Make Loc;
 module Lexer = Struct.Lexer.Make Token;
 module Gram = Struct.Grammar.Static.Make Lexer;
 module DynLoader = Struct.DynLoader;
 module Quotation = Struct.Quotation.Make Ast;
-module MakeSyntax (U : sig end) = OCamlInitSyntax.Make Warning Ast Gram Quotation;
+module MakeSyntax (U : sig end) = OCamlInitSyntax.Make Ast Gram Quotation;
 module Syntax = MakeSyntax (struct end);
 module AstFilters = Struct.AstFilters.Make Ast;
 module MakeGram = Struct.Grammar.Static.Make;

@@ -21,7 +21,7 @@ open Camlp4;                                        (* -*- camlp4r -*- *)
 
 module Id : Sig.Id = struct
   value name = "Camlp4OCamlRevisedParserParser";
-  value version = "$Id: Camlp4OCamlRevisedParserParser.ml,v 1.1 2007/02/07 10:09:22 ertai Exp $";
+  value version = "$Id: Camlp4OCamlRevisedParserParser.ml,v 1.1.4.2 2007/04/05 18:06:36 pouillar Exp $";
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) = struct
@@ -263,6 +263,11 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
       [ Some bp -> <:expr< let $bp$ = Stream.count $lid:strm_n$ in $pc$ >>
       | None -> pc ]
     in
+    let me =
+      match me with
+      [ <:expr@_loc< $_$; $_$ >> as e -> <:expr< do { $e$ } >>
+      | e -> e ]
+    in
     match me with
     [ <:expr< $lid:x$ >> when x = strm_n -> e
     | _ -> <:expr< let ($lid:strm_n$ : Stream.t _) = $me$ in $e$ >> ]
@@ -316,7 +321,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     expr: LEVEL "top"
       [ [ "parser"; po = OPT parser_ipatt; pcl = parser_case_list ->
             <:expr< $cparser _loc po pcl$ >>
-        | "match"; e = SELF; "with"; "parser"; po = OPT parser_ipatt;
+        | "match"; e = sequence; "with"; "parser"; po = OPT parser_ipatt;
           pcl = parser_case_list ->
             <:expr< $cparser_match _loc e po pcl$ >>
       ] ]

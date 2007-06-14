@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml-vars.mk 3440 2007-01-02 18:38:11Z zack $
+# $Id: ocaml-vars.mk 3830 2007-06-14 19:42:34Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -25,7 +25,7 @@ _cdbs_class_path ?= /usr/share/cdbs/1/class
 ifndef _cdbs_class_ocaml_vars
 _cdbs_class_ocaml_vars = 1
 
-# current OCaml ABI version (ATM 3.09.2).
+# current OCaml ABI version (e.g. 3.09.2).
 # Used internally by ocaml.mk (substituted for @OCamlABI@ in $(OCAML_IN_FILES)
 # below), may be useful to debian/rules writers as well
 OCAML_ABI := $(shell /usr/bin/ocamlc -version)
