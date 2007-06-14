@@ -1,4 +1,5 @@
 TODO list for ocaml 3.10.0 (and beyond ...)
+- check that (camlp4) manpages are installed in the right places
 - lintian warnings
   lintian /home/srv/debian/pkg-ocaml-maint/packages/ocaml/build-area/ocaml_3.10.0-1_i386.changes
   W: ocaml source: substvar-source-version-is-deprecated ocaml-nox
