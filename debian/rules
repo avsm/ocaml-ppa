@@ -171,17 +171,21 @@ install-arch: build-arch
 	if [ -e opt-built-stamp ]; then					\
 		dh_movefiles -pocaml					\
 			--sourcedir=debian/ocaml-nox			\
-			`cat debian/ocaml-opt.files`;			\
+			`cat debian/ocaml-nox.optfiles`;		\
 	else								\
 		dh_movefiles -pocaml					\
 			--sourcedir=debian/ocaml-nox;			\
 	fi
 
+	# Move away camlp4 stuff
+	dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4-extras
+	dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4
+
 	# Then move the ocaml-base-nox package.
-	dh_movefiles -pocaml-base-nox --sourcedir=debian/ocaml-nox
+	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-base-nox
 
 	# And base's corresponding graphics stuff.
-	dh_movefiles -pocaml-base --sourcedir=debian/ocaml-nox
+	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-base
 
 	# The ocaml-native-compilers, if available.
 	if [ -e opt-built-stamp ]; then					\
@@ -192,7 +196,7 @@ install-arch: build-arch
 	fi
 
 	# The interpreter files
-	dh_movefiles -pocaml-interp --sourcedir=debian/ocaml-nox
+	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-interp
 
 	# Install ocaml-md5sums
 	$(MAKE) -C debian/ocaml-md5sums install DESTDIR=$(CURDIR)/debian/ocaml-base-nox/usr/bin
