@@ -1,4 +1,4 @@
-ocaml (3.10.0-2) UNRELEASED; urgency=low
+ocaml (3.10.0-2) experimental; urgency=low
 
   * Split two new packages: "camlp4" and "camlp4-extra" to cope with the huge
     size increase of the new camlp4
@@ -16,7 +16,7 @@ ocaml (3.10.0-2) UNRELEASED; urgency=low
       interactive toplevel)
     - minor improvements to various descriptions
 
- -- Stefano Zacchiroli <zack@debian.org>  Fri, 15 Jun 2007 23:43:41 +0100
+ -- Stefano Zacchiroli <zack@debian.org>  Sat, 16 Jun 2007 12:41:32 +0100
 
 ocaml (3.10.0-1) experimental; urgency=low
 
