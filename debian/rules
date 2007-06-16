@@ -225,12 +225,6 @@ install-arch: build-arch
 	rm -f debian/ocaml-nox/usr/share/man/man1/*.opt.1
 
 	# Make some symbolic links
-	cd debian/ocaml-native-compilers/usr/share/man/man1; \
-		ln -sf /usr/share/man/man1/ocamlc.1.gz ocamlc.opt.1.gz; \
-		ln -sf /usr/share/man/man1/ocamlopt.1.gz ocamlopt.opt.1.gz; \
-		ln -sf /usr/share/man/man1/ocamllex.1.gz ocamllex.opt.1.gz; \
-		ln -sf /usr/share/man/man1/ocamldoc.1.gz ocamldoc.opt.1.gz; \
-		ln -sf /usr/share/man/man1/ocamldep.1.gz ocamldep.opt.1.gz
 	cd debian/ocaml/usr/share/doc/ocaml; \
 		ln -sf ../ocaml-base-nox/Changes.gz .; \
 		ln -sf ../ocaml-base-nox/README.gz .; \

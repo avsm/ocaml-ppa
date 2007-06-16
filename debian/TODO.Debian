@@ -4,8 +4,6 @@ TODO list for ocaml 3.10.0 (and beyond ...)
 
   lintian /home/srv/debian/pkg-ocaml-maint/packages/ocaml/build-area/ocaml_3.10.0-3_i386.changes
 
-  W: ocaml-nox: binary-without-manpage usr/bin/ocamlbuild.byte
-  W: ocaml-nox: binary-without-manpage usr/bin/ocamlbuild.native
   W: ocaml-nox: script-not-executable ./usr/lib/ocaml/3.10.0/camlheader
   W: ocaml-mode: binary-without-manpage usr/bin/ocamltags
   E: ocaml-compiler-libs: copyright-should-refer-to-common-license-file-for-gpl

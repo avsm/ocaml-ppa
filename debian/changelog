@@ -9,6 +9,9 @@ ocaml (3.10.0-3) UNRELEASED; urgency=low
       get the correct libdir setting
   * debian/ocaml-md5sums/ocaml-md5sums.1
     - written ocaml-md5sums manpage
+  * debian/ocaml-native-compilers.links
+    - delegated to dh_link the creation of .opt manpage symlinks and added the
+      missing one for ocamlbuild.opt
 
  -- Stefano Zacchiroli <zack@debian.org>  Sat, 16 Jun 2007 16:03:48 +0000
 
