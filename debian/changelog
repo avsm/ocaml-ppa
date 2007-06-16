@@ -1,4 +1,4 @@
-ocaml (3.10.0-3) UNRELEASED; urgency=low
+ocaml (3.10.0-3) experimental; urgency=low
 
   * debian/patches/00list
     - enabled install_ocamlbuild patch (was disabled by mistake) and patched
@@ -13,7 +13,7 @@ ocaml (3.10.0-3) UNRELEASED; urgency=low
     - delegated to dh_link the creation of .opt manpage symlinks and added the
       missing one for ocamlbuild.opt
 
- -- Stefano Zacchiroli <zack@debian.org>  Sat, 16 Jun 2007 16:03:48 +0000
+ -- Stefano Zacchiroli <zack@debian.org>  Sat, 16 Jun 2007 16:17:17 +0000
 
 ocaml (3.10.0-2) experimental; urgency=low
 
