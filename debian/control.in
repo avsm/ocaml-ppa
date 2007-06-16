@@ -58,7 +58,7 @@ Description: Pre Processor Pretty Printer for OCaml
  for pre-processing and pretty-printing OCaml sources both
  interactively and in a batch fashion.
 
-Package: camlp4-extras
+Package: camlp4-extra
 Architecture: any
 Depends: camlp4-${F:OCamlABI}
 Description: Pre Processor Pretty Printer for OCaml - extras
