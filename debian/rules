@@ -269,7 +269,7 @@ binary-common:
 	dh_installman
 	dh_link
 	dh_strip
-	dh_compress usr/share/man/man1/*.1
+	dh_compress
 	dh_fixperms
 	dh_makeshlibs
 	dh_installdeb
