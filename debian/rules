@@ -178,8 +178,15 @@ install-arch: build-arch
 	fi
 
 	# Move away camlp4 stuff
-	dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4-extras
-	dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4
+	if [ -e opt-built-stamp ]; then					\
+		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4-extras \
+			`cat debian/camlp4-extra.optfiles` ; \
+		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4 \
+			`cat debian/camlp4.optfiles` ; \
+	else \
+		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4-extras ; \
+		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4 ; \
+	fi
 
 	# Then move the ocaml-base-nox package.
 	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-base-nox
@@ -293,6 +300,8 @@ binary-arch: install-arch
 	dh_gencontrol -pocaml-base -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_gencontrol -pocaml-interp -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_gencontrol -pocaml-compiler-libs -- -VF:OCamlABI="$(OCAMLABI)"
+	dh_gencontrol -pcamlp4 -- -VF:OCamlABI="$(OCAMLABI)"
+	dh_gencontrol -pcamlp4-extra -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_md5sums -s
 	dh_builddeb -s
 
