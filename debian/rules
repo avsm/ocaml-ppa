@@ -230,9 +230,7 @@ install-arch: build-arch
 		ln -sf /usr/share/man/man1/ocamlopt.1.gz ocamlopt.opt.1.gz; \
 		ln -sf /usr/share/man/man1/ocamllex.1.gz ocamllex.opt.1.gz; \
 		ln -sf /usr/share/man/man1/ocamldoc.1.gz ocamldoc.opt.1.gz; \
-		ln -sf /usr/share/man/man1/ocamldep.1.gz ocamldep.opt.1.gz; \
-		ln -sf /usr/share/man/man1/camlp4r.1.gz camlp4r.opt.1.gz; \
-		ln -sf /usr/share/man/man1/camlp4o.1.gz camlp4o.opt.1.gz
+		ln -sf /usr/share/man/man1/ocamldep.1.gz ocamldep.opt.1.gz
 	cd debian/ocaml/usr/share/doc/ocaml; \
 		ln -sf ../ocaml-base-nox/Changes.gz .; \
 		ln -sf ../ocaml-base-nox/README.gz .; \
