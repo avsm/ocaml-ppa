@@ -1,0 +1,48 @@
+.TH OCAML-MD5SUMS "1" "June 2007" "ocaml-md5sums 3.10.0" "User Commands"
+.SH NAME
+ocaml-md5sums \- use and maintain system-wide OCaml md5sums registry
+.SH SYNOPSIS
+.B ocaml-md5sums compute
+\fB\-\-package\fR <name>
+[\fIoption\ ...\fR] \fIfile ...\fR
+.br
+.B ocaml-md5sums dep
+[\fIoption\ ...\fR] \fIfile ...\fR
+.br
+.B ocaml-md5sums update
+[\fIoption\ ...\fR]
+.SH DESCRIPTION
+ocaml-md5sums is an administrative tool for maintaining the system-wide
+registry of md5sums of OCaml modules. For each OCaml object registered, the
+registry contains information about which modules (compilation unit) are
+contained and their md5sums.
+.SH OPTIONS
+.HP
+\fB\-\-package\fR set package name for development dependency
+.HP
+\fB\-\-runtime\fR set package name for runtime dependency
+.HP
+\fB\-\-version\fR set package version for dependencies
+.HP
+\fB\-\-dump\-info\fR dump ocamlobjinfo to file
+.HP
+\fB\-\-load\-info\fR restore ocamlobjinfo from file
+.HP
+\fB\-v\fR increase verbosity
+.HP
+\fB\-\-my\-version\fR print ocaml\-md5sum version and exit
+.TP
+\fB\-help\fR
+Display this list of options
+.TP
+\fB\-\-help\fR
+Display this list of options
+.SH "SEE ALSO"
+.BR ocamlc(1),
+.BR ocaml(1).
+.SH AUTHOR
+ocaml-md5sums is Copyright Stefano Zacchiroli and is distributed under the
+terms of the GNU General Public License.
+.PP
+This manual page was written by Stefano Zacchiroli <zack@debian.org>,
+for the Debian project (but may be used by others).

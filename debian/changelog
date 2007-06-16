@@ -1,11 +1,15 @@
 ocaml (3.10.0-3) UNRELEASED; urgency=low
 
+  * debian/patches/00list
+    - enabled install_ocamlbuild patch, which was disabled by mistake
   * debian/rules
     - pass -libdir to configure (now that it is supported upstream) in
       addition to sed-ing generated config Makefiles; otherwise ocamlrun won't
       get the correct libdir setting
+  * debian/ocaml-md5sums/ocaml-md5sums.1
+    - written ocaml-md5sums manpage
 
- -- Stefano Zacchiroli <zack@debian.org>  Sat, 16 Jun 2007 15:48:10 +0100
+ -- Stefano Zacchiroli <zack@debian.org>  Sat, 16 Jun 2007 16:41:03 +0100
 
 ocaml (3.10.0-2) experimental; urgency=low
 

@@ -24,6 +24,7 @@ open Printf
 
 (** {2 Constants} *)
 
+let my_version = "@VERSION@"
 let md5sums_dir = "@MD5SUMS_DIR@"
 let md5sums_index = "MD5SUMS"
 let md5sums_ext = ".md5sums"
@@ -58,7 +59,7 @@ let load_info_from = ref ""
 let action = ref None
 
 let usage_msg =
-  "Use and maintain system wide ocaml md5sums registry\n"
+  "Use and maintain system-wide ocaml md5sums registry\n"
   ^ "Usage:\n"
   ^ " ocaml-md5sum compute --package <name> [option ...] file ...\n"
   ^ " ocaml-md5sum dep     [option ...] file ...\n"
@@ -76,6 +77,8 @@ let cmdline_spec = [
   "--load-info", Arg.Set_string load_info_from,
     "restore ocamlobjinfo from file";
   "-v", Arg.Unit (fun () -> incr verbosity), "increase verbosity";
+  "--my-version", Arg.Unit (fun () -> print_endline my_version ; exit 0),
+    "print ocaml-md5sum version and exit";
 ]
 let die_usage () =
   Arg.usage cmdline_spec usage_msg;

@@ -1,4 +1,5 @@
 #!/bin/sh
+VERSION="#OcamlABI#"
 DEFAULT="/var/lib/ocaml/#OcamlABI#/md5sums"
 if [ -z "$1" ]; then
   echo "No dir provided, using default: $DEFAULT"
@@ -8,5 +9,7 @@ else
   MD5SUMS_DIR="$1"
 fi
 echo -n "Creating ocaml-md5sums.ml ... "
-sed "s:@MD5SUMS_DIR@:$MD5SUMS_DIR:" < ocaml-md5sums.ml.in > ocaml-md5sums.ml
+sed -e "s:@MD5SUMS_DIR@:$MD5SUMS_DIR:" \
+  -e "s:@VERSION@:$VERSION:" \
+  < ocaml-md5sums.ml.in > ocaml-md5sums.ml
 echo "done."
