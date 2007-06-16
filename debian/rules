@@ -53,6 +53,7 @@ debian/control:
 	sed -e 's/#OcamlNativeArchs#/$(NATIVE_ARCHS)/g' debian/control.in > $@
 
 pre-config: debian/$(DISTDIR).tar.bz2
+	touch $@
 debian/$(DISTDIR).tar.bz2:
 	ln -fs . $(DISTDIR)	# beware of the symlink recursion!
 	tar --anchored -chjf debian/$(DISTDIR).tar.bz2 \
@@ -60,7 +61,7 @@ debian/$(DISTDIR).tar.bz2:
 		--exclude-from=debian/ocaml-source.exclude \
 		$(DISTDIR)/
 
-config-stamp: configure pre-config patch-stamp abi-sed
+config-stamp: pre-config patch-stamp abi-sed
 	dh_testdir
 	# Add here commands to configure the package.
 	./configure --with-pthread -prefix /usr				\
@@ -179,12 +180,12 @@ install-arch: build-arch
 
 	# Move away camlp4 stuff
 	if [ -e opt-built-stamp ]; then					\
-		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4-extras \
+		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4-extra \
 			`cat debian/camlp4-extra.optfiles` ; \
 		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4 \
 			`cat debian/camlp4.optfiles` ; \
 	else \
-		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4-extras ; \
+		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4-extra ; \
 		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4 ; \
 	fi
 
