@@ -16,9 +16,9 @@ diff -urNad ocaml-3.10.0~/build/partial-install.sh ocaml-3.10.0/build/partial-in
 -installbin ocamlbuild.native$EXE $BINDIR/ocamlbuild.native$EXE
 -installbestbin ocamlbuild.native$EXE ocamlbuild.byte$EXE $BINDIR/ocamlbuild$EXE
 +#installbin ocamlbuild.byte$EXE $BINDIR/ocamlbuild.byte$EXE
-+installbin ocamlbuild/ocamlbuild.byte$EXE $BINDIR/ocamlbuild$EXE
++installbin ocamlbuild.byte$EXE $BINDIR/ocamlbuild$EXE
 +#installbin ocamlbuild.native$EXE $BINDIR/ocamlbuild.native$EXE
-+installbin ocamlbuild/ocamlbuild.native$EXE $BINDIR/ocamlbuild.opt$EXE
++installbin ocamlbuild.native$EXE $BINDIR/ocamlbuild.opt$EXE
 +#installbestbin ocamlbuild.native$EXE ocamlbuild.byte$EXE $BINDIR/ocamlbuild$EXE
  
  installlibdir \

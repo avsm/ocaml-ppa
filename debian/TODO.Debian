@@ -1,7 +1,5 @@
 TODO list for ocaml 3.10.0 (and beyond ...)
 
-- ocamlbuild is not installed
-
 - lintian warnings
 
   lintian /home/srv/debian/pkg-ocaml-maint/packages/ocaml/build-area/ocaml_3.10.0-3_i386.changes
