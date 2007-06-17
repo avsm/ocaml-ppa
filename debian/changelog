@@ -1,3 +1,12 @@
+ocaml (3.10.0-4) UNRELEASED; urgency=low
+
+  * debian/patches/install_ocamlbuild.dpatch
+    - patched to install ocamlbuild as .native/.byte (following upstream
+      convention which will become widespread in the future), but changes
+      ocamlbuild to be a symlink to the best ocamlbuild available
+
+ -- Stefano Zacchiroli <zack@debian.org>  Sun, 17 Jun 2007 15:04:49 +0100
+
 ocaml (3.10.0-3) experimental; urgency=low
 
   * debian/patches/00list
