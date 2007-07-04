@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml-vars.mk 3830 2007-06-14 19:42:34Z zack $
+# $Id: ocaml-vars.mk 3889 2007-07-04 10:48:53Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -44,7 +44,7 @@ OCAML_DLL_DIR := $(OCAML_STDLIB_DIR)/stublibs
 # pre-build filling.
 # Used internally by ocaml.mk.
 # debian/rules writers might need to add stuff to this list:
-#  e.g.: OCAML_IN_FILES += debian/patches/foo.in
+#  e.g.: OCAML_IN_FILES += debian/patches/foo	# (no .in extension)
 OCAML_IN_FILES := $(filter-out debian/control,$(patsubst %.in,%,$(wildcard debian/*.in)))
 
 # 'yes' if native code compilation is available on the build architecture, 'no' otherwise.

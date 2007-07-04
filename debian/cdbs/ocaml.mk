@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 3440 2007-01-02 18:38:11Z zack $
+# $Id: ocaml.mk 3889 2007-07-04 10:48:53Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -55,6 +55,9 @@ ocamlinit-stamp:
 	touch $@
 clean::
 	rm -f ocamlinit-stamp $(OCAML_IN_FILES)
+
+# avoid dpatch breaking upon clean if debian/patches/*.in files are in use
+deapply-dpatches: ocamlinit
 
 # update debian/control substituting @OCamlNativeArchs@
 # XXX ASSUMPTION: debian/control has already been generated, i.e. this rule is

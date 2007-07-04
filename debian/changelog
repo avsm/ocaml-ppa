@@ -1,15 +1,12 @@
-ocaml (3.10.0-5) UNRELEASED; urgency=low
-
-  * NOT RELEASED YET
-
- -- Stefano Zacchiroli <zack@debian.org>  Wed, 04 Jul 2007 10:16:52 +0000
-
 ocaml (3.10.0-4) experimental; urgency=low
 
   * debian/patches/install_ocamlbuild.dpatch
     - patched to install ocamlbuild as .native/.byte (following upstream
       convention which will become widespread in the future), but changes
       ocamlbuild to be a symlink to the best ocamlbuild available
+  * CDBS class:
+    - avoid dpatch breaking upon clean if debian/patches/*.in files are in use
+    - fix the usage example for "OCAML_IN_FILES += ...", it was wrong
 
  -- Stefano Zacchiroli <zack@debian.org>  Wed, 04 Jul 2007 11:50:43 +0200
 
