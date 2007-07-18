@@ -1,4 +1,4 @@
-#!/bin/sh -e
+ #!/bin/sh -e
 # /usr/lib/emacsen-common/packages/remove/ocaml-mode
 
 FLAVOR=$1
