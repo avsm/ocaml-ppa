@@ -1,0 +1,20 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## arm_ccheckbound_typo.dpatch by Stefano Zacchiroli <zack@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: fix typo (which induce typing error and in turn FTBFS) in the usage of
+## DP: the Ccheckbound type constructore in the arm asm compiler
+
+@DPATCH@
+diff -urNad trunk~/asmcomp/arm/selection.ml trunk/asmcomp/arm/selection.ml
+--- trunk~/asmcomp/arm/selection.ml	2001-03-30 14:22:32.000000000 +0200
++++ trunk/asmcomp/arm/selection.ml	2007-07-25 17:51:02.000000000 +0200
+@@ -106,7 +106,7 @@
+       | _ ->
+           (Iextcall("__modsi3", false), args)
+       end
+-  | Ccheckbound ->
++  | Ccheckbound _ ->
+       begin match args with
+         [Cop(Clsr, [arg1; Cconst_int n]); arg2]
+         when n > 0 && n < 32 && not(is_intconst arg2) ->
