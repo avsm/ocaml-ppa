@@ -3,6 +3,7 @@ ocaml (3.10.0-5) UNRELEASED; urgency=low
   [ Ralf Treinen ]
   * ocaml-mode.emacsen-install: do not hardcode the emacs flavours for which
     to compile ocaml-mode (closes: Bug#433082)
+  * ocaml-mode: Bump primary dependency from emacs21 to emacs22.
 
   [ Stefano Zacchiroli ]
   * add patch arm_ccheckbound_typo, fix a typing error typo which makes ocaml

@@ -191,7 +191,7 @@ Description: OCaml interpreter and standard libraries
 
 Package: ocaml-mode
 Architecture: all
-Depends: emacs21 | emacsen
+Depends: emacs22 | emacsen
 Suggests: ocaml
 Conflicts: ocaml-nox (<< 3.08.3-8)
 Description: A major mode for editing Objective Caml in Emacs
