@@ -1,4 +1,4 @@
-ocaml (3.10.0-5) UNRELEASED; urgency=low
+ocaml (3.10.0-5) experimental; urgency=low
 
   [ Ralf Treinen ]
   * ocaml-mode.emacsen-install: do not hardcode the emacs flavours for which
@@ -8,8 +8,12 @@ ocaml (3.10.0-5) UNRELEASED; urgency=low
   [ Stefano Zacchiroli ]
   * add patch arm_ccheckbound_typo, fix a typing error typo which makes ocaml
     FTBFS on arm
+  * ocaml-source: install ocaml tarball as
+    /usr/src/ocaml-source-VERSION.tar.bz2; the "-source" part was erroneously
+    missing and make other packages FTBFS
+  * bump debhelper dependencies and compatibility level to 5
 
- -- Stefano Zacchiroli <zack@debian.org>  Wed, 25 Jul 2007 17:52:23 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Sun, 12 Aug 2007 19:29:07 +0200
 
 ocaml (3.10.0-4) experimental; urgency=low
 

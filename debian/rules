@@ -11,6 +11,7 @@ INSTDIR = $(CURDIR)/debian/ocaml-nox/usr
 
 NATIVE_ARCHS = $(shell cat debian/native-archs)
 DISTDIR = $(PACKAGE)-$(OCAMLMAJOR).$(OCAMLMINOR)
+SRCTARBALL = $(PACKAGE)-source-$(OCAMLMAJOR).$(OCAMLMINOR).tar.bz2
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
@@ -52,11 +53,11 @@ abi-sed-clean:
 debian/control:
 	sed -e 's/#OcamlNativeArchs#/$(NATIVE_ARCHS)/g' debian/control.in > $@
 
-pre-config: debian/$(DISTDIR).tar.bz2
+pre-config: debian/$(SRCTARBALL)
 	touch $@
-debian/$(DISTDIR).tar.bz2:
+debian/$(SRCTARBALL):
 	ln -fs . $(DISTDIR)	# beware of the symlink recursion!
-	tar --anchored -chjf debian/$(DISTDIR).tar.bz2 \
+	tar --anchored -chjf $@ \
 		--exclude=$(DISTDIR)/$(DISTDIR)	\
 		--exclude-from=debian/ocaml-source.exclude \
 		$(DISTDIR)/
@@ -139,7 +140,7 @@ endif
 
 	dh_clean debian/README.labltk camlp4/config/Makefile.cnf camlp4/config/Makefile config/m.h config/s.h config/Makefile emacs/ocamltags driver/ocamlcomp.sh
 	debian/rules abi-sed-clean
-	rm -f debian/$(DISTDIR).tar.bz2
+	rm -f debian/$(SRCTARBALL)
 
 install: install-indep install-arch
 install-indep: build-indep
