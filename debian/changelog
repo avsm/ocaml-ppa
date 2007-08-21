@@ -1,8 +1,10 @@
 ocaml (3.10.0-6) UNRELEASED; urgency=low
 
-  * NOT RELEASED YET
+  [ Stefano Zacchiroli ]
+  * debian/ocaml-nox.dirs.in
+    - avoid creating empty /usr/include/ocaml/* directory (closes: #439017)
 
- -- Stefano Zacchiroli <zack@debian.org>  Sun, 12 Aug 2007 19:31:10 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Tue, 21 Aug 2007 18:55:16 +0200
 
 ocaml (3.10.0-5) experimental; urgency=low
 

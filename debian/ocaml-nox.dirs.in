@@ -2,7 +2,6 @@ usr/bin
 usr/lib/ocaml/#OcamlABI#
 usr/lib/ocaml/#OcamlABI#/config
 usr/include
-usr/include/ocaml/#OcamlABI#
 usr/share/doc/ocaml-nox
 usr/share/man/man1
 usr/share/man/man3
