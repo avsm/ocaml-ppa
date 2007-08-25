@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 3889 2007-07-04 10:48:53Z zack $
+# $Id: ocaml.mk 4191 2007-08-25 18:29:47Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -34,11 +34,25 @@ CDBS_BUILD_DEPENDS := $(CDBS_BUILD_DEPENDS), ocaml-nox
 # import OCAML_* make variables
 include $(_cdbs_class_path)/ocaml-vars.mk$(_cdbs_makefile_suffix)
 
-# ensure dpkg-gencontrol will fill F:OCamlABI fields with the proper value
 ifdef _cdbs_rules_debhelper
+
+# ensure dpkg-gencontrol will fill F:OCamlABI fields with the proper value
 DEB_DH_GENCONTROL_ARGS += -- -VF:OCamlABI="$(OCAML_ABI)"
 DEB_DH_GENCONTROL_ARGS +=    -VF:OCamlNativeArchs="$(OCAML_NATIVE_ARCHS)"
+
 endif
+
+# post-install hooks for invoking ocamldoc on OCAML_OCAMLDOC_PACKAGES packages
+$(patsubst %,install/%,$(DEB_PACKAGES))::
+	@if (echo $(OCAML_OCAMLDOC_PACKAGES) | grep -w '$(cdbs_curpkg)' > /dev/null) ; then \
+		echo 'mkdir -p debian/$(cdbs_curpkg)/usr/share/doc/$(cdbs_curpkg)/html' ; \
+		mkdir -p debian/$(cdbs_curpkg)/usr/share/doc/$(cdbs_curpkg)/html ; \
+		echo 'invoking ocamldoc on debian/$(cdbs_curpkg)$(OCAML_STDLIB_DIR)/ ...' ; \
+		find debian/$(cdbs_curpkg)$(OCAML_STDLIB_DIR)/ \
+			-type f -name '*.mli' -or -name '*.ml' \
+		| xargs ocamldoc $(OCAML_OCAMLDOC_FLAGS) -html \
+			-d debian/$(cdbs_curpkg)/usr/share/doc/$(cdbs_curpkg)/html ; \
+	fi
 
 # generate .in files counterpars before building, substituting @OCamlABI@
 # markers with the proper value; clean stamps after building

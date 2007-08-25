@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml-vars.mk 3889 2007-07-04 10:48:53Z zack $
+# $Id: ocaml-vars.mk 4191 2007-08-25 18:29:47Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -69,6 +69,24 @@ OCAML_TEAM += Stefano Zacchiroli <zack@debian.org>,
 OCAML_TEAM += Sven Luther <luther@debian.org>,
 OCAML_TEAM += Sylvain Le Gall <gildor@debian.org>
 # no trailing "," (comma) on the last name
+
+# space separated list of packages matching the naming convention for OCaml
+# libraries, i.e. libXXX-ocaml-dev.
+# For debian/rules writers
+OCAML_DEV_PACKAGES := $(filter lib%-ocaml-dev,$(DEB_PACKAGES))
+
+# space separated list of packages on which ocamldoc usage is required. For
+# each package listed here will have ocamldoc invoked on all *.ml/*.mli files
+# installed under $(OCAML_STDLIB_DIR) to generated html documentation which
+# will be shipped in /usr/share/doc/PACKAGE/html/*.
+# Typical usage is OCAML_OCAMLDOC_PACKAGES = $(OCAML_DEV_PACKAGES).
+# For debian/rules writers
+OCAML_OCAMLDOC_PACKAGES =
+#OCAML_OCAMLDOC_PACKAGES = $(OCAML_DEV_PACKAGES)	# more "aggressive" default
+
+# flags to be passed to ocamldoc (in addition to -html and -d DESTDIR).
+# For debian/rules writers
+OCAML_OCAMLDOC_FLAGS = -stars
 
 endif
 
