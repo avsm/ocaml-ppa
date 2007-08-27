@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml-vars.mk 4195 2007-08-27 08:58:20Z zack $
+# $Id: ocaml-vars.mk 4199 2007-08-27 13:08:35Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -90,7 +90,7 @@ OCAML_OCAMLDOC_PACKAGES =
 
 # flags to be passed to ocamldoc (in addition to -html and -d DESTDIR).
 # For debian/rules writers
-OCAML_OCAMLDOC_FLAGS = -stars
+OCAML_OCAMLDOC_FLAGS = -stars -m A
 
 endif
 
