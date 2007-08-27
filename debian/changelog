@@ -5,8 +5,11 @@ ocaml (3.10.0-6) UNRELEASED; urgency=low
     - avoid creating empty /usr/include/ocaml/* directory (closes: #439017)
   * CDBS class
     - add support for automatic ocamldoc HTML documentation generation
+  * Policy
+    - add an appendix about the CDBS class with some minimal information and
+      pointers to the commented .mk files
 
- -- Stefano Zacchiroli <zack@debian.org>  Sat, 25 Aug 2007 20:28:29 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Mon, 27 Aug 2007 10:56:28 +0200
 
 ocaml (3.10.0-5) experimental; urgency=low
 

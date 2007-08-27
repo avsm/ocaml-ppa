@@ -27,6 +27,7 @@
 <!ENTITY chapter-libpack     SYSTEM "chapter-libpack.xml">
 <!ENTITY chapter-progpack    SYSTEM "chapter-progpack.xml">
 <!ENTITY chapter-liblocal    SYSTEM "chapter-liblocal.xml">
+<!ENTITY appendix-cdbs       SYSTEM "appendix-cdbs.xml">
 <!ENTITY appendix-resources  SYSTEM "appendix-resources.xml">
 <!ENTITY appendix-svn        SYSTEM "appendix-svn.xml">
 ]>
@@ -52,6 +53,11 @@
         <title>Packaging OCaml libraries</title>
         &chapter-libpack;
     </chapter>
+
+    <appendix id="cdbs">
+        <title>The OCaml CDBS class</title>
+        &appendix-cdbs;
+    </appendix>
 
     <appendix id="resources">
         <title>&ocaml-force; resources</title>

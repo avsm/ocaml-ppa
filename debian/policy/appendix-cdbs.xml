@@ -1,0 +1,59 @@
+<para>
+  To help maintainers of OCaml-related packages in adhering to this policy, a
+  class for the <ulink url="http://build-common.alioth.debian.org/">CDBS
+    build system</ulink> has been made available and is shipped as part of
+  the <filename>ocaml-nox</filename> package. Please consider using it in your
+  packages at it will both ease your work and permit to perform changes to a
+  wide range of packages acting on a single piece of software (the CDBS class
+  itself).
+</para>
+
+<para>
+  To use the class in your package it is enough to include the file
+  <filename>/usr/share/cdbs/1/class/ocaml.mk</filename> from your
+  <filename>debian/rules</filename>. If you use debhelper (please do) you
+  should include the OCaml class after the debhelper on. A typical
+  <filename>debian/rules</filename> heading for a package using plain Makefile
+  (i.e. no autotools) and dpatch is as follows:
+  <programlisting>
+#!/usr/bin/make -f
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/makefile.mk
+include /usr/share/cdbs/1/class/ocaml.mk
+include /usr/share/cdbs/1/rules/dpatch.mk
+  </programlisting>
+  For an example of such a package see the <filename>pcre-ocaml</filename>
+  Debian source package.
+</para>
+
+<para>
+  A detailed description of how to use the OCaml CDBS class should be provided
+  in this section, but at the time of writing is a future work :-). In the
+  meantime if you know CDBS, the .mk files which compose the OCaml
+  class are well commented and they should give you enough information to
+  customize the build process of your package. The latest version of them is
+  available in the repository of the &ocaml-force; and can be browsed on the
+  web:
+  <variablelist>
+
+    <varlistentry>
+      <term><filename><ulink url="http://svn.debian.org/wsvn/pkg-ocaml-maint/trunk/packages/ocaml/trunk/debian/cdbs/ocaml-vars.mk?op=file&amp;rev=0&amp;sc=0">ocaml-vars.mk</ulink></filename></term>
+      <listitem>
+	<para>
+	  contains (Makefile) convenience variables which can be used in
+	  <filename>debian/rules</filename>
+	</para>
+      </listitem>
+    </varlistentry>
+      
+    <varlistentry>
+      <term><filename><ulink url="http://svn.debian.org/wsvn/pkg-ocaml-maint/trunk/packages/ocaml/trunk/debian/cdbs/ocaml.mk?op=file&amp;rev=0&amp;sc=0">ocaml.mk</ulink></filename></term>
+      <listitem>
+	<para>
+	  implements the class logic
+	</para>
+      </listitem>
+    </varlistentry>
+      
+  </variablelist>
+</para>
