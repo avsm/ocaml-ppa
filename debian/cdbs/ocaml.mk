@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 4195 2007-08-27 08:58:20Z zack $
+# $Id: ocaml.mk 4200 2007-08-27 13:18:18Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -48,10 +48,19 @@ $(patsubst %,install/%,$(DEB_PACKAGES))::
 		echo 'mkdir -p debian/$(cdbs_curpkg)/usr/share/doc/$(cdbs_curpkg)/html/api' ; \
 		mkdir -p debian/$(cdbs_curpkg)/usr/share/doc/$(cdbs_curpkg)/html/api ; \
 		echo 'invoking ocamldoc on debian/$(cdbs_curpkg)$(OCAML_STDLIB_DIR)/ ...' ; \
+		# generate HTML documentation
 		find debian/$(cdbs_curpkg)$(OCAML_STDLIB_DIR)/ \
 			-type f -name '*.mli' -or -name '*.ml' \
-		| xargs ocamldoc $(OCAML_OCAMLDOC_FLAGS) -html \
+		| xargs ocamldoc $(OCAML_OCAMLDOC_FLAGS) \
+			-html $(OCAML_OCAMLDOC_FLAGS_HTML) \
 			-d debian/$(cdbs_curpkg)/usr/share/doc/$(cdbs_curpkg)/html/api ; \
+		## generate manpages
+		## XXX dumb: find for *.ml{i,} is executed twice
+		#find debian/$(cdbs_curpkg)$(OCAML_STDLIB_DIR)/ \
+		#	-type f -name '*.mli' -or -name '*.ml' \
+		#| xargs ocamldoc $(OCAML_OCAMLDOC_FLAGS) \
+		#	-man $(OCAML_OCAMLDOC_FLAGS_MAN) \
+		#	-d debian/$(cdbs_curpkg)/usr/share/man/... # TODO ; \
 	fi
 
 # generate .in files counterpars before building, substituting @OCamlABI@

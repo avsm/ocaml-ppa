@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml-vars.mk 4199 2007-08-27 13:08:35Z zack $
+# $Id: ocaml-vars.mk 4200 2007-08-27 13:18:18Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -88,9 +88,17 @@ OCAML_LIB_PACKAGES := $(filter lib%-ocaml,$(DEB_PACKAGES))
 OCAML_OCAMLDOC_PACKAGES =
 #OCAML_OCAMLDOC_PACKAGES = $(OCAML_LIBDEV_PACKAGES)	# more "aggressive" default
 
-# flags to be passed to ocamldoc (in addition to -html and -d DESTDIR).
+# generic (i.e. non backend specific) flags to be passed to ocamldoc
 # For debian/rules writers
 OCAML_OCAMLDOC_FLAGS = -stars -m A
+
+# html-specific flags to be passed to ocamldoc (in addition to -html -d DESTDIR)
+# For debian/rules writers
+OCAML_OCAMLDOC_FLAGS_HTML =
+
+# man-specific flags to be passed to ocamldoc (in addition to -man -d DESTDIR)
+# For debian/rules writers
+OCAML_OCAMLDOC_FLAGS_MAN = -man-mini
 
 endif
 
