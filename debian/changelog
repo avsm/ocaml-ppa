@@ -1,8 +1,13 @@
 ocaml (3.10.0-7) UNRELEASED; urgency=low
 
+  [ Stefano Zacchiroli ]
   * NOT RELEASED YET
 
- -- Stefano Zacchiroli <zack@debian.org>  Thu, 30 Aug 2007 16:38:26 +0200
+  [ Sylvain Le Gall ]
+  * Add patches to workaround FTBFS, as described upstream in bug 4375
+  * Don't ignore make clean error
+
+ -- Sylvain Le Gall <gildor@debian.org>  Fri, 31 Aug 2007 01:27:19 +0200
 
 ocaml (3.10.0-6) unstable; urgency=low
 

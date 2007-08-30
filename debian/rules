@@ -119,28 +119,34 @@ build-indep-stamp:
 clean: abi-sed unpatch
 	dh_testdir
 	dh_testroot
-	rm -f build-arch-stamp build-indep-stamp config-stamp abi-sed
+	-$(RM) build-arch-stamp build-indep-stamp config-stamp abi-sed opt-built-stamp pre-config
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) clean
+	[ ! -f "$(CURDIR)/config/Makefile" ] || $(MAKE) clean
 	if test -d boot.debian; then	\
-		rm -rf boot;		\
+		$(RM) -r boot;		\
 		mv boot.debian boot;	\
 	fi
-	-$(MAKE) -C emacs clean
-	-$(MAKE) -C debian/ocaml-md5sums clean
-	-$(MAKE) -C debian/dh-ocaml clean
-	-$(MAKE) -C debian/policy clean
+	[ ! -f "$(CURDIR)/config/Makefile" ] || $(MAKE) -C emacs clean
+	$(MAKE) -C debian/ocaml-md5sums clean
+	$(MAKE) -C debian/dh-ocaml clean
+	$(MAKE) -C debian/policy clean
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	-cp -f /usr/share/misc/config.sub config/gnu/config.sub
 endif
 ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	-cp -f /usr/share/misc/config.guess config/gnu/config.guess
 endif
+	# File not cleaned by upstream
+	-$(RM) _boot_log1
+	-$(RM) _boot_log2
+	-$(RM) _log
+	-$(RM) myocamlbuild_config.ml
+	-$(RM) ocaml-$(OCAMLABI)
 
 	dh_clean debian/README.labltk camlp4/config/Makefile.cnf camlp4/config/Makefile config/m.h config/s.h config/Makefile emacs/ocamltags driver/ocamlcomp.sh
 	debian/rules abi-sed-clean
-	rm -f debian/$(SRCTARBALL)
+	-$(RM) debian/$(SRCTARBALL)
 
 install: install-indep install-arch
 install-indep: build-indep

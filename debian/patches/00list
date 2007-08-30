@@ -9,3 +9,4 @@ stdlib_man_section.dpatch
 install_scripts_config.dpatch
 install_ocamlbuild.dpatch
 arm_ccheckbound_typo.dpatch
+not-native-no-aspp

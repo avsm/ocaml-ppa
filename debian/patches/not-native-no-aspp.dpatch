@@ -1,0 +1,31 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## not-native-no-aspp.dpatch by Sylvain Le Gall <gildor@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad ocaml-3.10.0~/build/mkmyocamlbuild_config.sh ocaml-3.10.0/build/mkmyocamlbuild_config.sh
+--- ocaml-3.10.0~/build/mkmyocamlbuild_config.sh	2007-03-12 12:58:48.000000000 +0100
++++ ocaml-3.10.0/build/mkmyocamlbuild_config.sh	2007-08-31 00:59:56.671774840 +0200
+@@ -3,7 +3,8 @@
+ 
+ cd `dirname $0`/..
+ 
+-sed \
++(echo "AS="; cat config/Makefile) | \
++    sed \
+     -e 's/^#ml \(.*\)/\1/' \
+     -e 's/^\(#.*\)$/(* \1 *)/' \
+     -e 's/^\(.*\$([0-9]).*\)$/(* \1 *)/' \
+@@ -13,8 +14,8 @@
+     -e 's/\^""//g' \
+     -e 's/^let <:lower<\(MAKE\|DO\).*$//g' \
+     -e 's/"true"/true/g' \
+-    -e 's/"false"/false/g' \
+-    config/Makefile | \
++    -e 's/"false"/false/g' | \
+     sed -f build/tolower.sed | \
+     sed -f build/tolower.sed | \
+     sed -f build/tolower.sed > myocamlbuild_config.ml
++
