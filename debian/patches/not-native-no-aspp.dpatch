@@ -7,25 +7,12 @@
 @DPATCH@
 diff -urNad ocaml-3.10.0~/build/mkmyocamlbuild_config.sh ocaml-3.10.0/build/mkmyocamlbuild_config.sh
 --- ocaml-3.10.0~/build/mkmyocamlbuild_config.sh	2007-03-12 12:58:48.000000000 +0100
-+++ ocaml-3.10.0/build/mkmyocamlbuild_config.sh	2007-08-31 00:59:56.671774840 +0200
-@@ -3,7 +3,8 @@
++++ ocaml-3.10.0/build/mkmyocamlbuild_config.sh	2007-08-31 10:55:34.734613125 +0200
+@@ -5,6 +5,7 @@
  
- cd `dirname $0`/..
- 
--sed \
-+(echo "AS="; cat config/Makefile) | \
-+    sed \
+ sed \
      -e 's/^#ml \(.*\)/\1/' \
++    -e 's/\$(AS)/no/' \
      -e 's/^\(#.*\)$/(* \1 *)/' \
      -e 's/^\(.*\$([0-9]).*\)$/(* \1 *)/' \
-@@ -13,8 +14,8 @@
-     -e 's/\^""//g' \
-     -e 's/^let <:lower<\(MAKE\|DO\).*$//g' \
-     -e 's/"true"/true/g' \
--    -e 's/"false"/false/g' \
--    config/Makefile | \
-+    -e 's/"false"/false/g' | \
-     sed -f build/tolower.sed | \
-     sed -f build/tolower.sed | \
-     sed -f build/tolower.sed > myocamlbuild_config.ml
-+
+     -e 's/^\([^(=]*\)=\([^"]*\)$/let <:lower<\1>> = "\2";;/' \
