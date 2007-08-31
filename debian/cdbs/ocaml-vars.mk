@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml-vars.mk 4200 2007-08-27 13:18:18Z zack $
+# $Id: ocaml-vars.mk 4236 2007-08-31 09:45:13Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -99,6 +99,12 @@ OCAML_OCAMLDOC_FLAGS_HTML =
 # man-specific flags to be passed to ocamldoc (in addition to -man -d DESTDIR)
 # For debian/rules writers
 OCAML_OCAMLDOC_FLAGS_MAN = -man-mini
+
+# where to install HTML version of the ocamldoc generated API reference. You
+# can use "$(cdbs_curpkg)" stem there, it will be expanded to the current
+# package name by CDBS
+# For debian/rules writers
+OCAML_OCAMLDOC_DESTDIR_HTML = usr/share/doc/$(cdbs_curpkg)/html/api
 
 endif
 
