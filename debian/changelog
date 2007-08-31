@@ -1,8 +1,8 @@
 ocaml (3.10.0-7) unstable; urgency=low
 
   [ Sylvain Le Gall ]
-  * add patch patches/no_rpath to workaround FTBFS, as described upstream in
-    bug 4375
+  * add patch not-native-no-aspp to workaround FTBFS, as described upstream in
+    bug 4375 (closes: #429185)
   * don't ignore make clean error
 
   [ Stefano Zacchiroli ]
