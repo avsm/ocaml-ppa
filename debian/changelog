@@ -1,11 +1,9 @@
 ocaml (3.10.0-7) UNRELEASED; urgency=low
 
-  [ Stefano Zacchiroli ]
-  * NOT RELEASED YET
-
   [ Sylvain Le Gall ]
-  * Add patches to workaround FTBFS, as described upstream in bug 4375
-  * Don't ignore make clean error
+  * add patch patches/no_rpath to workaround FTBFS, as described upstream in
+    bug 4375
+  * don't ignore make clean error
 
  -- Sylvain Le Gall <gildor@debian.org>  Fri, 31 Aug 2007 01:27:19 +0200
 
