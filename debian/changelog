@@ -1,4 +1,4 @@
-ocaml (3.10.0-7) UNRELEASED; urgency=low
+ocaml (3.10.0-7) unstable; urgency=low
 
   [ Sylvain Le Gall ]
   * add patch patches/no_rpath to workaround FTBFS, as described upstream in
@@ -10,7 +10,7 @@ ocaml (3.10.0-7) UNRELEASED; urgency=low
     - add support for specifying the target dir for generated documentation
     - various fixes in ocamldoc invocation
 
- -- Stefano Zacchiroli <zack@debian.org>  Fri, 31 Aug 2007 11:57:10 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Fri, 31 Aug 2007 12:47:07 +0200
 
 ocaml (3.10.0-6) unstable; urgency=low
 
