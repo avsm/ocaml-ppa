@@ -10,7 +10,7 @@ ocaml (3.10.0-7) unstable; urgency=low
     - add support for specifying the target dir for generated documentation
     - various fixes in ocamldoc invocation
 
- -- Stefano Zacchiroli <zack@debian.org>  Fri, 31 Aug 2007 12:47:07 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Fri, 31 Aug 2007 19:39:09 +0200
 
 ocaml (3.10.0-6) unstable; urgency=low
 
