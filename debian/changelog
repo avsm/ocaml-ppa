@@ -4,13 +4,16 @@ ocaml (3.10.0-7) unstable; urgency=low
   * add patch not-native-no-aspp to workaround FTBFS, as described upstream in
     bug 4375 (closes: #429185)
   * don't ignore make clean error
+  * move menu section of ocaml interpreter to Applications/Programming
+    to comply with new menu structure
+
 
   [ Stefano Zacchiroli ]
   * CDBS class
     - add support for specifying the target dir for generated documentation
     - various fixes in ocamldoc invocation
 
- -- Stefano Zacchiroli <zack@debian.org>  Fri, 31 Aug 2007 19:39:09 +0200
+ -- Sylvain Le Gall <gildor@debian.org>  Sat, 01 Sep 2007 22:33:52 +0200
 
 ocaml (3.10.0-6) unstable; urgency=low
 
