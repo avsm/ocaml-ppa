@@ -6,11 +6,12 @@ ocaml (3.10.0-8) unstable; urgency=low
       likely to generate empty API references ...)
     - add support for automatic generation of doc-base entries for ocamldoc
       generated API reference
+    - better test for package membership to OCAML_OCAMLDOC_PACKAGES
   * debian/ocaml-base-nox.README.Debian
     - add an entry describing the requirement for compiling ocamldoc-generated
       LaTeX documentation (closes: #420782)
 
- -- Stefano Zacchiroli <zack@debian.org>  Sun, 02 Sep 2007 18:32:17 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Sun, 02 Sep 2007 19:11:14 +0200
 
 ocaml (3.10.0-7) unstable; urgency=low
 
