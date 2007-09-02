@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 4266 2007-09-02 14:53:22Z zack $
+# $Id: ocaml.mk 4270 2007-09-02 16:00:28Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -42,7 +42,7 @@ DEB_DH_GENCONTROL_ARGS +=    -VF:OCamlNativeArchs="$(OCAML_NATIVE_ARCHS)"
 
 endif
 
-# post-install hooks for invoking ocamldoc on OCAML_OCAMLDOC_PACKAGES packages
+# post-install hook to invoke ocamldoc on OCAML_OCAMLDOC_PACKAGES packages
 $(patsubst %,binary-install/%,$(DEB_PACKAGES))::
 	@if (echo $(OCAML_OCAMLDOC_PACKAGES) | grep -w '$(cdbs_curpkg)' > /dev/null) ; then \
 		echo 'mkdir -p debian/$(cdbs_curpkg)/$(OCAML_OCAMLDOC_DESTDIR_HTML)' ; \
@@ -55,6 +55,16 @@ $(patsubst %,binary-install/%,$(DEB_PACKAGES))::
 			-d debian/$(cdbs_curpkg)/$(OCAML_OCAMLDOC_DESTDIR_HTML) \
 		|| true ; \
 	fi
+
+# post-build hook to create doc-base entries for OCAML_OCAMLDOC_PACKAGES packages
+$(patsubst %,build/%,$(DEB_PACKAGES))::
+	@if (echo $(OCAML_OCAMLDOC_PACKAGES) | grep -w '$(cdbs_curpkg)' > /dev/null) ; then \
+		sed -e 's/@PACKAGE@/$(cdbs_curpkg)/g' \
+			$(_cdbs_class_path)/ocaml-docbase-template.txt$(_cdbs_makefile_suffix) \
+			> debian/$(cdbs_curpkg).doc-base.ocamldoc-apiref ; \
+	fi
+clean::
+	rm -f debian/*.doc-base.ocamldoc-apiref
 
 # generate .in files counterpars before building, substituting @OCamlABI@
 # markers with the proper value; clean stamps after building
