@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 4238 2007-08-31 09:56:32Z zack $
+# $Id: ocaml.mk 4266 2007-09-02 14:53:22Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -43,7 +43,7 @@ DEB_DH_GENCONTROL_ARGS +=    -VF:OCamlNativeArchs="$(OCAML_NATIVE_ARCHS)"
 endif
 
 # post-install hooks for invoking ocamldoc on OCAML_OCAMLDOC_PACKAGES packages
-$(patsubst %,install/%,$(DEB_PACKAGES))::
+$(patsubst %,binary-install/%,$(DEB_PACKAGES))::
 	@if (echo $(OCAML_OCAMLDOC_PACKAGES) | grep -w '$(cdbs_curpkg)' > /dev/null) ; then \
 		echo 'mkdir -p debian/$(cdbs_curpkg)/$(OCAML_OCAMLDOC_DESTDIR_HTML)' ; \
 		mkdir -p debian/$(cdbs_curpkg)/$(OCAML_OCAMLDOC_DESTDIR_HTML) ; \
