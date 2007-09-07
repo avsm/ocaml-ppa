@@ -1,0 +1,104 @@
+#!/bin/sh 
+# ocamldoc-api-ref-config: configuration and generation of .doc-base.ocamldoc-apiref
+# Copyright (C) 2006 Sylvain Le Gall <gildor@debian.org>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2, or (at
+# your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+# MA 02110-1301, USA.
+
+set -e
+set -x
+
+print_usage ()
+{
+  PRG=`basename $0`
+  cat <<EOF
+$PRG -- Written by Sylvain Le Gall 
+"This program is under GPL v2"
+
+Usage:
+$PRG [options] package*
+
+Options:
+--html-directory     Output the directory name where the generated ocamldoc 
+                     generated file should go
+--doc-base-generate  Generate debian/PACKAGE.doc-base.ocamldoc-apiref
+
+EOF
+}
+
+error_usage ()
+{
+  print_usage >&2
+  echo $* >&2
+  exit 1
+}
+
+html_directory ()
+{
+  echo "/usr/share/doc/$1/html/api"
+}
+
+doc_base_generate ()
+{
+  if ! test -d "debian"; then
+    echo "Cannot find debian directory for generation" >&2
+    exit 1
+  fi
+  PKG="$1"
+  PKG_DIR=`html_directory $PKG`
+  FILE="debian/$PKG.doc-base.ocamldoc-apiref"
+  echo $FILE
+  cat > $FILE <<EOF
+Document: $PKG-ocamldoc-api-reference
+Title: $PKG OCamldoc API Reference
+Abstract: API reference manual for $PKG (generated via OCamldoc)
+Section: Applications/Programming
+
+Format: HTML
+Index: $PKG_DIR/index.html
+Files: $PKG_DIR/*
+EOF
+}
+
+ACTION=true
+PACKAGE_IDX=1
+
+while test $# -gt 0; do
+  case "$1" in
+    --html-directory)
+      ACTION="html_directory"
+    ;;
+    --doc-base-generate)
+      ACTION="doc_base_generate"
+    ;;
+    --help|-help|-?)
+      print_usage
+      exit 0
+    ;;
+    -*)
+      error_usage "Unknown option $1"
+    ;;
+    *)
+      PACKAGE[$PACKAGE_IDX]=$1
+      PACKAGE_IDX=$(($PACKAGE_IDX + 1))
+    ;;      
+  esac
+  shift
+done
+
+for i in `seq $(($PACKAGE_IDX - 1))`; do
+  $ACTION ${PACKAGE[$i]}
+done
+

@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 4274 2007-09-02 17:12:05Z zack $
+# $Id: ocaml.mk 4403 2007-09-07 21:09:52Z gildor $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -44,25 +44,35 @@ endif
 
 # post-install hook to invoke ocamldoc on OCAML_OCAMLDOC_PACKAGES packages
 $(patsubst %,binary-install/%,$(DEB_PACKAGES))::
-	@if (echo $(OCAML_OCAMLDOC_PACKAGES) | egrep '( |^)$(cdbs_curpkg)( |$$)' > /dev/null) ; then \
+	@OCAMLDOC="ocamldoc $(OCAML_OCAMLDOC_FLAGS)"; \
+	if test -n "$(OCAML_OCAMLDOC_OCAMLFIND_FLAGS)" ; then \
+		if ! test -x "/usr/bin/ocamlfind"; then \
+			echo "OCamlfind flags set and no ocamlfind to be found" >&2; \
+			exit 1; \
+		fi; \
+		OCAMLDOC="ocamlfind $$OCAMLDOC $(OCAML_OCAMLDOC_OCAMLFIND_FLAGS)"; \
+	fi; \
+	OCAML_OCAMLDOC_INCLUDE=`for i in $(OCAML_OCAMLDOC_PACKAGES); do \
+       					find debian/$$i/$(OCAML_STDLIB_DIR)/ -type d -exec echo -I \{} \; ; \
+				done`; \
+	if (echo $(OCAML_OCAMLDOC_PACKAGES) | egrep '( |^)$(cdbs_curpkg)( |$$)' > /dev/null) ; then \
 		echo 'mkdir -p debian/$(cdbs_curpkg)/$(OCAML_OCAMLDOC_DESTDIR_HTML)' ; \
 		mkdir -p debian/$(cdbs_curpkg)/$(OCAML_OCAMLDOC_DESTDIR_HTML) ; \
 		echo 'invoking ocamldoc on debian/$(cdbs_curpkg)$(OCAML_STDLIB_DIR)/ ...' ; \
 		find debian/$(cdbs_curpkg)$(OCAML_STDLIB_DIR)/ \
 			-type f -name '*.mli' -or -name '*.ml' \
-		| xargs ocamldoc $(OCAML_OCAMLDOC_FLAGS) \
-			-html $(OCAML_OCAMLDOC_FLAGS_HTML) \
+		| xargs $$OCAMLDOC -html $(OCAML_OCAMLDOC_FLAGS_HTML) \
 			-d debian/$(cdbs_curpkg)/$(OCAML_OCAMLDOC_DESTDIR_HTML) \
 		|| true ; \
 	fi
 
 # post-build hook to create doc-base entries for OCAML_OCAMLDOC_PACKAGES packages
 $(patsubst %,build/%,$(DEB_PACKAGES))::
-	@if (echo $(OCAML_OCAMLDOC_PACKAGES) | egrep '( |^)$(cdbs_curpkg)( |$$)' > /dev/null) ; then \
-		sed -e 's/@PACKAGE@/$(cdbs_curpkg)/g' \
-			$(_cdbs_class_path)/ocaml-docbase-template.txt$(_cdbs_makefile_suffix) \
-			> debian/$(cdbs_curpkg).doc-base.ocamldoc-apiref ; \
+	@if (echo $(OCAML_OCAMLDOC_PACKAGES) $(OCAML_OCAMLDOC_PACKAGES_DOCBASE) \
+	  | egrep '( |^)$(cdbs_curpkg)( |$$)' > /dev/null) ; then \
+	  	ocamldoc-api-ref-config --doc-base-generate $(cdbs_curpkg)
 	fi
+
 clean::
 	rm -f debian/*.doc-base.ocamldoc-apiref
 
