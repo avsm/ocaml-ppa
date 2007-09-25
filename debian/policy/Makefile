@@ -22,6 +22,7 @@ clean:
 	$(RM) -rf ocaml_packaging_policy.html/ ocaml_packaging_policy.txt
 
 upload_web: all
-	scp -rC ocaml_packaging_policy ocaml_packaging_policy.html alioth.debian.org:/org/alioth.debian.org/chroot/home/groups/pkg-ocaml-maint/htdocs/
+	scp -rC ocaml_packaging_policy.txt ocaml_packaging_policy.html alioth.debian.org:/org/alioth.debian.org/chroot/home/groups/pkg-ocaml-maint/htdocs/
+	ssh alioth.debian.org "chmod g+w /org/alioth.debian.org/chroot/home/groups/pkg-ocaml-maint/htdocs/ocaml_packaging_policy.txt /org/alioth.debian.org/chroot/home/groups/pkg-ocaml-maint/htdocs/ocaml_packaging_policy.html/*"
 
 .PHONY: html text upload_web
