@@ -105,7 +105,7 @@
      [package1]
        trunk
          debian
-       upstream
+       tarballs
          [upstream-tarball-version1]
          [upstream-tarball-version2]
          ...
@@ -123,13 +123,13 @@
     <para>
         Place yourself in the directory <filename>trunk/packages</filename> of your working copy of
         the SVN repository. Create a directory with the same name as your
-        source package (let's say, my-package), and subdirectories <filename>upstream</filename>
-        and <filename>trunk</filename>.  Put the current upstream tarball in <filename>upstream</filename>, and the
+        source package (let's say, my-package), and subdirectories <filename>tarballs</filename>
+        and <filename>trunk</filename>.  Put the current upstream tarball in <filename>tarballs</filename>, and the
         current debian directory with all its relevant files in <filename>trunk</filename>. This
         should now look like this:
         <programlisting>
  trunk/packages/my_package
-   upstream
+   tarballs
      my_package_1.2.3.orig.tar.gz
    trunk
      debian
@@ -184,8 +184,8 @@
     <para>
         Create a file <filename>debian/svn-deblayout</filename> with the following contents:
         <programlisting>
-origDir=../upstream
-origUrl=svn+ssh://svn.debian.org/svn/pkg-ocaml-maint/trunk/packages/my_package/upstream
+origDir=../tarballs
+origUrl=svn+ssh://svn.debian.org/svn/pkg-ocaml-maint/trunk/packages/my_package/tarballs
 tagsUrl=svn+ssh://svn.debian.org/svn/pkg-ocaml-maint/tags/packages/my_package
         </programlisting>
     </para>
@@ -285,7 +285,7 @@ alias svn-bt='svn-buildpackage -rfakeroot -k&lt;gpgid&gt; --svn-lintian --svn-do
         where to find the upstream tarball. Adding the following line to your
         <filename>~/.dpatch.conf</filename> will be enough:
         <programlisting>
-conf_origtargzpath=../upstream
+conf_origtargzpath=../tarballs
         </programlisting>
     </para>
 </section>
