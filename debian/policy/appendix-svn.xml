@@ -184,8 +184,6 @@
     <para>
         Create a file <filename>debian/svn-deblayout</filename> with the following contents:
         <programlisting>
-origDir=../tarballs
-origUrl=svn+ssh://svn.debian.org/svn/pkg-ocaml-maint/trunk/packages/my_package/tarballs
 tagsUrl=svn+ssh://svn.debian.org/svn/pkg-ocaml-maint/tags/packages/my_package
         </programlisting>
     </para>
