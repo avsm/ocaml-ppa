@@ -4,7 +4,11 @@ ocaml (3.10.0-9) UNRELEASED; urgency=low
   * Suggest "tarballs" instead of "upstream" in the policy as directory name
     for storing upstream sources since it is more standard.
 
- -- Samuel Mimram <smimram@debian.org>  Tue, 25 Sep 2007 10:59:07 +0100
+  [ Sylvain Le Gall ]
+  * ... fixes in cdbs class for ocamldoc generation ... (TODO: still to be
+    checked) [ entry added by Zack ]
+
+ -- Stefano Zacchiroli <zack@debian.org>  Fri, 28 Sep 2007 15:50:37 +0200
 
 ocaml (3.10.0-8) unstable; urgency=low
 

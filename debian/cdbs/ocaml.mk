@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 4403 2007-09-07 21:09:52Z gildor $
+# $Id: ocaml.mk 4592 2007-09-28 14:50:04Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -52,7 +52,7 @@ $(patsubst %,binary-install/%,$(DEB_PACKAGES))::
 		fi; \
 		OCAMLDOC="ocamlfind $$OCAMLDOC $(OCAML_OCAMLDOC_OCAMLFIND_FLAGS)"; \
 	fi; \
-	OCAML_OCAMLDOC_INCLUDE=`for i in $(OCAML_OCAMLDOC_PACKAGES); do \
+	OCAML_OCAMLDOC_INCLUDE=`for i in "$(OCAML_OCAMLDOC_PACKAGES)"; do \
        					find debian/$$i/$(OCAML_STDLIB_DIR)/ -type d -exec echo -I \{} \; ; \
 				done`; \
 	if (echo $(OCAML_OCAMLDOC_PACKAGES) | egrep '( |^)$(cdbs_curpkg)( |$$)' > /dev/null) ; then \
@@ -70,7 +70,7 @@ $(patsubst %,binary-install/%,$(DEB_PACKAGES))::
 $(patsubst %,build/%,$(DEB_PACKAGES))::
 	@if (echo $(OCAML_OCAMLDOC_PACKAGES) $(OCAML_OCAMLDOC_PACKAGES_DOCBASE) \
 	  | egrep '( |^)$(cdbs_curpkg)( |$$)' > /dev/null) ; then \
-	  	ocamldoc-api-ref-config --doc-base-generate $(cdbs_curpkg)
+	  	ocamldoc-api-ref-config --doc-base-generate $(cdbs_curpkg) ; \
 	fi
 
 clean::
