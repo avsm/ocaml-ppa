@@ -4,11 +4,15 @@ ocaml (3.10.0-9) UNRELEASED; urgency=low
   * Suggest "tarballs" instead of "upstream" in the policy as directory name
     for storing upstream sources since it is more standard.
 
+  [ Stefano Zacchiroli ]
+  * add patch camlrun_shared, which ships an alternative version of the
+    camlrun library (called "camlrun_shared") made of PIC objects
+
   [ Sylvain Le Gall ]
   * ... fixes in cdbs class for ocamldoc generation ... (TODO: still to be
     checked) [ entry added by Zack ]
 
- -- Stefano Zacchiroli <zack@debian.org>  Fri, 28 Sep 2007 15:50:37 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Fri, 28 Sep 2007 16:49:23 +0200
 
 ocaml (3.10.0-8) unstable; urgency=low
 
