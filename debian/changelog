@@ -3,6 +3,7 @@ ocaml (3.10.0-9) UNRELEASED; urgency=low
   [ Samuel Mimram ]
   * Suggest "tarballs" instead of "upstream" in the policy as directory name
     for storing upstream sources since it is more standard.
+  * Corrected emacs startup file, closes: #446177.
 
   [ Stefano Zacchiroli ]
   * add patch camlrun_shared, which ships an alternative version of the
@@ -12,7 +13,7 @@ ocaml (3.10.0-9) UNRELEASED; urgency=low
   * ... fixes in cdbs class for ocamldoc generation ... (TODO: still to be
     checked) [ entry added by Zack ]
 
- -- Stefano Zacchiroli <zack@debian.org>  Fri, 28 Sep 2007 16:49:23 +0200
+ -- Samuel Mimram <smimram@debian.org>  Wed, 10 Oct 2007 22:43:34 +0000
 
 ocaml (3.10.0-8) unstable; urgency=low
 
