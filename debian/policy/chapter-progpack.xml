@@ -111,7 +111,7 @@ the requirements of the compilation of the program.
     </para>
 
     <para>
-        The bytecode versions are portable. In order to spare the buildds and the Debian archive, bytecode versions should be compiled once for all for big packages (which either take a lot of place on disks or take a lot of time to build). For example, the <filename>spamoracle</filename> package provides the <filename>spamoracle-byte</filename> package which is <varname>Architecture: all</varname> and contains the bytecode version of spamoracle, and the <filename>spamoracle</filename> package which contains the native version of spamoracle and is available only where a native OCaml compiler is available (<varname>Architecture: alpha amd64 arm i386 ia64 kfreebsd-i386 powerpc sparc</varname>).
+        The bytecode versions are portable. In order to spare the buildds and the Debian archive, bytecode versions should be compiled once for all for big packages (which either take a lot of place on disks or take a lot of time to build). For example, the <filename>spamoracle</filename> package provides the <filename>spamoracle-byte</filename> package which is <varname>Architecture: all</varname> and contains the bytecode version of spamoracle, and the <filename>spamoracle</filename> package which contains the native version of spamoracle and is available only where a native OCaml compiler is available (<varname>Architecture: alpha amd64 i386 kfreebsd-i386 powerpc sparc</varname>).
     </para>
 
     <para>

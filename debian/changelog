@@ -12,8 +12,10 @@ ocaml (3.10.0-9) UNRELEASED; urgency=low
   [ Sylvain Le Gall ]
   * ... fixes in cdbs class for ocamldoc generation ... (TODO: still to be
     checked) [ entry added by Zack ]
+  * Remove ia64 and arm native arch (no more ocamlopt for this arches)
+  * Resurect debian/cdbs/ocaml-docbase-template.txt for compatibility
 
- -- Samuel Mimram <smimram@debian.org>  Wed, 10 Oct 2007 22:43:34 +0000
+ -- Sylvain Le Gall <gildor@debian.org>  Wed, 17 Oct 2007 22:29:46 +0200
 
 ocaml (3.10.0-8) unstable; urgency=low
 

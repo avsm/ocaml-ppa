@@ -5,7 +5,7 @@
 <!ENTITY ocaml-sys-dir-base "/usr/lib/ocaml">
 <!ENTITY ocaml-sys-dir "&ocaml-sys-dir-base;/&ocaml-version;">
 <!ENTITY ocaml-metas-dir "&ocaml-sys-dir;/METAS">
-<!ENTITY supported-archs "alpha, amd64, arm, i386, ia64, kfreebsd-i386, powerpc, sparc">
+<!ENTITY supported-archs "alpha, amd64, i386, kfreebsd-i386, powerpc, sparc">
 <!ENTITY ocaml-compat  "1">
 <!ENTITY ocaml-pkg       "<application>ocaml</application>">
 <!ENTITY ocaml-vpkg      "<application>ocaml-&ocaml-version;</application>">

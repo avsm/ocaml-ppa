@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 4592 2007-09-28 14:50:04Z zack $
+# $Id: ocaml.mk 4635 2007-10-17 23:27:28Z gildor $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -70,7 +70,7 @@ $(patsubst %,binary-install/%,$(DEB_PACKAGES))::
 $(patsubst %,build/%,$(DEB_PACKAGES))::
 	@if (echo $(OCAML_OCAMLDOC_PACKAGES) $(OCAML_OCAMLDOC_PACKAGES_DOCBASE) \
 	  | egrep '( |^)$(cdbs_curpkg)( |$$)' > /dev/null) ; then \
-	  	ocamldoc-api-ref-config --doc-base-generate $(cdbs_curpkg) ; \
+	  	$(_cdbs_class_path)/ocamldoc-api-ref-config --doc-base-generate $(cdbs_curpkg) ; \
 	fi
 
 clean::
