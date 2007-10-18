@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 4635 2007-10-17 23:27:28Z gildor $
+# $Id: ocaml.mk 4643 2007-10-18 00:21:51Z gildor $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -52,7 +52,7 @@ $(patsubst %,binary-install/%,$(DEB_PACKAGES))::
 		fi; \
 		OCAMLDOC="ocamlfind $$OCAMLDOC $(OCAML_OCAMLDOC_OCAMLFIND_FLAGS)"; \
 	fi; \
-	OCAML_OCAMLDOC_INCLUDE=`for i in "$(OCAML_OCAMLDOC_PACKAGES)"; do \
+	OCAML_OCAMLDOC_INCLUDE=`for i in $(OCAML_OCAMLDOC_PACKAGES); do \
        					find debian/$$i/$(OCAML_STDLIB_DIR)/ -type d -exec echo -I \{} \; ; \
 				done`; \
 	if (echo $(OCAML_OCAMLDOC_PACKAGES) | egrep '( |^)$(cdbs_curpkg)( |$$)' > /dev/null) ; then \

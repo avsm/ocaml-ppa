@@ -10,10 +10,9 @@ ocaml (3.10.0-9) UNRELEASED; urgency=low
     camlrun library (called "camlrun_shared") made of PIC objects
 
   [ Sylvain Le Gall ]
-  * ... fixes in cdbs class for ocamldoc generation ... (TODO: still to be
-    checked) [ entry added by Zack ]
-  * Remove ia64 and arm native arch (no more ocamlopt for this arches)
-  * Resurect debian/cdbs/ocaml-docbase-template.txt for compatibility
+  * fixes in cdbs class for ocamldoc generation, provides
+    ocamldoc-api-ref-config to centralize generation of .ocamldoc-apiref 
+  * remove ia64, arm and alpha native arches (no more ocamlopt for this arches)
 
  -- Sylvain Le Gall <gildor@debian.org>  Wed, 17 Oct 2007 22:29:46 +0200
 

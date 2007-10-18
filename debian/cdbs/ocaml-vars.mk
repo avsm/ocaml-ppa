@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml-vars.mk 4403 2007-09-07 21:09:52Z gildor $
+# $Id: ocaml-vars.mk 4643 2007-10-18 00:21:51Z gildor $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -115,7 +115,7 @@ OCAML_OCAMLDOC_FLAGS_MAN = -man-mini
 # can use "$(cdbs_curpkg)" stem there, it will be expanded to the current
 # package name by CDBS
 # For debian/rules writers
-OCAML_OCAMLDOC_DESTDIR_HTML = $(shell ocamldoc-api-ref-config --html-directory $(cdbs_curpkg))
+OCAML_OCAMLDOC_DESTDIR_HTML = $(shell $(_cdbs_class_path)/ocamldoc-api-ref-config --html-directory $(cdbs_curpkg))
 
 endif
 

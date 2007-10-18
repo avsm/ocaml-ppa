@@ -134,7 +134,7 @@ Description: Runtime system for ocaml bytecode executables
  you do not require any graphical capabilities for your runtime.
 
 Package: ocaml-native-compilers
-Architecture: alpha amd64 hurd-i386 i386 kfreebsd-i386 powerpc sparc
+Architecture: amd64 hurd-i386 i386 kfreebsd-i386 powerpc sparc
 Depends: ocaml-nox (= ${binary:Version}), ocaml-nox-${F:OCamlABI}, gcc, binutils, ${shlibs:Depends}
 Provides: ocaml-best-compilers
 Replaces: ocaml-nox (<= 3.09.2-3)
