@@ -11,10 +11,11 @@ ocaml (3.10.0-9) UNRELEASED; urgency=low
 
   [ Sylvain Le Gall ]
   * fixes in cdbs class for ocamldoc generation, provides
-    ocamldoc-api-ref-config to centralize generation of .ocamldoc-apiref 
+    ocamldoc-api-ref-config to centralize generation of .ocamldoc-apiref
   * remove ia64, arm and alpha native arches (no more ocamlopt for this arches)
+  * Array is bashism, remove it from ocamldoc-api-ref-config
 
- -- Sylvain Le Gall <gildor@debian.org>  Wed, 17 Oct 2007 22:29:46 +0200
+ -- Sylvain Le Gall <gildor@debian.org>  Sat, 10 Nov 2007 17:28:48 +0100
 
 ocaml (3.10.0-8) unstable; urgency=low
 

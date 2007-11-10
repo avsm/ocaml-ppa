@@ -73,7 +73,7 @@ EOF
 }
 
 ACTION=true
-PACKAGE_IDX=1
+PACKAGES=
 
 while test $# -gt 0; do
   case "$1" in
@@ -91,14 +91,13 @@ while test $# -gt 0; do
       error_usage "Unknown option $1"
     ;;
     *)
-      PACKAGE[$PACKAGE_IDX]=$1
-      PACKAGE_IDX=$(($PACKAGE_IDX + 1))
+      PACKAGES="$PACKAGES $1"
     ;;      
   esac
   shift
 done
 
-for i in `seq $(($PACKAGE_IDX - 1))`; do
-  $ACTION ${PACKAGE[$i]}
+for i in $PACKAGES; do
+  $ACTION $i
 done
 
