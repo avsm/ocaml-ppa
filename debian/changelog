@@ -8,6 +8,7 @@ ocaml (3.10.0-9) UNRELEASED; urgency=low
   [ Stefano Zacchiroli ]
   * add patch camlrun_shared, which ships an alternative version of the
     camlrun library (called "camlrun_shared") made of PIC objects
+  * add Homepage field to debian/control
 
   [ Sylvain Le Gall ]
   * fixes in cdbs class for ocamldoc generation, provides
