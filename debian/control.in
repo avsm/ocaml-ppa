@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>
 Uploaders: Sven Luther <luther@debian.org>, Stefano Zacchiroli <zack@debian.org>, Julien Cristau <julien.cristau@ens-lyon.org>, Samuel Mimram <smimram@debian.org>, Sylvain Le Gall <gildor@debian.org>
-Build-Depends: debhelper (>> 4.0.2), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2, docbook-xml, docbook-utils
+Build-Depends: debhelper (>> 5.0.0), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2, docbook-xml, docbook-utils
 Standards-Version: 3.7.2
 Vcs-Svn: svn://svn.debian.org/svn/pkg-ocaml-maint/trunk/packages/ocaml
 Vcs-Browser: http://svn.debian.org/wsvn/pkg-ocaml-maint/trunk/packages/ocaml/trunk/
@@ -192,7 +192,7 @@ Description: OCaml interpreter and standard libraries
 
 Package: ocaml-mode
 Architecture: all
-Depends: emacs21 | emacsen
+Depends: emacs22 | emacsen
 Suggests: ocaml
 Conflicts: ocaml-nox (<< 3.08.3-8)
 Description: A major mode for editing Objective Caml in Emacs
