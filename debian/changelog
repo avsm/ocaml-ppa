@@ -1,4 +1,4 @@
-ocaml (3.10.0-9) UNRELEASED; urgency=low
+ocaml (3.10.0-9) unstable; urgency=low
 
   [ Samuel Mimram ]
   * Suggest "tarballs" instead of "upstream" in the policy as directory name
@@ -14,9 +14,19 @@ ocaml (3.10.0-9) UNRELEASED; urgency=low
   * fixes in cdbs class for ocamldoc generation, provides
     ocamldoc-api-ref-config to centralize generation of .ocamldoc-apiref
   * remove ia64, arm and alpha native arches (no more ocamlopt for this arches)
-  * Array is bashism, remove it from ocamldoc-api-ref-config
+  * array is bashism, remove it from ocamldoc-api-ref-config
+  * upgrade to Standards-Version 3.7.3 (no change)
+  * make the lintian override work: add the name of the package in
+    front of each override line, place the file in
+    usr/share/lintian/overrides and not inside a directory in this
+    directory
+  * make clean cleaner (remove byterun/libcamlrun_shared.so)
+  * remove empty directories left after moving files away from ocaml-nox
+    hierarchy
+  * add a comment to install_ocamlbuild patch, to prevent lintian
+    warning
 
- -- Sylvain Le Gall <gildor@debian.org>  Sat, 10 Nov 2007 17:28:48 +0100
+ -- Sylvain Le Gall <gildor@debian.org>  Sat, 15 Dec 2007 17:57:36 +0100
 
 ocaml (3.10.0-8) unstable; urgency=low
 

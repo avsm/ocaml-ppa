@@ -2,7 +2,7 @@
 ## install_ocamlbuild.dpatch by Stefano Zacchiroli <zack@debian.org>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
-## DP: No description.
+## DP: install ocamlbuild as a link on either .native or .byte.
 
 @DPATCH@
 diff -urNad trunk~/build/partial-install.sh trunk/build/partial-install.sh

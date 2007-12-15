@@ -143,6 +143,7 @@ endif
 	-$(RM) _log
 	-$(RM) myocamlbuild_config.ml
 	-$(RM) ocaml-$(OCAMLABI)
+	-$(RM) byterun/libcamlrun_shared.so
 
 	dh_clean debian/README.labltk camlp4/config/Makefile.cnf camlp4/config/Makefile config/m.h config/s.h config/Makefile emacs/ocamltags driver/ocamlcomp.sh
 	debian/rules abi-sed-clean
@@ -250,6 +251,18 @@ install-arch: build-arch
 		ln -sf ../ocaml-base-nox/README.Debian .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.txt.gz .; \
 		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.html .
+
+	# Remove empty directory
+	for i in `cat debian/ocaml-nox.empty-dirs`; do \
+       		if test -d "debian/ocaml-nox/$$i" && test -z "`ls -1 'debian/ocaml-nox/$$i'`"; then \
+			$(RM) -r "debian/ocaml-nox/$$i"; \
+		fi; \
+	done
+	
+
+	# Install override files
+	cp debian/ocaml-compiler-libs.override debian/ocaml-compiler-libs/usr/share/lintian/overrides/ocaml-compiler-libs
+	cp debian/ocaml-nox.override debian/ocaml-nox/usr/share/lintian/overrides/ocaml-nox
 
 	dh_install -a
 
