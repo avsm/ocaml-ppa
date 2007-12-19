@@ -1,8 +1,10 @@
-ocaml (3.10.0-10) UNRELEASED; urgency=low
+ocaml (3.10.0-10) unstable; urgency=low
 
-  * NOT RELEASED YET
+  [ Stefano Zacchiroli ]
+  * ignore ocamldoc-api-ref-config when invoking dh_fixperms, so that it
+    remains executable (closes: #457014)
 
- -- Sylvain Le Gall <gildor@debian.org>  Mon, 17 Dec 2007 13:20:46 +0100
+ -- Stefano Zacchiroli <zack@debian.org>  Wed, 19 Dec 2007 08:37:02 +0100
 
 ocaml (3.10.0-9) unstable; urgency=low
 
