@@ -1,8 +1,9 @@
-ocaml (3.10.0-11) UNRELEASED; urgency=low
+ocaml (3.10.0-11) unstable; urgency=low
 
-  * NOT RELEASED YET
+  [ Stefano Zacchiroli ]
+  * explicitely chmod +x ocamldoc-api-ref-config during build
 
- -- Stefano Zacchiroli <zack@debian.org>  Wed, 19 Dec 2007 09:56:09 +0100
+ -- Stefano Zacchiroli <zack@debian.org>  Wed, 19 Dec 2007 12:15:08 +0100
 
 ocaml (3.10.0-10) unstable; urgency=low
 
