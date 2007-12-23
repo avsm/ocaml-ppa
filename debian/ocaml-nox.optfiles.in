@@ -1,5 +1,4 @@
 usr/bin/labltk
-usr/lib/ocaml/#OcamlABI#/libgraphics.a
 usr/lib/ocaml/#OcamlABI#/labltk
 usr/lib/ocaml/#OcamlABI#/graphics.cmx
 usr/lib/ocaml/#OcamlABI#/graphics.cmxa

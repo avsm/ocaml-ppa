@@ -1,3 +1,11 @@
+ocaml (3.10.0-12) UNRELEASED; urgency=low
+
+  * libgraphics.a is built for ocamlc, not ocamlopt.  Install it
+    unconditionally in the ocaml package.  Have ocaml replace ocaml-nox
+    because of this move (closes: #457569).  Thanks, Peter Palfrader!
+
+ -- Julien Cristau <jcristau@debian.org>  Mon, 24 Dec 2007 00:47:43 +0100
+
 ocaml (3.10.0-11) unstable; urgency=low
 
   [ Stefano Zacchiroli ]
