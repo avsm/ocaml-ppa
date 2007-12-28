@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# $Id: ocaml.mk 4643 2007-10-18 00:21:51Z gildor $
+# $Id: ocaml.mk 4944 2007-12-28 14:50:46Z zack $
 
 _cdbs_scripts_path ?= /usr/lib/cdbs
 _cdbs_rules_path ?= /usr/share/cdbs/1/rules
@@ -61,7 +61,8 @@ $(patsubst %,binary-install/%,$(DEB_PACKAGES))::
 		echo 'invoking ocamldoc on debian/$(cdbs_curpkg)$(OCAML_STDLIB_DIR)/ ...' ; \
 		find debian/$(cdbs_curpkg)$(OCAML_STDLIB_DIR)/ \
 			-type f -name '*.mli' -or -name '*.ml' \
-		| xargs $$OCAMLDOC -html $(OCAML_OCAMLDOC_FLAGS_HTML) \
+		| xargs $$OCAMLDOC $$OCAML_OCAMLDOC_INCLUDE \
+			-html $(OCAML_OCAMLDOC_FLAGS_HTML) \
 			-d debian/$(cdbs_curpkg)/$(OCAML_OCAMLDOC_DESTDIR_HTML) \
 		|| true ; \
 	fi

@@ -1,3 +1,10 @@
+ocaml (3.10.0-13) unstable; urgency=low
+
+  [ Stefano Zacchiroli ]
+  * fix the cdbs class to pass -I flags down to ocamldoc
+
+ -- Stefano Zacchiroli <zack@debian.org>  Fri, 28 Dec 2007 15:48:54 +0100
+
 ocaml (3.10.0-12) unstable; urgency=low
 
   [ Julien Cristau ]
