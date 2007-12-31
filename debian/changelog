@@ -1,6 +1,7 @@
 ocaml (3.10.0-14) UNRELEASED; urgency=low
 
   * NOT RELEASED YET
+  * fix vcs-svn field to point just above the debian/ dir
 
  -- Stefano Zacchiroli <zack@debian.org>  Fri, 28 Dec 2007 16:21:46 +0100
 
