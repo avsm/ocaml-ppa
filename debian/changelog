@@ -1,9 +1,14 @@
 ocaml (3.10.0-14) UNRELEASED; urgency=low
 
   * NOT RELEASED YET
+  
+  [ Stefano Zacchiroli ]
   * fix vcs-svn field to point just above the debian/ dir
+  
+  [ Ralf Treinen ]
+  * Policy: add section on correct spelling OCaml, bump version to 0.7.2
 
- -- Stefano Zacchiroli <zack@debian.org>  Fri, 28 Dec 2007 16:21:46 +0100
+ -- Ralf Treinen <treinen@debian.org>  Sat, 12 Jan 2008 11:34:28 +0100
 
 ocaml (3.10.0-13) unstable; urgency=low
 

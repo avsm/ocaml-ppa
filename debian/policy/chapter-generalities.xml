@@ -1,5 +1,20 @@
+<section id="name-ocaml">
+    <title>The Name of the Game</title>
+
+    <para>
+    The correct short name of Objective Caml
+    is <emphasis>&ocaml-name;</emphasis>. Other
+    spellings/capitalizations
+    like <quote>ocaml</quote>, <quote>OCAML</quote>, <quote>O'Caml</quote>
+    should be avoided when talking about the Objective Caml project,
+    the system, or the programing language.
+    </para>
+    </section>
+
 <section id="bytecode-native">
     <title>Bytecode and Native Code</title>
+
+
 
     <section>
     <title>Bytecode and Native Code Executables</title>
