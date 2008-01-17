@@ -82,6 +82,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base (= ${binary:Version}), ocaml-base-${F:OCamlABI}, ocaml-nox-${F:OCamlABI}
 Suggests: tcl8.4-dev, tk8.4-dev
 Provides: ocaml-${F:OCamlABI}
+Replaces: ocaml-nox (<< 3.10.0-12)
 Description: ML language implementation with a class-based object system
  Objective Caml (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
