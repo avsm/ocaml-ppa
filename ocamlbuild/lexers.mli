@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexers.mli,v 1.2 2007/02/16 10:35:10 ertai Exp $ *)
+(* $Id: lexers.mli,v 1.2.2.2 2007/11/21 21:02:58 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 exception Error of string
 
@@ -26,6 +26,14 @@ val space_sep_strings : Lexing.lexbuf -> string list
 val blank_sep_strings : Lexing.lexbuf -> string list
 val comma_sep_strings : Lexing.lexbuf -> string list
 val comma_or_blank_sep_strings : Lexing.lexbuf -> string list
+
+(* Parse a colon separated string.
+   Note: successive colons are ignored.
+   Example: "aaa:bbb:::ccc" -> ["aaa"; "bbb"; "ccc"] *)
 val colon_sep_strings : Lexing.lexbuf -> string list
+
 val conf_lines : string option -> int -> string -> Lexing.lexbuf -> conf
-val meta_path : Lexing.lexbuf -> (string * bool) list
+val path_scheme : bool -> Lexing.lexbuf ->
+  [ `Word of string
+  | `Var of (string * Glob.globber)
+  ] list

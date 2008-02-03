@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ccomp.ml,v 1.21 2007/02/25 14:58:21 xleroy Exp $ *)
+(* $Id: ccomp.ml,v 1.21.2.1 2007/11/10 12:23:37 xleroy Exp $ *)
 
 (* Compiling C files and building C libraries *)
 
@@ -45,6 +45,10 @@ let quote_files lst =
   if Sys.os_type = "Win32" && String.length s >= 256
   then build_diversion lst
   else s
+
+let quote_optfile = function
+  | None -> ""
+  | Some f -> Filename.quote f
 
 let compile_file name =
      command

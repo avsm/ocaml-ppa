@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml,v 1.5 1999/11/17 18:56:42 xleroy Exp $ *)
+(* $Id: selection.ml,v 1.5.38.1 2007/10/25 09:08:20 xleroy Exp $ *)
 
 (* Instruction selection for the HPPA processor *)
 
@@ -92,17 +92,17 @@ method select_operation op args =
 
 (* Deal with register constraints *)
 
-method insert_op op rs rd =
+method insert_op_debug op dbg rs rd =
   match op with
     Iintop(Idiv | Imod) -> (* handled via calls to millicode *)
       let rs' = [|phys_reg 20; phys_reg 19|] (* %r26, %r25 *)
       and rd' = [|phys_reg 22|] (* %r29 *) in
       self#insert_moves rs rs';
-      self#insert (Iop op) rs' rd';
+      self#insert_debug (Iop op) dbg rs' rd';
       self#insert_moves rd' rd;
       rd
   | _ ->
-      super#insert_op op rs rd
+      super#insert_op_debug op dbg rs rd
 
 end
 

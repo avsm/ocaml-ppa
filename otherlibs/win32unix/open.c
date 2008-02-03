@@ -11,19 +11,20 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: open.c,v 1.9 2001/12/07 13:40:45 xleroy Exp $ */
+/* $Id: open.c,v 1.9.20.1 2007/10/25 07:42:48 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
 #include "unixsupport.h"
 #include <fcntl.h>
 
-static int open_access_flags[8] = {
-  GENERIC_READ, GENERIC_WRITE, GENERIC_READ|GENERIC_WRITE, 0, 0, 0, 0, 0,
+static int open_access_flags[12] = {
+  GENERIC_READ, GENERIC_WRITE, GENERIC_READ|GENERIC_WRITE,
+  0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-static int open_create_flags[8] = {
-  0, 0, 0, 0, 0, O_CREAT, O_TRUNC, O_EXCL
+static int open_create_flags[12] = {
+  0, 0, 0, 0, 0, O_CREAT, O_TRUNC, O_EXCL, 0, 0, 0, 0
 };
 
 CAMLprim value unix_open(value path, value flags, value perm)

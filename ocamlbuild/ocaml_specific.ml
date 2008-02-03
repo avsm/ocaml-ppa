@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_specific.ml,v 1.6.2.8 2007/05/10 13:32:07 pouillar Exp $ *)
+(* $Id: ocaml_specific.ml,v 1.6.2.21 2007/11/28 16:19:10 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format
@@ -58,13 +58,13 @@ let x_p_a = "%.p"-.-ext_lib;;
 
 rule "target files"
   ~dep:"%.itarget"
-  ~prod:"%.otarget"
+  ~stamp:"%.otarget"
   begin fun env build ->
-    let itarget = env "%.itarget" and otarget = env "%.otarget" in
+    let itarget = env "%.itarget" in
     let dir = Pathname.dirname itarget in
     List.iter ignore_good
       (build (List.map (fun x -> [dir/x]) (string_list_of_file itarget)));
-    touch otarget
+    Nop
   end;;
 
 rule "ocaml: mli -> cmi"
@@ -189,15 +189,11 @@ rule "ocaml: cmo* -> cma"
   ~dep:"%.cmo"
   (Ocaml_compiler.byte_library_link "%.cmo" "%.cma");;
 
-rule "ocaml C stubs (short): clib & (o|obj)* -> (a|lib) & (so|dll)"
-  ~prods:["lib%(libname)"-.-ext_lib; "dll%(libname)"-.-ext_dll]
-  ~dep:"lib%(libname).clib"
-  (C_tools.link_C_library "lib%(libname).clib" ("lib%(libname)"-.-ext_lib) "%(libname)");;
-
 rule "ocaml C stubs: clib & (o|obj)* -> (a|lib) & (so|dll)"
-  ~prods:["%(path)/lib%(libname)"-.-ext_lib; "%(path)/dll%(libname)"-.-ext_dll]
-  ~dep:"%(path)/lib%(libname).clib"
-  (C_tools.link_C_library "%(path)/lib%(libname).clib" ("%(path)/lib%(libname)"-.-ext_lib) "%(path)/%(libname)");;
+  ~prods:["%(path:<**/>)lib%(libname:<*> and not <*.*>)"-.-ext_lib;
+          "%(path:<**/>)dll%(libname:<*> and not <*.*>)"-.-ext_dll]
+  ~dep:"%(path)lib%(libname).clib"
+  (C_tools.link_C_library "%(path)lib%(libname).clib" ("%(path)lib%(libname)"-.-ext_lib) "%(path)%(libname)");;
 
 rule "ocaml: mllib & p.cmx* & p.o* -> p.cmxa & p.a"
   ~tags:["ocaml"; "native"; "profile"; "library"]
@@ -223,13 +219,15 @@ rule "ocaml: cmx* & o* -> cmxa & a"
   ~deps:["%.cmx"; x_o]
   (Ocaml_compiler.native_library_link "%.cmx" "%.cmxa");;
 
-Ocamldep.depends "ocaml dependencies ml"
+rule "ocaml dependencies ml"
   ~prod:"%.ml.depends"
-  ~dep:"%.ml" ();;
+  ~dep:"%.ml"
+  (Ocaml_tools.ocamldep_command "%.ml" "%.ml.depends");;
 
-Ocamldep.depends "ocaml dependencies mli"
+rule "ocaml dependencies mli"
   ~prod:"%.mli.depends"
-  ~dep:"%.mli" ();;
+  ~dep:"%.mli"
+  (Ocaml_tools.ocamldep_command "%.mli" "%.mli.depends");;
 
 rule "ocamllex"
   ~tags:["ocaml"] (* FIXME "lexer" *)
@@ -243,14 +241,22 @@ rule "ocaml: mli -> odoc"
   ~deps:["%.mli"; "%.mli.depends"]
   (Ocaml_tools.document_ocaml_interf "%.mli" "%.odoc");;
 
+rule "ocaml: ml -> odoc"
+  ~tags:["ocaml"; "doc"]
+  ~prod:"%.odoc"
+  ~deps:["%.ml"; "%.ml.depends"]
+  (Ocaml_tools.document_ocaml_implem "%.ml" "%.odoc");;
+
 rule "ocamldoc: document ocaml project odocl & *odoc -> docdir (html)"
   ~prod:"%.docdir/index.html"
+  ~stamp:"%.docdir/html.stamp" (* Depend on this file if you want to depends on all files of %.docdir *)
   ~dep:"%.odocl"
   (Ocaml_tools.document_ocaml_project
       ~ocamldoc:Ocaml_tools.ocamldoc_l_dir "%.odocl" "%.docdir/index.html" "%.docdir");;
 
 rule "ocamldoc: document ocaml project odocl & *odoc -> docdir (man)"
   ~prod:"%.docdir/man"
+  ~stamp:"%.docdir/man.stamp" (* Depend on this file if you want to depends on all files of %.docdir/man *)
   ~dep:"%.odocl"
   (Ocaml_tools.document_ocaml_project
       ~ocamldoc:Ocaml_tools.ocamldoc_l_dir "%.odocl" "%.docdir/man" "%.docdir");;
@@ -269,10 +275,23 @@ if !Options.use_menhir || Configuration.has_tag "use_menhir" then begin
     ~deps:["%.mly"; "%.mly.depends"]
     (Ocaml_tools.menhir "%.mly");
 
-  Ocamldep.depends "ocaml: menhir dependencies"
+  rule "ocaml: menhir dependencies"
     ~prod:"%.mly.depends"
     ~dep:"%.mly"
-    ~ocamldep_command:Ocamldep.menhir_ocamldep_command ();
+    (Ocaml_tools.menhir_ocamldep_command "%.mly" "%.mly.depends");
+
+  (* Automatic handling of menhir modules, given a
+     description file %.mlypack                         *)
+  rule "ocaml: modular menhir (mlypack)"
+    ~prods:["%.mli" ; "%.ml"]
+    ~deps:["%.mlypack"]
+    (Ocaml_tools.menhir_modular "%" "%.mlypack" "%.mlypack.depends");
+
+  rule "ocaml: menhir modular dependencies"
+    ~prod:"%.mlypack.depends"
+    ~dep:"%.mlypack"
+    (Ocaml_tools.menhir_modular_ocamldep_command "%.mlypack" "%.mlypack.depends")
+
 end else
   rule "ocamlyacc"
     ~tags:["ocaml"] (* FIXME "parser" *)
@@ -316,7 +335,13 @@ end;;
 flag ["ocaml"; "ocamlyacc"] (atomize !Options.ocaml_yaccflags);;
 flag ["ocaml"; "menhir"] (atomize !Options.ocaml_yaccflags);;
 
+(* Tell menhir to explain conflicts *)
+flag [ "ocaml" ; "menhir" ; "explain" ] (S[A "--explain"]);;
+
 flag ["ocaml"; "ocamllex"] (atomize !Options.ocaml_lexflags);;
+
+(* Tell ocamllex to generate ml code *)
+flag [ "ocaml" ; "ocamllex" ; "generate_ml" ] (S[A "-ml"]);;
 
 flag ["ocaml"; "byte"; "link"] begin
   S (List.map (fun x -> A (x^".cma")) !Options.ocaml_libs)
@@ -331,7 +356,7 @@ let camlp4_flags camlp4s =
     flag ["ocaml"; "pp"; camlp4] (A camlp4)
   end camlp4s;;
 
-camlp4_flags ["camlp4o"; "camlp4r"; "camlp4of"; "camlp4rf"; "camlp4orf"];;
+camlp4_flags ["camlp4o"; "camlp4r"; "camlp4of"; "camlp4rf"; "camlp4orf"; "camlp4oof"];;
 
 let camlp4_flags' camlp4s =
   List.iter begin fun (camlp4, flags) ->
@@ -340,6 +365,8 @@ let camlp4_flags' camlp4s =
 
 camlp4_flags' ["camlp4orr", S[A"camlp4of"; A"-parser"; A"reloaded"];
                "camlp4rrr", S[A"camlp4rf"; A"-parser"; A"reloaded"]];;
+
+flag ["ocaml"; "pp"; "camlp4:no_quot"] (A"-no_quot");;
 
 ocaml_lib ~extern:true ~native:false "dynlink";;
 ocaml_lib ~extern:true "unix";;
@@ -378,8 +405,8 @@ flag ["ocaml"; "link"; "program"; "custom"; "byte"] (A "-custom");;
 flag ["ocaml"; "compile"; "profile"; "native"] (A "-p");;
 flag ["ocaml"; "compile"; "thread"] (A "-thread");;
 flag ["ocaml"; "doc"; "thread"] (S[A"-I"; A"+threads"]);;
-flag ["ocaml"; "link"; "thread"; "native"] (S[A "threads.cmxa"; A "-thread"]);;
-flag ["ocaml"; "link"; "thread"; "byte"] (S[A "threads.cma"; A "-thread"]);;
+flag ["ocaml"; "link"; "thread"; "native"; "program"] (S[A "threads.cmxa"; A "-thread"]);;
+flag ["ocaml"; "link"; "thread"; "byte"; "program"] (S[A "threads.cma"; A "-thread"]);;
 flag ["ocaml"; "compile"; "nopervasives"] (A"-nopervasives");;
 flag ["ocaml"; "compile"; "nolabels"] (A"-nolabels");;
 
@@ -408,12 +435,14 @@ flag ["ocaml"; "doc"; "docfile"; "extension:texi"] (A"-texi");;
 (** Ocamlbuild plugin for it's own building *)
 let install_lib = lazy (try Sys.getenv "INSTALL_LIB" with Not_found -> !*stdlib_dir/"ocamlbuild" (* not My_std.getenv since it's lazy*)) in
 let install_bin = lazy (My_std.getenv ~default:"/usr/local/bin" "INSTALL_BIN") in
-file_rule "ocamlbuild_where.ml"
+rule "ocamlbuild_where.ml"
   ~prod:"%ocamlbuild_where.ml"
-  ~cache:(fun _ _ -> Printf.sprintf "lib:%S, bin:%S" !*install_lib !*install_bin)
-  begin fun _ oc ->
-    Printf.fprintf oc "let bindir = ref %S;;\n" !*install_bin;
-    Printf.fprintf oc "let libdir = ref %S;;\n" !*install_lib
+  begin fun env _ ->
+    Echo(
+      ["let bindir = ref \""; String.escaped !*install_bin; "\";;\n";
+       "let libdir = ref (try Filename.concat (Sys.getenv \"OCAMLLIB\") \"ocamlbuild\" with Not_found -> \"";
+         String.escaped !*install_lib; "\");;\n"],
+      env "%ocamlbuild_where.ml")
   end;;
 ocaml_lib "ocamlbuildlib";;
 ocaml_lib "ocamlbuildlightlib";;

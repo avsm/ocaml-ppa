@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: display.ml,v 1.1 2007/02/07 08:59:13 ertai Exp $ *)
+(* $Id: display.ml,v 1.1.4.1 2007/11/26 13:28:35 ertai Exp $ *)
 (* Original author: Berke Durak *)
 (* Display *)
 open My_std;;
@@ -120,7 +120,7 @@ let create
     | Some fn ->
         let oc = open_out_gen [Open_text; Open_wronly; Open_creat; Open_trunc] 0o644 fn in
         let f = Format.formatter_of_out_channel oc in
-        Format.fprintf f "*** Starting build.\n";
+        Format.fprintf f "### Starting build.\n";
         Some (f, oc)
   in
 

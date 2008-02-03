@@ -9,11 +9,12 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: resource.ml,v 1.1 2007/02/07 08:59:14 ertai Exp $ *)
+(* $Id: resource.ml,v 1.1.4.7 2007/12/18 09:03:37 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format
 open Log
+open Pathname.Operators
 
 module Resources = Set.Make(Pathname)
 
@@ -22,8 +23,48 @@ let print = Pathname.print
 let equal = (=)
 let compare = compare
 
+let in_source_dir p =
+  if Pathname.is_implicit p then Pathname.pwd/p else invalid_arg (Printf.sprintf "in_source_dir: %S" p)
+
+let in_build_dir p =
+  if Pathname.is_relative p then p
+  else invalid_arg (Printf.sprintf "in_build_dir: %S" p)
+
+let clean_up_links entry =
+  if not !Options.make_links then entry else
+  Slurp.filter begin fun path name _ ->
+    let pathname = in_source_dir (path/name) in
+    if Pathname.link_to_dir pathname !Options.build_dir then
+      let z = Pathname.readlink pathname in
+      (* Here is one exception where one can use Sys.file_exists directly *)
+      (if not (Sys.file_exists z) then
+        Shell.rm pathname; false)
+    else true
+  end entry
+
+let clean_up_link_to_build () =
+  Options.entry := Some(clean_up_links (the !Options.entry))
+
+let source_dir_path_set_without_links_to_build =
+  lazy begin
+    clean_up_link_to_build ();
+    Slurp.fold (fun path name _ -> StringSet.add (path/name))
+               (the !Options.entry) StringSet.empty
+  end
+
+let clean_links () =
+  if !*My_unix.is_degraded then
+    ()
+  else
+    ignore (clean_up_link_to_build ())
+
+let exists_in_source_dir p =
+  if !*My_unix.is_degraded then sys_file_exists (in_source_dir p)
+  else StringSet.mem p !*source_dir_path_set_without_links_to_build
+
+let clean p = Shell.rm_f p
+
 module Cache = struct
-  open Pathname.Operators
 
   let clean () = Shell.chdir Pathname.pwd; Shell.rm_rf !Options.build_dir
 
@@ -97,6 +138,35 @@ module Cache = struct
     dprintf 10 "resource_changed:@ %a" print r;
     (get r).changed <- Yes
 
+  let external_is_up_to_date absolute_path =
+    let key = "Resource: " ^ absolute_path in
+    let digest = Digest.file absolute_path in
+    let is_up_to_date =
+      try
+        let digest' = Digest_cache.get key in
+        digest = digest'
+      with Not_found ->
+        false
+    in
+    is_up_to_date || (Digest_cache.put key digest; false)
+
+  let source_is_up_to_date r_in_source_dir r_in_build_dir =
+    let key = "Resource: " ^ r_in_source_dir in
+    let digest = Digest.file r_in_source_dir in
+    let r_is_up_to_date =
+      Pathname.exists r_in_build_dir &&
+      try
+        let digest' = Digest_cache.get key in
+        digest = digest'
+      with Not_found ->
+        false
+    in
+    r_is_up_to_date || (Digest_cache.put key digest; false)
+
+  let prod_is_up_to_date p =
+    let x = in_build_dir p in
+    not (exists_in_source_dir p) || Pathname.exists x && Pathname.same_contents x (in_source_dir p)
+
   let rec resource_has_changed r =
     let cache_entry = get r in
     match cache_entry.changed with
@@ -108,18 +178,28 @@ module Cache = struct
         | Bbuilt -> false
         | Bsuspension _ -> assert false
         | Bcannot_be_built -> false
-        | Bnot_built_yet -> not (Pathname.is_up_to_date false r) in
+        | Bnot_built_yet -> not (prod_is_up_to_date r) in
       let () = cache_entry.changed <- if res then Yes else No in res
 
   let resource_state r = (get r).built
 
-  let resource_is_built r = (get r).built = Bbuilt
-
   let resource_built r = (get r).built <- Bbuilt
 
-  let resource_is_failed r = (get r).built = Bcannot_be_built
-
   let resource_failed r = (get r).built <- Bcannot_be_built
+
+  let import_in_build_dir r =
+    let cache_entry = get r in
+    let r_in_build_dir = in_build_dir r in
+    let r_in_source_dir = in_source_dir r in
+    if source_is_up_to_date r_in_source_dir r_in_build_dir then begin
+      dprintf 5 "%a exists and up to date" print r;
+    end else begin
+      dprintf 5 "%a exists in source dir -> import it" print r;
+      Shell.mkdir_p (Pathname.dirname r);
+      Pathname.copy r_in_source_dir r_in_build_dir;
+      cache_entry.changed <- Yes;
+    end;
+    cache_entry.built <- Bbuilt
 
   let suspend_resource r cmd kont prods =
     let cache_entry = get r in
@@ -165,43 +245,16 @@ module Cache = struct
 
   let print_dependencies = print_graph
 
-  let digest_resource p =
-    let f = Pathname.to_string (Pathname.in_build_dir p) in
-    let buf = Buffer.create 1024 in
-    Buffer.add_string buf f;
-    (if sys_file_exists f then Buffer.add_string buf (Digest.file f));
-    Digest.string (Buffer.contents buf)
-
-  let digests = Hashtbl.create 103
-
-  let get_digest_for name =
-    try Some (Hashtbl.find digests name)
-    with Not_found -> None
-  let store_digest name d = Hashtbl.replace digests name d
-
-  let _digests = lazy (Pathname.pwd / !Options.build_dir / (Pathname.mk "_digests"))
-
-  let finalize () =
-    with_output_file !*_digests begin fun oc ->
-      Hashtbl.iter begin fun name digest ->
-        Printf.fprintf oc "%S: %S\n" name digest
-      end digests
-    end
-
-  let init () =
-    Shell.chdir !Options.build_dir;
-    if Pathname.exists !*_digests then
-      with_input_file !*_digests begin fun ic ->
-        try while true do
-          let l = input_line ic in
-          Scanf.sscanf l "%S: %S" store_digest
-        done with End_of_file -> ()
-      end;
-    My_unix.at_exit_once finalize
-
 end
 
-let clean p = Shell.rm_f p
+let digest p =
+  let f = Pathname.to_string (in_build_dir p) in
+  let buf = Buffer.create 1024 in
+  Buffer.add_string buf f;
+  (if sys_file_exists f then Buffer.add_string buf (Digest.file f));
+  Digest.string (Buffer.contents buf)
+
+let exists_in_build_dir p = Pathname.exists (in_build_dir p)
 
 (*
 type env = string
@@ -233,29 +286,34 @@ let rec subst percent r =
 let print_env = pp_print_string
 *)
 
-let is_up_to_date path = Pathname.is_up_to_date true path
-
-let import x = x
+(* Should normalize *)
+let import x = Pathname.normalize x
 
 module MetaPath : sig
 
+        type t
 	type env
 
-	val matchit : string -> string -> env option
-	val subst : env -> string -> string
+        val mk : (bool * string) -> t
+	val matchit : t -> string -> env option
+	val subst : env -> t -> string
 	val print_env : Format.formatter -> env -> unit
 
 end = struct
+        open Glob_ast
 
-	type atoms = A of string | V of string
+	type atoms = A of string | V of string * Glob.globber
 	type t = atoms list
 	type env = (string * string) list
 
 	exception No_solution
 
-	let mk s = List.map (fun (s, is_var) -> if is_var then V s else A s) (Lexers.meta_path (Lexing.from_string s))
+	let mk (pattern_allowed, s) = List.map begin function
+          | `Var(var_name, globber) -> V(var_name, globber)
+          | `Word s -> A s
+        end (Lexers.path_scheme pattern_allowed (Lexing.from_string s))
 
-  let mk = memo mk
+        let mk = memo mk
 
 	let match_prefix s pos prefix =
 		match String.contains_string s pos prefix with
@@ -264,19 +322,27 @@ end = struct
 
 	let matchit p s =
 	  let sl = String.length s in
-		let rec loop xs pos acc =
+		let rec loop xs pos acc delta =
 			match xs with
 			| [] -> if pos = sl then acc else raise No_solution
-			| A prefix :: xs -> loop xs (match_prefix s pos prefix) acc
-			| V var :: A s2 :: xs ->
-					begin match String.contains_string s pos s2 with
-					| Some(pos') ->	loop xs (pos' + String.length s2) ((var, String.sub s pos (pos' - pos)) :: acc)
-					| None -> raise No_solution
-				  end
-			| [V var] -> (var, String.sub s pos (sl - pos)) :: acc
+			| A prefix :: xs -> loop xs (match_prefix s pos prefix) acc 0
+			| V(var, patt) :: A s2 :: xs' ->
+                            begin match String.contains_string s (pos + delta) s2 with
+                            | Some(pos') ->
+                                let matched = String.sub s pos (pos' - pos) in
+                                if Glob.eval patt matched
+                                then
+                                  try loop xs' (pos' + String.length s2) ((var, matched) :: acc) 0
+                                  with No_solution -> loop xs  pos acc (pos' - pos + 1)
+                                else loop xs  pos acc (pos' - pos + 1)
+                            | None -> raise No_solution
+                            end
+			| [V(var, patt)] ->
+                            let matched = String.sub s pos (sl - pos) in
+                            if Glob.eval patt matched then (var, matched) :: acc else raise No_solution
 			| V _ :: _ -> assert false
 		in
-		try	Some (loop (mk p) 0 [])
+		try	Some (loop p 0 [] 0)
 		with No_solution -> None
 
   let pp_opt pp_elt f =
@@ -310,15 +376,21 @@ end = struct
 			List.map begin fun x ->
 				match x with
 				| A atom -> atom
-				| V var -> List.assoc var env
-			end (mk s)
+				| V(var, _) -> List.assoc var env
+			end s
 		end
 end
 
 type env = MetaPath.env
+type resource_pattern = (Pathname.t * MetaPath.t)
 
-let matchit = MetaPath.matchit
+let print_pattern f (x, _) = Pathname.print f x
 
-let subst = MetaPath.subst
+let import_pattern x = x, MetaPath.mk (true, x)
+let matchit (_, p) x = MetaPath.matchit p x
+
+let subst env s = MetaPath.subst env (MetaPath.mk (false, s))
+let subst_any env s = MetaPath.subst env (MetaPath.mk (true, s))
+let subst_pattern env (_, p) = MetaPath.subst env p
 
 let print_env = MetaPath.print_env

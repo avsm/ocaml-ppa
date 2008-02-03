@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: configuration.ml,v 1.1 2007/02/07 08:59:13 ertai Exp $ *)
+(* $Id: configuration.ml,v 1.1.4.1 2007/11/28 16:03:10 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Log
@@ -61,3 +61,9 @@ let tags_of_filename x = fst (tags_and_flags_of_filename x)
 let flags_of_filename x = snd (tags_and_flags_of_filename x)
 
 let has_tag tag = Tags.mem tag (tags_of_filename "")
+
+let tag_file file tags =
+  if tags <> [] then parse_string (Printf.sprintf "%S: %s" file (String.concat ", " tags));;
+
+let tag_any tags =
+  if tags <> [] then parse_string (Printf.sprintf "true: %s" (String.concat ", " tags));;

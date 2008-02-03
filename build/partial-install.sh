@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: partial-install.sh,v 1.5.2.9 2007/04/05 08:12:39 pouillar Exp $
+# $Id: partial-install.sh,v 1.5.2.11 2007/11/22 18:45:18 ertai Exp $
 
 ######################################
 ######### Copied from build/install.sh
@@ -134,7 +134,7 @@ installdir \
   camlp4o.cma camlp4of.cma camlp4oof.cma \
   camlp4orf.cma camlp4r.cma camlp4rf.cma \
   Camlp4Bin.cm[iox] Camlp4Bin.$O Camlp4Top.cm[io] \
-  Camlp4_config.cmi camlp4prof.cm[iox] camlp4prof.$O \
+  Camlp4_config.cmi camlp4prof.cm[iox] camlp4prof.$O Camlp4_import.cmi \
   $CAMLP4DIR
 installlibdir camlp4lib.$A camlp4fulllib.$A $CAMLP4DIR
 cd ..
@@ -154,6 +154,14 @@ installdir \
   ocamlbuildlib.cma \
   ocamlbuild_plugin.cmi \
   ocamlbuild_pack.cmi \
+  ocamlbuild_unix_plugin.cmi \
+  ocamlbuild_unix_plugin.cmo \
+  ocamlbuild_unix_plugin.cmx \
+  ocamlbuild_unix_plugin.$O \
+  ocamlbuild_executor.cmi \
+  ocamlbuild_executor.cmo \
+  ocamlbuild_executor.cmx \
+  ocamlbuild_executor.$O \
   ocamlbuild.cmo \
   ocamlbuild.cmx \
   ocamlbuild.$O \

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: my_unix.ml,v 1.2.2.1 2007/03/13 10:28:53 pouillar Exp $ *)
+(* $Id: my_unix.ml,v 1.2.2.2 2007/11/28 16:11:27 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format
@@ -36,7 +36,7 @@ type implem =
                             ?ticker:(unit -> unit) ->
                             ?period:float ->
                             ?display:((out_channel -> unit) -> unit) ->
-                            ((string * (unit -> unit)) list list) ->
+                            ((unit -> string) list list) ->
                             (bool list * exn) option;
     mutable report_error  : Format.formatter -> exn -> unit;
     mutable at_exit_once  : (unit -> unit) -> unit;

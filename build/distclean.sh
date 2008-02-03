@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: distclean.sh,v 1.4.2.5 2007/03/12 11:58:48 pouillar Exp $
+# $Id: distclean.sh,v 1.4.2.6 2007/12/18 09:03:12 ertai Exp $
 cd `dirname $0`/..
 set -ex
 (cd byterun && make clean) || :
@@ -9,6 +9,7 @@ rm -rf _build
 rm -f boot/ocamlrun boot/ocamlrun.exe boot/camlheader \
       boot/myocamlbuild boot/myocamlbuild.native boot/myocamlbuild.native.exe \
       myocamlbuild_config.ml config/config.sh config/Makefile \
+      boot/ocamlyacc tools/cvt_emit.bak tools/*.bak \
       config/s.h config/m.h boot/*.cm* _log _*_log*
 
 # from partial boot

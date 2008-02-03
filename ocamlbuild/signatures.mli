@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: signatures.mli,v 1.8.2.3 2007/04/12 13:19:02 pouillar Exp $ *)
+(* $Id: signatures.mli,v 1.8.2.19 2007/12/18 08:55:23 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 (** This module contains all module signatures that the user
     could use to build an ocamlbuild plugin. *)
@@ -82,6 +82,12 @@ module type STRING = sig
 
   val rev : string -> string
 
+  (* Convert a character list into a character string *)
+  val implode : char list -> string
+
+  (* Convert a character string into a character list *)
+  val explode : string -> char list
+
   (** The following are original functions from the [String] module. *)
   include Std_signatures.STRING
 end
@@ -150,18 +156,23 @@ end
     quotation mistakes.  *)
 module type COMMAND = sig
   type tags
+  type pathname
 
-  (** The type [t] is basically a sequence of command specifications.  This avoids having to
-      flatten lists of lists.  *)
-  type t = Seq of t list | Cmd of spec | Nop
+  (** The type [t] provides some basic combinators and command primitives.
+      Other commands can be made of command specifications ([spec]). *)
+  type t =
+    | Seq of t list                  (** A sequence of commands (like the `;' in shell) *)
+    | Cmd of spec                    (** A command is made of command specifications ([spec]) *)
+    | Echo of string list * pathname (** Write the given strings (w/ any formatting) to the given file *)
+    | Nop                            (** The command that does nothing *)
 
   (** The type for command specifications. *)
   and spec =
     | N                       (** No operation. *)
     | S of spec list          (** A sequence.  This gets flattened in the last stages *)
     | A of string             (** An atom. *)
-    | P of string             (** A pathname. *)
-    | Px of string            (** A pathname, that will also be given to the call_with_target hook. *)
+    | P of pathname           (** A pathname. *)
+    | Px of pathname          (** A pathname, that will also be given to the call_with_target hook. *)
     | Sh of string            (** A bit of raw shell code, that will not be escaped. *)
     | T of tags               (** A set of tags, that describe properties and some semantics
                                   information about the command, afterward these tags will be
@@ -174,8 +185,8 @@ module type COMMAND = sig
     [ `N
     | `S of vspec list
     | `A of string
-    | `P of string (* Pathname.t *)
-    | `Px of string (* Pathname.t *)
+    | `P of pathname
+    | `Px of pathname
     | `Sh of string
     | `Quote of vspec ]
 
@@ -194,7 +205,7 @@ module type COMMAND = sig
   val execute : ?quiet:bool -> ?pretend:bool -> t -> unit
 
   (** Run the commands in the given list, if possible in parallel.
-      See the module [Executor]. *)
+      See the module [Ocamlbuild_executor]. *)
   val execute_many : ?quiet:bool -> ?pretend:bool -> t list -> (bool list * exn) option
 
   (** [setup_virtual_command_solver virtual_command solver]
@@ -210,10 +221,10 @@ module type COMMAND = sig
       into command-line options. *)
   val reduce : spec -> spec
 
-  (** Print a command. *)
+  (** Print a command (the format is not suitable to running the command). *)
   val print : Format.formatter -> t -> unit
 
-  (** Convert a command to a string. *)
+  (** Convert a command to a string (same format as print). *)
   val to_string : t -> string
 
   (** Build a string representation of a command that can be passed to the
@@ -249,8 +260,11 @@ module type GLOB = sig
         matching {i glob2}.
       - [a] matches the string consisting of the single letter [a].
       - [{]{i glob1},{i glob2}[}] matches strings matching {i glob1} or {i glob2}.
-      - [*] matches all strings, including the empty one.
-      - [?] matches strings of length 1.
+      - [?] any one-letter string, excluding the slash.
+      - [*] matches all strings not containing a slash, including the empty one.
+      - [**/] the empty string, or any string ending with a slash.
+      - [/**] any string starting with a slash, or the empty string.
+      - [/**/] any string starting and ending with a slash.
       - [\[]{i c1}-{i c2}{i c3}-{i c4}...[\]] matches characters in the range {i c1} to {i c2} inclusive,
         or in the range {i c3} to {i c4} inclusive.  For instance [\[a-fA-F0-9\]] matches hexadecimal digits.
         To match the dash, put it at the end.
@@ -324,6 +338,11 @@ module type MISC = sig
       << f (g (h x)) >>   becomes << f& g& h x >> *)
   val ( & ) : ('a -> 'b) -> 'a -> 'b
 
+  (** The reversed application combinator.
+      Useful to describe some operations chaining.
+      << f x (g y (h z)) >> becomes << z |> h |> g y |> f x >> *)
+  val ( |> ) : 'a -> ('a -> 'b) -> 'b
+
   (** [r @:= l] is equivalent to [r := !r @ l] *)
   val ( @:= ) : 'a list ref -> 'a list -> unit
 
@@ -358,9 +377,9 @@ module type OPTIONS = sig
   val program_to_execute : bool ref
   val must_clean : bool ref
   val catch_errors : bool ref
-  val internal_log_file : string option ref
   val use_menhir : bool ref
   val show_documentation : bool ref
+  val recursive : bool ref
 
   val targets : string list ref
   val ocaml_libs : string list ref
@@ -417,7 +436,7 @@ end
 module type PLUGIN = sig
   module Pathname  : PATHNAME
   module Tags      : TAGS
-  module Command   : COMMAND with type tags = Tags.t
+  module Command   : COMMAND with type tags = Tags.t and type pathname = Pathname.t
   module Outcome   : OUTCOME
   module String    : STRING
   module List      : LIST
@@ -426,54 +445,86 @@ module type PLUGIN = sig
   module Arch      : ARCH
   include MISC
 
+  (** See [COMMAND] for the description of these types. *)
+  type command = Command.t = Seq of command list | Cmd of spec | Echo of string list * Pathname.t | Nop
+  and spec = Command.spec =
+    | N | S of spec list | A of string | P of string | Px of string
+    | Sh of string | T of Tags.t | V of string | Quote of spec
+
+  (** [path1/path2] Join the given path names. *)
   val ( / ) : Pathname.t -> Pathname.t -> Pathname.t
+
+  (** [path-.-extension] Add the given extension to the given pathname. *)
   val ( -.- ) : Pathname.t -> string -> Pathname.t
 
+  (** [tags++tag] Add the given tag to the given set of tags. *)
   val ( ++ ) : Tags.t -> Tags.elt -> Tags.t
+
+  (** [tags--tag] Remove the given tag to the given set of tags. *)
   val ( -- ) : Tags.t -> Tags.elt -> Tags.t
+
+  (** [tags+++optional_tag] Add the given optional tag to the given set of tags
+      if the given option is Some. *)
   val ( +++ ) : Tags.t -> Tags.elt option -> Tags.t
+
+  (** [tags---optional_tag] Remove the given optional tag to the given set of tags
+      if the given option is Some. *)
   val ( --- ) : Tags.t -> Tags.elt option -> Tags.t
 
+  (** The type of the builder environments. Here an environment is just the
+      lookup function of it. Basically this function will resolve path variables
+      like % or more generally %(var_name). *)
   type env = Pathname.t -> Pathname.t
+
+  (** A builder is a function that waits for conjonction of alternative targets.
+      The alternatives are here to support some choices, for instance for an
+      OCaml module an alternatives can be foo.cmo, foo.cmi, Foo.cmo, Foo.cmi.
+      Conjonctions are here to help making parallelism, indeed commands that are
+      independant will be run concurently. *)
   type builder = Pathname.t list list -> (Pathname.t, exn) Outcome.t list
+
+  (** This is the type for rule actions. An action receive as argument, the
+      environment lookup function (see [env]), and a function to dynamically
+      build more targets (see [builder]). An action should return the command
+      to run in order to build the rule productions using the rule dependencies. *)
   type action = env -> builder -> Command.t
 
+  (** This is the main function for adding a rule to the ocamlbuild engine.
+      - The first argument is the name of the rule (should be unique).
+      - It takes files that the rule produces.
+        Use ~prod for one file, ~prods for list of files.
+      - It also takes files that the rule uses.
+        Use ~dep for one file, ~deps for list of files.
+      - It finally takes the action to perform in order to produce the
+        productions files using the dependencies (see [action]).
+      There is also two more options:
+      - The ~insert argument allow to insert the rules precisely between other
+        rules.
+      - The ~stamp argument specify the name of a file that will be
+        automatically produced by ocamlbuild. This file can serve as a virtual
+        target (or phony target), since it will be filled up by a digest of
+        it dependencies.
+      - The ~tags argument in deprecated, don't use it. *)
   val rule : string ->
     ?tags:string list ->
     ?prods:string list ->
     ?deps:string list ->
     ?prod:string ->
     ?dep:string ->
+    ?stamp:string ->
     ?insert:[`top | `before of string | `after of string | `bottom] ->
     action -> unit
-
-  val file_rule : string ->
-    ?tags:string list ->
-    prod:string ->
-    ?deps:string list ->
-    ?dep:string ->
-    ?insert:[`top | `before of string | `after of string | `bottom] ->
-    cache:(env -> builder -> string) ->
-    (env -> out_channel -> unit) -> unit
-
-  val custom_rule : string ->
-    ?tags:string list ->
-    ?prods:string list ->
-    ?prod:string ->
-    ?deps:string list ->
-    ?dep:string ->
-    ?insert:[`top | `before of string | `after of string | `bottom] ->
-    cache:(env -> builder -> string) ->
-    (env -> cached:bool -> unit) -> unit
 
   (** [copy_rule name ?insert source destination] *)
   val copy_rule : string ->
     ?insert:[`top | `before of string | `after of string | `bottom] ->
     string -> string -> unit
 
-  (** [dep tags deps] Will build [deps] when [tags] will be activated. *)
+  (** [dep tags deps] Will build [deps] when all [tags] will be activated. *)
   val dep : Tags.elt list -> Pathname.t list -> unit
 
+  (** [flag tags command_spec] Will inject the given piece of command
+      ([command_spec]) when all [tags] will be activated. *)
   val flag : Tags.elt list -> Command.spec -> unit
 
   (** [non_dependency module_path module_name]
@@ -514,17 +565,33 @@ module type PLUGIN = sig
   val expand_module :
     Pathname.t list -> Pathname.t -> string list -> Pathname.t list
 
+  (** Reads the given file, parse it has list of words separated by blanks.
+      It ignore lines that begins with a '#' character. *)
   val string_list_of_file : Pathname.t -> string list
 
+  (** Takes a pathname and returns an OCaml module name. Basically it will
+      remove directories and extensions, and then capitalize the string. *)
   val module_name_of_pathname : Pathname.t -> string
 
+  (** The Unix mv command. *)
   val mv : Pathname.t -> Pathname.t -> Command.t
+
+  (** The Unix cp command. *)
   val cp : Pathname.t -> Pathname.t -> Command.t
+
+  (** The Unix ln -f command. *)
   val ln_f : Pathname.t -> Pathname.t -> Command.t
+
+  (** The Unix ln -s command. *)
   val ln_s : Pathname.t -> Pathname.t -> Command.t
+
+  (** The Unix rm -f command. *)
   val rm_f : Pathname.t -> Command.t
-  val touch : Pathname.t -> Command.t
+
+  (** The Unix chmod command (almost deprecated). *)
   val chmod : Command.spec -> Pathname.t -> Command.t
+
+  (** The Unix cmp command (almost deprecated). *)
   val cmp : Pathname.t -> Pathname.t -> Command.t
 
   (** [hide_package_contents pack_name]
@@ -533,12 +600,18 @@ module type PLUGIN = sig
       this package even if it contains that module. *)
   val hide_package_contents : string -> unit
 
+  (** [tag_file filename tag_list] Tag the given filename with all given tags. *)
   val tag_file : Pathname.t -> Tags.elt list -> unit
 
+  (** [tag_any tag_list] Tag anything with all given tags. *)
   val tag_any : Tags.elt list -> unit
 
+  (** Returns the set of tags that applies to the given pathname. *)
   val tags_of_pathname : Pathname.t -> Tags.t
 
+  (** Here is the list of hooks that the dispatch function have to handle.
+      Generally one respond to one or two hooks (like After_rules) and do
+      nothing in the default case. *)
   type hook = 
     | Before_hygiene
     | After_hygiene
@@ -547,5 +620,8 @@ module type PLUGIN = sig
     | Before_rules
     | After_rules
 
+  (** [dispatch hook_handler] Is the entry point for ocamlbuild plugins. Every
+      plugin must call it with a [hook_handler] where all calls to plugin
+      functions lives. *)
   val dispatch : (hook -> unit) -> unit
 end

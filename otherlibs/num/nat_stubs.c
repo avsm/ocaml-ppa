@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: nat_stubs.c,v 1.16 2005/09/22 14:21:50 xleroy Exp $ */
+/* $Id: nat_stubs.c,v 1.16.10.1 2007/10/25 09:23:30 xleroy Exp $ */
 
 #include "alloc.h"
 #include "config.h"
@@ -109,7 +109,7 @@ CAMLprim value is_digit_zero(value nat, value ofs)
 CAMLprim value is_digit_normalized(value nat, value ofs)
 {
   return
-    Val_bool(Digit_val(nat, Long_val(ofs)) & (1L << (BNG_BITS_PER_DIGIT-1)));
+    Val_bool(Digit_val(nat, Long_val(ofs)) & ((bngdigit)1 << (BNG_BITS_PER_DIGIT-1)));
 }
 
 CAMLprim value is_digit_odd(value nat, value ofs)
@@ -330,7 +330,7 @@ static void serialize_nat(value nat,
 
 #ifdef ARCH_SIXTYFOUR
   len = len * 2; /* two 32-bit words per 64-bit digit  */
-  if (len >= (1L << 32))
+  if (len >= ((mlsize_t)1 << 32))
     failwith("output_value: nat too big");
 #endif
   serialize_int_4((int32) len);

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: access.c,v 1.11 2005/03/24 17:20:53 doligez Exp $ */
+/* $Id: access.c,v 1.11.12.1 2007/10/09 14:30:29 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -31,7 +31,7 @@
 # else
 #  define R_OK    4/* test for read permission */
 #  define W_OK    2/* test for write permission */
-#  define X_OK    1/* test for execute (search) permission */
+#  define X_OK    4/* test for execute permission - not implemented in Win32 */
 #  define F_OK    0/* test for presence of file */
 # endif
 #endif

@@ -9,18 +9,9 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamldep.mli,v 1.2.4.1 2007/03/23 16:34:48 pouillar Exp $ *)
 (* Original author: Nicolas Pouillard *)
-exception Error of string
-val ocamldep_command : Pathname.t -> Pathname.t -> Command.spec
-val menhir_ocamldep_command : Pathname.t -> Pathname.t -> Command.spec
-val module_dependencies_of : Pathname.t -> ([ `mandatory | `just_try ] * string) list
-val register_module_dependencies : Pathname.t -> string list -> unit
-val depends :
-  string ->
-  ?tags:string list ->
-  prod:string ->
-  dep:string ->
-  ?insert:[`top | `before of string | `after of string | `bottom] ->
-  ?ocamldep_command:(Pathname.t -> Pathname.t -> Command.spec) ->
-  unit -> unit
+
+val init : unit -> unit
+
+val get : string -> string
+val put : string -> string -> unit

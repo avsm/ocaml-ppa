@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_dependencies.ml,v 1.1 2007/02/07 08:59:14 ertai Exp $ *)
+(* $Id: ocaml_dependencies.ml,v 1.1.4.1 2007/11/28 16:07:39 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Log
@@ -111,7 +111,7 @@ module Make (I : INPUT) = struct
       if pack_mode then
         if Filename.check_suffix x ".cmi" then
           let caml_obj = Pathname.update_extensions caml_obj_ext x in
-          if Pathname.exists_in_build_dir caml_obj then
+          if Resource.exists_in_build_dir caml_obj then
             caml_obj
           else
             x

@@ -19,7 +19,7 @@
 
 module Id = struct
   value name = "Camlp4Printers.DumpCamlp4Ast";
-  value version = "$Id: DumpCamlp4Ast.ml,v 1.5.4.1 2007/03/30 15:50:12 pouillar Exp $";
+  value version = "$Id: DumpCamlp4Ast.ml,v 1.5.4.2 2007/05/22 09:05:39 pouillar Exp $";
 end;
 
 module Make (Syntax : Sig.Syntax)
@@ -29,7 +29,8 @@ module Make (Syntax : Sig.Syntax)
 
   value with_open_out_file x f =
     match x with
-    [ Some file -> do { let oc = open_out_bin file in f oc;
+    [ Some file -> do { let oc = open_out_bin file;
+                        f oc;
                         flush oc;
                         close_out oc }
     | None -> do { set_binary_mode_out stdout True; f stdout; flush stdout } ];

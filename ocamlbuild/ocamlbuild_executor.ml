@@ -9,25 +9,24 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: executor.ml,v 1.2.4.1 2007/03/05 15:11:23 pouillar Exp $ *)
+(* $Id: ocamlbuild_executor.ml,v 1.1.2.3 2007/11/28 17:21:00 ertai Exp $ *)
 (* Original author: Berke Durak *)
-(* Executor *)
+(* Ocamlbuild_executor *)
 
 open Unix;;
 
-module Exit_codes = struct
-  let rc_subcommand_failed     = 10
-  let rc_subcommand_got_signal = 11
-  let rc_io_error              = 12
-  let rc_exceptional_condition = 13
-end;;
+type error =
+  | Subcommand_failed
+  | Subcommand_got_signal
+  | Io_error
+  | Exceptionl_condition
 
-type task = (string * (unit -> unit));;
+type task = unit -> string;;
 
 type job = {
   job_id      : int * int;
   job_command : string;
-  job_next    : (string * (unit -> unit)) list;
+  job_next    : task list;
   job_result  : bool ref; (* Result of this sequence group *)
   job_stdout  : in_channel;
   job_stdin   : out_channel;
@@ -48,11 +47,6 @@ let print_unix_status oc = function
   | WEXITED x -> fp oc "exit %d" x
   | WSIGNALED i -> fp oc "signal %d" i
   | WSTOPPED i -> fp oc "stop %d" i
-;;
-(* ***)
-(*** exit *)
-let exit rc =
-  raise (Ocamlbuild_pack.My_std.Exit_with_code rc)
 ;;
 (* ***)
 (*** print_job_id *)
@@ -91,6 +85,7 @@ let execute
   ?(ticker=ignore)
   ?(period=0.1)
   ?(display=(fun f -> f Pervasives.stdout))
+  ~exit
   (commands : task list list)
     =
   let batch_id = ref 0 in
@@ -134,9 +129,8 @@ let execute
   in
   (* ***)
   (*** add_job *)
-  let add_job (cmd, action) rest result id =
+  let add_job cmd rest result id =
     (*display begin fun oc -> fp oc "Job %a is %s\n%!" print_job_id id cmd; end;*)
-    action ();
     let (stdout', stdin', stderr') = open_process_full cmd env in
     incr jobs_active;
     set_nonblock (doi stdout');
@@ -156,15 +150,23 @@ let execute
     jobs := JS.add job !jobs;
   in
   (* ***)
+  (*** skip_empty_tasks *)
+  let rec skip_empty_tasks = function
+    | [] -> None
+    | task :: tasks ->
+        let cmd = task () in
+        if cmd = "" then skip_empty_tasks tasks else Some(cmd, tasks)
+  in
+  (* ***)
   (*** add_some_jobs *)
   let add_some_jobs () =
     let (tasks, result) = Queue.take commands_to_execute in
-    match tasks with
-    | [] -> result := false
-    | task :: rest ->
+    match skip_empty_tasks tasks with
+    | None -> result := false
+    | Some(cmd, rest) ->
       let b_id = !batch_id in
       incr batch_id;
-      add_job task rest result (b_id, 0)
+      add_job cmd rest result (b_id, 0)
   in
   (* ***)
   (*** terminate *)
@@ -222,7 +224,7 @@ let execute
                 fp oc "Exception %s while reading output of command %S\n%!" job.job_command
                   (Printexc.to_string x);
               end;
-            exit Exit_codes.rc_io_error
+            exit Io_error
   in
   (* ***)
   (*** process_jobs_to_terminate *)
@@ -260,11 +262,11 @@ let execute
             begin
               if continue then
                 begin
-                  match job.job_next with
-                  | [] -> job.job_result := true
-                  | task :: rest ->
+                  match skip_empty_tasks job.job_next with
+                  | None -> job.job_result := true
+                  | Some(cmd, rest) ->
                       let (b_id, s_id) = job.job_id in
-                      add_job task rest job.job_result (b_id, s_id + 1)
+                      add_job cmd rest job.job_result (b_id, s_id + 1)
                 end
               else
                 all_ok := false;
@@ -273,12 +275,12 @@ let execute
             show_command ();
             display (fun oc -> fp oc "Command exited with code %d.\n" rc);
             all_ok := false;
-            exit Exit_codes.rc_subcommand_failed
+            exit Subcommand_failed
         | Unix.WSTOPPED s | Unix.WSIGNALED s ->
             show_command ();
             all_ok := false;
             display (fun oc -> fp oc "Command got signal %d.\n" s);
-            exit Exit_codes.rc_subcommand_got_signal
+            exit Subcommand_got_signal
       end
     done
   in
@@ -318,7 +320,7 @@ let execute
            chxfds,
              begin fun _ _job ->
                (*display (fun oc -> fp oc "Exceptional condition on command %S\n%!" job.job_command);
-               exit Exit_codes.rc_exceptional_condition*)
+               exit Exceptional_condition*)
 	       () (* FIXME *)
              end];
         loop ()

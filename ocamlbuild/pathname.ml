@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pathname.ml,v 1.1.4.2 2007/03/13 10:28:53 pouillar Exp $ *)
+(* $Id: pathname.ml,v 1.1.4.5 2007/12/18 08:56:50 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format
@@ -43,9 +43,6 @@ module Operators = struct
 end
 open Operators
 
-let in_source_dir p =
-  if is_implicit p then pwd/p else invalid_arg (sprintf "in_source_dir: %S" p)
-
 let equal x y = x = y
 
 let to_string x = x
@@ -58,7 +55,37 @@ let is_directory x =
 let readdir x = Outcome.good (sys_readdir x)
 
 let dir_seps = ['/';'\\'] (* FIXME add more *)
+let not_normal_form_re = Glob.parse "<**/{,.,..}/**>"
+
 let parent x = concat parent_dir_name x
+
+let split p =
+  let rec go p acc =
+    let dir = dirname p in
+    if dir = p then dir, acc
+    else go dir (basename p :: acc)
+  in go p []
+
+let join root paths =
+  let root = if root = current_dir_name then "" else root in
+  List.fold_left (/) root paths
+
+let _H1 = assert (current_dir_name = ".")
+let _H2 = assert (parent_dir_name = "..")
+
+(* Use H1, H2 *)
+let rec normalize_list = function
+  | [] -> []
+  | "." :: xs -> normalize_list xs
+  | ".." :: _ -> failwith "Pathname.normalize_list: .. is forbidden here"
+  | _ :: ".." :: xs -> normalize_list xs
+  | x :: xs -> x :: normalize_list xs
+
+let normalize x =
+  if Glob.eval not_normal_form_re x then
+    let root, paths = split x in
+    join root (normalize_list paths)
+  else x
 
 (* [is_prefix x y] is [x] a pathname prefix of [y] *)
 let is_prefix x y =
@@ -98,37 +125,6 @@ let get_extensions x =
 let update_extensions ext x =
   add_extension ext (chop_extensions x)
 
-let clean_up_links entry =
-  Slurp.filter begin fun path name _ ->
-    let pathname = in_source_dir (path/name) in
-    if link_to_dir pathname !Options.build_dir then
-      let z = readlink pathname in
-      (* Here is one exception where one can use Sys.file_exists directly *)
-      (if not (Sys.file_exists z) then
-        Shell.rm pathname; false)
-    else true
-  end entry
-
-let clean_up_link_to_build () =
-  Options.entry := Some(clean_up_links (the !Options.entry))
-
-let source_dir_path_set_without_links_to_build =
-  lazy begin
-    clean_up_link_to_build ();
-    Slurp.fold (fun path name _ -> StringSet.add (path/name))
-               (the !Options.entry) StringSet.empty
-  end
-
-let exists_in_source_dir p =
-  if !*My_unix.is_degraded then sys_file_exists (in_source_dir p)
-  else StringSet.mem p !*source_dir_path_set_without_links_to_build
-
-let clean_links () =
-  if !*My_unix.is_degraded then
-    ()
-  else
-    ignore (clean_up_link_to_build ())
-
 let exists = sys_file_exists
 
 let copy = Shell.cp
@@ -141,8 +137,6 @@ let with_input_file = with_input_file
 let with_output_file = with_output_file
 
 let print_path_list = List.print print
-
-let root = mk "__root__"
 
 let context_table = Hashtbl.create 107
 
@@ -161,20 +155,5 @@ let define_context dir context =
   let dir = if dir = "" then current_dir_name else dir in
   Hashtbl.replace context_table dir& List.union context& include_dirs_of dir
 
-let in_build_dir p =
-  if is_relative p then p
-  else
-    root/p (* XXX: Never reached *)
-
-let exists_in_build_dir p = exists (in_build_dir p)
-
 let same_contents x y = Digest.file x = Digest.file y
 
-let is_up_to_date b p =
-  let x = in_build_dir p in
-  if b then exists_in_source_dir p && exists x && same_contents x (in_source_dir p)
-  else not (exists_in_source_dir p) || exists x && same_contents x (in_source_dir p)
-
-let import_in_build_dir p =
-  let p_in_build_dir = in_build_dir p in
-  Shell.mkdir_p (dirname p); copy (in_source_dir p) p_in_build_dir

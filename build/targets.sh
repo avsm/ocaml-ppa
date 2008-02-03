@@ -1,4 +1,4 @@
-# $Id: targets.sh,v 1.2.4.6 2007/03/12 11:58:48 pouillar Exp $
+# $Id: targets.sh,v 1.2.4.7 2007/06/20 13:26:29 ertai Exp $
 . config/config.sh
 . build/otherlibs-targets.sh
 . build/camlp4-targets.sh
@@ -38,8 +38,9 @@ OCAMLOPT_NATIVE=ocamlopt.opt$EXE
 OCAMLLEX_NATIVE=lex/ocamllex.opt$EXE
 TOOLS_NATIVE=tools/ocamldep.native$EXE
 OCAMLDOC_NATIVE="ocamldoc/ocamldoc.opt$EXE ocamldoc/odoc_info.cmxa ocamldoc/stdlib_man/Pervasives.3o"
-OCAMLBUILD_NATIVE="ocamlbuild/ocamlbuildlib.cmxa \
-                   ocamlbuild/ocamlbuildlightlib.cmxa \
+OCAMLBUILDLIB_NATIVE="ocamlbuild/ocamlbuildlib.cmxa \
+                      ocamlbuild/ocamlbuildlightlib.cmxa"
+OCAMLBUILD_NATIVE="$OCAMLBUILDLIB_NATIVE \
                    ocamlbuild/ocamlbuild.native$EXE \
                    ocamlbuild/ocamlbuildlight.native$EXE"
 if [ -x boot/myocamlbuild.native ]; then

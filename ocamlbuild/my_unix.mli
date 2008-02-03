@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: my_unix.mli,v 1.1 2007/02/07 08:59:14 ertai Exp $ *)
+(* $Id: my_unix.mli,v 1.1.4.2 2007/11/28 16:11:27 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 type file_kind =
 | FK_dir
@@ -30,13 +30,13 @@ val run_and_open : string -> (in_channel -> 'a) -> 'a
 val readlink : string -> string
 val run_and_read : string -> string
 
-(** See [Executor.execute] *)
+(** See [Ocamlbuild_executor.execute] *)
 val execute_many :
   ?max_jobs:int ->
   ?ticker:(unit -> unit) ->
   ?period:float ->
   ?display:((out_channel -> unit) -> unit) ->
-    ((string * (unit -> unit)) list list) ->
+    ((unit -> string) list list) ->
     (bool list * exn) option
 
 val report_error : Format.formatter -> exn -> unit
@@ -60,7 +60,7 @@ type implem =
                             ?ticker:(unit -> unit) ->
                             ?period:float ->
                             ?display:((out_channel -> unit) -> unit) ->
-                            ((string * (unit -> unit)) list list) ->
+                            ((unit -> string) list list) ->
                             (bool list * exn) option;
     mutable report_error  : Format.formatter -> exn -> unit;
     mutable at_exit_once  : (unit -> unit) -> unit;

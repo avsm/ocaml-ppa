@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: install.sh,v 1.6.2.12 2007/04/05 08:12:39 pouillar Exp $
+# $Id: install.sh,v 1.6.2.16 2007/11/27 13:27:48 ertai Exp $
 set -e
 
 cd `dirname $0`/..
@@ -127,6 +127,7 @@ installdir otherlibs/"$WIN32"unix/unixsupport.h \
 
 installdir yacc/ocamlyacc byterun/ocamlrun $BINDIR
 
+installdir config/Makefile $LIBDIR/Makefile.config
 installdir byterun/ld.conf $LIBDIR
 
 cd _build
@@ -462,8 +463,8 @@ echo "Installing manuals..."
 (cd ../man && make install)
 
 echo "Installing ocamldoc..."
-installbin ocamldoc/ocamldoc$EXE $BINDIR/ocamldoc$EXE
-installbin ocamldoc/ocamldoc.opt$EXE $BINDIR/ocamldoc.opt$EXE
+installbin ocamldoc/ocamldoc $BINDIR/ocamldoc$EXE
+installbin ocamldoc/ocamldoc.opt $BINDIR/ocamldoc.opt$EXE
 
 installdir \
   ../ocamldoc/ocamldoc.hva \
@@ -510,30 +511,40 @@ installdir \
   camlp4o.cma camlp4of.cma camlp4oof.cma \
   camlp4orf.cma camlp4r.cma camlp4rf.cma \
   Camlp4Bin.cm[iox] Camlp4Bin.$O Camlp4Top.cm[io] \
-  Camlp4_config.cmi camlp4prof.cm[iox] camlp4prof.$O \
+  Camlp4_config.cmi camlp4prof.cm[iox] camlp4prof.$O Camlp4_import.cmi \
   $CAMLP4DIR
 installlibdir camlp4lib.$A camlp4fulllib.$A $CAMLP4DIR
 cd ..
 
 echo "Installing ocamlbuild..."
 
-installbin ocamlbuild/ocamlbuild.byte$EXE $BINDIR/ocamlbuild.byte$EXE
-installbin ocamlbuild/ocamlbuild.native$EXE $BINDIR/ocamlbuild.native$EXE
-installbestbin ocamlbuild/ocamlbuild.native$EXE ocamlbuild/ocamlbuild.byte$EXE $BINDIR/ocamlbuild$EXE
+cd ocamlbuild
+installbin ocamlbuild.byte$EXE $BINDIR/ocamlbuild.byte$EXE
+installbin ocamlbuild.native$EXE $BINDIR/ocamlbuild.native$EXE
+installbestbin ocamlbuild.native$EXE ocamlbuild.byte$EXE $BINDIR/ocamlbuild$EXE
 
 installlibdir \
-  ocamlbuild/ocamlbuildlib.$A \
+  ocamlbuildlib.$A \
   $LIBDIR/ocamlbuild
 
 installdir \
-  ocamlbuild/ocamlbuildlib.cmxa \
-  ocamlbuild/ocamlbuildlib.cma \
-  ocamlbuild/ocamlbuild_plugin.cmi \
-  ocamlbuild/ocamlbuild_pack.cmi \
-  ocamlbuild/ocamlbuild.cmo \
-  ocamlbuild/ocamlbuild.cmx \
-  ocamlbuild/ocamlbuild.$O \
+  ocamlbuildlib.cmxa \
+  ocamlbuildlib.cma \
+  ocamlbuild_plugin.cmi \
+  ocamlbuild_pack.cmi \
+  ocamlbuild_unix_plugin.cmi \
+  ocamlbuild_unix_plugin.cmo \
+  ocamlbuild_unix_plugin.cmx \
+  ocamlbuild_unix_plugin.$O \
+  ocamlbuild_executor.cmi \
+  ocamlbuild_executor.cmo \
+  ocamlbuild_executor.cmx \
+  ocamlbuild_executor.$O \
+  ocamlbuild.cmo \
+  ocamlbuild.cmx \
+  ocamlbuild.$O \
   $LIBDIR/ocamlbuild
+cd ..
 
 installdir \
   ../ocamlbuild/man/ocamlbuild.1 \

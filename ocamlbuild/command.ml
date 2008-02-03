@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: command.ml,v 1.1.4.1 2007/03/23 16:34:48 pouillar Exp $ *)
+(* $Id: command.ml,v 1.1.4.5 2007/12/18 08:55:22 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 (* Command *)
 
@@ -17,19 +17,21 @@ open My_std
 open Log
 
 type tags = Tags.t
+type pathname = string
 
 let jobs = ref 1
 
 type t =
 | Seq of t list
 | Cmd of spec
+| Echo of string list * pathname
 | Nop
 and spec =
 | N (* nop or nil *)
 | S of spec list
 | A of string
-| P of string (* Pathname.t *)
-| Px of string (* Pathname.t *)
+| P of pathname
+| Px of pathname
 | Sh of string
 | T of Tags.t
 | V of string
@@ -40,8 +42,8 @@ and vspec =
   [ `N
   | `S of vspec list
   | `A of string
-  | `P of string (* Pathname.t *)
-  | `Px of string (* Pathname.t *)
+  | `P of pathname
+  | `Px of pathname
   | `Sh of string
   | `Quote of vspec ]
 
@@ -158,34 +160,80 @@ let string_target_and_tags_of_command_spec spec =
   let target = if !rtarget = "" then s else !rtarget in
   s, target, !rtags
 
-let string_print_of_command_spec spec =
+let string_print_of_command_spec spec quiet pretend =
   let s, target, tags = string_target_and_tags_of_command_spec spec in
-  (s, (fun quiet pretend () -> if not quiet then Log.event ~pretend s target tags))
+  fun () -> if not quiet then Log.event ~pretend s target tags; s
 (* ***)
+
+let print_escaped_string f = Format.fprintf f "%S"
 
 let rec print f =
   function
   | Cmd spec -> Format.pp_print_string f (string_of_command_spec spec)
   | Seq seq -> List.print print f seq
   | Nop -> Format.pp_print_string f "nop"
+  | Echo(texts, dest_path) ->
+      Format.fprintf f "@[<2>Echo(%a,@ %a)@]"
+        (List.print print_escaped_string) texts print_escaped_string dest_path
 
 let to_string x = sbprintf "%a" print x
+
+let add_parallel_stat, dump_parallel_stats =
+  let xmin = ref max_int in
+  let xmax = ref 0 in
+  let xsum = ref 0 in
+  let xsumall = ref 0 in
+  let xcount = ref 0 in
+  let xcountall = ref 0 in
+  let add_parallel_stat x =
+    if x > 0 then begin
+      incr xcountall;
+      xsumall := x + !xsumall;
+    end;
+    if x > 1 then begin
+      incr xcount;
+      xsum := x + !xsum;
+      xmax := max !xmax x;
+      xmin := min !xmin x;
+    end
+  in
+  let dump_parallel_stats () =
+    if !jobs <> 1 then
+      if !xcount = 0 then
+        dprintf 1 "# No parallelism done"
+      else
+        let xaverage = float_of_int !xsumall /. float_of_int !xcountall in
+        let xaveragepara = float_of_int !xsum /. float_of_int !xcount in
+        dprintf 1 "# Parallel statistics: { count(total): %d(%d), max: %d, min: %d, average(total): %.3f(%.3f) }"
+                  !xcount !xcountall !xmax !xmin xaveragepara xaverage
+  in
+  add_parallel_stat, dump_parallel_stats
+
+module Primitives = struct
+  let do_echo texts dest_path =
+    with_output_file dest_path begin fun oc ->
+      List.iter (output_string oc) texts
+    end
+  let echo x y () = (* no print here yet *) do_echo x y; ""
+end
 
 let rec list_rev_iter f =
   function
   | [] -> ()
   | x :: xs -> list_rev_iter f xs; f x
 
-let spec_list_of_cmd cmd =
+let flatten_commands quiet pretend cmd =
   let rec loop acc =
     function
     | [] -> acc
     | Nop :: xs -> loop acc xs
-    | Cmd spec :: xs -> loop (string_print_of_command_spec spec :: acc) xs
+    | Cmd spec :: xs -> loop (string_print_of_command_spec spec quiet pretend :: acc) xs
+    | Echo(texts, dest_path) :: xs -> loop (Primitives.echo texts dest_path :: acc) xs
     | Seq l :: xs -> loop (loop acc l) xs
   in List.rev (loop [] [cmd])
 
 let execute_many ?(quiet=false) ?(pretend=false) cmds =
+  add_parallel_stat (List.length cmds);
   let degraded = !*My_unix.is_degraded || Sys.os_type = "Win32" in
   let jobs = !jobs in
   if jobs < 0 then invalid_arg "jobs < 0";
@@ -198,27 +246,10 @@ let execute_many ?(quiet=false) ?(pretend=false) cmds =
     None
   else
     begin
-      let konts =
-        List.map
-          begin fun cmd ->
-            let specs = spec_list_of_cmd cmd in
-            List.map
-              begin fun (cmd, print) ->
-                (cmd, (print quiet pretend))
-              end
-              specs  
-          end
-          cmds
-      in
+      let konts = List.map (flatten_commands quiet pretend) cmds in
       if pretend then
         begin
-          List.iter
-            begin fun l ->
-              List.iter
-                begin fun (_, f) -> f () end
-                l
-            end
-            konts;
+          List.iter (List.iter (fun f -> ignore (f ()))) konts;
           None
         end
       else
@@ -230,13 +261,13 @@ let execute_many ?(quiet=false) ?(pretend=false) cmds =
                 match acc_exn with
                 | None ->
                     begin try
-                      List.iter begin fun (cmd, print) ->
-                        print ();
+                      List.iter begin fun action ->
+                        let cmd = action () in
                         let rc = sys_command cmd in
                         if rc <> 0 then begin
                           if not quiet then
                             eprintf "Exit code %d while executing this \
-                                     command:@\n%s" rc cmd;
+                                    command:@\n%s" rc cmd;
                           raise (Exit_with_code rc)
                         end
                       end cmds;
@@ -259,6 +290,20 @@ let execute ?quiet ?pretend cmd =
   | Some(_, exn) -> raise exn
   | _ -> ()
 
+let iter_tags f x =
+  let rec spec x =
+    match x with
+    | N | A _ | Sh _ | P _ | Px _ | V _ | Quote _ -> ()
+    | S l -> List.iter spec l
+    | T tags -> f tags
+  in
+  let rec cmd x =
+    match x with
+    | Nop | Echo _ -> ()
+    | Cmd(s) -> spec s
+    | Seq(s) -> List.iter cmd s in
+  cmd x
+
 let rec reduce x =
   let rec self x acc =
     match x with
@@ -272,7 +317,21 @@ let rec reduce x =
   | [x] -> x
   | xs -> S xs
 
-let to_string_for_digest = to_string
+let digest =
+  let list = List.fold_right in
+  let text x acc = Digest.string x :: acc in
+  let rec cmd =
+    function
+    | Cmd spec -> fun acc -> string_of_command_spec spec :: acc
+    | Seq seq -> list cmd seq
+    | Nop -> fun acc -> acc
+    | Echo(texts, dest_path) -> list text (dest_path :: texts)
+  in
+  fun x ->
+    match cmd x [] with
+    | [x] -> x
+    | xs  -> Digest.string ("["^String.concat ";" xs^"]")
+
 (*
 let to_string_for_digest x =
   let rec cmd_of_spec =

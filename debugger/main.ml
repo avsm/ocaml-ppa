@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml,v 1.19 2006/12/09 13:49:10 ertai Exp $ *)
+(* $Id: main.ml,v 1.19.6.1 2007/09/24 07:45:31 garrigue Exp $ *)
 
 open Primitives
 open Misc
@@ -165,6 +165,7 @@ let main () =
     current_prompt := debugger_prompt;
     printf "\tObjective Caml Debugger version %s@.@." Config.version;
     Config.load_path := !default_load_path;
+    Clflags.recursive_types := true;    (* Allow recursive types. *)
     toplevel_loop ();                   (* Toplevel. *)
     kill_program ();
     exit 0

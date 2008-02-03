@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: depend.ml,v 1.10 2006/04/05 02:28:13 garrigue Exp $ *)
+(* $Id: depend.ml,v 1.10.6.1 2007/11/10 13:47:09 xleroy Exp $ *)
 
 open Format
 open Location
@@ -268,8 +268,8 @@ and add_class_expr bv ce =
       add bv l; List.iter (add_type bv) tyl
   | Pcl_structure(pat, fieldl) ->
       add_pattern bv pat; List.iter (add_class_field bv) fieldl
-  | Pcl_fun(_, _, pat, ce) ->
-      add_pattern bv pat; add_class_expr bv ce
+  | Pcl_fun(_, opte, pat, ce) ->
+      add_opt add_expr bv opte; add_pattern bv pat; add_class_expr bv ce
   | Pcl_apply(ce, exprl) ->
       add_class_expr bv ce; List.iter (fun (_,e) -> add_expr bv e) exprl
   | Pcl_let(_, pel, ce) ->

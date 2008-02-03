@@ -22,7 +22,7 @@ open Camlp4;                                             (* -*- camlp4r -*- *)
 
 module Id = struct
   value name = "Camlp4MacroParser";
-  value version = "$Id: Camlp4MacroParser.ml,v 1.1.4.5 2007/04/26 19:51:49 pouillar Exp $";
+  value version = "$Id: Camlp4MacroParser.ml,v 1.1.4.6 2007/06/23 16:00:09 ertai Exp $";
 end;
 
 (*
@@ -139,7 +139,8 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
 
   class reloc _loc = object
     inherit Ast.map as super;
-    method _Loc_t _ = _loc;
+    method loc _ = _loc;
+    (* method _Loc_t _ = _loc; *)
   end;
 
   class subst _loc env = object

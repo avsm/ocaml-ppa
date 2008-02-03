@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: glob_lexer.mll,v 1.1 2007/02/07 08:59:13 ertai Exp $ *)
+(* $Id: glob_lexer.mll,v 1.1.4.3 2007/11/21 21:02:58 ertai Exp $ *)
 (* Original author: Berke Durak *)
 (* Glob *)
 {
@@ -82,6 +82,7 @@ and parse_pattern eof_chars p = parse
     let cl = Or(parse_class [] lexbuf) in
     parse_pattern eof_chars (concat_patterns p (Class cl)) lexbuf
   }
+(* Random thought... **/* seems to be equal to True *)
 | "/**/" (* / | /\Sigma^*/ *)
   { let q = Union[slash; Concat(slash, Concat(Star any, slash)) ] in
     parse_pattern eof_chars (concat_patterns p q) lexbuf }
@@ -94,7 +95,7 @@ and parse_pattern eof_chars p = parse
 | "**" { raise (Parse_error("Ambiguous ** pattern not allowed unless surrounded by one or more slashes")) }
 | '*' { parse_pattern eof_chars (concat_patterns p (Star not_slash)) lexbuf }
 | '/' { parse_pattern eof_chars (concat_patterns p slash) lexbuf }
-| '?' { parse_pattern eof_chars (concat_patterns p (Class True)) lexbuf }
+| '?' { parse_pattern eof_chars (concat_patterns p not_slash) lexbuf }
 | _ as c
   { if List.mem c eof_chars then 
       (p,c)
@@ -106,6 +107,7 @@ and parse_string b = parse
 | "\""                  { Buffer.contents b }
 | "\\\""                { Buffer.add_char b '"'; parse_string b lexbuf }
 | [^'"' '\\']+ as u     { Buffer.add_string b u; parse_string b lexbuf }
+| _ as c                { raise (Parse_error(sf "Unexpected character %C in string" c)) }
 
 and parse_class cl = parse
 | ']'                     { cl }

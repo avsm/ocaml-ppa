@@ -21,7 +21,7 @@ open Camlp4;                                        (* -*- camlp4r -*- *)
 
 module Id : Sig.Id = struct
   value name = "Camlp4OCamlParser";
-  value version = "$Id: Camlp4OCamlParser.ml,v 1.3.2.11 2007/05/10 22:43:18 pouillar Exp $";
+  value version = "$Id: Camlp4OCamlParser.ml,v 1.3.2.19 2007/12/18 08:53:26 ertai Exp $";
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) = struct
@@ -58,21 +58,6 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
           Loc.merge (Ast.loc_of_expr e1)
                     (Ast.loc_of_expr e2) in
         <:expr< do { $e1$; $e2$ } >> ];
-
-  value is_operator =
-    let ht = Hashtbl.create 73 in
-    let ct = Hashtbl.create 73 in
-    do {
-      List.iter (fun x -> Hashtbl.add ht x True)
-        ["asr"; "land"; "lor"; "lsl"; "lsr"; "lxor"; "mod"; "or"];
-      List.iter (fun x -> Hashtbl.add ct x True)
-        ['!'; '&'; '*'; '+'; '-'; '/'; ':'; '<'; '='; '>'; '@'; '^'; '|'; '~';
-        '?'; '%'; '.'; '$'];
-      fun x ->
-        try Hashtbl.find ht x with
-        [ Not_found -> try Hashtbl.find ct x.[0] with [ Not_found -> False ] ]
-    }
-  ;
 
   value test_constr_decl =
     Gram.Entry.of_parser "test_constr_decl"
@@ -155,17 +140,6 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
       test 1)
   ;
 
-  value test_just_a_lident_or_patt =
-    Gram.Entry.of_parser "test_just_a_lident_or_patt"
-      (fun strm ->
-        match Stream.npeek 3 strm with
-        [ [(KEYWORD "(", _); (KEYWORD s | SYMBOL s, _); (KEYWORD ")", _)] when is_operator s -> ()
-        | [((LIDENT _ | ANTIQUOT "lid" _), _); (KEYWORD ("as"|"|"|"::"|","|"."), _); _] ->
-            raise Stream.Failure
-        | [((LIDENT _ | ANTIQUOT "lid" _), _); _; _] -> ()
-        | _ -> raise Stream.Failure ])
-  ;
-
   value lident_colon =
     Gram.Entry.of_parser "lident_colon"
       (fun strm ->
@@ -198,7 +172,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
   DELETE_RULE Gram value_val: "value" END;
   DELETE_RULE Gram str_item: value_let; opt_rec; binding END;
   DELETE_RULE Gram module_type: "'"; a_ident END;
-  DELETE_RULE Gram module_type: SELF; SELF END;
+  DELETE_RULE Gram module_type: SELF; SELF; dummy END;
   DELETE_RULE Gram module_type: SELF; "."; SELF END;
   DELETE_RULE Gram label_expr: label_longident; fun_binding END;
   DELETE_RULE Gram expr: "let"; opt_rec; binding; "in"; SELF END;
@@ -227,7 +201,6 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
   clear labeled_ipatt;
   clear semi;
   clear do_sequence;
-  clear let_binding;
   clear type_kind;
   clear constructor_arg_list;
   clear poly_type;
@@ -244,6 +217,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
   clear star_ctyp;
   clear match_case;
   clear with_constr;
+  clear top_phrase;
 
   EXTEND Gram
     GLOBAL:
@@ -405,6 +379,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
         [ `ANTIQUOT (""|"pat"|"anti" as n) s ->
             <:patt< $anti:mk_anti ~c:"patt" n s$ >>
         | `ANTIQUOT ("tup" as n) s -> <:patt< ($tup:<:patt< $anti:mk_anti ~c:"patt" n s$ >>$) >>
+        | `ANTIQUOT ("`bool" as n) s -> <:patt< $anti:mk_anti n s$ >>
         | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.patt_tag
         | i = ident -> <:patt< $id:i$ >>
         | s = a_INT -> <:patt< $int:s$ >>
@@ -441,12 +416,6 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
       [ [ e1 = SELF; ","; e2 = SELF -> <:expr< $e1$, $e2$ >>
         | e = expr LEVEL ":=" -> e ] ]
     ;                                                           *)
-    let_binding:
-      [ [ test_just_a_lident_or_patt; s = a_LIDENT; e = fun_binding ->
-            <:binding< $lid:s$ = $e$ >>
-        | p = patt; "="; e = expr ->
-            <:binding< $p$ = $e$ >> ] ]
-    ;
     (* comma_patt:
       [ [ p1 = SELF; ","; p2 = SELF -> <:patt< $p1$, $p2$ >>
         | p = patt LEVEL ".." -> p ] ]
@@ -506,7 +475,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
             <:ctyp< ( ~ $i$ : $t1$ ) -> $t2$ >>
         | i = a_OPTLABEL; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
             <:ctyp< ( ? $i$ : $t1$ ) -> $t2$ >>
-        | "?"; i=lident_colon;t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
+        | "?"; i = a_LIDENT; ":"; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
             <:ctyp< ( ? $i$ : $t1$ ) -> $t2$ >> ]
       | "star"
         [ t = SELF; "*"; tl = star_ctyp ->
@@ -607,6 +576,12 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
         | "{"; t = label_declaration; "}" ->
             <:ctyp< { $t$ } >> ] ]
     ;
+    module_expr: LEVEL "apply"
+      [ [ i = SELF; "("; j = SELF; ")" -> <:module_expr< $i$ $j$ >> ] ]
+    ;
+    ident_quot: LEVEL "apply"
+      [ [ i = SELF; "("; j = SELF; ")" -> <:ident< $i$ $j$ >> ] ]
+    ;
     module_longident_with_app: LEVEL "apply"
       [ [ i = SELF; "("; j = SELF; ")" -> <:ident< $i$ $j$ >> ] ]
     ;
@@ -682,10 +657,22 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
         | `UIDENT s -> s
       ] ]
     ;
+    top_phrase:
+      [ [ "#"; n = a_LIDENT; dp = opt_expr; ";;" ->
+            Some <:str_item< # $n$ $dp$ >>
+        | l = LIST1 str_item; ";;" -> Some (Ast.stSem_of_list l)
+        | `EOI -> None
+      ] ]
+    ;
   END;
 
   (* Some other DELETE_RULE are before the grammar *)
+  DELETE_RULE Gram module_longident_with_app: "("; SELF; ")" END;
+  DELETE_RULE Gram type_longident: "("; SELF; ")" END;
+  DELETE_RULE Gram ident_quot: "("; SELF; ")" END;
   DELETE_RULE Gram module_longident_with_app: SELF; SELF END;
   DELETE_RULE Gram type_longident: SELF; SELF END;
+  DELETE_RULE Gram ident_quot: SELF; SELF END;
+  DELETE_RULE Gram module_expr: SELF; SELF END;
 end;
 let module M = Register.OCamlSyntaxExtension Id Make in ();

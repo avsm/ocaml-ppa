@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: fda.ml,v 1.3 2007/02/22 15:56:23 ertai Exp $ *)
+(* $Id: fda.ml,v 1.3.2.1 2007/11/22 18:28:43 ertai Exp $ *)
 (* Original author: Berke Durak *)
 (* FDA *)
 
@@ -49,7 +49,7 @@ let inspect entry =
     ?sanitize:
       begin
         if !Options.sanitize then
-          Some(!Options.sanitization_script)
+          Some(Pathname.concat !Options.build_dir !Options.sanitization_script)
         else
           None
       end

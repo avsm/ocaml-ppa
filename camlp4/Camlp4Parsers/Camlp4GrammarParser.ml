@@ -21,7 +21,7 @@ open Camlp4;                                        (* -*- camlp4r -*- *)
 
 module Id = struct
   value name = "Camlp4GrammarParser";
-  value version = "$Id: Camlp4GrammarParser.ml,v 1.1.4.4 2007/04/20 14:57:28 pouillar Exp $";
+  value version = "$Id: Camlp4GrammarParser.ml,v 1.1.4.6 2007/12/18 08:59:35 ertai Exp $";
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) = struct
@@ -52,7 +52,6 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     | STself of loc and string
     | STtok of loc
     | STstring_tok of loc
-    | STany of loc
     | STtyp of Ast.ctyp ]
   ;
 
@@ -167,10 +166,10 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     try
       List.map
         (fun
-          (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Token.extract_string x); ... *)
+          (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Gram.Token.extract_string x); ... *)
         [ {prod = [({pattern = None; styp = STtok _} as s)]; action = None} ->
             {prod = [{ (s) with pattern = Some <:patt< x >> }];
-              action = Some <:expr< Token.extract_string x >>}
+              action = Some <:expr< $uid:gm$.Token.extract_string x >>}
           (* ...; [ symb ]; ... ==> ...; (x = [ symb ] -> x); ... *)
         | {prod = [({pattern = None} as s)]; action = None} ->
             {prod = [{ (s) with pattern = Some <:patt< x >> }];
@@ -223,7 +222,6 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
           Loc.raise _loc
             (Stream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
         else <:ctyp< '$tvar$ >>
-    | STany _loc -> <:ctyp< _ >>
     | STtok _loc -> <:ctyp< $uid:gm$.Token.t >>
     | STstring_tok _loc -> <:ctyp< string >>
     | STtyp t -> t ]
@@ -280,7 +278,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
           <:expr< match $tok$ with
                   [ $pat:match_$ -> $e1$
                   | _ -> assert False ] >> ] in
-      <:expr< fun ($locid$ : Loc.t) -> $e2$ >> in
+      <:expr< fun ($locid$ : $uid:gm$.Loc.t) -> $e2$ >> in
     let (txt, _) =
       List.fold_left
         (fun (txt, i) s ->
@@ -395,6 +393,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     TXlist loc min symb sep
   ;
 
+  (*
   value sstoken _loc s =
     let n = mk_name _loc <:ident< $lid:"a_" ^ s$ >> in
     TXnterm _loc n None
@@ -471,6 +470,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     let styp = STquo _loc "a_opt" in
     {used = used; text = text; styp = styp; pattern = None}
   ;
+  *)
 
   value text_of_entry _loc e =
     let ent =
@@ -829,6 +829,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
   END;
 
 
+  (*
   EXTEND Gram
     symbol: LEVEL "top"
       [ NONA
@@ -839,6 +840,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
             ssopt _loc s ] ]
     ;
   END;
+  *)
 
   value sfold _loc n foldfun f e s =
     let styp = STquo _loc (new_type_var ()) in

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: types.ml,v 1.26 2006/04/05 02:28:13 garrigue Exp $ *)
+(* $Id: types.ml,v 1.26.8.1 2007/06/08 08:03:16 garrigue Exp $ *)
 
 (* Representation of types and declarations *)
 
@@ -41,7 +41,7 @@ and type_desc =
 and row_desc =
     { row_fields: (label * row_field) list;
       row_more: type_expr;
-      row_bound: type_expr list;
+      row_bound: unit;
       row_closed: bool;
       row_fixed: bool;
       row_name: (Path.t * type_expr list) option }

@@ -10,9 +10,29 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: reload.ml,v 1.3 1999/11/17 18:56:42 xleroy Exp $ *)
+(* $Id: reload.ml,v 1.3.38.1 2007/12/20 08:53:03 xleroy Exp $ *)
 
 (* Reloading for the HPPA *)
 
+
+open Cmm
+open Arch
+open Reg
+open Mach
+open Proc
+
+class reload = object (self)
+
+inherit Reloadgen.reload_generic as super
+
+method reload_operation op arg res =
+  match op with
+      Iintop(Idiv | Imod)
+    | Iintop_imm((Idiv | Imod), _)  -> (arg, res)
+    | _ -> super#reload_operation op arg res
+end
+
+
+
 let fundecl f =
-  (new Reloadgen.reload_generic)#fundecl f
+  (new reload)#fundecl f

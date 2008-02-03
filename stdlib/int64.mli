@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: int64.mli,v 1.19 2005/10/25 18:34:07 doligez Exp $ *)
+(* $Id: int64.mli,v 1.19.10.1 2007/10/25 08:18:08 xleroy Exp $ *)
 
 (** 64-bit integers.
 
@@ -182,9 +182,5 @@ val compare: t -> t -> int
 (** {6 Deprecated functions} *)
 
 external format : string -> int64 -> string = "caml_int64_format"
-(** [Int64.format fmt n] return the string representation of the
-   64-bit integer [n] in the format specified by [fmt].
-   [fmt] is a {!Printf}-style format consisting of exactly one
-   [%d], [%i], [%u], [%x], [%X] or [%o] conversion specification.
-   This function is deprecated; use {!Printf.sprintf} with a [%Lx] format
-   instead. *)
+(** Do not use this deprecated function.  Instead,
+   used {!Printf.sprintf} with a [%L...] format. *)

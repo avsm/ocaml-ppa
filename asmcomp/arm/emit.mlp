@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit.mlp,v 1.18 2004/05/03 12:46:50 xleroy Exp $ *)
+(* $Id: emit.mlp,v 1.18.18.1 2007/10/23 11:54:04 xleroy Exp $ *)
 
 (* Emission of ARM assembly code *)
 
@@ -648,9 +648,6 @@ let begin_assembly() =
   `trap_ptr     .req    r11\n`;
   `alloc_ptr    .req    r8\n`;
   `alloc_limit  .req    r9\n`;
-  `sp           .req    r13\n`;
-  `lr           .req    r14\n`;
-  `pc           .req    r15\n`;
   let lbl_begin = Compilenv.make_symbol (Some "data_begin") in
   `	.data\n`;
   `	.global	{emit_symbol lbl_begin}\n`;

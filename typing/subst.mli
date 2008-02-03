@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: subst.mli,v 1.12 2002/04/18 07:27:45 garrigue Exp $ *)
+(* $Id: subst.mli,v 1.12.36.1 2007/12/26 16:00:41 xleroy Exp $ *)
 
 (* Substitutions *)
 
@@ -37,6 +37,9 @@ val add_module: Ident.t -> Path.t -> t -> t
 val add_modtype: Ident.t -> module_type -> t -> t
 val for_saving: t -> t
 val reset_for_saving: unit -> unit
+
+val module_path: t -> Path.t -> Path.t
+val type_path: t -> Path.t -> Path.t
 
 val type_expr: t -> type_expr -> type_expr
 val class_type: t -> class_type -> class_type

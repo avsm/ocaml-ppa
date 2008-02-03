@@ -21,7 +21,7 @@ open Camlp4;                                             (* -*- camlp4r -*- *)
 
 module Id = struct
   value name = "Camlp4ListComprenhsion";
-  value version = "$Id: Camlp4ListComprehension.ml,v 1.1 2007/02/27 15:50:57 pouillar Exp $";
+  value version = "$Id: Camlp4ListComprehension.ml,v 1.1.2.1 2007/05/27 16:23:35 pouillar Exp $";
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) = struct
@@ -49,7 +49,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
               skip_patt (ignore_upto ")" (n + 1) + 1)
           | Some (KEYWORD "{") -> 
               skip_patt (ignore_upto "}" (n + 1) + 1)
-          | Some (KEYWORD ("as" | "::" | ";" | "," | "_"))
+          | Some (KEYWORD ("as" | "::" | "," | "_"))
           | Some (LIDENT _ | UIDENT _) -> skip_patt (n + 1)
           | Some _ | None -> raise Stream.Failure ]
         and ignore_upto end_kwd n =

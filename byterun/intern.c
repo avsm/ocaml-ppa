@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: intern.c,v 1.60 2005/09/22 14:21:50 xleroy Exp $ */
+/* $Id: intern.c,v 1.60.10.1 2007/10/09 12:48:54 xleroy Exp $ */
 
 /* Structured input, compact format */
 
@@ -76,7 +76,7 @@ static value intern_block;
    (Sign_extend(intern_src[-2]) << 8) + intern_src[-1])
 #define read32u() \
   (intern_src += 4, \
-   (intern_src[-4] << 24) + (intern_src[-3] << 16) + \
+   ((uintnat)(intern_src[-4]) << 24) + (intern_src[-3] << 16) + \
    (intern_src[-2] << 8) + intern_src[-1])
 #define read32s() \
   (intern_src += 4, \
