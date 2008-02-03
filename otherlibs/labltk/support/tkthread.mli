@@ -12,14 +12,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tkthread.mli,v 1.2.16.1 2007/04/10 03:29:46 garrigue Exp $ *)
+(* $Id: tkthread.mli,v 1.2.16.2 2007/08/05 23:53:05 garrigue Exp $ *)
 
 (* Helper functions for using LablTk with threads.
    To use, add tkthread.cmo or tkthread.cmx to your command line *)
 
 (** Start the main loop in a new GUI thread. Do not use recursively. *) 
 val start : unit -> Thread.t
-(** The actual function executed in the new thread *)
+(** The actual function executed in the GUI thread *)
 val thread_main : unit -> unit
 (** The toplevel widget (an alias of [Widget.default_toplevel]) *)
 val top : Widget.toplevel Widget.widget
@@ -33,11 +33,14 @@ val top : Widget.toplevel Widget.widget
    With sync, beware of deadlocks!
 *)
 
-(** Add an asynchronous job (to do in the main thread) *)
+(** Add an asynchronous job (to do in the GUI thread) *)
 val async : ('a -> unit) -> 'a -> unit
-(** Add a synchronous job (to do in the main thread) *)
+(** Add a synchronous job (to do in the GUI thread).
+    Raise [Failure "Tkthread.sync"] if there is no such thread. *)
 val sync : ('a -> 'b) -> 'a -> 'b
 (** Whether the current thread is the GUI thread.
     Note that when using X11 it is generally safe to call
     most Tk functions from other threads too. *)
 val gui_safe : unit -> bool
+(** Whether a GUI thread is running *)
+val running : unit -> bool

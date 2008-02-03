@@ -9,18 +9,23 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_tools.mli,v 1.2 2007/02/08 16:53:39 ertai Exp $ *)
+(* $Id: ocaml_tools.mli,v 1.2.4.3 2007/11/21 20:46:46 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 
 val ocamldoc_c : Tags.t -> string -> string -> Command.t
 val ocamldoc_l_dir : Tags.t -> string list -> string -> string -> Command.t
 val ocamldoc_l_file : Tags.t -> string list -> string -> string -> Command.t
 
+val ocamldep_command : string -> string -> Rule.action
+val menhir_ocamldep_command : string -> string -> Rule.action
+val menhir_modular_ocamldep_command : string -> string -> Rule.action
+val menhir_modular : string -> string -> string -> Rule.action
 val ocamlyacc : string -> Rule.action
 val ocamllex : string -> Rule.action
 val menhir : string -> Rule.action
 val infer_interface : string -> string -> Rule.action
 val document_ocaml_interf : string -> string -> Rule.action
+val document_ocaml_implem : string -> string -> Rule.action
 val document_ocaml_project :
   ?ocamldoc:(Tags.t -> string list -> string -> string -> Command.t) ->
   string -> string -> string -> Rule.action

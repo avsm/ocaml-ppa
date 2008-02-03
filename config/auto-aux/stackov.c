@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: stackov.c,v 1.4 2003/07/23 07:57:17 xleroy Exp $ */
+/* $Id: stackov.c,v 1.4.18.1 2007/11/06 12:26:15 xleroy Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -43,7 +43,7 @@ static void segv_handler(int signo, siginfo_t * info, void * context)
 
 int main(int argc, char ** argv)
 {
-  struct sigaltstack stk;
+  stack_t stk;
   struct sigaction act;
 
   stk.ss_sp = sig_alt_stack;

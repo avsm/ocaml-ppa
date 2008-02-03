@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: shell.ml,v 1.1.4.1 2007/03/07 11:30:14 pouillar Exp $ *)
+(* $Id: shell.ml,v 1.1.4.2 2007/11/28 16:11:27 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 
@@ -40,7 +40,7 @@ let run args target =
         ()
     end
   else
-    match My_unix.execute_many ~ticker:Log.update ~display:Log.display [[(cmd, ignore)]] with
+    match My_unix.execute_many ~ticker:Log.update ~display:Log.display [[(fun () -> cmd)]] with
     | None -> ()
     | Some(_, x) ->
       failwith (Printf.sprintf "Error during command %S: %s" cmd (Printexc.to_string x))

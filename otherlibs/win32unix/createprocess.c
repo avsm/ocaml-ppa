@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: createprocess.c,v 1.13 2001/12/07 13:40:43 xleroy Exp $ */
+/* $Id: createprocess.c,v 1.13.20.1 2007/10/25 08:32:42 xleroy Exp $ */
 
 #include <windows.h>
 #include <mlvalues.h>
@@ -62,7 +62,7 @@ value win_create_process_native(value cmd, value cmdline, value env,
   CloseHandle(pi.hThread);
   /* Return the process handle as pseudo-PID
      (this is consistent with the wait() emulation in the MSVC C library */
-  return Val_int(pi.hProcess);
+  return Val_long(pi.hProcess);
 }
 
 CAMLprim value win_create_process(value * argv, int argn)

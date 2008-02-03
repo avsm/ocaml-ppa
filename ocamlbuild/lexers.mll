@@ -9,10 +9,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexers.mll,v 1.2 2007/02/16 10:35:10 ertai Exp $ *)
+(* $Id: lexers.mll,v 1.2.2.3 2007/11/26 13:27:56 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 {
 exception Error of string
+open Glob_ast
 
 type conf_values =
   { plus_tags   : string list;
@@ -23,7 +24,6 @@ type conf_values =
 type conf = (Glob.globber * conf_values) list
 
 let empty = { plus_flags = []; minus_flags = []; plus_tags = []; minus_tags = [] }
-
 }
 
 let newline = ('\n' | '\r' | "\r\n")
@@ -38,6 +38,8 @@ let normal = [^ ':' ',' '(' ')' ''' ' ' '\n' '\r']
 let tag = normal+ | ( normal+ ':' normal+ )
 let flag_name = normal+
 let flag_value = normal_flag_value+
+let variable = [ 'a'-'z' 'A'-'Z' '_' '-' '0'-'9' ]*
+let pattern = ([^ '(' ')' '\\' ] | '\\' [ '(' ')' ])*
 
 rule ocamldep_output = parse
   | ([^ ':' '\n' '\r' ]+ as k) ':' { let x = (k, space_sep_strings_nl lexbuf) in x :: ocamldep_output lexbuf }
@@ -56,6 +58,7 @@ and space_sep_strings = parse
 
 and blank_sep_strings = parse
   | blank* '#' not_newline* newline { blank_sep_strings lexbuf }
+  | blank* '#' not_newline* eof { [] }
   | blank* (not_blank+ as word) { word :: blank_sep_strings lexbuf }
   | blank* eof { [] }
   | _ { raise (Error "Expecting blank-separated strings") }
@@ -87,12 +90,13 @@ and colon_sep_strings = parse
   | eof { [] }
   | _ { raise (Error "Expecting colon-separated strings (1)") }
 and colon_sep_strings_aux = parse
-  | ':' ([^ ':']+ as word) { word :: colon_sep_strings_aux lexbuf }
+  | ':'+ ([^ ':']+ as word) { word :: colon_sep_strings_aux lexbuf }
   | eof { [] }
   | _ { raise (Error "Expecting colon-separated strings (2)") }
 
 and conf_lines dir pos err = parse
   | space* '#' not_newline* newline { conf_lines dir (pos + 1) err lexbuf }
+  | space* '#' not_newline* eof { [] }
   | space* newline { conf_lines dir (pos + 1) err lexbuf }
   | space* eof { [] }
   | space* (not_newline_nor_colon+ as k) space* ':' space*
@@ -116,12 +120,25 @@ and conf_values pos err x = parse
   | (newline | eof) { x }
   | (_ | eof) { raise (Error(Printf.sprintf "Bad values in configuration line at line %d (from %s)" pos err)) }
 
-and meta_path = parse
+and path_scheme patt_allowed = parse
   | ([^ '%' ]+ as prefix)
-      { (prefix, false) :: meta_path lexbuf }
-  | "%(" ([ 'a'-'z' 'A'-'Z' '_' '-' '0'-'9' ]* as var) ')'
-      { (var, true) :: meta_path lexbuf }
+      { `Word prefix :: path_scheme patt_allowed lexbuf }
+  | "%(" (variable as var) ')'
+      { `Var (var, Bool.True) :: path_scheme patt_allowed lexbuf }
+  | "%(" (variable as var) ':' (pattern as patt) ')'
+      { if patt_allowed then
+          let patt = My_std.String.implode (unescape (Lexing.from_string patt)) in
+          `Var (var, Glob.parse patt) :: path_scheme patt_allowed lexbuf
+        else raise (Error(
+          Printf.sprintf "Patterns are not allowed in this pathname (%%(%s:%s) only in ~prod)"
+            var patt)) }
   | '%'
-      { ("", true) :: meta_path lexbuf }
+      { `Var ("", Bool.True) :: path_scheme patt_allowed lexbuf }
   | eof
       { [] }
+  | _ { raise (Error("Bad pathanme scheme")) }
+
+and unescape = parse
+  | '\\' (['(' ')'] as c)        { c :: unescape lexbuf }
+  | _ as c                       { c :: unescape lexbuf }
+  | eof                          { [] }

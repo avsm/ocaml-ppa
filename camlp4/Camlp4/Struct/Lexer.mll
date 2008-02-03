@@ -18,7 +18,7 @@
  *)
 
 
-(* $Id: Lexer.mll,v 1.6.4.7 2007/05/10 22:43:18 pouillar Exp $ *)
+(* $Id: Lexer.mll,v 1.6.4.11 2007/11/27 14:38:03 ertai Exp $ *)
 
 (* The lexer definition *)
 
@@ -201,6 +201,8 @@ module Make (Token : Sig.Camlp4Token)
   let not_star_symbolchar =
     ['$' '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
   let symbolchar = '*' | not_star_symbolchar
+  let quotchar =
+    ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
   let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
   let decimal_literal =
     ['0'-'9'] ['0'-'9' '_']*
@@ -220,17 +222,17 @@ module Make (Token : Sig.Camlp4Token)
   (* Delimitors are extended (from 3.09) in a conservative way *)
 
   (* These chars that can't start an expression or a pattern: *)
-  let safe_delimchars = ['%' '&' '.' '/' '@' '^']
+  let safe_delimchars = ['%' '&' '/' '@' '^']
 
   (* These symbols are unsafe since "[<", "[|", etc. exsist. *)
-  let delimchars = safe_delimchars | ['|' '<' '>' ':' '=']
+  let delimchars = safe_delimchars | ['|' '<' '>' ':' '=' '.']
 
   let left_delims  = ['(' '[' '{']
   let right_delims = [')' ']' '}']
 
   let left_delimitor =
     (* At least a safe_delimchars *)
-    left_delims (delimchars|left_delims)* safe_delimchars (delimchars|left_delims)*
+    left_delims delimchars* safe_delimchars (delimchars|left_delims)*
 
   (* A '(' or a new super '(' without "(<" *)
   | '(' (['|' ':'] delimchars*)?
@@ -296,10 +298,11 @@ module Make (Token : Sig.Camlp4Token)
     | "*)"
         { warn Comment_not_end (Loc.of_lexbuf lexbuf)                           ;
           move_start_p (-1) c; SYMBOL "*"                                       }
-    | "<<"
+    | "<<" (quotchar* as beginning)
       { if quotations c
-        then mk_quotation quotation c "" "" 2
-        else parse (symbolchar_star "<<") c                                     }
+        then (move_start_p (-String.length beginning);
+              mk_quotation quotation c "" "" 2)
+        else parse (symbolchar_star ("<<" ^ beginning)) c                       }
     | "<<>>"
       { if quotations c
         then QUOTATION { q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
@@ -395,15 +398,15 @@ module Make (Token : Sig.Camlp4Token)
 
   and maybe_quotation_at c = parse
     | (ident as loc) '<'      
-      { mk_quotation quotation c "" loc (3 + String.length loc)                 }
+      { mk_quotation quotation c "" loc (1 + String.length loc)                 }
     | symbolchar* as tok                                   { SYMBOL("<@" ^ tok) }
 
   and maybe_quotation_colon c = parse
     | (ident as name) '<'
-      { mk_quotation quotation c name "" (3 + String.length name)               }
+      { mk_quotation quotation c name "" (1 + String.length name)               }
     | (ident as name) '@' (locname as loc) '<'
       { mk_quotation quotation c name loc
-                     (4 + String.length loc + String.length name)               }
+                     (2 + String.length loc + String.length name)               }
     | symbolchar* as tok                                   { SYMBOL("<:" ^ tok) }
 
   and quotation c = parse

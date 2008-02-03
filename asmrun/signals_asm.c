@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: signals_asm.c,v 1.2 2007/03/01 10:27:26 xleroy Exp $ */
+/* $Id: signals_asm.c,v 1.2.2.1 2007/11/06 12:26:15 xleroy Exp $ */
 
 /* Signal handling, code specific to the native-code compiler */
 
@@ -238,7 +238,7 @@ void caml_init_signals(void)
   /* Stack overflow handling */
 #ifdef HAS_STACK_OVERFLOW_DETECTION
   {
-    struct sigaltstack stk;
+    stack_t stk;
     struct sigaction act;
     stk.ss_sp = sig_alt_stack;
     stk.ss_size = SIGSTKSZ;

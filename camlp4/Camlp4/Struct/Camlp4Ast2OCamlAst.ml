@@ -18,13 +18,13 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-(* $Id: Camlp4Ast2OCamlAst.ml,v 1.15.2.4 2007/05/10 13:31:20 pouillar Exp $ *)
+(* $Id: Camlp4Ast2OCamlAst.ml,v 1.15.2.8 2007/09/19 13:20:33 ertai Exp $ *)
 
 module Make (Ast : Sig.Camlp4Ast) = struct
   open Format;
-  open Parsetree;
-  open Longident;
-  open Asttypes;
+  open Camlp4_import.Parsetree;
+  open Camlp4_import.Longident;
+  open Camlp4_import.Asttypes;
   open Ast;
 
   value constructors_arity () =
@@ -227,8 +227,6 @@ module Make (Ast : Sig.Camlp4Ast) = struct
         let t1 = TyApp loc1 <:ctyp@loc1< option >> t1 in
         mktyp loc (Ptyp_arrow ("?" ^ lab) (ctyp t1) (ctyp t2))
     | TyArr loc t1 t2 -> mktyp loc (Ptyp_arrow "" (ctyp t1) (ctyp t2))
-    | <:ctyp@loc< <  > >> -> mktyp loc (Ptyp_object [])
-    | <:ctyp@loc< < .. > >> -> mktyp loc (Ptyp_object [mkfield loc Pfield_var])
     | <:ctyp@loc< < $fl$ > >> -> mktyp loc (Ptyp_object (meth_list fl []))
     | <:ctyp@loc< < $fl$ .. > >> ->
         mktyp loc (Ptyp_object (meth_list fl [mkfield loc Pfield_var]))
@@ -261,7 +259,8 @@ module Make (Ast : Sig.Camlp4Ast) = struct
       TyObj _ _ (BAnt _) | TyNil _ | TyTup _ _ ->
         assert False ]
   and row_field = fun
-    [ <:ctyp< `$i$ >> -> [Rtag i True []]
+    [ <:ctyp<>> -> []
+    | <:ctyp< `$i$ >> -> [Rtag i True []]
     | <:ctyp< `$i$ of & $t$ >> -> [Rtag i True (List.map ctyp (list_of_ctyp t []))]
     | <:ctyp< `$i$ of $t$ >> -> [Rtag i False (List.map ctyp (list_of_ctyp t []))]
     | <:ctyp< $t1$ | $t2$ >> -> row_field t1 @ row_field t2
@@ -272,7 +271,8 @@ module Make (Ast : Sig.Camlp4Ast) = struct
     | _ -> assert False ]
   and meth_list fl acc =
     match fl with
-    [ <:ctyp< $t1$; $t2$ >> -> meth_list t1 (meth_list t2 acc)
+    [ <:ctyp<>> -> acc
+    | <:ctyp< $t1$; $t2$ >> -> meth_list t1 (meth_list t2 acc)
     | <:ctyp@loc< $lid:lab$ : $t$ >> ->
         [mkfield loc (Pfield lab (mkpolytype (ctyp t))) :: acc]
     | _ -> assert False ]
@@ -772,7 +772,8 @@ module Make (Ast : Sig.Camlp4Ast) = struct
     | _ -> assert False ]
   and mkideexp x acc =
     match x with
-    [ <:rec_binding< $x$; $y$ >> ->
+    [ <:rec_binding<>> -> acc
+    | <:rec_binding< $x$; $y$ >> ->
          mkideexp x (mkideexp y acc)
     | <:rec_binding< $lid:s$ = $e$ >> -> [(s, expr e) :: acc]
     | _ -> assert False ]

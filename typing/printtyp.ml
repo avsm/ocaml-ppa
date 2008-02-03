@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printtyp.ml,v 1.143 2007/02/16 11:18:54 garrigue Exp $ *)
+(* $Id: printtyp.ml,v 1.143.2.1 2007/06/08 08:03:15 garrigue Exp $ *)
 
 (* Printing functions *)
 
@@ -246,7 +246,7 @@ let rec mark_loops_rec visited ty =
           | Some(p, tyl) when namable_row row ->
               List.iter (mark_loops_rec visited) tyl
           | _ ->
-              iter_row (mark_loops_rec visited) {row with row_bound = []}
+              iter_row (mark_loops_rec visited) row
          end
     | Tobject (fi, nm) ->
         if List.memq px !visited_objects then add_alias px else

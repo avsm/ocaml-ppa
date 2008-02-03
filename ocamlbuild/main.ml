@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml,v 1.8.2.1 2007/04/12 13:19:02 pouillar Exp $ *)
+(* $Id: main.ml,v 1.8.2.14 2007/12/18 08:58:02 ertai Exp $ *)
 (* Original author: Berke Durak *)
 open My_std
 open Log
@@ -25,16 +25,13 @@ exception Exit_silently
 
 let clean () =
   Shell.rm_rf !Options.build_dir;
-  begin
-    match !Options.internal_log_file with
-    | None -> ()
-    | Some fn -> Shell.rm_f fn
+  if !Options.make_links then begin
+    let entry =
+      Slurp.map (fun _ _ _ -> true)
+        (Slurp.slurp Filename.current_dir_name)
+    in
+    Slurp.force (Resource.clean_up_links entry)
   end;
-  let entry =
-    Slurp.map (fun _ _ _ -> true)
-      (Slurp.slurp Filename.current_dir_name)
-  in
-  Slurp.force (Pathname.clean_up_links entry);
   raise Exit_silently
 ;;
 
@@ -49,7 +46,7 @@ let show_documentation () =
   let flags = Flags.get_flags () in
   let pp fmt = Log.raw_dprintf (-1) fmt in
   List.iter begin fun rule ->
-    pp "%a@\n@\n" Rule.pretty_print rule
+    pp "%a@\n@\n" (Rule.pretty_print Resource.print_pattern) rule
   end rules;
   List.iter begin fun (tags, flag) ->
     let sflag = Command.string_of_command_spec flag in
@@ -63,7 +60,6 @@ let proceed () =
   Options.init ();
   if !Options.must_clean then clean ();
   Hooks.call_hook Hooks.After_options;
-  Tools.default_tags := Tags.of_list !Options.tags;
   Plugin.execute_plugin_if_needed ();
 
   if !Options.targets = []
@@ -74,8 +70,7 @@ let proceed () =
   let target_dirs = List.union [] (List.map Pathname.dirname !Options.targets) in
 
   Configuration.parse_string
-    "true: traverse
-     <**/*.ml> or <**/*.mli> or <**/*.mlpack> or <**/*.ml.depends>: ocaml
+    "<**/*.ml> or <**/*.mli> or <**/*.mlpack> or <**/*.ml.depends>: ocaml
      <**/*.byte>: ocaml, byte, program
      <**/*.odoc>: ocaml, doc
      <**/*.native>: ocaml, native, program
@@ -85,6 +80,12 @@ let proceed () =
      <**/*.cmi>: ocaml, byte, native
      <**/*.cmx>: ocaml, native
     ";
+
+  Configuration.tag_any !Options.tags;
+  if !Options.recursive
+  || Sys.file_exists (* authorized since we're not in build *) "_tags"
+  || Sys.file_exists (* authorized since we're not in build *) "myocamlbuild.ml"
+  then Configuration.tag_any ["traverse"];
 
   let newpwd = Sys.getcwd () in
   Sys.chdir Pathname.pwd;
@@ -102,7 +103,7 @@ let proceed () =
         if name = "_tags" then
           ignore (Configuration.parse_file ?dir path_name);
 
-        (String.length name > 0 && name.[0] <> '_' && not (List.mem name !Options.exclude_dirs))
+        (String.length name > 0 && name.[0] <> '_' && name <> !Options.build_dir && not (List.mem name !Options.exclude_dirs))
         && begin
           if path_name <> Filename.current_dir_name && Pathname.is_directory path_name then
             let tags = tags_of_pathname path_name in
@@ -147,7 +148,7 @@ let proceed () =
     show_documentation ();
     raise Exit_silently
   end;
-  Resource.Cache.init ();
+  Digest_cache.init ();
 
   Sys.catch_break true;
 
@@ -155,6 +156,7 @@ let proceed () =
 
   let targets =
     List.map begin fun starget ->
+      let starget = Resource.import starget in
       let target = path_and_context_of_string starget in
       let ext = Pathname.get_extension starget in
       (target, starget, ext)
@@ -167,6 +169,8 @@ let proceed () =
         let target = Solver.solve_target starget target in
         (target, ext)
       end targets in
+
+    Command.dump_parallel_stats ();
 
     Log.finish ();
 
@@ -208,25 +212,6 @@ let proceed () =
         (Exit_build_error
           (sbprintf "@[<2>Circular dependencies: %S already seen in@ %a@]@." p pp_l seen))
 ;;
-
-module Exit_codes =
-  struct
-    let rc_ok                  = 0
-    let rc_usage               = 1
-    let rc_failure             = 2
-    let rc_invalid_argument    = 3
-    let rc_system_error        = 4
-    let rc_hygiene             = 1
-    let rc_circularity         = 5
-    let rc_solver_failed       = 6
-    let rc_ocamldep_error      = 7
-    let rc_lexing_error        = 8
-    let rc_build_error         = 9
-    let rc_executor_reserved_1 = 10 (* Redefined in Executor *)
-    let rc_executor_reserved_2 = 11
-    let rc_executor_reserved_3 = 12
-    let rc_executor_reserved_4 = 13
-  end
 
 open Exit_codes;;
 
@@ -275,7 +260,7 @@ let main () =
             This is likely to be a bug, please report this to the ocamlbuild\n\
             developers." s;
           exit rc_invalid_argument
-      | Ocamldep.Error msg ->
+      | Ocaml_utils.Ocamldep_error msg ->
           Log.eprintf "Ocamldep error: %s" msg;
           exit rc_ocamldep_error
       | Lexers.Error msg ->

@@ -21,7 +21,7 @@ open Camlp4;                                        (* -*- camlp4r -*- *)
 
 module Id : Sig.Id = struct
   value name = "Camlp4OCamlRevisedParserParser";
-  value version = "$Id: Camlp4OCamlRevisedParserParser.ml,v 1.1.4.2 2007/04/05 18:06:36 pouillar Exp $";
+  value version = "$Id: Camlp4OCamlRevisedParserParser.ml,v 1.1.4.3 2007/05/16 12:48:13 pouillar Exp $";
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) = struct
@@ -384,24 +384,9 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
         | se = stream_expr_comp -> [se] ] ]
     ;
     stream_expr_comp:
-      [ [ stream_quot; e = stream_expr -> SeTrm _loc e | e = stream_expr -> SeNtr _loc e ] ]
+      [ [ stream_quot; e = stream_expr -> SeTrm _loc e
+        | e = stream_expr -> SeNtr _loc e ] ]
     ;
-    (*
-    Gram.Entry.clear stream_expr;
-    Gram.Entry.clear stream_expr;
-    stream_expr:
-      [ [ e = expr LEVEL "stream_expr" -> e ] ]
-    ;
-    stream_begin:
-      [ [ "[<" -> () ] ]
-    ;
-    stream_end:
-      [ [ ">]" -> () ] ]
-    ;
-    stream_quot:
-      [ [ "'" -> () ] ]
-    ;
-    *)
   END;
 
 end;

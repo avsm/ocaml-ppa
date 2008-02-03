@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: options.ml,v 1.7.2.4 2007/04/12 13:19:02 pouillar Exp $ *)
+(* $Id: options.ml,v 1.7.2.13 2007/11/28 16:09:46 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 
 let version = "ocamlbuild 0.1";;
@@ -75,6 +75,7 @@ let ocamlrun = ref N
 let program_to_execute = ref false
 let must_clean = ref false
 let show_documentation = ref false
+let recursive = ref false
 let ext_lib = ref "a"
 let ext_obj = ref "o"
 let ext_dll = ref "so"
@@ -91,26 +92,25 @@ let ignore_list_internal = ref []
 let tags_internal = ref [["quiet"]]
 let tag_lines_internal = ref []
 let show_tags_internal = ref []
+let log_file_internal = ref "_log"
 
 let my_include_dirs = ref [[Filename.current_dir_name]]
 let my_exclude_dirs = ref [[".svn"; "CVS"]]
 
-let pwd = Sys.getcwd ()
-
-let internal_log_file = ref None
-let set_log_file file =
-  internal_log_file := Some file;
-  Log.log_file := lazy begin
-    if !Log.level <= 0
-    || ((!plugin || !just_plugin)
-        && sys_file_exists (filename_concat pwd "myocamlbuild.ml")) then
-      None
-    else Some(filename_concat pwd file)
-  end
-
-let () = set_log_file "_log"
-
 let dummy = "*invalid-dummy-string*";; (* Dummy string for delimiting the latest argument *)
+
+(* The JoCaml support will be in a plugin when the plugin system will support
+ * multiple/installed plugins *)
+let use_jocaml () =
+  ocamlc := A "jocamlc";
+  ocamlopt := A "jocamlopt";
+  ocamldep := A "jocamldep";
+  ocamlyacc := A "jocamlyacc";
+  ocamllex := A "jocamllex";
+  ocamlmklib := A "jocamlmklib";
+  ocamlmktop := A "jocamlmktop";
+  ocamlrun := A "jocamlrun";
+;;
 
 let add_to rxs x =
   let xs = Lexers.comma_or_blank_sep_strings (Lexing.from_string x) in
@@ -121,6 +121,7 @@ let add_to' rxs x =
   else
     ()
 let set_cmd rcmd = String (fun s -> rcmd := Sh s)
+let set_build_dir s = make_links := false; build_dir := s
 let spec =
   Arg.align
   [
@@ -128,9 +129,10 @@ let spec =
    "-quiet", Unit (fun () -> Log.level := 0), " Make as quiet as possible";
    "-verbose", Int (fun i -> Log.level := i + 2), "<level> Set the verbosity level";
    "-documentation", Set show_documentation, " Show rules and flags";
-   "-log", String set_log_file, "<file> Set log file";
-   "-no-log", Unit (fun () -> Log.log_file := lazy None), " No log file";
+   "-log", Set_string log_file_internal, "<file> Set log file";
+   "-no-log", Unit (fun () -> log_file_internal := ""), " No log file";
    "-clean", Set must_clean, " Remove build directory and other files, then exit"; 
+   "-r", Set recursive, " Traverse directories by default (true: traverse)"; 
 
    "-I", String (add_to' my_include_dirs), "<path> Add to include directories";
    "-Is", String (add_to my_include_dirs), "<path,...> (same as above, but accepts a (comma or blank)-separated list)";
@@ -168,10 +170,11 @@ let spec =
    "-nothing-should-be-rebuilt", Set nothing_should_be_rebuilt, " Fail if something needs to be rebuilt";
    "-classic-display", Set Log.classic_display, " Display executed commands the old-fashioned way";
    "-use-menhir", Set use_menhir, " Use menhir instead of ocamlyacc";
+   "-use-jocaml", Unit use_jocaml, " Use jocaml compilers instead of ocaml ones";
 
    "-j", Set_int Command.jobs, "<N> Allow N jobs at once (0 for unlimited)";
 
-   "-build-dir", Set_string build_dir, "<path> Set build directory";
+   "-build-dir", String set_build_dir, "<path> Set build directory (implies no-links)";
    "-install-lib-dir", Set_string Ocamlbuild_where.libdir, "<path> Set the install library directory";
    "-install-bin-dir", Set_string Ocamlbuild_where.bindir, "<path> Set the install binary directory";
    "-where", Unit (fun () -> print_endline !Ocamlbuild_where.libdir; raise Exit_OK), " Display the install library directory";
@@ -210,7 +213,22 @@ let init () =
   let argv' = Array.concat [Sys.argv; [|dummy|]] in
   parse_argv argv' spec anon_fun usage_msg;
   Shell.mkdir_p !build_dir;
-  let reorder x y = x := (List.concat (List.rev !y)) in
+
+  let () =
+    let log = !log_file_internal in
+    if log = "" then Log.init None
+    else if not (Filename.is_implicit log) then
+      failwith
+        (sprintf "Bad log file name: the file name must be implicit (not %S)" log)
+    else
+      let log = filename_concat !build_dir log in
+      Shell.mkdir_p (Filename.dirname log);
+      Shell.rm_f log;
+      let log = if !Log.level > 0 then Some log else None in
+      Log.init log
+  in
+
+  let reorder x y = x := !x @ (List.concat (List.rev !y)) in
   reorder targets targets_internal;
   reorder ocaml_libs ocaml_libs_internal;
   reorder ocaml_cflags ocaml_cflags_internal;
@@ -224,10 +242,17 @@ let init () =
   reorder ignore_list ignore_list_internal;
   reorder show_tags show_tags_internal;
 
+  let check_dir dir =
+    if Filename.is_implicit dir then
+      sys_file_exists dir
+    else
+      failwith
+        (sprintf "Included or excluded directories must be implicit (not %S)" dir)
+  in
   let dir_reorder my dir =
     let d = !dir in
     reorder dir my;
-    dir := List.filter sys_file_exists (!dir @ d)
+    dir := List.filter check_dir (!dir @ d)
   in
   dir_reorder my_include_dirs include_dirs;
   dir_reorder my_exclude_dirs exclude_dirs;

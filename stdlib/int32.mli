@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: int32.mli,v 1.18 2005/10/25 18:34:07 doligez Exp $ *)
+(* $Id: int32.mli,v 1.18.10.1 2007/10/25 08:18:08 xleroy Exp $ *)
 
 (** 32-bit integers.
 
@@ -160,9 +160,5 @@ val compare: t -> t -> int
 (** {6 Deprecated functions} *)
 
 external format : string -> int32 -> string = "caml_int32_format"
-(** [Int32.format fmt n] return the string representation of the
-   32-bit integer [n] in the format specified by [fmt].
-   [fmt] is a [Printf]-style format consisting of exactly
-   one [%d], [%i], [%u], [%x], [%X] or [%o] conversion specification.
-   This function is deprecated; use {!Printf.sprintf} with a [%lx] format
-   instead. *)
+(** Do not use this deprecated function.  Instead,
+   used {!Printf.sprintf} with a [%l...] format. *)

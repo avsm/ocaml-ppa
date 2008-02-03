@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: translmod.ml,v 1.52 2006/04/05 02:28:12 garrigue Exp $ *)
+(* $Id: translmod.ml,v 1.52.8.1 2007/11/10 14:32:43 xleroy Exp $ *)
 
 (* Translation from typed abstract syntax to lambda terms,
    for the module language *)
@@ -333,7 +333,7 @@ and transl_structure fields cc rootpath = function
       | id :: ids ->
           Llet(Alias, id, Lprim(Pfield pos, [Lvar mid]),
                rebind_idents (pos + 1) (id :: newfields) ids) in
-      Llet(Alias, mid, transl_module Tcoerce_none None modl,
+      Llet(Strict, mid, transl_module Tcoerce_none None modl,
            rebind_idents 0 fields ids)
 
 (* Update forward declaration in Translcore *)

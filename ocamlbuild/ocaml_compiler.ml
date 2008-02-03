@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_compiler.ml,v 1.5.2.3 2007/04/27 07:20:50 pouillar Exp $ *)
+(* $Id: ocaml_compiler.ml,v 1.5.2.6 2007/11/28 16:07:39 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format
@@ -100,7 +100,7 @@ let native_lib_linker_tags tags = tags++"ocaml"++"link"++"native"++"library"
 let prepare_compile build ml =
   let dir = Pathname.dirname ml in
   let include_dirs = Pathname.include_dirs_of dir in
-  let modules = Ocamldep.module_dependencies_of ml in
+  let modules = path_dependencies_of ml in
   let results =
     build (List.map (fun (_, x) -> expand_module include_dirs x ["cmi"]) modules) in
   List.iter2 begin fun (mandatory, name) res ->
@@ -129,9 +129,15 @@ let rec prepare_link tag cmx extensions build =
   let key = (tag, cmx, extensions) in
   let dir = Pathname.dirname cmx in
   let include_dirs = Pathname.include_dirs_of dir in
-  if Hashtbl.mem cache_prepare_link key then () else
+  let ml = Pathname.update_extensions "ml" cmx in
+  let mli = Pathname.update_extensions "mli" cmx in
+  let modules =
+    List.union
+      (if Pathname.exists (ml-.-"depends") then path_dependencies_of ml else [])
+      (if Pathname.exists (mli-.-"depends") then path_dependencies_of mli else [])
+  in
+  if modules <> [] && not (Hashtbl.mem cache_prepare_link key) then
     let () = Hashtbl.add cache_prepare_link key true in
-    let modules = Ocamldep.module_dependencies_of (Pathname.update_extensions "ml" cmx) in
     let modules' = List.map (fun (_, x) -> expand_module include_dirs x extensions) modules in
     List.iter2 begin fun (mandatory, _) result ->
       match mandatory, result with
@@ -240,7 +246,7 @@ let link_units table extensions cmX_ext cma_ext a_ext linker tagger contents_lis
   let _ = Rule.build_deps_of_tags build tags in
   let dir =
     let dir1 = Pathname.remove_extensions cmX in
-    if Pathname.exists_in_source_dir dir1 then dir1
+    if Resource.exists_in_source_dir dir1 then dir1
     else Pathname.dirname cmX in
   let include_dirs = Pathname.include_dirs_of dir in
   let extension_keys = List.map fst extensions in
@@ -286,18 +292,18 @@ let link_from_file link modules_file cmX env build =
   link contents_list cmX env build
 
 let byte_library_link_modules =
-  link_modules [("cmo",[]); ("cmi",[])] "cmo" "cma" "cma" byte_lib_linker byte_lib_linker_tags
+  link_modules [("cmo",[])] "cmo" "cma" "cma" byte_lib_linker byte_lib_linker_tags
 
 let byte_library_link_mllib = link_from_file byte_library_link_modules
 
 let byte_toplevel_link_modules =
-  link_modules [("cmo",[]); ("cmi",[])] "cmo" "cma" "cma" ocamlmktop
+  link_modules [("cmo",[])] "cmo" "cma" "cma" ocamlmktop
                (fun tags -> tags++"ocaml"++"link"++"byte"++"toplevel")
 
 let byte_toplevel_link_mltop = link_from_file byte_toplevel_link_modules
 
 let byte_debug_library_link_modules =
-  link_modules [("d.cmo",[]); ("cmi",[])] "d.cmo" "d.cma" "d.cma" byte_lib_linker
+  link_modules [("d.cmo",[])] "d.cmo" "d.cma" "d.cma" byte_lib_linker
     (fun tags -> byte_lib_linker_tags tags++"debug")
 
 let byte_debug_library_link_mllib = link_from_file byte_debug_library_link_modules
@@ -328,13 +334,13 @@ let native_profile_pack_modules x =
 let native_profile_pack_mlpack = link_from_file native_profile_pack_modules
 
 let native_library_link_modules x =
-  link_modules [("cmx",[!Options.ext_obj]); ("cmi",[])] "cmx" "cmxa"
+  link_modules [("cmx",[!Options.ext_obj])] "cmx" "cmxa"
      !Options.ext_lib native_lib_linker native_lib_linker_tags x
 
 let native_library_link_mllib = link_from_file native_library_link_modules
 
 let native_profile_library_link_modules x =
-  link_modules [("p.cmx",["p" -.- !Options.ext_obj]); ("cmi",[])] "p.cmx" "p.cmxa"
+  link_modules [("p.cmx",["p" -.- !Options.ext_obj])] "p.cmx" "p.cmxa"
     ("p" -.- !Options.ext_lib) native_lib_linker
     (fun tags -> native_lib_linker_tags tags++"profile") x
 

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: str.ml,v 1.20 2006/01/04 16:55:50 doligez Exp $ *)
+(* $Id: str.ml,v 1.20.6.1 2007/10/31 10:01:29 xleroy Exp $ *)
 
 (** String utilities *)
 
@@ -669,9 +669,9 @@ and replace_first expr repl text =
 
 let search_forward_progress expr text start =
   let pos = search_forward expr text start in
-  if match_end() = start && start < String.length text
-  then search_forward expr text (start + 1)
-  else pos
+  if match_end() > start then pos
+  else if start < String.length text then search_forward expr text (start + 1)
+  else raise Not_found
 
 let bounded_split expr text num =
   let start =

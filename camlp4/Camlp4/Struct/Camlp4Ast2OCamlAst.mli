@@ -19,15 +19,15 @@
  *)
 
 
-(* $Id: Camlp4Ast2OCamlAst.mli,v 1.3 2007/02/07 10:09:21 ertai Exp $ *)
+(* $Id: Camlp4Ast2OCamlAst.mli,v 1.3.4.1 2007/05/22 09:09:45 pouillar Exp $ *)
 
 module Make (Camlp4Ast : Sig.Camlp4Ast) : sig
   open Camlp4Ast;
 
   (** {6 Useful functions} *)
 
-  value sig_item : sig_item -> Parsetree.signature;
-  value str_item : str_item -> Parsetree.structure;
-  value phrase : str_item -> Parsetree.toplevel_phrase;
+  value sig_item : sig_item -> Camlp4_import.Parsetree.signature;
+  value str_item : str_item -> Camlp4_import.Parsetree.structure;
+  value phrase : str_item -> Camlp4_import.Parsetree.toplevel_phrase;
 
 end;

@@ -20,7 +20,7 @@ open Format;
 
 module Id = struct
   value name = "Camlp4.Printers.OCamlr";
-  value version = "$Id: OCamlr.ml,v 1.17.4.4 2007/05/10 22:43:18 pouillar Exp $";
+  value version = "$Id: OCamlr.ml,v 1.17.4.6 2007/11/27 14:35:13 ertai Exp $";
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) = struct
@@ -43,8 +43,8 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
   object (o)
     inherit PP_o.printer ~curry_constr:init_curry_constr ~comments () as super;
 
-    value semisep = ";";
-    value andsep : format unit formatter unit = "@]@ @[<2>and@ ";
+    value semisep : sep = ";";
+    value andsep : sep = "@]@ @[<2>and@ ";
     value value_val = "value";
     value value_let = "value";
     value mode = if comments then `comments else `no_comments;
@@ -157,7 +157,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     let () = o#node f e Ast.loc_of_expr in
     match e with
     [ <:expr< $e1$ := $e2$ >> ->
-        pp f "@[<2>%a@ :=@ %a@]" o#expr e1 o#expr e2
+        pp f "@[<2>%a@ :=@ %a@]" o#dot_expr e1 o#expr e2
     | <:expr< fun $p$ -> $e$ >> when Ast.is_irrefut_patt p ->
         pp f "@[<2>fun@ %a@]" o#patt_expr_fun_args (p, e)
     | <:expr< fun [ $a$ ] >> ->
@@ -217,7 +217,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
 
     method str_item f st =
     match st with
-    [ <:str_item< $exp:e$ >> -> pp f "@[<2>%a%s@]" o#expr e semisep
+    [ <:str_item< $exp:e$ >> -> pp f "@[<2>%a%(%)@]" o#expr e semisep
     | st -> super#str_item f st ];
 
     method module_expr f me =

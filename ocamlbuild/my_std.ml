@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: my_std.ml,v 1.2.2.2 2007/03/13 10:28:53 pouillar Exp $ *)
+(* $Id: my_std.ml,v 1.2.2.7 2007/12/18 08:56:11 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open Format
 
@@ -197,6 +197,24 @@ module String = struct
       s'.[i] <- s.[sl - i - 1]
     done;
     s';;
+
+  let implode l =
+    match l with
+    | [] -> ""
+    | cs ->
+        let r = create (List.length cs) in
+        let pos = ref 0 in
+        List.iter begin fun c ->
+          unsafe_set r !pos c;
+          incr pos
+        end cs;
+        r
+
+  let explode s =
+    let sl = String.length s in
+    let rec go pos =
+      if pos >= sl then [] else unsafe_get s pos :: go (pos + 1)
+    in go 0
 end
 
 module StringSet = Set.Make(String)
@@ -226,16 +244,19 @@ let sys_file_exists x =
 let sys_command =
   match Sys.os_type with
   | "Win32" -> fun cmd ->
+      if cmd = "" then 0 else
       let cmd = "bash -c "^Filename.quote cmd in
       (* FIXME fix Filename.quote for windows *)
       let cmd = String.subst "\"&\"\"&\"" "&&" cmd in
       Sys.command cmd
-  | _ -> Sys.command
+  | _ -> fun cmd -> if cmd = "" then 0 else Sys.command cmd
 
 (* FIXME warning fix and use Filename.concat *)
 let filename_concat x y =
   if x = Filename.current_dir_name || x = "" then y else
-  if y = "" && x.[String.length x - 1] = '/' then x
+  if x.[String.length x - 1] = '/' then
+    if y = "" then x
+    else x ^ y
   else x ^ "/" ^ y  
 
 (* let reslash =
@@ -276,7 +297,7 @@ let read_file x =
 let copy_chan ic oc =
   let m = in_channel_length ic in
   let m = (m lsr 12) lsl 12 in
-  let m = max 16384 (min 16777216 m) in
+  let m = max 16384 (min Sys.max_string_length m) in
   let buf = String.create m in
   let rec loop () =
     let len = input ic buf 0 m in
@@ -299,6 +320,8 @@ let ( !* ) = Lazy.force
 let ( @:= ) ref list = ref := !ref @ list
 
 let ( & ) f x = f x
+
+let ( |> ) x f = f x
 
 let print_string_list = List.print String.print
 

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: io.h,v 1.30 2006/09/20 17:37:08 xleroy Exp $ */
+/* $Id: io.h,v 1.30.6.1 2007/05/21 13:17:47 doligez Exp $ */
 
 /* Buffered input/output */
 
@@ -52,7 +52,7 @@ struct channel {
 };
 
 enum {
-  CHANNEL_FLAG_FROM_SOCKET = 1,   /* For Windows */
+  CHANNEL_FLAG_FROM_SOCKET = 1  /* For Windows */
 };
 
 /* For an output channel:

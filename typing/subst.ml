@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: subst.ml,v 1.50 2006/04/05 02:28:13 garrigue Exp $ *)
+(* $Id: subst.ml,v 1.50.8.1 2007/06/08 08:03:16 garrigue Exp $ *)
 
 (* Substitutions *)
 
@@ -124,8 +124,6 @@ let rec typexp s ty =
               (* Return a new copy *)
               let row =
                 copy_row (typexp s) true row (not dup) more' in
-              let row =
-                if s.for_saving then {row with row_bound = []} else row in
               match row.row_name with
                 Some (p, tl) ->
                   Tvariant {row with row_name = Some (type_path s p, tl)}

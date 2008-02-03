@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: camlinternalOO.ml,v 1.15 2006/04/05 02:28:13 garrigue Exp $ *)
+(* $Id: camlinternalOO.ml,v 1.15.6.1 2007/10/29 03:11:03 garrigue Exp $ *)
 
 open Obj
 
@@ -262,7 +262,7 @@ let new_variable table name =
   try Vars.find name table.vars
   with Not_found ->
     let index = new_slot table in
-    table.vars <- Vars.add name index table.vars;
+    if name <> "" then table.vars <- Vars.add name index table.vars;
     index
 
 let to_array arr =

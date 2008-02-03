@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: configuration.mli,v 1.1 2007/02/07 08:59:13 ertai Exp $ *)
+(* $Id: configuration.mli,v 1.1.4.1 2007/11/28 16:03:10 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 (* Configuration *)
 
@@ -32,3 +32,9 @@ val tags_of_filename : string -> Tags.t
 val flags_of_filename : string -> Command.spec
 
 val has_tag : string -> bool
+
+(** [tag_file filename tag_list] Tag the given filename with all given tags. *)
+val tag_file : Pathname.t -> Tags.elt list -> unit
+
+(** [tag_any tag_list] Tag anything with all given tags. *)
+val tag_any : Tags.elt list -> unit

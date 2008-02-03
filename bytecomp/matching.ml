@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: matching.ml,v 1.67 2005/09/07 16:07:48 maranget Exp $ *)
+(* $Id: matching.ml,v 1.67.12.1 2007/06/08 08:03:16 garrigue Exp $ *)
 
 (* Compilation of pattern matching *)
 
@@ -2337,8 +2337,8 @@ and do_compile_matching repr partial ctx arg pmh = match pmh with
         ctx pm
   | Tpat_variant(lab, _, row) ->
       compile_test (compile_match repr partial) partial
-        (divide_variant row)
-        (combine_variant row arg partial)
+        (divide_variant !row)
+        (combine_variant !row arg partial)
         ctx pm
   | _ -> assert false
   end

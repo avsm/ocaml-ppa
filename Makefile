@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.207.4.4 2007/04/16 16:01:59 pouillar Exp $
+# $Id: Makefile,v 1.207.4.5 2007/06/20 13:26:29 ertai Exp $
 
 # The main Makefile
 
@@ -225,7 +225,7 @@ cleanboot:
 
 # Compile the native-code compiler
 opt-core:runtimeopt ocamlopt libraryopt
-opt: runtimeopt ocamlopt libraryopt otherlibrariesopt
+opt: runtimeopt ocamlopt libraryopt otherlibrariesopt ocamlbuildlib.native
 
 # Native-code versions of the tools
 opt.opt: checkstack runtime core ocaml opt-core ocamlc.opt otherlibraries \
@@ -617,6 +617,8 @@ ocamlbuild.byte: ocamlc otherlibraries ocamlbuild-partial-boot
 	./build/ocamlbuild-byte-only.sh
 ocamlbuild.native: ocamlopt otherlibrariesopt ocamlbuild-partial-boot
 	./build/ocamlbuild-native-only.sh
+ocamlbuildlib.native: ocamlopt otherlibrariesopt ocamlbuild-partial-boot
+	./build/ocamlbuildlib-native-only.sh
 
 .PHONY: ocamlbuild-partial-boot
 ocamlbuild-partial-boot:

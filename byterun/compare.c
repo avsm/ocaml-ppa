@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: compare.c,v 1.36 2007/02/09 13:31:15 doligez Exp $ */
+/* $Id: compare.c,v 1.36.4.1 2008/01/03 09:54:17 xleroy Exp $ */
 
 #include <string.h>
 #include <stdlib.h>
@@ -269,14 +269,14 @@ CAMLprim value caml_lessthan(value v1, value v2)
 {
   intnat res = compare_val(v1, v2, 0);
   if (compare_stack != compare_stack_init) compare_free_stack();
-  return Val_int(res - 1 < -1);
+  return Val_int(res < 0 && res != UNORDERED);
 }
 
 CAMLprim value caml_lessequal(value v1, value v2)
 {
   intnat res = compare_val(v1, v2, 0);
   if (compare_stack != compare_stack_init) compare_free_stack();
-  return Val_int(res - 1 <= -1);
+  return Val_int(res <= 0 && res != UNORDERED);
 }
 
 CAMLprim value caml_greaterthan(value v1, value v2)

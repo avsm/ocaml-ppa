@@ -19,12 +19,11 @@ open Camlp4;                                             (* -*- camlp4r -*- *)
 
 module Id = struct
   value name = "Camlp4QuotationCommon";
-  value version = "$Id: Camlp4QuotationCommon.ml,v 1.1.4.5 2007/05/10 14:24:22 pouillar Exp $";
+  value version = "$Id: Camlp4QuotationCommon.ml,v 1.1.4.7 2007/12/18 09:02:19 ertai Exp $";
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax)
-            (TheAntiquotSyntax : Sig.AntiquotSyntax
-                                  with module Ast = Sig.Camlp4AstToAst Syntax.Ast)
+            (TheAntiquotSyntax : (Sig.Parser Syntax.Ast).SIMPLE)
 = struct
   open Sig;
   include Syntax; (* Be careful an AntiquotSyntax module appears here *)
@@ -94,9 +93,7 @@ module Make (Syntax : Sig.Camlp4Syntax)
             | "`flo" -> <:expr< string_of_float $e$ >>
             | "`str" -> <:expr< Ast.safe_string_escaped $e$ >>
             | "`chr" -> <:expr< Char.escaped $e$ >>
-            | "`bool" ->
-                <:expr< if $e$ then $ME.meta_expr _loc <:expr<True>>$
-                               else $ME.meta_expr _loc <:expr<False>>$ >>
+            | "`bool" -> <:expr< Ast.IdUid $mloc _loc$ (if $e$ then "True" else "False") >>
             | "liststr_item" -> <:expr< Ast.stSem_of_list $e$ >>
             | "listsig_item" -> <:expr< Ast.sgSem_of_list $e$ >>
             | "listclass_sig_item" -> <:expr< Ast.cgSem_of_list $e$ >>
