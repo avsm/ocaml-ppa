@@ -1,6 +1,4 @@
-ocaml (3.10.1-1) UNRELEASED; urgency=low
-
-  * NOT RELEASED YET
+ocaml (3.10.1-1) unstable; urgency=low
 
   [ Samuel Mimram ]
   * New upstream release.
@@ -15,7 +13,7 @@ ocaml (3.10.1-1) UNRELEASED; urgency=low
   [ Julien Cristau ]
   * Add ${shlibs:Depends} and ${misc:Depends} to all packages.
 
- -- Samuel Mimram <smimram@debian.org>  Sun, 03 Feb 2008 20:37:57 +0100
+ -- Samuel Mimram <smimram@debian.org>  Tue, 05 Feb 2008 18:28:56 +0100
 
 ocaml (3.10.0-13) unstable; urgency=low
 
