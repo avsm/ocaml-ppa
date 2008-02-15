@@ -123,7 +123,7 @@ Description: Runtime system for ocaml bytecode executables
 
 Package: ocaml-base
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base-nox-${F:OCamlABI}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base-nox-${F:OCamlABI}, libx11-dev
 Provides: ocaml-base-${F:OCamlABI}
 Description: Runtime system for ocaml bytecode executables
  Objective Caml (OCaml) is an implementation of the ML language, based on

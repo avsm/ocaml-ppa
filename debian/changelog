@@ -1,3 +1,9 @@
+ocaml (3.10.1-2) UNRELEASED; urgency=low
+
+  * Add a dependency from ocaml-base to libx11-dev, closes: #465764.
+
+ -- Samuel Mimram <smimram@debian.org>  Fri, 15 Feb 2008 08:58:58 +0000
+
 ocaml (3.10.1-1) unstable; urgency=low
 
   [ Samuel Mimram ]
