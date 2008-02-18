@@ -79,7 +79,7 @@ Description: Pre Processor Pretty Printer for OCaml - extras
 
 Package: ocaml
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base (= ${binary:Version}), ocaml-base-${F:OCamlABI}, ocaml-nox-${F:OCamlABI}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base (= ${binary:Version}), ocaml-base-${F:OCamlABI}, ocaml-nox-${F:OCamlABI}, libx11-dev
 Suggests: tcl8.4-dev, tk8.4-dev
 Provides: ocaml-${F:OCamlABI}
 Replaces: ocaml-nox (<< 3.10.0-12)
@@ -123,7 +123,7 @@ Description: Runtime system for ocaml bytecode executables
 
 Package: ocaml-base
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base-nox-${F:OCamlABI}, libx11-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base-nox-${F:OCamlABI}
 Provides: ocaml-base-${F:OCamlABI}
 Description: Runtime system for ocaml bytecode executables
  Objective Caml (OCaml) is an implementation of the ML language, based on
