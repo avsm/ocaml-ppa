@@ -3,7 +3,7 @@ include /usr/share/dpatch/dpatch.make
 
 PACKAGE = ocaml
 OCAMLMAJOR = 3.10
-OCAMLMINOR = 1
+OCAMLMINOR = 2
 OCAMLABI = $(OCAMLMAJOR).$(OCAMLMINOR)
 STDLIBDIR = /usr/lib/ocaml/$(OCAMLABI)
 MD5SUMSDIR = /var/lib/ocaml/md5sums

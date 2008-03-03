@@ -1,7 +1,8 @@
 ocaml (3.10.2-1) experimental; urgency=low
 
   [ Stefano Zacchiroli ]
-  * New upstream release.
+  * New upstream release
+    - bump OCAMLMINOR in debian/rules accordingly
 
   [ Samuel Mimram ]
   * Add a dependency from ocaml-base to libx11-dev, (closes: #465764).
