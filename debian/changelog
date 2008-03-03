@@ -1,3 +1,9 @@
+ocaml (3.10.2-2) UNRELEASED; urgency=low
+
+  * fix "OCaml" spelling errors in package descriptions (thanks lintian!)
+
+ -- Stefano Zacchiroli <zack@debian.org>  Mon, 03 Mar 2008 11:52:03 +0100
+
 ocaml (3.10.2-1) experimental; urgency=low
 
   [ Stefano Zacchiroli ]
