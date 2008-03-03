@@ -79,7 +79,7 @@ Description: Pre Processor Pretty Printer for OCaml - extras
 
 Package: ocaml
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base (= ${binary:Version}), ocaml-base-${F:OCamlABI}, ocaml-nox-${F:OCamlABI}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base (= ${binary:Version}), ocaml-base-${F:OCamlABI}, ocaml-nox-${F:OCamlABI}, libx11-dev
 Suggests: tcl8.4-dev, tk8.4-dev
 Provides: ocaml-${F:OCamlABI}
 Replaces: ocaml-nox (<< 3.10.0-12)
