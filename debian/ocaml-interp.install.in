@@ -1,1 +1,2 @@
 debian/ocaml.xpm	/usr/share/pixmaps
+toplevel/*.mli		/usr/lib/ocaml/#OcamlABI#/
