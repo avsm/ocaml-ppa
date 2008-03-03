@@ -197,6 +197,12 @@ install-arch: build-arch
 		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4 ; \
 	fi
 
+	# Install camlp4 .mli files
+	# XXX assumption: no filename clashes
+	for mli in `find camlp4 -name '*.mli'` ; do \
+		install -m 644 $$mli debian/camlp4$(STDLIBDIR)/camlp4/ ; \
+	done
+
 	# Then move the ocaml-base-nox package.
 	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-base-nox
 

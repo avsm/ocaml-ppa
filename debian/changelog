@@ -4,9 +4,10 @@ ocaml (3.10.2-1) experimental; urgency=low
   * New upstream release
     - bump OCAMLMINOR in debian/rules accordingly
   * ship .mli files pertaining to ocaml-interp (Closes: #449559)
+  * ship .mli files pertaining to camlp4 (Closes: #449558)
 
   [ Samuel Mimram ]
-  * Add a dependency from ocaml-base to libx11-dev, (Closes: #465764).
+  * Add a dependency from ocaml-base to libx11-dev (Closes: #465764)
 
  -- Stefano Zacchiroli <zack@debian.org>  Mon, 03 Mar 2008 10:15:33 +0100
 
