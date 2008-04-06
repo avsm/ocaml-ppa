@@ -241,24 +241,40 @@
     <title>Locally Installing OCaml Programs and Libraries</title>
 
     <para>
-        Installation and use of locally installed OCaml related programs is out of the scope of this document. However, in order to have it work with a standard Debian installation, you should follow some guidelines.
-        <itemizedlist>
-            <listitem>
-                <para>
-                    Executable files should be installed in <filename>/usr/local/bin</filename>.
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                    Shared libraries (for C bindings) should be installed in <filename>/usr/local/lib/ocaml/&ocaml-version;/stublibs/</filename>
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                    Basically, every other file should be installed in <filename>/usr/local/lib/ocaml/&ocaml-version;/</filename>. This includes in particular bytecode libraries (<filename>*.cma</filename>), native libraries (<filename>*.cmxa</filename>), bytecode object files (<filename>*.cmo</filename>), native object files (<filename>*.cmx</filename>), static libraries (<filename>*.a</filename>) and <filename>META</filename> files.
-                </para>
-            </listitem>
-        </itemizedlist>
+      Locally installed files are files that are installed directly by
+      the system administrator, in contrast to files installed through
+      Debian packages.  Installation and use of locally installed
+      OCaml related programs is out of the scope of this
+      document. However, in order to have it work with a standard
+      Debian installation, a local system administrator should follow
+      these guidelines:
+      <itemizedlist>
+        <listitem>
+          <para>
+            Executable files should be installed
+            in <filename>/usr/local/bin</filename>.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Shared libraries (for C bindings) should be installed
+            in <filename>/usr/local/lib/ocaml/&ocaml-version;/stublibs/</filename>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Basically, every other file should be installed
+            in <filename>/usr/local/lib/ocaml/&ocaml-version;/</filename>. This
+            includes in particular bytecode libraries
+            (<filename>*.cma</filename>), native libraries
+            (<filename>*.cmxa</filename>), bytecode object files
+            (<filename>*.cmo</filename>), native object files
+            (<filename>*.cmx</filename>), static libraries
+            (<filename>*.a</filename>) and <filename>META</filename>
+            files.
+          </para>
+        </listitem>
+      </itemizedlist>
     </para>
 
     <para>
