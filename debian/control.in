@@ -11,7 +11,7 @@ Homepage: http://caml.inria.fr/
 
 Package: ocaml-nox
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libncurses5-dev, ocaml-base-nox (=${binary:Version}), ocaml-base-nox-${F:OCamlABI}, ocaml-interp-${F:OCamlABI}, gcc, binutils
+Depends: ${shlibs:Depends}, ${misc:Depends}, libncurses5-dev, ocaml-base-nox (=${binary:Version}), ocaml-interp (=${binary:Version}), gcc, binutils
 Suggests: ocaml-doc, libgdbm-dev, tuareg-mode | ocaml-mode
 Recommends: camlp4, ledit, file
 Provides: ocaml-nox-${F:OCamlABI}, ${F:BestProvides}, libnums-ocaml-dev
@@ -37,12 +37,12 @@ Description: ML language implementation with a class-based object system
  the moderate memory requirements of the bytecode compiler. It is not
  available on all arches though.
  .
- This package contains everything needed to develop ocaml applications
+ This package contains everything needed to develop OCaml applications
  that do not require the graphics library.
 
 Package: camlp4
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-nox-${F:OCamlABI}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-nox (=${binary:Version})
 Provides: camlp4-${F:OCamlABI}
 Description: Pre Processor Pretty Printer for OCaml
  Objective Caml (OCaml) is an implementation of the ML language,
@@ -61,7 +61,7 @@ Description: Pre Processor Pretty Printer for OCaml
 
 Package: camlp4-extra
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, camlp4-${F:OCamlABI}
+Depends: ${shlibs:Depends}, ${misc:Depends}, camlp4 (=${binary:Version})
 Description: Pre Processor Pretty Printer for OCaml - extras
  Objective Caml (OCaml) is an implementation of the ML language,
  based on the Caml Light dialect extended with a complete
@@ -79,7 +79,7 @@ Description: Pre Processor Pretty Printer for OCaml - extras
 
 Package: ocaml
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base (= ${binary:Version}), ocaml-base-${F:OCamlABI}, ocaml-nox-${F:OCamlABI}, libx11-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base (= ${binary:Version}), ocaml-nox (=${binary:Version}), libx11-dev
 Suggests: tcl8.4-dev, tk8.4-dev
 Provides: ocaml-${F:OCamlABI}
 Replaces: ocaml-nox (<< 3.10.0-12)
@@ -103,7 +103,7 @@ Description: ML language implementation with a class-based object system
  the moderate memory requirements of the bytecode compiler. It is not
  available on all arches though.
  .
- This package contains everything needed to develop ocaml applications,
+ This package contains everything needed to develop OCaml applications,
  including the graphics libraries.
 
 Package: ocaml-base-nox
@@ -112,42 +112,42 @@ Provides: ocaml-base-nox-${F:OCamlABI}, libnums-ocaml
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: ocaml-base (<< 3.07.2a-3), libnums-ocaml
 Conflicts: ocaml (<< 3.04-2), ocaml-base (<< 3.07.2a-3), libnums-ocaml
-Description: Runtime system for ocaml bytecode executables
+Description: Runtime system for OCaml bytecode executables
  Objective Caml (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
  and a powerful module system in the style of Standard ML.
  .
  This package contains only the runtime system needed to run bytecode
- executables that do not use the graphics library. The `ocaml' package
+ executables that do not use the graphics library. The 'ocaml' package
  contains the full development suite of Objective Caml.
 
 Package: ocaml-base
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base-nox-${F:OCamlABI}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-base-nox (=${binary:Version})
 Provides: ocaml-base-${F:OCamlABI}
-Description: Runtime system for ocaml bytecode executables
+Description: Runtime system for OCaml bytecode executables
  Objective Caml (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
  and a powerful module system in the style of Standard ML.
  .
  This package contains only the runtime system needed to run bytecode
- executables. The `ocaml' package contains the full development suite of
+ executables. The 'ocaml' package contains the full development suite of
  Objective Caml.  You may wish to install the 'ocaml-base-nox' package if
  you do not require any graphical capabilities for your runtime.
 
 Package: ocaml-native-compilers
 Architecture: #OcamlNativeArchs#
-Depends: ocaml-nox (= ${binary:Version}), ocaml-nox-${F:OCamlABI}, gcc, binutils, ${shlibs:Depends}, ${misc:Depends}
+Depends: ocaml-nox (= ${binary:Version}), gcc, binutils, ${shlibs:Depends}, ${misc:Depends}
 Provides: ocaml-best-compilers
 Replaces: ocaml-nox (<= 3.09.2-3)
-Description: Native code compilers of the ocaml suite (the .opt ones)
+Description: Native code compilers of the OCaml suite (the .opt ones)
  Objective Caml (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
  and a powerful module system in the style of Standard ML.
  .
  This package contains the native code version of the compilers and lexer
  (ocamlc.opt, ocamllex.opt, ocamlopt.opt, camlp4o.opt and camlp4r.opt).
- The normal version of these programs are found in the ocaml package.
+ The normal version of these programs are found in the 'ocaml' package.
  For big source codes, these packages can be two to three times faster, but
  for most normal sized sources, the difference won't be noticeable.
 
@@ -160,13 +160,13 @@ Description: Sources for Objective Caml
  and a powerful module system in the style of Standard ML.
  .
  This package contains the sources needed to build some packages which build
- depend on the ocaml source. Notice that if you want to rebuild ocaml, these
+ depend on the OCaml source. Notice that if you want to rebuild OCaml, these
  will not work, consider using the source package instead.
 
 Package: ocaml-interp
 Architecture: any
 Provides: ocaml-interp-${F:OCamlABI}
-Depends: ocaml-base-nox-${F:OCamlABI}, ${shlibs:Depends}, ${misc:Depends}
+Depends: ocaml-base-nox (=${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Recommends: ledit
 Replaces: ocaml (<< 3.07.2a-3)
 Conflicts: ocaml (<< 3.07.2a-3)
@@ -175,20 +175,20 @@ Description: OCaml interactive interpreter and standard libraries
  the Caml Light dialect extended with a complete class-based object system
  and a powerful module system in the style of Standard ML.
  .
- This package contains the files required to run an ocaml shell from the
+ This package contains the files required to run an OCaml shell from the
  command line.
 
 Package: ocaml-compiler-libs
 Architecture: any
 Provides: ocaml-compiler-libs-${F:OCamlABI}
-Depends: ocaml-nox-${F:OCamlABI}, ${shlibs:Depends}, ${misc:Depends}
+Depends: ocaml-nox (=${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: OCaml interpreter and standard libraries
  Objective (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
  and a powerful module system in the style of Standard ML.
  .
- This package contains several modules used internally by the ocaml
- compilers.  They are not needed for normal ocaml development, but may
+ This package contains several modules used internally by the OCaml
+ compilers.  They are not needed for normal OCaml development, but may
  be helpful in the development of certain applications.
 
 Package: ocaml-mode
