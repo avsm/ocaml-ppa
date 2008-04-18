@@ -1,7 +1,7 @@
 Document: @PACKAGE@-ocamldoc-api-reference
 Title: @PACKAGE@ OCamldoc API Reference
 Abstract: API reference manual for @PACKAGE@ (generated via OCamldoc)
-Section: Programming
+Section: Programming/OCaml
 
 Format: HTML
 Index: /usr/share/doc/@PACKAGE@/html/api/index.html

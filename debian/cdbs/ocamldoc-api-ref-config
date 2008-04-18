@@ -64,7 +64,7 @@ doc_base_generate ()
 Document: $PKG-ocamldoc-api-reference
 Title: $PKG OCamldoc API Reference
 Abstract: API reference manual for $PKG (generated via OCamldoc)
-Section: Programming
+Section: Programming/OCaml
 
 Format: HTML
 Index: $PKG_DIR/index.html
