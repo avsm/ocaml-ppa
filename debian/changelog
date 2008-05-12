@@ -10,7 +10,12 @@ ocaml (3.10.2-2) UNRELEASED; urgency=low
   [ Sylvain Le Gall ]
   * Changing doc-base section of generated documentation (Closes: #476647)
 
- -- Sylvain Le Gall <gildor@debian.org>  Fri, 18 Apr 2008 09:54:25 +0200
+  [ Ralf Treinen ]
+  * OCaml Packaging Policy:
+    - update ocaml version to 3.10.2
+    - add a section on where to register documentation with doc-base.
+
+ -- Ralf Treinen <treinen@debian.org>  Mon, 12 May 2008 21:36:18 +0200
 
 ocaml (3.10.2-1) experimental; urgency=low
 

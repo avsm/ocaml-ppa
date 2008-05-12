@@ -292,3 +292,12 @@
     </warning>
 
 </section>
+
+<section id="doc-base">
+  <title>Registering Documentation with doc-base</title>
+  <para>
+    Documentation relevant to programming in OCaml (language, tools,
+    libraries, ...)  should be registered with doc-base in
+    Section <code>Programming/OCaml</code>.
+</para>
+</section>

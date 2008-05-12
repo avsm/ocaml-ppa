@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "/usr/share/sgml/docbook/dtd/xml/4.3/docbookx.dtd" [
-<!ENTITY ocaml-version "3.10.1">
+<!ENTITY ocaml-version "3.10.2">
 <!ENTITY ocaml-sys-dir-base "/usr/lib/ocaml">
 <!ENTITY ocaml-sys-dir "&ocaml-sys-dir-base;/&ocaml-version;">
 <!ENTITY ocaml-metas-dir "&ocaml-sys-dir;/METAS">
