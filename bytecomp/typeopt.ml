@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typeopt.ml,v 1.10 2004/04/16 00:50:23 garrigue Exp $ *)
+(* $Id: typeopt.ml,v 1.10.20.1 2008/01/18 03:54:57 garrigue Exp $ *)
 
 (* Auxiliaries for type-based optimizations, e.g. array kinds *)
 
@@ -52,7 +52,7 @@ let maybe_pointer exp =
 let array_element_kind env ty =
   let ty = Ctype.repr (Ctype.expand_head env ty) in
   match ty.desc with
-    Tvar ->
+    Tvar | Tunivar ->
       Pgenarray
   | Tconstr(p, args, abbrev) ->
       if Path.same p Predef.path_int || Path.same p Predef.path_char then

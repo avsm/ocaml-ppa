@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: misc.c,v 1.28 2005/10/18 14:03:43 xleroy Exp $ */
+/* $Id: misc.c,v 1.28.10.1 2008/02/12 13:30:16 doligez Exp $ */
 
 #include <stdio.h>
 #include "config.h"
@@ -27,6 +27,14 @@ int caml_failed_assert (char * expr, char * file, int line)
   fflush (stderr);
   exit (100);
   return 1; /* not reached */
+}
+
+void caml_set_fields (char *bp, unsigned long start, unsigned long filler)
+{
+  mlsize_t i;
+  for (i = start; i < Wosize_bp (bp); i++){
+    Field (Val_bp (bp), i) = (value) filler;
+  }
 }
 
 #endif /* DEBUG */
@@ -54,7 +62,7 @@ CAMLexport void caml_fatal_error_arg (char *fmt, char *arg)
 }
 
 CAMLexport void caml_fatal_error_arg2 (char *fmt1, char *arg1,
-				       char *fmt2, char *arg2)
+                                       char *fmt2, char *arg2)
 {
   fprintf (stderr, fmt1, arg1);
   fprintf (stderr, fmt2, arg2);

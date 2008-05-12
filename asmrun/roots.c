@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: roots.c,v 1.41.2.1 2007/10/25 09:08:20 xleroy Exp $ */
+/* $Id: roots.c,v 1.41.2.2 2008/02/20 12:18:13 xleroy Exp $ */
 
 /* To walk the memory roots for garbage collection */
 
@@ -233,7 +233,11 @@ void caml_do_local_roots(scanning_action f, char * bottom_of_stack,
   frame_descr * d;
   uintnat h;
   int i, j, n, ofs;
+#ifdef Stack_grows_upwards
+  short * p;  /* PR#4339: stack offsets are negative in this case */
+#else
   unsigned short * p;
+#endif
   value * root;
   struct caml__roots_block *lr;
 

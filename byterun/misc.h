@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: misc.h,v 1.31 2005/09/22 14:21:50 xleroy Exp $ */
+/* $Id: misc.h,v 1.31.10.1 2008/02/12 13:30:16 doligez Exp $ */
 
 /* Miscellaneous macros and variables. */
 
@@ -132,6 +132,8 @@ char *caml_aligned_malloc (asize_t, int, void **);
 #define Debug_filler_align   Debug_tag (0x85)
 
 #define Debug_uninit_stat    0xD7
+
+extern void caml_set_fields (char *, unsigned long, unsigned long);
 #endif /* DEBUG */
 
 

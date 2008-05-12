@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt,v 1.15 2007/01/29 12:11:16 xleroy Exp $
+# $Id: Makefile.nt,v 1.15.4.1 2008/01/18 15:27:36 doligez Exp $
 
 # Makefile for the str library
 
@@ -54,7 +54,7 @@ clean: partialclean
 install:
 	cp dllstr.dll $(STUBLIBDIR)/dllstr.dll
 	cp libstr.$(A) $(LIBDIR)/libstr.$(A)
-	cp str.cma str.cmi $(LIBDIR)
+	cp str.cma str.cmi str.mli $(LIBDIR)
 
 installopt:
 	cp str.cmx str.cmxa str.$(A) $(LIBDIR)

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: freelist.h,v 1.12 2004/01/02 19:23:21 doligez Exp $ */
+/* $Id: freelist.h,v 1.12.20.1 2008/02/12 21:26:29 doligez Exp $ */
 
 /* Free lists of heap blocks. */
 
@@ -28,7 +28,7 @@ char *caml_fl_allocate (mlsize_t);
 void caml_fl_init_merge (void);
 void caml_fl_reset (void);
 char *caml_fl_merge_block (char *);
-void caml_fl_add_block (char *);
+void caml_fl_add_blocks (char *);
 void caml_make_free_blocks (value *, mlsize_t, int);
 
 
