@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: main.c,v 1.36 2004/01/08 22:28:48 doligez Exp $ */
+/* $Id: main.c,v 1.36.20.1 2008/02/12 13:30:16 doligez Exp $ */
 
 /* Main entry point (can be overridden by a user-provided main()
    function that calls caml_main() later). */
@@ -28,6 +28,27 @@ CAMLextern void caml_expand_command_line (int *, char ***);
 
 int main(int argc, char **argv)
 {
+#ifdef DEBUG
+  {
+    char *ocp;
+    char *cp;
+    int i;
+
+    caml_gc_message (-1, "### OCaml runtime: debug mode ###\n", 0);
+#if 0
+    caml_gc_message (-1, "### command line:", 0);
+    for (i = 0; i < argc; i++){
+      caml_gc_message (-1, " %s", argv[i]);
+    }
+    caml_gc_message (-1, "\n", 0);
+    ocp = getenv ("OCAMLRUNPARAM");
+    caml_gc_message (-1, "### OCAMLRUNPARAM=%s\n", ocp == NULL ? "" : ocp);
+    cp = getenv ("CAMLRUNPARAM");
+    caml_gc_message (-1, "### CAMLRUNPARAM=%s\n", cp == NULL ? "" : cp);
+    caml_gc_message (-1, "### working dir: %s\n", getcwd (NULL, 0));
+#endif
+  }
+#endif
 #ifdef _WIN32
   /* Expand wildcards and diversions in command line */
   caml_expand_command_line(&argc, &argv);

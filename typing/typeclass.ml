@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typeclass.ml,v 1.89.6.2 2007/10/29 06:56:27 garrigue Exp $ *)
+(* $Id: typeclass.ml,v 1.89.6.3 2008/01/28 13:26:48 doligez Exp $ *)
 
 open Misc
 open Parsetree
@@ -1476,16 +1476,16 @@ let report_error ppf = function
         "This pattern cannot match self: it only matches values of type"
         Printtyp.type_expr ty
   | Unbound_class cl ->
-      fprintf ppf "Unbound class@ %a"
+      fprintf ppf "@[Unbound class@ %a@]"
       Printtyp.longident cl
   | Unbound_class_2 cl ->
-      fprintf ppf "The class@ %a@ is not yet completely defined"
+      fprintf ppf "@[The class@ %a@ is not yet completely defined@]"
       Printtyp.longident cl
   | Unbound_class_type cl ->
-      fprintf ppf "Unbound class type@ %a"
+      fprintf ppf "@[Unbound class type@ %a@]"
       Printtyp.longident cl
   | Unbound_class_type_2 cl ->
-      fprintf ppf "The class type@ %a@ is not yet completely defined"
+      fprintf ppf "@[The class type@ %a@ is not yet completely defined@]"
       Printtyp.longident cl
   | Abbrev_type_clash (abbrev, actual, expected) ->
       (* XXX Afficher une trace ? *)

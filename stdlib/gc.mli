@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: gc.mli,v 1.42 2005/10/25 18:34:07 doligez Exp $ *)
+(* $Id: gc.mli,v 1.42.10.1 2008/02/12 13:30:16 doligez Exp $ *)
 
 (** Memory management control and statistics; finalised values. *)
 
@@ -86,7 +86,7 @@ type control =
 
     mutable major_heap_increment : int;
     (** The minimum number of words to add to the
-       major heap when increasing it.  Default: 62k. *)
+       major heap when increasing it.  Default: 60k. *)
 
     mutable space_overhead : int;
     (** The major GC speed is computed from this parameter.

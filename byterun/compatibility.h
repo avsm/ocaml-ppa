@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: compatibility.h,v 1.15 2006/01/27 14:33:42 doligez Exp $ */
+/* $Id: compatibility.h,v 1.15.6.1 2008/01/21 14:09:05 doligez Exp $ */
 
 /* definitions for compatibility with old identifiers */
 
@@ -237,8 +237,7 @@
 #define young_end caml_young_end
 #define young_ptr caml_young_ptr
 #define young_limit caml_young_limit
-#define ref_table_ptr caml_ref_table_ptr
-#define ref_table_limit caml_ref_table_limit
+#define ref_table caml_ref_table
 #define minor_collection caml_minor_collection
 #define check_urgent_gc caml_check_urgent_gc
 
