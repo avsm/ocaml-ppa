@@ -230,9 +230,6 @@
             <listitem><para>bytecode object files (<filename>*.cmo</filename>)</para></listitem>
             <listitem><para>native object files (<filename>*.cmx</filename>)</para></listitem>
             <listitem><para>configuration files for handling libraries with <filename>ocamlfind</filename> (<filename>META</filename>)</para></listitem>
-	    <!-- ZACK: do we really need to differentiate them? They are plain
-	    objects or library after all ... -->
-	    <!--<listitem><para>&camlp4; related files (<filename>*.cm[ao]</filename>)</para></listitem>-->
         </itemizedlist>
     </para>
 </section>

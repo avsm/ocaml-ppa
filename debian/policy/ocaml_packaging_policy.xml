@@ -18,7 +18,8 @@
 <!ENTITY ocamlopt        "<application>ocamlopt</application>">
 <!ENTITY ocamldoc        "<application>ocamldoc</application>">
 <!ENTITY ocamlfind       "<application>ocamlfind</application>">
-<!ENTITY camlp4          "<application>CamlP4</application>">
+<!ENTITY camlp4          "<application>Camlp4</application>">
+<!ENTITY camlp5          "<application>Camlp5</application>">
 <!ENTITY debian-name     "Debian">
 <!ENTITY authors             SYSTEM "authors.xml">
 <!ENTITY legal               SYSTEM "legal.xml">
