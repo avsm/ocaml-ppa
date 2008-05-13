@@ -1,0 +1,10 @@
+Document: ocaml-packaging-policy
+Title: OCaml Packaging Policy
+Author: Debian OCaml Task Force <debian-ocaml-maint@lists.debian.org>
+Abstract: This manual describes the policy requirement for OCaml libraries and
+ programs in the Debian GNU/Linux distribution.
+Section: Debian
+
+Format: HTML
+Index: /usr/share/doc/ocaml/ocaml_packaging_policy.html/index.html
+Files: /usr/share/doc/ocaml/ocaml_packaging_policy.html/*.html
