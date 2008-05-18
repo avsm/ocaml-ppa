@@ -1,6 +1,7 @@
-ocaml (3.10.2-2) UNRELEASED; urgency=low
+ocaml (3.10.2-2) unstable; urgency=low
 
   [ Stefano Zacchiroli ]
+  * releasing to unstable
   * fix "OCaml" spelling errors in package descriptions (thanks lintian!)
 
   [ Romain Beauxis ]
@@ -8,17 +9,18 @@ ocaml (3.10.2-2) UNRELEASED; urgency=low
     versioned dependencies. Prevents build failures under some situations.
 
   [ Sylvain Le Gall ]
-  * changing doc-base section of generated documentation (Closes: #476647)
+  * changing doc-base section of generated documentation to Programming/OCaml
+    (Closes: #476647)
   * OCaml Packaging Policy:
     - update camlp4/camlp5 policy chapter
     - register policy in doc-base
 
   [ Ralf Treinen ]
   * OCaml Packaging Policy:
-    - update ocaml version to 3.10.2
+    - update OCaml version to 3.10.2
     - add a section on where to register documentation with doc-base.
 
- -- Ralf Treinen <treinen@debian.org>  Mon, 12 May 2008 21:36:18 +0200
+ -- Stefano Zacchiroli <zack@debian.org>  Sun, 18 May 2008 21:46:38 +0200
 
 ocaml (3.10.2-1) experimental; urgency=low
 
