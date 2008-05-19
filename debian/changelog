@@ -1,8 +1,12 @@
 ocaml (3.10.2-3) unstable; urgency=low
 
+  [ Stefano Zacchiroli ]
   * debian/rules: force using gcc-4.2 on arm (fix FTBFS on arm)
 
- -- Stefano Zacchiroli <zack@debian.org>  Mon, 19 May 2008 23:22:08 +0200
+  [ Ralf Treinen ]
+  * Added myself to uploaders.
+
+ -- Ralf Treinen <treinen@debian.org>  Mon, 19 May 2008 23:31:52 +0200
 
 ocaml (3.10.2-2) unstable; urgency=low
 
