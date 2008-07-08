@@ -1,3 +1,9 @@
+ocaml (3.10.2-4) UNRELEASED; urgency=low
+
+  * Switching packaging to git (from svn)
+
+ -- Stephane Glondu <steph@glondu.net>  Tue, 08 Jul 2008 11:15:35 +0200
+
 ocaml (3.10.2-3) unstable; urgency=low
 
   [ Stefano Zacchiroli ]
@@ -1548,4 +1554,3 @@ ocaml (1.02-1) non-free; urgency=low
   * Added Debian GNU/Linux Linux package maintenance system files
 
  -- Christophe Le Bars <clebars@debian.org>  Fri, 11 Oct 1996 22:25:01 +0200
-

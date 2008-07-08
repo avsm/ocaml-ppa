@@ -37,7 +37,7 @@ include /usr/share/cdbs/1/rules/dpatch.mk
   <variablelist>
 
     <varlistentry>
-      <term><filename><ulink url="http://svn.debian.org/wsvn/pkg-ocaml-maint/trunk/packages/ocaml/trunk/debian/cdbs/ocaml-vars.mk?op=file&amp;rev=0&amp;sc=0">ocaml-vars.mk</ulink></filename></term>
+      <term><filename><ulink url="http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git;a=blob;f=debian/cdbs/ocaml-vars.mk;hb=HEAD">ocaml-vars.mk</ulink></filename></term>
       <listitem>
 	<para>
 	  contains (Makefile) convenience variables which can be used in
@@ -47,7 +47,7 @@ include /usr/share/cdbs/1/rules/dpatch.mk
     </varlistentry>
       
     <varlistentry>
-      <term><filename><ulink url="http://svn.debian.org/wsvn/pkg-ocaml-maint/trunk/packages/ocaml/trunk/debian/cdbs/ocaml.mk?op=file&amp;rev=0&amp;sc=0">ocaml.mk</ulink></filename></term>
+      <term><filename><ulink url="http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git;a=blob;f=debian/cdbs/ocaml.mk;hb=HEAD">ocaml.mk</ulink></filename></term>
       <listitem>
 	<para>
 	  implements the class logic
