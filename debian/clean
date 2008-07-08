@@ -1,0 +1,13 @@
+_boot_log1
+_boot_log2
+_log
+byterun/libcamlrun_shared.so
+camlp4/config/Makefile
+camlp4/config/Makefile.cnf
+config/Makefile
+config/m.h
+config/s.h
+debian/README.labltk
+driver/ocamlcomp.sh
+emacs/ocamltags
+myocamlbuild_config.ml

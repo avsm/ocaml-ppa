@@ -146,15 +146,11 @@ clean: abi-sed unpatch
 	    mv -f debian/config.orig.$$ext config/gnu/config.$$ext; \
 	  fi; \
 	done
-	# File not cleaned by upstream
-	-$(RM) _boot_log1
-	-$(RM) _boot_log2
-	-$(RM) _log
-	-$(RM) myocamlbuild_config.ml
+	# Files not cleaned by upstream (most of them are cleaned
+	# using debian/clean feature of dh_clean in debhelper 7)
 	-$(RM) ocaml-$(OCAMLABI)
-	-$(RM) byterun/libcamlrun_shared.so
 
-	dh_clean debian/README.labltk camlp4/config/Makefile.cnf camlp4/config/Makefile config/m.h config/s.h config/Makefile emacs/ocamltags driver/ocamlcomp.sh
+	dh_clean
 	debian/rules abi-sed-clean
 	-$(RM) debian/$(SRCTARBALL)
 
@@ -162,7 +158,7 @@ install: install-indep install-arch
 install-indep: build-indep
 	dh_testdir
 	dh_testroot
-	dh_clean -k -i
+	dh_prep -i
 	dh_installdirs -i
 
 	# Install Emacs files
@@ -173,12 +169,12 @@ install-indep: build-indep
 	fi
 	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-mode/usr/bin install-ocamltags
 
-	dh_install -i
+	dh_install --sourcedir=. -i
 
 install-arch: build-arch
 	dh_testdir
 	dh_testroot
-	dh_clean -k -a
+	dh_prep -a
 	dh_installdirs -a
 
 	# Let's install ocaml first.
@@ -280,7 +276,7 @@ install-arch: build-arch
 	cp debian/ocaml-nox.override debian/ocaml-nox/usr/share/lintian/overrides/ocaml-nox
 
 	chmod +x debian/cdbs/ocamldoc-api-ref-config
-	dh_install -a
+	dh_install --sourcedir=. -a
 
 # Must not depend on anything. This is to be called by
 # binary-arch/binary-multi in another 'make' thread.

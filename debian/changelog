@@ -1,8 +1,10 @@
 ocaml (3.10.2-4) UNRELEASED; urgency=low
 
   * Switching packaging to git (from svn)
+  * Bump debhelper compatibility level to 7, and use debian/clean feature
+    of dh_clean
 
- -- Stephane Glondu <steph@glondu.net>  Tue, 08 Jul 2008 11:15:35 +0200
+ -- Stephane Glondu <steph@glondu.net>  Tue, 08 Jul 2008 14:30:11 +0200
 
 ocaml (3.10.2-3) unstable; urgency=low
 
