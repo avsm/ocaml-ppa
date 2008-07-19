@@ -141,11 +141,15 @@ clean: abi-sed unpatch
 	$(MAKE) -C debian/ocaml-md5sums clean
 	$(MAKE) -C debian/dh-ocaml clean
 	$(MAKE) -C debian/policy clean
+	# Restore files altered by debian/rules
 	for ext in sub guess; do \
 	  if [ -f debian/config.orig.$$ext ] ; then \
 	    mv -f debian/config.orig.$$ext config/gnu/config.$$ext; \
 	  fi; \
 	done
+	if head -n 1 emacs/ocamltags.in | grep -q '^#!/bin/sh'; then \
+		sed -i 1d emacs/ocamltags.in; \
+	fi
 	# Files not cleaned by upstream (most of them are cleaned
 	# using debian/clean feature of dh_clean in debhelper 7)
 	-$(RM) ocaml-$(OCAMLABI)
