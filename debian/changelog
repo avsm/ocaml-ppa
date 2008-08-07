@@ -9,6 +9,7 @@ ocaml (3.10.2-4) UNRELEASED; urgency=low
   * No longer ship stuff that will be now shipped by the new dh-ocaml package:
     - OCaml packaging policy
     - CDBS class ocaml.mk and related helpers
+    - dh_ocaml debhelper
 
  -- Stephane Glondu <steph@glondu.net>  Tue, 08 Jul 2008 14:30:11 +0200
 

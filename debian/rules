@@ -117,7 +117,6 @@ endif
 	else								\
 		$(MAKE) -C debian/ocaml-md5sums all;			\
 	fi
-	$(MAKE) -C debian/dh-ocaml
 	touch build-arch-stamp
 
 build-indep: build-indep-stamp config-stamp
@@ -138,7 +137,6 @@ clean: abi-sed unpatch
 	fi
 	[ ! -f "$(CURDIR)/config/Makefile" ] || $(MAKE) -C emacs clean
 	$(MAKE) -C debian/ocaml-md5sums clean
-	$(MAKE) -C debian/dh-ocaml clean
 	# Restore files altered by debian/rules
 	for ext in sub guess; do \
 	  if [ -f debian/config.orig.$$ext ] ; then \
@@ -238,9 +236,6 @@ install-arch: build-arch
 		./feeding.sh $$pkg $(STDLIBDIR) $(OCAMLABI) ../$$pkg$(STDLIBDIR) >	\
 			../$$pkg$(MD5SUMSDIR)/$$pkg.md5sums;				\
 	 done)
-
-	# Install dh_ocaml
-	$(MAKE) -C debian/dh-ocaml install DESTDIR=$(CURDIR)/debian/ocaml-nox
 
 	# Remove .opt manpages from ocaml-nox
 	rm -f debian/ocaml-nox/usr/share/man/man1/*.opt.1
