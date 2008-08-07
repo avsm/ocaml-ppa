@@ -90,7 +90,6 @@ config-stamp: pre-config patch-stamp abi-sed
 		echo "Aborting.";					\
 		exit 1;							\
 	fi
-	(cd debian/ocaml-md5sums && chmod +x configure && ./configure $(MD5SUMSDIR))
 	touch config-stamp
 
 
@@ -112,11 +111,6 @@ ifneq ($(findstring $(DEB_BUILD_ARCH),$(NATIVE_ARCHS)),)
 	$(MAKE) opt opt.opt
 	touch opt-built-stamp
 endif
-	if [ -x ./ocamlopt ]; then					\
-		$(MAKE) -C debian/ocaml-md5sums opt;			\
-	else								\
-		$(MAKE) -C debian/ocaml-md5sums all;			\
-	fi
 	touch build-arch-stamp
 
 build-indep: build-indep-stamp config-stamp
@@ -136,7 +130,6 @@ clean: abi-sed unpatch
 		mv boot.debian boot;	\
 	fi
 	[ ! -f "$(CURDIR)/config/Makefile" ] || $(MAKE) -C emacs clean
-	$(MAKE) -C debian/ocaml-md5sums clean
 	# Restore files altered by debian/rules
 	for ext in sub guess; do \
 	  if [ -f debian/config.orig.$$ext ] ; then \
@@ -225,17 +218,15 @@ install-arch: build-arch
 	# The interpreter files
 	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-interp
 
-	# Install ocaml-md5sums
-	$(MAKE) -C debian/ocaml-md5sums install DESTDIR=$(CURDIR)/debian/ocaml-base-nox/usr/bin
-
-	# Compute core entries of the ocaml md5sums registry and install them
-	(cd debian/ocaml-md5sums &&									\
-	 chmod +x feeding.sh &&									\
-	 for pkg in ocaml-nox ocaml ocaml-compiler-libs; do					\
-		mkdir -p ../$$pkg$(MD5SUMSDIR);						\
-		./feeding.sh $$pkg $(STDLIBDIR) $(OCAMLABI) ../$$pkg$(STDLIBDIR) >	\
-			../$$pkg$(MD5SUMSDIR)/$$pkg.md5sums;				\
-	 done)
+	# TEMPORARILY DISABLED while moving ocaml-md5sums to dh-ocaml
+	## Compute core entries of the ocaml md5sums registry and install them
+	#(cd debian/ocaml-md5sums &&									\
+	# chmod +x feeding.sh &&									\
+	# for pkg in ocaml-nox ocaml ocaml-compiler-libs; do					\
+	#	mkdir -p ../$$pkg$(MD5SUMSDIR);						\
+	#	./feeding.sh $$pkg $(STDLIBDIR) $(OCAMLABI) ../$$pkg$(STDLIBDIR) >	\
+	#		../$$pkg$(MD5SUMSDIR)/$$pkg.md5sums;				\
+	# done)
 
 	# Remove .opt manpages from ocaml-nox
 	rm -f debian/ocaml-nox/usr/share/man/man1/*.opt.1

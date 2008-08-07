@@ -1,9 +1,10 @@
 #!/bin/sh -e
 
-if [ "$1" = "remove" ]; then
-  if [ -x /usr/bin/ocaml-md5sums ]; then
-    /usr/bin/ocaml-md5sums update
-  fi
-fi
+# TEMPORARILY DISABLED while moving ocaml-md5sums to dh-ocaml
+#if [ "$1" = "remove" ]; then
+#  if [ -x /usr/bin/ocaml-md5sums ]; then
+#    /usr/bin/ocaml-md5sums update
+#  fi
+#fi
 
 #DEBHELPER#

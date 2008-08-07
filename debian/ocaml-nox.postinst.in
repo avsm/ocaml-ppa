@@ -3,7 +3,8 @@
 if [ "$1" = "configure" ]; then
   ln -sf /usr/lib/ocaml/#OcamlABI#/caml /usr/include/
 
-  ocaml-md5sums update
+  # TEMPORARILY DISABLED while moving ocaml-md5sums to dh-ocaml
+  #ocaml-md5sums update
 
   # Save Emacs conffiles from previous ocaml versions
   for f in ocaml ocaml-nox ; do
