@@ -6,10 +6,13 @@ ocaml (3.10.2-4) UNRELEASED; urgency=low
     of dh_clean
 
   [ Stefano Zacchiroli ]
-  * No longer ship stuff that will be now shipped by the new dh-ocaml package:
+  * No longer ship stuff that will be now shipped by the new dh-ocaml
+    package:
     - OCaml packaging policy
     - CDBS class ocaml.mk and related helpers
     - dh_ocaml debhelper
+    - ocaml-md5sums (therefore also disable its usage at the end of the
+      build process)
 
  -- Stephane Glondu <steph@glondu.net>  Tue, 08 Jul 2008 14:30:11 +0200
 
