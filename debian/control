@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>
 Uploaders: Sven Luther <luther@debian.org>, Stefano Zacchiroli <zack@debian.org>, Julien Cristau <julien.cristau@ens-lyon.org>, Samuel Mimram <smimram@debian.org>, Sylvain Le Gall <gildor@debian.org>, Ralf Treinen <treinen@debian.org>
 Build-Depends: debhelper (>= 7), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2, docbook-xml, docbook-utils, gcc-4.2 [arm]
-Standards-Version: 3.7.3
+Standards-Version: 3.8.0
 Vcs-Git: git://git.debian.org/git/pkg-ocaml-maint/packages/ocaml.git
 Vcs-Browser: http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git
 Homepage: http://caml.inria.fr/

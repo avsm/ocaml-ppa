@@ -6,6 +6,7 @@ ocaml (3.10.2-4) UNRELEASED; urgency=low
     of dh_clean
 
   [ Stefano Zacchiroli ]
+  * Bump Standards-Version to 3.8.0, no changes needed
   * No longer ship stuff that will be now shipped by the new dh-ocaml
     package:
     - OCaml packaging policy
