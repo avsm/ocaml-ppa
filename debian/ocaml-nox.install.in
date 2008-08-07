@@ -1,3 +1,2 @@
-debian/cdbs/*			/usr/share/cdbs/1/class/
 config/Makefile			/usr/lib/ocaml/#OcamlABI#/config/Makefile
 debian/native-archs		/usr/lib/ocaml/#OcamlABI#/
