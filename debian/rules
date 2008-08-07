@@ -118,7 +118,6 @@ endif
 		$(MAKE) -C debian/ocaml-md5sums all;			\
 	fi
 	$(MAKE) -C debian/dh-ocaml
-	$(MAKE) -C debian/policy
 	touch build-arch-stamp
 
 build-indep: build-indep-stamp config-stamp
@@ -140,7 +139,6 @@ clean: abi-sed unpatch
 	[ ! -f "$(CURDIR)/config/Makefile" ] || $(MAKE) -C emacs clean
 	$(MAKE) -C debian/ocaml-md5sums clean
 	$(MAKE) -C debian/dh-ocaml clean
-	$(MAKE) -C debian/policy clean
 	# Restore files altered by debian/rules
 	for ext in sub guess; do \
 	  if [ -f debian/config.orig.$$ext ] ; then \
@@ -251,21 +249,15 @@ install-arch: build-arch
 	cd debian/ocaml/usr/share/doc/ocaml; \
 		ln -sf ../ocaml-base-nox/Changes.gz .; \
 		ln -sf ../ocaml-base-nox/README.gz .; \
-		ln -sf ../ocaml-base-nox/README.Debian .; \
-		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.txt.gz .; \
-		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.html .
+		ln -sf ../ocaml-base-nox/README.Debian .
 	cd debian/ocaml-nox/usr/share/doc/ocaml-nox; \
 		ln -sf ../ocaml-base-nox/Changes.gz .; \
 		ln -sf ../ocaml-base-nox/README.gz .; \
-		ln -sf ../ocaml-base-nox/README.Debian .; \
-		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.txt.gz .; \
-		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.html .
+		ln -sf ../ocaml-base-nox/README.Debian .
 	cd debian/ocaml-base/usr/share/doc/ocaml-base; \
 		ln -sf ../ocaml-base-nox/Changes.gz .; \
 		ln -sf ../ocaml-base-nox/README.gz .; \
-		ln -sf ../ocaml-base-nox/README.Debian .; \
-		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.txt.gz .; \
-		ln -sf ../ocaml-base-nox/ocaml_packaging_policy.html .
+		ln -sf ../ocaml-base-nox/README.Debian .
 
 	# Remove empty directory
 	for i in `cat debian/ocaml-nox.empty-dirs`; do \
