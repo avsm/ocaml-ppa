@@ -377,7 +377,7 @@ let output_data_string outchan data =
 
 (* Output a bytecode executable as a C file *)
 
-let link_bytecode_as_c tolink outfile =
+let link_bytecode_as_c tolink outfile with_main =
   let outchan = open_out outfile in
   try
     (* The bytecode *)
@@ -413,14 +413,26 @@ CAMLextern void caml_startup_code(
     (* The table of primitives *)
     Symtable.output_primitive_table outchan;
     (* The entry point *)
-    output_string outchan "\n
+    if with_main then begin
+      output_string outchan "\n
+int main(int argc, char **argv)
+{
+  caml_startup_code(caml_code, sizeof(caml_code),
+                    caml_data, sizeof(caml_data),
+                    caml_sections, sizeof(caml_sections),
+                    argv);
+  return 0; /* not reached */
+}\n"
+    end else begin
+      output_string outchan "\n
 void caml_startup(char ** argv)
 {
   caml_startup_code(caml_code, sizeof(caml_code),
                     caml_data, sizeof(caml_data),
                     caml_sections, sizeof(caml_sections),
                     argv);
-}\n";
+}\n"
+    end;
     close_out outchan
   with x ->
     close_out outchan;
@@ -498,6 +510,16 @@ let link objfiles output_name =
   Clflags.dllibs := !lib_dllibs @ !Clflags.dllibs; (* put user's DLLs first *)
   if not !Clflags.custom_runtime then
     link_bytecode tolink output_name true
+  else if not !Clflags.make_runtime then
+    let c_file = Filename.temp_file "camlobj" ".c" in
+    try
+      link_bytecode_as_c tolink c_file true;
+      let exec_name = fix_exec_name output_name in
+      if build_custom_runtime c_file exec_name <> 0
+      then raise(Error Custom_runtime);
+    with x ->
+      remove_file c_file;
+      raise x
   else if not !Clflags.output_c_object then begin
     let bytecode_name = Filename.temp_file "camlcode" "" in
     let prim_name = Filename.temp_file "camlprim" ".c" in
@@ -521,7 +543,7 @@ let link objfiles output_name =
       Filename.chop_suffix output_name Config.ext_obj ^ ".c" in
     if Sys.file_exists c_file then raise(Error(File_exists c_file));
     try
-      link_bytecode_as_c tolink c_file;
+      link_bytecode_as_c tolink c_file false;
       if Ccomp.compile_file c_file <> 0
       then raise(Error Custom_runtime);
       remove_file c_file
