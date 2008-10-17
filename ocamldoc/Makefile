@@ -9,7 +9,7 @@
 #(*                                                                     *)
 #(***********************************************************************)
 
-# $Id: Makefile,v 1.64.6.1 2007/11/12 08:51:29 guesdon Exp $
+# $Id: Makefile,v 1.66 2008/01/11 16:13:16 doligez Exp $
 
 include ../config/Makefile
 
@@ -69,7 +69,7 @@ INCLUDES_NODEP=	-I $(OCAMLSRCDIR)/stdlib \
 INCLUDES=$(INCLUDES_DEP) $(INCLUDES_NODEP)
 
 COMPFLAGS=$(INCLUDES) -warn-error A
-LINKFLAGS=$(INCLUDES)
+LINKFLAGS=$(INCLUDES) -nostdlib
 
 CMOFILES= odoc_config.cmo \
 	odoc_global.cmo\

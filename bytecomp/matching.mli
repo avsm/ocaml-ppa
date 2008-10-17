@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: matching.mli,v 1.12 2004/05/26 11:10:50 garrigue Exp $ *)
+(* $Id: matching.mli,v 1.13 2008/08/01 16:57:10 mauny Exp $ *)
 
 (* Compilation of pattern-matching *)
 
@@ -39,3 +39,5 @@ val flatten_pattern: int -> pattern -> pattern list
 val make_test_sequence:
         lambda option -> primitive -> primitive -> lambda ->
         (Asttypes.constant * lambda) list -> lambda
+
+val inline_lazy_force : lambda -> Location.t -> lambda

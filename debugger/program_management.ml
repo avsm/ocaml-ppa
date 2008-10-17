@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: program_management.ml,v 1.12 2006/12/09 13:49:10 ertai Exp $ *)
+(* $Id: program_management.ml,v 1.13 2008/07/29 08:31:41 xleroy Exp $ *)
 
 (* Manage the loading of the program *)
 
@@ -74,6 +74,7 @@ let open_connection address continue =
       let sock = socket sock_domain SOCK_STREAM 0 in
         (try
            bind sock sock_address;
+           setsockopt sock SO_REUSEADDR true;
            listen sock 3;
            connection := io_channel_of_descr sock;
            Input_handling.add_file !connection (accept_connection continue);

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc.ml,v 1.5 2002/07/22 16:37:52 doligez Exp $ *)
+(* $Id: proc.ml,v 1.6 2007/10/30 12:37:16 xleroy Exp $ *)
 
 (* Description of the IA64 processor *)
 
@@ -210,7 +210,8 @@ let contains_calls = ref false
 (* Calling the assembler *)
 
 let assemble_file infile outfile =
-  Ccomp.command ("as -xexplicit -o " ^ Filename.quote outfile ^ " " ^ Filename.quote infile)
+  Ccomp.command (Config.asm ^ " -o " ^
+                 Filename.quote outfile ^ " " ^ Filename.quote infile)
 
 open Clflags;;
 open Config;;

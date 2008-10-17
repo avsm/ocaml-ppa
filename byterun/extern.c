@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: extern.c,v 1.61 2006/09/20 11:14:36 doligez Exp $ */
+/* $Id: extern.c,v 1.64 2008/08/04 11:45:58 xleroy Exp $ */
 
 /* Structured output */
 
@@ -306,16 +306,16 @@ static void extern_rec(value v)
       writecode32(CODE_INT32, n);
     return;
   }
-  if (Is_young(v) || Is_in_heap(v) || Is_atom(v)) {
+  if (Is_in_value_area(v)) {
     header_t hd = Hd_val(v);
     tag_t tag = Tag_hd(hd);
     mlsize_t sz = Wosize_hd(hd);
 
     if (tag == Forward_tag) {
       value f = Forward_val (v);
-      if (Is_block (f) && (Is_young (f) || Is_in_heap (f))
-          && (Tag_val (f) == Forward_tag || Tag_val (f) == Lazy_tag
-              || Tag_val (f) == Double_tag)){
+      if (Is_block (f)
+          && (!Is_in_value_area(f) || Tag_val (f) == Forward_tag
+              || Tag_val (f) == Lazy_tag || Tag_val (f) == Double_tag)){
         /* Do not short-circuit the pointer. */
       }else{
         v = f;
@@ -639,7 +639,7 @@ CAMLexport void caml_serialize_float_4(float f)
 
 CAMLexport void caml_serialize_float_8(double f)
 {
-  caml_serialize_block_8(&f, 1);
+  caml_serialize_block_float_8(&f, 1);
 }
 
 CAMLexport void caml_serialize_block_1(void * data, intnat len)

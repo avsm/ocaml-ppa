@@ -19,7 +19,7 @@
  *)
 
 
-(* $Id: DynLoader.ml,v 1.3 2007/02/07 10:09:21 ertai Exp $ *)
+(* $Id: DynLoader.ml,v 1.4 2007/11/06 15:16:56 frisch Exp $ *)
 
 type t = Queue.t string;
 
@@ -61,9 +61,7 @@ value find_in_path x name =
 value load =
   let _initialized = ref False in
   fun _path file ->
-    IFDEF OPT THEN
-      raise (Error file "native-code program cannot do a dynamic load")
-    ELSE do {
+    do {
       if not _initialized.val then
         try do {
           Dynlink.init ();
@@ -80,5 +78,7 @@ value load =
       in
       try Dynlink.loadfile fname with
       [ Dynlink.Error e -> raise (Error fname (Dynlink.error_message e)) ]
-    }
-    END;
+    };
+
+
+value is_native = Dynlink.is_native;

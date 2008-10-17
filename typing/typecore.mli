@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typecore.mli,v 1.39.2.1 2007/11/19 21:27:17 doligez Exp $ *)
+(* $Id: typecore.mli,v 1.41 2008/01/11 16:13:16 doligez Exp $ *)
 
 (* Type inference for the core language *)
 
@@ -23,10 +23,12 @@ val is_nonexpansive: Typedtree.expression -> bool
 val type_binding:
         Env.t -> rec_flag ->
           (Parsetree.pattern * Parsetree.expression) list -> 
+          Annot.ident option ->
           (Typedtree.pattern * Typedtree.expression) list * Env.t
 val type_let:
         Env.t -> rec_flag ->
-          (Parsetree.pattern * Parsetree.expression) list -> 
+          (Parsetree.pattern * Parsetree.expression) list ->
+          Annot.ident option ->
           (Typedtree.pattern * Typedtree.expression) list * Env.t
 val type_expression:
         Env.t -> Parsetree.expression -> Typedtree.expression

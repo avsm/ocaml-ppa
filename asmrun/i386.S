@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: i386.S,v 1.48.4.1 2007/10/09 13:32:25 xleroy Exp $ */
+/* $Id: i386.S,v 1.50 2008/08/01 08:04:57 xleroy Exp $ */
 
 /* Asm part of the runtime system, Intel 386 processor */
 /* Must be preprocessed by cpp */
@@ -423,4 +423,9 @@ Lmcount$stub:
         .indirect_symbol mcount
         hlt ; hlt ; hlt ; hlt ; hlt
         .subsections_via_symbols
+#endif
+
+#if defined(SYS_linux_elf)
+    /* Mark stack as non-executable, PR#4564 */
+        .section .note.GNU-stack,"",%progbits
 #endif

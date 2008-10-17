@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_tools.mli,v 1.2.4.3 2007/11/21 20:46:46 ertai Exp $ *)
+(* $Id: ocaml_tools.mli,v 1.7 2008/07/25 15:06:47 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 
 val ocamldoc_c : Tags.t -> string -> string -> Command.t
@@ -29,3 +29,5 @@ val document_ocaml_implem : string -> string -> Rule.action
 val document_ocaml_project :
   ?ocamldoc:(Tags.t -> string list -> string -> string -> Command.t) ->
   string -> string -> string -> Rule.action
+
+val camlp4 : ?default:Command.spec -> Tags.elt -> Pathname.t -> Pathname.t -> Rule.action

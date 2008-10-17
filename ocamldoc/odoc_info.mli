@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_info.mli,v 1.40.6.1 2007/03/02 08:55:05 guesdon Exp $ *)
+(* $Id: odoc_info.mli,v 1.45 2008/07/25 13:28:23 guesdon Exp $ *)
 
 (** Interface to the information collected in source files. *)
 
@@ -187,6 +187,9 @@ module Exception :
 (** Representation and manipulation of types.*)
 module Type :
   sig
+    type private_flag = Odoc_type.private_flag =
+      Private | Public
+
     (** Description of a variant type constructor. *)
     type variant_constructor = Odoc_type.variant_constructor =
         {
@@ -207,10 +210,10 @@ module Type :
     (** The various kinds of a type. *)
     type type_kind = Odoc_type.type_kind =
         Type_abstract (** Type is abstract, for example [type t]. *)
-      | Type_variant of variant_constructor list * bool
-                   (** constructors * bool *)
-      | Type_record of record_field list * bool
-                   (** fields * bool *)
+      | Type_variant of variant_constructor list
+                   (** constructors *)
+      | Type_record of record_field list
+                   (** fields *)
 
     (** Representation of a type. *)
     type t_type = Odoc_type.t_type =
@@ -219,7 +222,8 @@ module Type :
           mutable ty_info : info option ; (** Information found in the optional associated comment. *)
           ty_parameters : (Types.type_expr * bool * bool) list ;
                     (** type parameters: (type, covariant, contravariant) *)
-          ty_kind : type_kind ; (** Type kind. *)
+          ty_kind : type_kind; (** Type kind. *)
+          ty_private : private_flag; (** Private or public type. *)
           ty_manifest : Types.type_expr option; (** Type manifest. *)
           mutable ty_loc : location ;
           mutable ty_code : string option;
@@ -247,6 +251,7 @@ module Value :
         {
           att_value : t_value ; (** an attribute has almost all the same information as a value *)
           att_mutable : bool ;  (** [true] if the attribute is mutable. *)
+          att_virtual : bool ;  (** [true] if the attribute is virtual. *)
         }
 
     (** Representation of a class method. *)
@@ -939,6 +944,12 @@ module Args :
 
       (** The optional title to use in the generated documentation. *)
       val title : string option ref
+
+      (** To inverse [.ml] and [.mli] files while merging comments. *)
+      val inverse_merge_ml_mli : bool ref
+
+      (** To filter module elements according to module type constraints. *)
+      val filter_with_module_constraints : bool ref
 
       (** To keep the code while merging, when we have both .ml and .mli files for a module. *)
       val keep_code : bool ref

@@ -18,7 +18,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-(* $Id: Quotation.ml,v 1.4.4.3 2007/06/23 16:00:09 ertai Exp $ *)
+(* $Id: Quotation.ml,v 1.6 2007/11/21 17:57:54 ertai Exp $ *)
 
 module Make (Ast : Sig.Camlp4Ast)
 : Sig.Quotation with module Ast = Ast

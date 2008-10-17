@@ -22,7 +22,7 @@ open Camlp4;
 
 module Id = struct
   value name    = "Camlp4TrashRemover";
-  value version = "$Id: Camlp4TrashRemover.ml,v 1.1.4.1 2007/03/10 16:58:39 pouillar Exp $";
+  value version = "$Id: Camlp4TrashRemover.ml,v 1.2 2007/10/08 14:19:34 doligez Exp $";
 end;
 
 module Make (AstFilters : Camlp4.Sig.AstFilters) = struct

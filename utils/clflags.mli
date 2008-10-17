@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: clflags.mli,v 1.1 2005/10/26 13:23:27 doligez Exp $ *)
+(* $Id: clflags.mli,v 1.4.2.1 2008/10/15 08:48:51 xleroy Exp $ *)
 
 val objfiles : string list ref
 val ccobjs : string list ref
@@ -30,7 +30,7 @@ val ccopts : string list ref
 val classic : bool ref
 val nopervasives : bool ref
 val preprocessor : string option ref
-val save_types : bool ref
+val annotations : bool ref
 val use_threads : bool ref
 val use_vmthreads : bool ref
 val noassert : bool ref
@@ -43,8 +43,7 @@ val principal : bool ref
 val recursive_types : bool ref
 val make_runtime : bool ref
 val gprofile : bool ref
-val c_compiler : string ref
-val c_linker : string ref
+val c_compiler : string option ref
 val no_auto_link : bool ref
 val dllpaths : string list ref
 val make_package : bool ref
@@ -73,3 +72,5 @@ val inline_threshold : int ref
 val dont_write_files : bool ref
 val std_include_flag : string -> string
 val std_include_dir : unit -> string list
+val shared : bool ref
+val dlcode : bool ref

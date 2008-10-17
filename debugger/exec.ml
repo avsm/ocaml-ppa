@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: exec.ml,v 1.4 1999/11/17 18:57:24 xleroy Exp $ *)
+(* $Id: exec.ml,v 1.5 2008/07/29 08:31:41 xleroy Exp $ *)
 
 (* Handling of keyboard interrupts *)
 
@@ -25,8 +25,11 @@ let break signum =
   else raise Sys.Break
 
 let _ =
-  Sys.set_signal Sys.sigint (Sys.Signal_handle break);
-  Sys.set_signal Sys.sigpipe (Sys.Signal_handle (fun _ -> raise End_of_file))
+  match Sys.os_type with
+    "Win32" -> ()
+  | _ ->
+      Sys.set_signal Sys.sigint (Sys.Signal_handle break);
+      Sys.set_signal Sys.sigpipe (Sys.Signal_handle (fun _ -> raise End_of_file))
 
 let protect f =
   if !is_protected then

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: thread.mli,v 1.20.10.1 2007/10/25 08:35:32 xleroy Exp $ *)
+(* $Id: thread.mli,v 1.21 2008/01/11 16:13:16 doligez Exp $ *)
 
 (** Lightweight threads for Posix [1003.1c] and Win32. *)
 

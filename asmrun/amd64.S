@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: amd64.S,v 1.11 2007/01/29 12:10:52 xleroy Exp $ */
+/* $Id: amd64.S,v 1.12 2008/08/01 08:04:57 xleroy Exp $ */
 
 /* Asm part of the runtime system, AMD64 processor */
 /* Must be preprocessed by cpp */
@@ -366,3 +366,8 @@ caml_negf_mask:
         .align  16
 caml_absf_mask:
 	.quad	0x7FFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF
+
+#if defined(SYS_linux)
+    /* Mark stack as non-executable, PR#4564 */
+        .section .note.GNU-stack,"",%progbits
+#endif

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: display.ml,v 1.1.4.1 2007/11/26 13:28:35 ertai Exp $ *)
+(* $Id: display.ml,v 1.3 2008/01/11 16:13:16 doligez Exp $ *)
 (* Original author: Berke Durak *)
 (* Display *)
 open My_std;;

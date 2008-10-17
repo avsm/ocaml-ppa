@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: reload.ml,v 1.5 2007/01/29 12:10:50 xleroy Exp $ *)
+(* $Id: reload.ml,v 1.6 2007/11/06 15:16:55 frisch Exp $ *)
 
 open Cmm
 open Arch
@@ -93,7 +93,7 @@ method reload_operation op arg res =
       then (arg, res)
       else super#reload_operation op arg res
   | Iconst_symbol _ ->
-      if !pic_code
+      if !pic_code || !Clflags.dlcode
       then super#reload_operation op arg res
       else (arg, res)
   | _ -> (* Other operations: all args and results in registers *)

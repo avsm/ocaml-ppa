@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tools.ml,v 1.2.4.1 2007/11/28 16:06:06 ertai Exp $ *)
+(* $Id: tools.ml,v 1.4 2008/01/11 16:13:16 doligez Exp $ *)
 (* Original author: Nicolas Pouillard *)
 (* Tools *)
 

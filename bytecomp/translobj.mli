@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: translobj.mli,v 1.6 2004/05/26 11:10:51 garrigue Exp $ *)
+(* $Id: translobj.mli,v 1.6.26.1 2008/10/08 13:07:13 doligez Exp $ *)
 
 open Lambda
 
@@ -23,6 +23,8 @@ val reset_labels: unit -> unit
 val transl_label_init: lambda -> lambda
 val transl_store_label_init:
     Ident.t -> int -> ('a -> lambda) -> 'a -> int * lambda
+
+val method_ids: IdentSet.t ref (* reset when starting a new wrapper *)
 
 val oo_wrap: Env.t -> bool -> ('a -> lambda) -> 'a -> lambda
 val oo_add_class: Ident.t -> Env.t * bool

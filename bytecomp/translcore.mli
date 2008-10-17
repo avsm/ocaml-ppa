@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: translcore.mli,v 1.18 2003/11/25 09:20:43 garrigue Exp $ *)
+(* $Id: translcore.mli,v 1.19 2007/05/16 08:21:40 doligez Exp $ *)
 
 (* Translation from typed abstract syntax to lambda terms,
    for the core language *)
@@ -23,7 +23,8 @@ open Lambda
 val name_pattern: string -> (pattern * 'a) list -> Ident.t
 
 val transl_exp: expression -> lambda
-val transl_apply: lambda -> (expression option * optional) list -> lambda
+val transl_apply: lambda -> (expression option * optional) list
+                  -> Location.t -> lambda
 val transl_let:
       rec_flag -> (pattern * expression) list -> lambda -> lambda
 val transl_primitive: Primitive.description -> lambda

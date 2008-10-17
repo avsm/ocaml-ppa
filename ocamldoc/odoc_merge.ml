@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_merge.ml,v 1.12 2006/09/20 11:14:37 doligez Exp $ *)
+(* $Id: odoc_merge.ml,v 1.13 2007/10/09 10:29:36 weis Exp $ *)
 
 (** Merge of information from [.ml] and [.mli] for a module.*)
 
@@ -196,7 +196,7 @@ let merge_types merge_options mli ml =
     Type_abstract, _ ->
       ()
 
-  | Type_variant (l1, _), Type_variant (l2, _) ->
+  | Type_variant l1, Type_variant l2 ->
       let f cons =
         try
           let cons2 = List.find
@@ -224,7 +224,7 @@ let merge_types merge_options mli ml =
       in
       List.iter f l1
 
-  | Type_record (l1, _), Type_record (l2, _) ->
+  | Type_record l1, Type_record l2 ->
       let f record =
         try
           let record2= List.find

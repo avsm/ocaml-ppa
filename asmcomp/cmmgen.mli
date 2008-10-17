@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: cmmgen.mli,v 1.14 2007/02/15 18:36:08 frisch Exp $ *)
+(* $Id: cmmgen.mli,v 1.16 2008/01/31 09:13:08 frisch Exp $ *)
 
 (* Translation from closed lambda to C-- *)
 
@@ -19,10 +19,14 @@ val compunit: int -> Clambda.ulambda -> Cmm.phrase list
 val apply_function: int -> Cmm.phrase
 val send_function: int -> Cmm.phrase
 val curry_function: int -> Cmm.phrase list
+val generic_functions: bool -> Compilenv.unit_infos list -> Cmm.phrase list
 val entry_point: string list -> Cmm.phrase
 val global_table: string list -> Cmm.phrase
-val globals_map: (string * string) list -> Cmm.phrase
+val reference_symbols: string list -> Cmm.phrase
+val globals_map: (string * Digest.t * Digest.t * string list) list -> 
+  Cmm.phrase
 val frame_table: string list -> Cmm.phrase
 val data_segment_table: string list -> Cmm.phrase
 val code_segment_table: string list -> Cmm.phrase
 val predef_exception: string -> Cmm.phrase
+val plugin_header: (Compilenv.unit_infos * Digest.t) list -> Cmm.phrase

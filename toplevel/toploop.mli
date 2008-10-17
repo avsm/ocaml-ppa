@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: toploop.mli,v 1.25 2004/05/15 09:59:37 xleroy Exp $ *)
+(* $Id: toploop.mli,v 1.26 2007/12/04 13:38:58 doligez Exp $ *)
 
 open Format
 
@@ -80,6 +80,7 @@ val max_printer_steps: int ref
 val parse_toplevel_phrase : (Lexing.lexbuf -> Parsetree.toplevel_phrase) ref
 val parse_use_file : (Lexing.lexbuf -> Parsetree.toplevel_phrase list) ref
 val print_location : formatter -> Location.t -> unit
+val print_error : formatter -> Location.t -> unit
 val print_warning : Location.t -> formatter -> Warnings.t -> unit
 val input_name : string ref
 

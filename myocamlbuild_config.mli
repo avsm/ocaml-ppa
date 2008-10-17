@@ -31,10 +31,10 @@ val nativeccprofopts : string
 val nativecclinkopts : string
 val nativeccrpath : string
 val nativecclibs : string
+val packld : string
 val dllcccompopts : string
-val asflags : string
+val asm : string
 val aspp : string
-val asppflags : string
 val asppprofflags : string
 val profiling : string
 val dynlinkopts : string
@@ -42,10 +42,10 @@ val otherlibraries : string
 val debugger : string
 val cc_profile : string
 val systhread_support : bool
-val partialld : string
 val syslib : string -> string
-val mkexe : string -> string -> string -> string
-val mkdll : string -> string -> string -> string -> string
+val mkexe : string
+val mkdll : string
+val mkmaindll : string
 val mklib : string -> string -> string -> string
 val ext_lib : string
 val ext_obj : string

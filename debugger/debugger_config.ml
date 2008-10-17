@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: debugger_config.ml,v 1.10 2002/11/17 16:42:10 xleroy Exp $ *)
+(* $Id: debugger_config.ml,v 1.11 2008/07/29 08:31:41 xleroy Exp $ *)
 
 (**************************** Configuration file ***********************)
 
@@ -51,7 +51,10 @@ let event_mark_before = "<|b|>"
 let event_mark_after  = "<|a|>"
 
 (* Name of shell used to launch the debuggee *)
-let shell = "/bin/sh"
+let shell =
+  match Sys.os_type with
+    "Win32" -> "cmd"
+  | _ -> "/bin/sh"
 
 (* Name of the Objective Caml runtime. *)
 let runtime_program = "ocamlrun"
@@ -71,5 +74,7 @@ let checkpoint_small_step = ref (~~ "1000")
 let checkpoint_max_count = ref 15
 
 (* Whether to keep checkpoints or not. *)
-let make_checkpoints = ref true
-
+let make_checkpoints = ref
+  (match Sys.os_type with
+    "Win32" -> false
+  | _ -> true)

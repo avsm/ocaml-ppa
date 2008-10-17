@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typeclass.ml,v 1.89.6.3 2008/01/28 13:26:48 doligez Exp $ *)
+(* $Id: typeclass.ml,v 1.93 2008/02/29 14:21:22 doligez Exp $ *)
 
 open Misc
 open Parsetree
@@ -561,7 +561,7 @@ let rec class_field cl_num self_type meths vars
   | Pcf_let (rec_flag, sdefs, loc) ->
       let (defs, val_env) =
         try
-          Typecore.type_let val_env rec_flag sdefs
+          Typecore.type_let val_env rec_flag sdefs None
         with Ctype.Unify [(ty, _)] ->
           raise(Error(loc, Make_nongen_seltype ty))
       in
@@ -911,7 +911,7 @@ and class_expr cl_num val_env met_env scl =
   | Pcl_let (rec_flag, sdefs, scl') ->
       let (defs, val_env) =
         try
-          Typecore.type_let val_env rec_flag sdefs
+          Typecore.type_let val_env rec_flag sdefs None
         with Ctype.Unify [(ty, _)] ->
           raise(Error(scl.pcl_loc, Make_nongen_seltype ty))
       in
@@ -1008,6 +1008,7 @@ let temp_abbrev env id arity =
       {type_params = !params;
        type_arity = arity;
        type_kind = Type_abstract;
+       type_private = Public;
        type_manifest = Some ty;
        type_variance = List.map (fun _ -> true, true, true) !params}
       env
@@ -1218,6 +1219,7 @@ let class_infos define_class kind
     {type_params = obj_params;
      type_arity = List.length obj_params;
      type_kind = Type_abstract;
+     type_private = Public;
      type_manifest = Some obj_ty;
      type_variance = List.map (fun _ -> true, true, true) obj_params}
   in
@@ -1230,6 +1232,7 @@ let class_infos define_class kind
     {type_params = cl_params;
      type_arity = List.length cl_params;
      type_kind = Type_abstract;
+     type_private = Public;
      type_manifest = Some cl_ty;
      type_variance = List.map (fun _ -> true, true, true) cl_params}
   in

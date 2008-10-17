@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: parser.mly,v 1.126.6.1 2007/11/30 00:53:19 garrigue Exp $ */
+/* $Id: parser.mly,v 1.131 2008/07/14 09:09:53 xleroy Exp $ */
 
 /* The parser definition */
 
@@ -153,30 +153,32 @@ let bigarray_untuplify = function
   | exp -> [exp]
 
 let bigarray_get arr arg =
+  let get = if !Clflags.fast then "unsafe_get" else "get" in
   match bigarray_untuplify arg with
     [c1] ->
-      mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Array1" "get")),
+      mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Array1" get)),
                        ["", arr; "", c1]))
   | [c1;c2] ->
-      mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Array2" "get")),
+      mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Array2" get)),
                        ["", arr; "", c1; "", c2]))
   | [c1;c2;c3] ->
-      mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Array3" "get")),
+      mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Array3" get)),
                        ["", arr; "", c1; "", c2; "", c3]))
   | coords ->
       mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Genarray" "get")),
                        ["", arr; "", ghexp(Pexp_array coords)]))
 
 let bigarray_set arr arg newval =
+  let set = if !Clflags.fast then "unsafe_set" else "set" in 
   match bigarray_untuplify arg with
     [c1] ->
-      mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Array1" "set")),
+      mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Array1" set)),
                        ["", arr; "", c1; "", newval]))
   | [c1;c2] ->
-      mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Array2" "set")),
+      mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Array2" set)),
                        ["", arr; "", c1; "", c2; "", newval]))
   | [c1;c2;c3] ->
-      mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Array3" "set")),
+      mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Array3" set)),
                        ["", arr; "", c1; "", c2; "", c3; "", newval]))
   | coords ->
       mkexp(Pexp_apply(ghexp(Pexp_ident(bigarray_function "Genarray" "set")),
@@ -675,12 +677,12 @@ class_type:
       { $1 }
   | QUESTION LIDENT COLON simple_core_type_or_tuple MINUSGREATER class_type
       { mkcty(Pcty_fun("?" ^ $2 ,
-                       {ptyp_desc = Ptyp_constr(Lident "option", [$4]);
+                       {ptyp_desc = Ptyp_constr(Ldot (Lident "*predef*", "option"), [$4]);
                         ptyp_loc = $4.ptyp_loc},
                        $6)) }
   | OPTLABEL simple_core_type_or_tuple MINUSGREATER class_type
       { mkcty(Pcty_fun("?" ^ $1 ,
-                       {ptyp_desc = Ptyp_constr(Lident "option", [$2]);
+                       {ptyp_desc = Ptyp_constr(Ldot (Lident "*predef*", "option"), [$2]);
                         ptyp_loc = $2.ptyp_loc},
                        $4)) }
   | LIDENT COLON simple_core_type_or_tuple MINUSGREATER class_type
@@ -1077,6 +1079,8 @@ pattern:
                              false)) }
   | pattern BAR pattern
       { mkpat(Ppat_or($1, $3)) }
+  | LAZY simple_pattern
+      { mkpat(Ppat_lazy $2) }
 ;
 simple_pattern:
     val_ident %prec below_EQUAL
@@ -1147,10 +1151,11 @@ type_declarations:
 type_declaration:
     type_parameters LIDENT type_kind constraints
       { let (params, variance) = List.split $1 in
-        let (kind, manifest) = $3 in
+        let (kind, private_flag, manifest) = $3 in
         ($2, {ptype_params = params;
               ptype_cstrs = List.rev $4;
               ptype_kind = kind;
+              ptype_private = private_flag;
               ptype_manifest = manifest;
               ptype_variance = variance;
               ptype_loc = symbol_rloc()}) }
@@ -1161,23 +1166,23 @@ constraints:
 ;
 type_kind:
     /*empty*/
-      { (Ptype_abstract, None) }
+      { (Ptype_abstract, Public, None) }
   | EQUAL core_type
-      { (Ptype_abstract, Some $2) }
+      { (Ptype_abstract, Public, Some $2) }
   | EQUAL constructor_declarations
-      { (Ptype_variant(List.rev $2, Public), None) }
+      { (Ptype_variant(List.rev $2), Public, None) }
   | EQUAL PRIVATE constructor_declarations
-      { (Ptype_variant(List.rev $3, Private), None) }
+      { (Ptype_variant(List.rev $3), Private, None) }
   | EQUAL private_flag BAR constructor_declarations
-      { (Ptype_variant(List.rev $4, $2), None) }
+      { (Ptype_variant(List.rev $4), $2, None) }
   | EQUAL private_flag LBRACE label_declarations opt_semi RBRACE
-      { (Ptype_record(List.rev $4, $2), None) }
+      { (Ptype_record(List.rev $4), $2, None) }
   | EQUAL core_type EQUAL private_flag opt_bar constructor_declarations
-      { (Ptype_variant(List.rev $6, $4), Some $2) }
+      { (Ptype_variant(List.rev $6), $4, Some $2) }
   | EQUAL core_type EQUAL private_flag LBRACE label_declarations opt_semi RBRACE
-      { (Ptype_record(List.rev $6, $4), Some $2) }
+      { (Ptype_record(List.rev $6), $4, Some $2) }
   | EQUAL PRIVATE core_type
-      { (Ptype_private, Some $3) }
+      { (Ptype_abstract, Private, Some $3) }
 ;
 type_parameters:
     /*empty*/                                   { [] }
@@ -1226,8 +1231,9 @@ with_constraint:
       { let params, variance = List.split $2 in
         ($3, Pwith_type {ptype_params = params;
                          ptype_cstrs = List.rev $6;
-                         ptype_kind = $4;
+                         ptype_kind = Ptype_abstract;
                          ptype_manifest = Some $5;
+                         ptype_private = $4;
                          ptype_variance = variance;
                          ptype_loc = symbol_rloc()}) }
     /* used label_longident instead of type_longident to disallow
@@ -1236,8 +1242,8 @@ with_constraint:
       { ($2, Pwith_module $4) }
 ;
 with_type_binder:
-    EQUAL          { Ptype_abstract }
-  | EQUAL PRIVATE  { Ptype_private }
+    EQUAL          { Public }
+  | EQUAL PRIVATE  { Private }
 ;
 
 /* Polymorphic types */
@@ -1266,11 +1272,11 @@ core_type2:
       { $1 }
   | QUESTION LIDENT COLON core_type2 MINUSGREATER core_type2
       { mktyp(Ptyp_arrow("?" ^ $2 ,
-               {ptyp_desc = Ptyp_constr(Lident "option", [$4]);
+               {ptyp_desc = Ptyp_constr(Ldot (Lident "*predef*", "option"), [$4]);
                 ptyp_loc = $4.ptyp_loc}, $6)) }
   | OPTLABEL core_type2 MINUSGREATER core_type2
       { mktyp(Ptyp_arrow("?" ^ $1 ,
-               {ptyp_desc = Ptyp_constr(Lident "option", [$2]);
+               {ptyp_desc = Ptyp_constr(Ldot (Lident "*predef*", "option"), [$2]);
                 ptyp_loc = $2.ptyp_loc}, $4)) }
   | LIDENT COLON core_type2 MINUSGREATER core_type2
       { mktyp(Ptyp_arrow($1, $3, $5)) }

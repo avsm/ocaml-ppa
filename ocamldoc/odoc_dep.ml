@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_dep.ml,v 1.6 2004/03/05 14:57:50 guesdon Exp $ *)
+(* $Id: odoc_dep.ml,v 1.7 2007/10/09 10:29:36 weis Exp $ *)
 
 (** Top modules dependencies. *)
 
@@ -147,7 +147,7 @@ let type_deps t =
   in
   (match t.T.ty_kind with
     T.Type_abstract -> ()
-  | T.Type_variant (cl, _) ->
+  | T.Type_variant cl ->
       List.iter
         (fun c ->
           List.iter 
@@ -158,7 +158,7 @@ let type_deps t =
             c.T.vc_args
         )
         cl
-  | T.Type_record (rl, _) ->
+  | T.Type_record rl ->
       List.iter
         (fun r ->
           let s = Odoc_print.string_of_type_expr r.T.rf_type in

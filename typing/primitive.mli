@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: primitive.mli,v 1.7 2001/08/06 12:28:49 ddr Exp $ *)
+(* $Id: primitive.mli,v 1.8 2008/07/24 05:35:22 frisch Exp $ *)
 
 (* Description of primitive functions *)
 
@@ -24,3 +24,6 @@ type description =
 val parse_declaration: int -> string list -> description
 
 val description_list: description -> string list
+
+val native_name: description -> string
+val byte_name: description -> string

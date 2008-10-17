@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: inria.h,v 1.5.18.1 2007/05/12 09:20:51 xleroy Exp $ */
+/* $Id: inria.h,v 1.6.4.1 2008/10/08 13:07:14 doligez Exp $ */
 
 /*------------------------------------------------------------------------
  Module:        D:\lcc\inria\inria.h
@@ -63,7 +63,7 @@
 #include "editbuffer.h"
 #include "history.h"
 
-#if _MSC_VER <= 1200
+#if _MSC_VER <= 1200 && !defined(__MINGW32__)
 #define GetWindowLongPtr GetWindowLong
 #define SetWindowLongPtr SetWindowLong
 #define DWLP_USER DWL_USER

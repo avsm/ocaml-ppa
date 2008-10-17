@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: solver.ml,v 1.1.4.5 2007/12/18 08:58:02 ertai Exp $ *)
+(* $Id: solver.ml,v 1.8 2008/07/25 14:50:47 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Log
@@ -70,7 +70,9 @@ let rec self depth on_the_go_orig target =
         | r :: rs ->
             try
               List.iter (force_self (depth + 1) on_the_go) (Rule.deps_of_rule r);
-              Rule.call (self_firsts (depth + 1) on_the_go) r
+              try
+                Rule.call (self_firsts (depth + 1) on_the_go) r
+              with Rule.Failed -> raise (Failed (Leaf target))
             with Failed backtrace ->
               if rs = [] then failed target (Depth (target, Choice (backtrace :: backtraces)))
               else

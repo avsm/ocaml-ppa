@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_tools.ml,v 1.2.4.9 2007/11/22 18:49:38 ertai Exp $ *)
+(* $Id: ocaml_tools.ml,v 1.12 2008/07/25 15:06:47 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Pathname.Operators
@@ -71,9 +71,10 @@ let menhir_modular menhir_base mlypack mlypack_depends env build =
   let (tags,files) = import_mlypack build mlypack in
   let () = List.iter Outcome.ignore_good (build [[mlypack_depends]]) in
   Ocaml_compiler.prepare_compile build mlypack;
+  let ocamlc_tags = tags++"ocaml"++"byte"++"compile" in
   let tags = tags++"ocaml"++"parser"++"menhir" in
   Cmd(S[menhir ;
-        A "--ocamlc"; Quote(S[!Options.ocamlc; ocaml_include_flags mlypack]);
+        A "--ocamlc"; Quote(S[!Options.ocamlc; T ocamlc_tags; ocaml_include_flags mlypack]);
         T tags ; A "--infer" ; flags_of_pathname mlypack ;
         A "--base" ; Px menhir_base ; atomize_paths files])
 
@@ -151,3 +152,15 @@ let document_ocaml_project ?(ocamldoc=ocamldoc_l_file) odocl docout docdir env b
   let module_paths = List.map Outcome.good (build to_build) in
   let tags = (Tags.union (tags_of_pathname docout) (tags_of_pathname docdir))++"ocaml" in
   ocamldoc tags module_paths docout docdir
+
+let camlp4 ?(default=A"camlp4o") tag i o env build =
+  let ml = env i and pp_ml = env o in
+  let tags = tags_of_pathname ml++"ocaml"++"pp"++tag in
+  let _ = Rule.build_deps_of_tags build tags in
+  let pp = Command.reduce (Flags.of_tags tags) in
+  let pp =
+    match pp with
+    | N -> default
+    | _ -> pp
+  in
+  Cmd(S[pp; P ml; A"-printer"; A"o"; A"-o"; Px pp_ml])

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: depend.ml,v 1.10.6.1 2007/11/10 13:47:09 xleroy Exp $ *)
+(* $Id: depend.ml,v 1.13 2008/07/09 13:03:37 mauny Exp $ *)
 
 open Format
 open Location
@@ -68,10 +68,10 @@ let add_type_declaration bv td =
     td.ptype_cstrs;
   add_opt add_type bv td.ptype_manifest;
   let rec add_tkind = function
-    Ptype_abstract | Ptype_private -> ()
-  | Ptype_variant (cstrs, _) ->
+    Ptype_abstract -> ()
+  | Ptype_variant cstrs ->
       List.iter (fun (c, args, _) -> List.iter (add_type bv) args) cstrs
-  | Ptype_record (lbls, _) ->
+  | Ptype_record lbls ->
       List.iter (fun (l, mut, ty, _) -> add_type bv ty) lbls in
   add_tkind td.ptype_kind
 
@@ -112,6 +112,7 @@ let rec add_pattern bv pat =
   | Ppat_constraint(p, ty) -> add_pattern bv p; add_type bv ty
   | Ppat_variant(_, op) -> add_opt add_pattern bv op
   | Ppat_type (li) -> add bv li
+  | Ppat_lazy p -> add_pattern bv p
 
 let rec add_expr bv exp =
   match exp.pexp_desc with

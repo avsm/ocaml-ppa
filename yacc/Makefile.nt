@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt,v 1.9 2007/02/07 14:49:42 doligez Exp $
+# $Id: Makefile.nt,v 1.11 2007/11/15 13:21:15 frisch Exp $
 
 # Makefile for the parser generator.
 
@@ -23,7 +23,7 @@ OBJS= closure.$(O) error.$(O) lalr.$(O) lr0.$(O) main.$(O) \
 all: ocamlyacc.exe
 
 ocamlyacc.exe: $(OBJS)
-	$(call MKEXE,ocamlyacc.exe,$(BYTECCLINKOPTS) $(OBJS) $(EXTRALIBS))
+	$(MKEXE) -o ocamlyacc.exe $(OBJS) $(EXTRALIBS)
 
 version.h : ../VERSION
 	echo "#define OCAML_VERSION \"`head -1 ../VERSION`\"" >version.h

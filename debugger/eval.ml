@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: eval.ml,v 1.28 2003/07/02 09:14:30 xleroy Exp $ *)
+(* $Id: eval.ml,v 1.30 2007/11/28 22:32:14 weis Exp $ *)
 
 open Debugger_config
 open Misc
@@ -101,7 +101,7 @@ let rec expression event env = function
       end
   | E_item(arg, n) ->
       let (v, ty) = expression event env arg in
-      begin match (Ctype.repr(Ctype.expand_head env ty)).desc with
+      begin match (Ctype.repr(Ctype.expand_head_opt env ty)).desc with
         Ttuple ty_list ->
           if n < 1 || n > List.length ty_list
           then raise(Error(Tuple_index(ty, List.length ty_list, n)))
@@ -131,11 +131,11 @@ let rec expression event env = function
       end
   | E_field(arg, lbl) ->
       let (v, ty) = expression event env arg in
-      begin match (Ctype.repr(Ctype.expand_head env ty)).desc with
+      begin match (Ctype.repr(Ctype.expand_head_opt env ty)).desc with
         Tconstr(path, args, _) ->
           let tydesc = Env.find_type path env in
           begin match tydesc.type_kind with
-            Type_record(lbl_list, repr, priv) ->
+            Type_record(lbl_list, repr) ->
               let (pos, ty_res) =
                 find_label lbl env ty path tydesc 0 lbl_list in
               (Debugcom.Remote_value.field v pos, ty_res)

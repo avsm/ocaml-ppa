@@ -10,11 +10,12 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main_args.ml,v 1.49 2006/04/05 02:28:13 garrigue Exp $ *)
+(* $Id: main_args.ml,v 1.50 2007/05/16 08:21:40 doligez Exp $ *)
 
 module Make_options (F :
    sig
      val _a : unit -> unit
+     val _annot : unit -> unit
      val _c : unit -> unit
      val _cc : string -> unit
      val _cclib : string -> unit
@@ -23,7 +24,6 @@ module Make_options (F :
      val _custom : unit -> unit
      val _dllib : string -> unit
      val _dllpath : string -> unit
-     val _dtypes : unit -> unit
      val _g : unit -> unit
      val _i : unit -> unit
      val _I : string -> unit
@@ -65,6 +65,7 @@ module Make_options (F :
 struct
   let list = [
     "-a", Arg.Unit F._a, " Build a library";
+    "-annot", Arg.Unit F._annot, " Save information in <filename>.annot";
     "-c", Arg.Unit F._c, " Compile only (do not link)";
     "-cc", Arg.String F._cc,
            "<command>  Use <command> as the C compiler and linker";
@@ -78,7 +79,7 @@ struct
            "<lib>  Use the dynamically-loaded library <lib>";
     "-dllpath", Arg.String F._dllpath,
            "<dir>  Add <dir> to the run-time search path for shared libraries";
-    "-dtypes", Arg.Unit F._dtypes, " Save type information in <filename>.annot";
+    "-dtypes", Arg.Unit F._annot, " (deprecated) same as -annot";
      "-for-pack", Arg.String (fun s -> ()),
            "<ident>  Ignored (for compatibility with ocamlopt)";
     "-g", Arg.Unit F._g, " Save debugging information";

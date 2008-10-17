@@ -10,13 +10,14 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: open.c,v 1.11 2006/05/09 16:02:48 xleroy Exp $ */
+/* $Id: open.c,v 1.12 2007/11/06 15:16:56 frisch Exp $ */
 
 #include <fcntl.h>
 #include <signal.h>
 #include "mlvalues.h"
 #include "fail.h"
 #include "libgraph.h"
+#include "callback.h"
 #include <windows.h>
 
 static value gr_reset(void);
@@ -343,7 +344,6 @@ CAMLprim value caml_gr_sigio_handler(void)
 
 /* Processing of graphic errors */
 
-value * caml_named_value (char * name);
 static value * graphic_failure_exn = NULL;
 void gr_fail(char *fmt, char *arg)
 {

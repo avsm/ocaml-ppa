@@ -10,13 +10,17 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asmlink.mli,v 1.11 2006/10/17 12:33:58 xleroy Exp $ *)
+(* $Id: asmlink.mli,v 1.12 2007/11/06 15:16:55 frisch Exp $ *)
 
-(* Link a set of .cmx/.o files and produce an executable *)
+(* Link a set of .cmx/.o files and produce an executable or a plugin *)
 
 open Format
 
 val link: formatter -> string list -> string -> unit
+
+val link_shared: formatter -> string list -> string -> unit
+
+val call_linker_shared: string list -> string -> unit
 
 val check_consistency: string -> Compilenv.unit_infos -> Digest.t -> unit
 val extract_crc_interfaces: unit -> (string * Digest.t) list

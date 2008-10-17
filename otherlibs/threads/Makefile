@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.59 2007/02/16 09:54:55 ertai Exp $
+# $Id: Makefile,v 1.61.2.1 2008/10/08 13:07:13 doligez Exp $
 
 include ../../config/Makefile
 
@@ -34,13 +34,14 @@ LIB_OBJS=pervasives.cmo \
   $(LIB)/nativeint.cmo \
   $(LIB)/lexing.cmo $(LIB)/parsing.cmo \
   $(LIB)/set.cmo $(LIB)/map.cmo $(LIB)/stack.cmo $(LIB)/queue.cmo \
+  $(LIB)/camlinternalLazy.cmo $(LIB)/lazy.cmo \
   $(LIB)/stream.cmo $(LIB)/buffer.cmo \
   $(LIB)/printf.cmo $(LIB)/format.cmo \
   $(LIB)/scanf.cmo $(LIB)/arg.cmo \
   $(LIB)/printexc.cmo $(LIB)/gc.cmo $(LIB)/digest.cmo $(LIB)/random.cmo \
   $(LIB)/camlinternalOO.cmo $(LIB)/oo.cmo $(LIB)/camlinternalMod.cmo \
   $(LIB)/genlex.cmo $(LIB)/callback.cmo $(LIB)/weak.cmo \
-  $(LIB)/lazy.cmo $(LIB)/filename.cmo $(LIB)/complex.cmo \
+  $(LIB)/filename.cmo $(LIB)/complex.cmo \
   $(LIB)/arrayLabels.cmo $(LIB)/listLabels.cmo $(LIB)/stringLabels.cmo \
   $(LIB)/stdLabels.cmo $(LIB)/moreLabels.cmo
 
@@ -83,12 +84,12 @@ marshal.cmi: $(LIB)/marshal.cmi
 	ln -s $(LIB)/marshal.cmi marshal.cmi
 
 unix.mli: $(UNIXLIB)/unix.mli
-	ln -sf $(UNIXLIB)/unix.mli unix.mli
+	ln -s -f $(UNIXLIB)/unix.mli unix.mli
 
 unix.cmi: $(UNIXLIB)/unix.cmi
-	ln -sf $(UNIXLIB)/unix.cmi unix.cmi
+	ln -s -f $(UNIXLIB)/unix.cmi unix.cmi
 
-unix.cmo: unix.mli unix.cmi $(UNIXLIB)/unixLabels.cmo 
+unix.cmo: unix.mli unix.cmi $(UNIXLIB)/unixLabels.cmo
 	$(CAMLC) ${COMPFLAGS} -c unix.ml
 
 partialclean:

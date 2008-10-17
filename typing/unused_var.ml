@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unused_var.ml,v 1.6 2006/04/05 02:28:13 garrigue Exp $ *)
+(* $Id: unused_var.ml,v 1.7 2008/07/09 13:03:38 mauny Exp $ *)
 
 open Parsetree
 
@@ -73,6 +73,7 @@ let rec get_vars ((vacc, asacc) as acc) p =
       List.fold_left (fun a (_, p) -> get_vars a p) acc ipl
   | Ppat_array pl -> List.fold_left get_vars acc pl
   | Ppat_or (p1, _p2) -> get_vars acc p1
+  | Ppat_lazy p -> get_vars acc p
   | Ppat_constraint (pp, _) -> get_vars acc pp
   | Ppat_type _ -> acc
 

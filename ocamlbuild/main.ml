@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml,v 1.8.2.14 2007/12/18 08:58:02 ertai Exp $ *)
+(* $Id: main.ml,v 1.21 2008/01/11 16:13:16 doligez Exp $ *)
 (* Original author: Berke Durak *)
 open My_std
 open Log

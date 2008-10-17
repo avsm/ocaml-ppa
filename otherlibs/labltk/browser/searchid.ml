@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: searchid.ml,v 1.23 2005/01/28 16:13:11 doligez Exp $ *)
+(* $Id: searchid.ml,v 1.25 2008/07/09 14:03:08 mauny Exp $ *)
 
 open StdLabels
 open Location
@@ -228,9 +228,9 @@ let rec search_type_in_signature t ~sign ~prefix ~mode =
           end ||
           begin match td.type_kind with
             Type_abstract -> false
-          | Type_variant(l, priv) ->
+          | Type_variant l ->
             List.exists l ~f:(fun (_, l) -> List.exists l ~f:matches)
-          | Type_record(l, rep, priv) ->
+          | Type_record(l, rep) ->
             List.exists l ~f:(fun (_, _, t) -> matches t)
           end
           then [lid_of_id id, Ptype] else []
@@ -421,6 +421,7 @@ let rec bound_variables pat =
   | Ppat_or (pat1,pat2) ->
       bound_variables pat1 @ bound_variables pat2
   | Ppat_constraint (pat,_) -> bound_variables pat
+  | Ppat_lazy pat -> bound_variables pat
 
 let search_structure str ~name ~kind ~prefix =
   let loc = ref 0 in

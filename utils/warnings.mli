@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: warnings.mli,v 1.18 2006/09/21 14:54:54 maranget Exp $ *)
+(* $Id: warnings.mli,v 1.19 2008/10/06 13:53:54 doligez Exp $ *)
 
 open Format
 
@@ -38,6 +38,7 @@ type t =                             (* A is all *)
   | Camlp4 of string
   | All_clauses_guarded
   | Useless_record_with
+  | Bad_module_name of string
   | Unused_var of string             (* Y *)
   | Unused_var_strict of string      (* Z *)
 ;;

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parsetree.mli,v 1.43 2006/04/05 02:28:13 garrigue Exp $ *)
+(* $Id: parsetree.mli,v 1.45 2008/07/09 13:03:37 mauny Exp $ *)
 
 (* Abstract syntax tree produced by parsing *)
 
@@ -75,6 +75,7 @@ and pattern_desc =
   | Ppat_or of pattern * pattern
   | Ppat_constraint of pattern * core_type
   | Ppat_type of Longident.t
+  | Ppat_lazy of pattern
 
 type expression =
   { pexp_desc: expression_desc;
@@ -124,16 +125,16 @@ and type_declaration =
   { ptype_params: string list;
     ptype_cstrs: (core_type * core_type * Location.t) list;
     ptype_kind: type_kind;
+    ptype_private: private_flag;
     ptype_manifest: core_type option;
     ptype_variance: (bool * bool) list;
     ptype_loc: Location.t }
 
 and type_kind =
     Ptype_abstract
-  | Ptype_variant of (string * core_type list * Location.t) list * private_flag
+  | Ptype_variant of (string * core_type list * Location.t) list
   | Ptype_record of
-      (string * mutable_flag * core_type * Location.t) list * private_flag
-  | Ptype_private
+      (string * mutable_flag * core_type * Location.t) list
 
 and exception_declaration = core_type list
 

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: rule.ml,v 1.2.2.17 2007/12/18 08:58:02 ertai Exp $ *)
+(* $Id: rule.ml,v 1.20 2008/07/25 14:50:47 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format
@@ -18,6 +18,7 @@ open Outcome
 module Resources = Resource.Resources
 
 exception Exit_rule_error of string
+exception Failed
 
 type env = Pathname.t -> Pathname.t
 type builder = Pathname.t list list -> (Pathname.t, exn) Outcome.t list
@@ -122,33 +123,14 @@ let print_digest f x = pp_print_string f (Digest.to_hex x)
 let exists2 find p rs =
   try Some (find p rs) with Not_found -> None
 
-let all_deps_of_tags = ref []
-
-let cons deps acc =
-  List.rev&
-    List.fold_left begin fun acc dep ->
-      if List.mem dep acc then acc else dep :: acc
-    end acc deps
-
-let deps_of_tags tags =
-  List.fold_left begin fun acc (xtags, xdeps) ->
-    if Tags.does_match tags xtags then cons xdeps acc
-    else acc
-  end [] !all_deps_of_tags
-
-let set_deps_of_tags tags deps =
-  all_deps_of_tags := (tags, deps) :: !all_deps_of_tags
-
-let dep tags deps = set_deps_of_tags (Tags.of_list tags) deps
-
 let build_deps_of_tags builder tags =
-  match deps_of_tags tags with
+  match Command.deps_of_tags tags with
   | [] -> []
   | deps -> List.map Outcome.good (builder (List.map (fun x -> [x]) deps))
 
 let build_deps_of_tags_on_cmd builder =
   Command.iter_tags begin fun tags ->
-    match deps_of_tags tags with
+    match Command.deps_of_tags tags with
     | [] -> ()
     | deps -> List.iter ignore_good (builder (List.map (fun x -> [x]) deps))
   end

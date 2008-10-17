@@ -1,3 +1,17 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                           Objective Caml                            *)
+(*                                                                     *)
+(*       Nicolas Pouillard, projet Gallium, INRIA Rocquencourt         *)
+(*                                                                     *)
+(*  Copyright 2007 Institut National de Recherche en Informatique et   *)
+(*  en Automatique.  All rights reserved.  This file is distributed    *)
+(*  under the terms of the Q Public License version 1.0.               *)
+(*                                                                     *)
+(***********************************************************************)
+
+(* $Id: myocamlbuild.ml,v 1.23 2008/10/03 15:41:25 ertai Exp $ *)
+
 open Ocamlbuild_plugin
 open Command
 open Arch
@@ -14,17 +28,17 @@ let fp_cat oc f = with_input_file ~bin:true f (fun ic -> copy_chan ic oc)
 
 (* Improve using the command module in Myocamlbuild_config
    with the variant version (`S, `A...) *)
-let mkdll out implib files opts =
+let mkdll out files opts =
   let s = Command.string_of_command_spec in
-  Cmd(Sh(C.mkdll out (s implib) (s files) (s opts)))
+  Cmd(Sh(Printf.sprintf "%s -o %s %s %s" C.mkdll out (s files) (s opts)))
 
 let mkexe out files opts =
   let s = Command.string_of_command_spec in
-  Cmd(Sh(C.mkexe out (s files) (s opts)))
+  Cmd(Sh(Printf.sprintf "%s -o %s %s %s" C.mkexe out (s files) (s opts)))
 
 let mklib out files opts =
   let s = Command.string_of_command_spec in
-  Cmd(Sh(C.mklib out (s files) (s opts)))  
+  Cmd(Sh(C.mklib out (s files) (s opts)))
 
 let syslib x = A(C.syslib x);;
 let syscamllib x =
@@ -67,7 +81,7 @@ let add_exe_if_exists a =
     if Pathname.exists exe then exe else a;;
 
 let convert_command_for_windows_shell spec =
-  if not windows then spec else 
+  if not windows then spec else
   let rec self specs acc =
     match specs with
     | N :: specs -> self specs acc
@@ -149,7 +163,7 @@ dispatch begin function
          "toplevel"; "typing"; "utils"]
       in Ocamlbuild_pack.Configuration.parse_string
            (sprintf "<{%s}/**>: not_hygienic, -traverse" patt)
-  
+
 | After_options ->
     begin
       Options.ocamlrun := ocamlrun;
@@ -271,6 +285,7 @@ Pathname.define_context "toplevel" ["toplevel"; "parsing"; "typing"; "bytecomp";
 Pathname.define_context "driver" ["driver"; "asmcomp"; "bytecomp"; "typing"; "utils"; "parsing"; "stdlib"];;
 Pathname.define_context "debugger" ["bytecomp"; "utils"; "typing"; "parsing"; "toplevel"; "stdlib"];;
 Pathname.define_context "otherlibs/dynlink" ["otherlibs/dynlink"; "bytecomp"; "utils"; "typing"; "parsing"; "stdlib"];;
+Pathname.define_context "otherlibs/dynlink/nat" ["otherlibs/dynlink/nat"; "stdlib"];;
 Pathname.define_context "asmcomp" ["asmcomp"; "bytecomp"; "parsing"; "typing"; "utils"; "stdlib"];;
 Pathname.define_context "ocamlbuild" ["ocamlbuild"; "stdlib"; "."];;
 Pathname.define_context "lex" ["lex"; "stdlib"];;
@@ -378,6 +393,13 @@ rule "native stdlib in partial mode"
     Nop
   end;;
 
+copy_rule' ~insert:`top "otherlibs/dynlink/natdynlink.ml" "otherlibs/dynlink/nat/dynlink.ml";;
+copy_rule' ~insert:`top "otherlibs/dynlink/dynlink.mli" "otherlibs/dynlink/nat/dynlink.mli";;
+copy_rule' ~insert:`top "otherlibs/dynlink/nat/dynlink.cmx" "otherlibs/dynlink/dynlink.cmx";;
+copy_rule' ~insert:`top "otherlibs/dynlink/nat/dynlink.cmxa" "otherlibs/dynlink/dynlink.cmxa";;
+copy_rule' ~insert:`top ("otherlibs/dynlink/nat/dynlink"-.-C.a) ("otherlibs/dynlink/dynlink"-.-C.a);;
+dep ["ocaml"; "compile"; "native"; "file:otherlibs/dynlink/nat/dynlink.cmx"] ["otherlibs/dynlink/nat/dynlink.cmi"];;
+
 rule "C files"
   ~prod:("%"-.-C.o)
   ~dep:"%.c"
@@ -410,8 +432,8 @@ flag ["c"; "compile"; "otherlibs_num"] begin
     A"-I"; P"../otherlibs/num"]
 end;;
 flag ["c"; "compile"; "otherlibs_win32unix"] (A"-I../otherlibs/win32unix");;
-flag [(* "ocaml" or "c"; *) "ocamlmklib"; "otherlibs_win32unix"] (S[A"-cclib"; Quote (syslib "wsock32")]);;
-flag ["c"; "link"; "dll"; "otherlibs_win32unix"] (syslib "wsock32");;
+flag [(* "ocaml" or "c"; *) "ocamlmklib"; "otherlibs_win32unix"] (S[A"-cclib"; Quote (syslib "ws2_32")]);;
+flag ["c"; "link"; "dll"; "otherlibs_win32unix"] (syslib "ws2_32");;
 let flags = S[syslib "kernel32"; syslib "gdi32"; syslib "user32"] in
 flag ["c"; "ocamlmklib"; "otherlibs_win32graph"] (S[A"-cclib"; Quote flags]);
 flag ["c"; "link"; "dll"; "otherlibs_win32graph"] flags;;
@@ -555,8 +577,8 @@ rule "The numeric opcodes"
   ~prod:"bytecomp/opcodes.ml"
   ~dep:"byterun/instruct.h"
   ~insert:`top
-	begin fun _ _ ->
-	  Cmd(Sh "sed -n -e '/^enum/p' -e 's/,//g' -e '/^  /p' byterun/instruct.h | \
+        begin fun _ _ ->
+          Cmd(Sh "sed -n -e '/^enum/p' -e 's/,//g' -e '/^  /p' byterun/instruct.h | \
         awk -f ../tools/make-opcodes > bytecomp/opcodes.ml")
   end;;
 
@@ -565,9 +587,9 @@ rule "tools/opnames.ml"
   ~dep:"byterun/instruct.h"
   begin fun _ _ ->
     Cmd(Sh"unset LC_ALL || : ; \
-  	unset LC_CTYPE || : ; \
-  	unset LC_COLLATE LANG || : ; \
-  	sed -e '/\\/\\*/d' \
+        unset LC_CTYPE || : ; \
+        unset LC_COLLATE LANG || : ; \
+        sed -e '/\\/\\*/d' \
               -e '/^#/d' \
               -e 's/enum \\(.*\\) {/let names_of_\\1 = [|/' \
               -e 's/};$/ |]/' \
@@ -632,7 +654,7 @@ rule "ocaml C stubs on windows: dlib & d.o* -> dll"
       | Outcome.Good d_o -> d_o
       | Outcome.Bad exn -> raise exn
     end resluts in
-    mkdll dll (P("tmp"-.-C.a)) (S[atomize objs; P("byterun/ocamlrun"-.-C.a)])
+    mkdll dll (S[atomize objs; P("byterun/ocamlrun"-.-C.a)])
           (T(tags_of_pathname dll++"dll"++"link"++"c"))
   end;;
 
@@ -699,7 +721,6 @@ let pr_r = pr "Camlp4OCamlRevisedPrinter"
 let pr_o = pr "Camlp4OCamlPrinter"
 let pr_a = pr "Camlp4AutoPrinter"
 let fi_exc = fi "Camlp4ExceptionTracer"
-let fi_tracer = fi "Camlp4Tracer"
 let fi_meta = fi "MetaGenerator"
 let camlp4_bin = p4 "Camlp4Bin"
 let top_rprint = top "Rprint"
@@ -772,6 +793,9 @@ let mk_camlp4_bin name ?unix:(link_unix=true) modules =
   let cmos = add_extensions ["cmo"] deps in
   let cmxs = add_extensions ["cmx"] deps in
   let objs = add_extensions [C.o] deps in
+  let dep_dynlink_native =
+    if partial then [] else [dynlink_dir/"dynlink.cmxa"; dynlink_dir/"dynlink"-.-C.a]
+  in
   rule byte
     ~deps:(camlp4lib_cma::cmos @ dep_unix_byte)
     ~prod:(add_exe byte)
@@ -781,11 +805,11 @@ let mk_camlp4_bin name ?unix:(link_unix=true) modules =
             P camlp4lib_cma; A"-linkall"; atomize cmos; A"-o"; Px (add_exe byte)])
     end;
   rule native
-    ~deps:(camlp4lib_cmxa :: camlp4lib_lib :: (cmxs @ objs @ dep_unix_native))
+    ~deps:(camlp4lib_cmxa :: camlp4lib_lib :: (cmxs @ objs @ dep_unix_native @ dep_dynlink_native))
     ~prod:(add_exe native)
     ~insert:(`before "ocaml: cmx* & o* -> native")
     begin fun _ _ ->
-      Cmd(S[ocamlopt; include_unix; unix_cmxa; T(tags_of_pathname native++"ocaml"++"link"++"native");
+      Cmd(S[ocamlopt; A"-I"; P dynlink_dir; A "dynlink.cmxa"; include_unix; unix_cmxa; T(tags_of_pathname native++"ocaml"++"link"++"native");
             P camlp4lib_cmxa; A"-linkall"; atomize cmxs; A"-o"; Px (add_exe native)])
     end;;
 
@@ -921,7 +945,7 @@ let builtins =
 let labltk_support =
   ["support"; "rawwidget"; "widget"; "protocol"; "textvariable"; "timer"; "fileevent"; "camltkwrap"];;
 
-let labltk_generated_modules = 
+let labltk_generated_modules =
   ["place"; "wm"; "imagephoto"; "canvas"; "button"; "text"; "label"; "scrollbar";
    "image"; "encoding"; "pixmap"; "palette"; "font"; "message"; "menu"; "entry";
    "listbox"; "focus"; "menubutton"; "pack"; "option"; "toplevel"; "frame";

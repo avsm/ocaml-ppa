@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_args.mli,v 1.16 2006/09/20 11:14:36 doligez Exp $ *)
+(* $Id: odoc_args.mli,v 1.17 2008/07/25 13:28:23 guesdon Exp $ *)
 
 (** Analysis of the command line arguments. *)
 
@@ -68,6 +68,9 @@ val keep_code : bool ref
 
 (** To inverse implementation and interface files when merging. *)
 val inverse_merge_ml_mli : bool ref
+
+(** To filter module elements according to module type constraints. *)
+val filter_with_module_constraints : bool ref
 
 (** The optional title to use in the generated documentation. *)
 val title : string option ref

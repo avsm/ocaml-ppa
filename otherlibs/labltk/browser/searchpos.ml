@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: searchpos.ml,v 1.49 2006/04/05 02:28:13 garrigue Exp $ *)
+(* $Id: searchpos.ml,v 1.52 2008/07/09 14:03:08 mauny Exp $ *)
 
 open StdLabels
 open Support
@@ -165,11 +165,11 @@ let search_pos_type_decl td ~pos ~env =
     | None -> ()
     end;
     let rec search_tkind = function
-      Ptype_abstract | Ptype_private -> ()
-    | Ptype_variant (dl, _) ->
+      Ptype_abstract -> ()
+    | Ptype_variant dl ->
         List.iter dl
           ~f:(fun (_, tl, _) -> List.iter tl ~f:(search_pos_type ~pos ~env))
-    | Ptype_record (dl, _) ->
+    | Ptype_record dl ->
         List.iter dl ~f:(fun (_, _, t, _) -> search_pos_type t ~pos ~env) in
     search_tkind td.ptype_kind;
     List.iter td.ptype_cstrs ~f:
@@ -825,6 +825,7 @@ and search_pos_pat ~pos ~env pat =
       add_found_str (`Exp(`Val (Pident id), pat.pat_type))
         ~env ~loc:pat.pat_loc
   | Tpat_alias (pat, _) -> search_pos_pat pat ~pos ~env
+  | Tpat_lazy pat -> search_pos_pat pat ~pos ~env
   | Tpat_constant _ ->
       add_found_str (`Exp(`Const, pat.pat_type)) ~env ~loc:pat.pat_loc
   | Tpat_tuple l ->
@@ -871,6 +872,7 @@ let search_pos_ti ~pos = function
   | Ti_expr e  -> search_pos_expr ~pos e
   | Ti_class c -> search_pos_class_expr ~pos c
   | Ti_mod m   -> search_pos_module_expr ~pos m
+  | _ -> ()
 
 let rec search_pos_info ~pos = function
     [] -> []

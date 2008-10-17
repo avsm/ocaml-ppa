@@ -10,14 +10,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlmklib.mlp,v 1.13 2007/02/07 10:31:36 ertai Exp $ *)
+(* $Id: ocamlmklib.mlp,v 1.16 2008/01/08 15:39:47 doligez Exp $ *)
 
 open Printf
 open Myocamlbuild_config
 
 let bytecode_objs = ref []  (* .cmo,.cma,.ml,.mli files to pass to ocamlc *)
 and native_objs = ref []    (* .cmx,.cmxa,.ml,.mli files to pass to ocamlopt *)
-and c_objs = ref []         (* .o, .a, .obj, .lib files to pass to mksharedlib and ar *)
+and c_objs = ref []         (* .o, .a, .obj, .lib, .dll files to pass to mksharedlib and ar *)
 and caml_libs = ref []      (* -cclib to pass to ocamlc, ocamlopt *)
 and caml_opts = ref []      (* -ccopt to pass to ocamlc, ocamlopt *)
 and dynlink = ref supports_shared_libraries
@@ -30,7 +30,6 @@ and ocamlopt = ref (Filename.concat bindir "ocamlopt")
 and output = ref "a"        (* Output name for Caml part of library *)
 and output_c = ref ""       (* Output name for C part of library *)
 and rpath = ref []          (* rpath options *)
-and implib = ref ""         (* windows implib flag *)
 and verbose = ref false
 
 let starts_with s pref =
@@ -63,7 +62,7 @@ let parse_arguments argv =
     else if ends_with s ".ml" || ends_with s ".mli" then
      (bytecode_objs := s :: !bytecode_objs;
       native_objs := s :: !native_objs)
-    else if List.exists (ends_with s) [".o"; ".a"; ".obj"; ".lib"] then
+    else if List.exists (ends_with s) [".o"; ".a"; ".obj"; ".lib"; ".dll"] then
       c_objs := s :: !c_objs
     else if s = "-cclib" then
       caml_libs := next_arg () :: "-cclib" :: !caml_libs
@@ -71,13 +70,11 @@ let parse_arguments argv =
       caml_opts := next_arg () :: "-ccopt" :: !caml_opts
     else if s = "-custom" then
       dynlink := false
-    else if s = "-implib" then
-      implib := next_arg ()
     else if s = "-I" then
       caml_opts := next_arg () :: "-I" :: !caml_opts
     else if s = "-failsafe" then
       failsafe := true
-    else if s = "-h" || s = "-help" then
+    else if s = "-h" || s = "-help" || s = "--help" then
       raise (Bad_argument "")
     else if s = "-ldopt" then
       ld_opts := next_arg () :: !ld_opts
@@ -128,15 +125,22 @@ let parse_arguments argv =
     (fun r -> r := List.rev !r)
     [ bytecode_objs; native_objs; c_objs; caml_libs; caml_opts; 
       c_libs; c_objs; c_opts; ld_opts; rpath ];
+  (* On retourne deux fois c_objs ??  -- AF *)
+
   if !output_c = "" then output_c := !output
 
 let usage = "\
-Usage: ocamlmklib [options] <.cmo|.cma|.cmx|.cmxa|.ml|.mli|.o|.a|.obj|.lib files>
+Usage: ocamlmklib [options] <.cmo|.cma|.cmx|.cmxa|.ml|.mli|.o|.a|.obj|.lib|.dll files>
 Options are:
   -cclib <lib>   C library passed to ocamlc -a or ocamlopt -a only
   -ccopt <opt>   C option passed to ocamlc -a or ocamlopt -a only
   -custom        disable dynamic loading
   -dllpath <dir> Add <dir> to the run-time search path for DLLs
+  -F<dir>        Specify a framework directory (MacOSX)
+  -framework <name>    Use framework <name> (MacOSX)
+  -help          Print this help message and exit
+  --help         Same as -help
+  -h             Same as -help
   -I <dir>       Add <dir> to the path searched for Caml object files
   -failsafe      fall back to static linking if DLL construction failed
   -ldopt <opt>   C option passed to the shared linker only
@@ -150,12 +154,11 @@ Options are:
   -rpath <dir>   Same as -dllpath <dir>
   -R<dir>        Same as -rpath
   -verbose       Print commands before executing them
+  -v             same as -verbose
+  -version       Print version and exit
   -Wl,-rpath,<dir>     Same as -dllpath <dir>
   -Wl,-rpath -Wl,<dir> Same as -dllpath <dir>
   -Wl,-R<dir>          Same as -dllpath <dir>
-  -F<dir>        Specify a framework directory (MacOSX)
-  -framework <name>    Use framework <name> (MacOSX)
-  -version       Print version and exit
 "
 
 let command cmd =
@@ -194,18 +197,29 @@ let prepostfix pre name post =
   Filename.concat dir (pre ^ base ^ post)
 ;;
 
+let transl_path s =
+  match Sys.os_type with
+    | "Win32" ->
+	let rec aux i = 
+	  if i = String.length s || s.[i] = ' ' then s
+	  else (if s.[i] = '/' then s.[i] <- '\\'; aux (i + 1))
+	in aux 0
+    | _ -> s
+
 let build_libs () =
   if !c_objs <> [] then begin
     if !dynlink then begin
       let retcode = command
-        (mkdll (prepostfix "dll" !output_c ext_dll)
-               !implib
-               (sprintf "%s %s %s %s %s"
-                    (String.concat " " !c_objs)
-                    (String.concat " " !c_opts)
-                    (String.concat " " !ld_opts)
-                    (make_rpath mksharedlibrpath)
-                    (String.concat " " !c_libs)) "") in
+          (Printf.sprintf "%s -o %s %s %s %s %s %s"
+             mkdll
+             (prepostfix "dll" !output_c ext_dll)
+             (String.concat " " !c_objs)
+             (String.concat " " !c_opts)
+             (String.concat " " !ld_opts)
+             (make_rpath mksharedlibrpath)
+             (String.concat " " !c_libs)
+          )
+      in
       if retcode <> 0 then if !failsafe then dynlink := false else exit 2
     end;
     safe_remove (prepostfix "lib" !output_c ext_lib);
@@ -216,7 +230,7 @@ let build_libs () =
   if !bytecode_objs <> [] then
     scommand
       (sprintf "%s -a %s -o %s.cma %s %s -dllib -l%s -cclib -l%s %s %s %s %s"
-                  !ocamlc
+                  (transl_path !ocamlc)
                   (if !dynlink then "" else "-custom")
                   !output
                   (String.concat " " !caml_opts)
@@ -230,7 +244,7 @@ let build_libs () =
   if !native_objs <> [] then
     scommand
       (sprintf "%s -a -o %s.cmxa %s %s -cclib -l%s %s %s %s %s"
-                  !ocamlopt
+                  (transl_path !ocamlopt)
                   !output
                   (String.concat " " !caml_opts)
                   (String.concat " " !native_objs)
