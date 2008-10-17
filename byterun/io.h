@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: io.h,v 1.30.6.1 2007/05/21 13:17:47 doligez Exp $ */
+/* $Id: io.h,v 1.32 2008/09/27 21:16:29 weis Exp $ */
 
 /* Buffered input/output */
 
@@ -101,6 +101,8 @@ CAMLextern void (*caml_channel_mutex_free) (struct channel *);
 CAMLextern void (*caml_channel_mutex_lock) (struct channel *);
 CAMLextern void (*caml_channel_mutex_unlock) (struct channel *);
 CAMLextern void (*caml_channel_mutex_unlock_exn) (void);
+
+CAMLextern struct channel * caml_all_opened_channels;
 
 #define Lock(channel) \
   if (caml_channel_mutex_lock != NULL) (*caml_channel_mutex_lock)(channel)

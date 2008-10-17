@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emitcode.ml,v 1.33 2006/05/11 15:50:53 xleroy Exp $ *)
+(* $Id: emitcode.ml,v 1.34 2008/07/24 05:35:22 frisch Exp $ *)
 
 (* Generation of bytecode + relocation information *)
 
@@ -373,7 +373,7 @@ let to_file outchan unit_name code =
       cu_codesize = !out_position;
       cu_reloc = List.rev !reloc_info;
       cu_imports = Env.imported_units();
-      cu_primitives = !Translmod.primitive_declarations;
+      cu_primitives = List.map Primitive.byte_name !Translmod.primitive_declarations;
       cu_force_link = false;
       cu_debug = pos_debug;
       cu_debugsize = size_debug } in

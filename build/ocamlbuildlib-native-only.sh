@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: ocamlbuildlib-native-only.sh,v 1.1.2.1 2007/06/20 13:34:03 ertai Exp $
+# $Id: ocamlbuildlib-native-only.sh,v 1.2 2007/11/27 12:21:53 ertai Exp $
 set -e
 OCAMLBUILD_PARTIAL="true"
 export OCAMLBUILD_PARTIAL

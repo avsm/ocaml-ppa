@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlbuild_plugin.ml,v 1.2.2.5 2007/11/28 17:03:54 ertai Exp $ *)
+(* $Id: ocamlbuild_plugin.ml,v 1.11 2008/07/25 14:42:28 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 
 open Ocamlbuild_pack
@@ -31,10 +31,11 @@ type env = Pathname.t -> Pathname.t
 type builder = Pathname.t list list -> (Pathname.t, exn) Ocamlbuild_pack.My_std.Outcome.t list
 type action = env -> builder -> Command.t
 let rule = Rule.rule
-let dep = Rule.dep
+let dep = Command.dep
 let copy_rule = Rule.copy_rule
 let ocaml_lib = Ocamlbuild_pack.Ocaml_utils.ocaml_lib
 let flag = Ocamlbuild_pack.Flags.flag
+let flag_and_dep = Ocamlbuild_pack.Ocaml_utils.flag_and_dep
 let non_dependency = Ocamlbuild_pack.Ocaml_utils.non_dependency
 let use_lib = Ocamlbuild_pack.Ocaml_utils.use_lib
 let module_name_of_pathname = Ocamlbuild_pack.Ocaml_utils.module_name_of_pathname
@@ -44,6 +45,7 @@ let tags_of_pathname = Ocamlbuild_pack.Tools.tags_of_pathname
 let hide_package_contents = Ocamlbuild_pack.Ocaml_compiler.hide_package_contents
 let tag_file = Ocamlbuild_pack.Configuration.tag_file
 let tag_any = Ocamlbuild_pack.Configuration.tag_any
+let run_and_read = Ocamlbuild_pack.My_unix.run_and_read
 type hook = Ocamlbuild_pack.Hooks.message =
   | Before_hygiene
   | After_hygiene

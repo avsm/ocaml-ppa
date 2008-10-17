@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: win32.c,v 1.33 2007/03/01 13:37:39 xleroy Exp $ */
+/* $Id: win32.c,v 1.36 2008/04/22 12:24:10 frisch Exp $ */
 
 /* Win32-specific stuff */
 
@@ -31,6 +31,9 @@
 #include "misc.h"
 #include "osdeps.h"
 #include "signals.h"
+#include "sys.h"
+
+#include "flexdll.h"
 
 #ifndef S_ISREG
 #define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
@@ -121,42 +124,37 @@ char * caml_search_dll_in_path(struct ext_table * path, char * name)
   return res;
 }
 
-void * caml_dlopen(char * libname, int for_execution)
+void * caml_dlopen(char * libname, int for_execution, int global)
 {
-  HMODULE m;
-  m = LoadLibraryEx(libname, NULL,
-                    for_execution ? 0 : DONT_RESOLVE_DLL_REFERENCES);
-  /* Under Win 95/98/ME, LoadLibraryEx can fail in cases where LoadLibrary
-     would succeed.  Just try again with LoadLibrary for good measure. */
-  if (m == NULL) m = LoadLibrary(libname);
-  return (void *) m;
+  void *handle;
+  int flags = (global ? FLEXDLL_RTLD_GLOBAL : 0);
+  if (!for_execution) flags |= FLEXDLL_RTLD_NOEXEC;
+  handle = flexdll_dlopen(libname, flags);
+  if ((handle != NULL) && ((caml_verb_gc & 0x100) != 0)) {
+    flexdll_dump_exports(handle);
+    fflush(stdout);
+  }
+  return handle;
 }
 
 void caml_dlclose(void * handle)
 {
-  FreeLibrary((HMODULE) handle);
+  flexdll_dlclose(handle);
 }
 
 void * caml_dlsym(void * handle, char * name)
 {
-  return (void *) GetProcAddress((HMODULE) handle, name);
+  return flexdll_dlsym(handle, name);
+}
+
+void * caml_globalsym(char * name)
+{
+  return flexdll_dlsym(flexdll_dlopen(NULL,0), name);
 }
 
 char * caml_dlerror(void)
 {
-  static char dlerror_buffer[256];
-  DWORD msglen =
-    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                  NULL,         /* message source */
-                  GetLastError(), /* error number */
-                  0,            /* default language */
-                  dlerror_buffer, /* destination */
-                  sizeof(dlerror_buffer), /* size of destination */
-                  NULL);         /* no inserts */
-  if (msglen == 0)
-    return "unknown error";
-  else
-    return dlerror_buffer;
+  return flexdll_dlerror();
 }
 
 /* Proper emulation of signal(), including ctrl-C and ctrl-break */
@@ -486,10 +484,12 @@ static void caml_reset_stack (void *faulting_address)
 }
 
 extern char * caml_code_area_start, * caml_code_area_end;
+CAMLextern int caml_is_in_code(void *);
 
-#define In_code_area(pc) \
-  ((char *)(pc) >= caml_code_area_start && \
-   (char *)(pc) <= caml_code_area_end)
+#define Is_in_code_area(pc) \
+ ( ((char *)(pc) >= caml_code_area_start && \
+    (char *)(pc) <= caml_code_area_end)     \
+   || (Classify_addr(pc) & In_code_area) )
 
 static LONG CALLBACK
     caml_UnhandledExceptionFilter (EXCEPTION_POINTERS* exn_info)
@@ -499,7 +499,7 @@ static LONG CALLBACK
   DWORD *ctx_ip = &(ctx->Eip);
   DWORD *ctx_sp = &(ctx->Esp);
 
-  if (code == EXCEPTION_STACK_OVERFLOW && In_code_area (*ctx_ip))
+  if (code == EXCEPTION_STACK_OVERFLOW && Is_in_code_area (*ctx_ip))
     {
       uintnat faulting_address;
       uintnat * alt_esp;

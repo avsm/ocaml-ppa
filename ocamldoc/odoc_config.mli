@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_config.mli,v 1.1.20.2 2007/03/07 08:50:05 xleroy Exp $ *)
+(* $Id: odoc_config.mli,v 1.2 2007/10/08 14:19:34 doligez Exp $ *)
 
 (** Ocamldoc configuration contants. *)
 

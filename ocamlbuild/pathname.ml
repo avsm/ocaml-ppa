@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pathname.ml,v 1.1.4.5 2007/12/18 08:56:50 ertai Exp $ *)
+(* $Id: pathname.ml,v 1.6 2008/01/11 16:13:16 doligez Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format

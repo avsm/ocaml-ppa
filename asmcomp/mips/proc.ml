@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc.ml,v 1.6 2002/07/22 16:37:52 doligez Exp $ *)
+(* $Id: proc.ml,v 1.7 2007/10/30 12:37:16 xleroy Exp $ *)
 
 (* Description of the Mips processor *)
 
@@ -202,10 +202,9 @@ let contains_calls = ref false
 
 (* Calling the assembler *)
 
-let asm_command = "as -n32 -O2 -nocpp -g0 -o "
-
 let assemble_file infile outfile =
-  Ccomp.command (asm_command ^ Filename.quote outfile ^ " " ^ Filename.quote infile)
+  Ccomp.command (Config.asm ^ " -o " ^
+                 Filename.quote outfile ^ " " ^ Filename.quote infile)
 
 open Clflags;;
 open Config;;

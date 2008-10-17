@@ -20,7 +20,7 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
     module Loc = Loc;
     module Ast =
       struct
-        include Sig.MakeCamlp4Ast(Loc);
+        include (Sig.MakeCamlp4Ast Loc);
         value safe_string_escaped s =
           if ((String.length s) > 2) && ((s.[0] = '\\') && (s.[1] = '$'))
           then s
@@ -89,11 +89,16 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
       [ Ast.PaId _ (Ast.IdLid _ _) -> True
       | Ast.PaId _ (Ast.IdUid _ "()") -> True
       | Ast.PaAny _ -> True
-      | Ast.PaAli _ x y -> (is_irrefut_patt x) && (is_irrefut_patt y)
+      | Ast.PaNil _ -> True
+      | (* why not *) Ast.PaAli _ x y ->
+          (is_irrefut_patt x) && (is_irrefut_patt y)
       | Ast.PaRec _ p -> is_irrefut_patt p
       | Ast.PaEq _ _ p -> is_irrefut_patt p
       | Ast.PaSem _ p1 p2 -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
       | Ast.PaCom _ p1 p2 -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
+      | Ast.PaOrp _ p1 p2 -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
+      | (* could be more fine grained *) Ast.PaApp _ p1 p2 ->
+          (is_irrefut_patt p1) && (is_irrefut_patt p2)
       | Ast.PaTyc _ p _ -> is_irrefut_patt p
       | Ast.PaTup _ pl -> is_irrefut_patt pl
       | Ast.PaOlb _ _ (Ast.PaNil _) -> True
@@ -101,7 +106,14 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
       | Ast.PaOlbi _ _ p _ -> is_irrefut_patt p
       | Ast.PaLab _ _ (Ast.PaNil _) -> True
       | Ast.PaLab _ _ p -> is_irrefut_patt p
-      | _ -> False ];
+      | Ast.PaLaz _ p -> is_irrefut_patt p
+      | Ast.PaId _ _ -> False
+      | (* here one need to know the arity of constructors *)
+          Ast.PaVrn _ _ | Ast.PaStr _ _ | Ast.PaRng _ _ _ | Ast.PaFlo _ _ |
+            Ast.PaNativeInt _ _ | Ast.PaInt64 _ _ | Ast.PaInt32 _ _ |
+            Ast.PaInt _ _ | Ast.PaChr _ _ | Ast.PaTyp _ _ | Ast.PaArr _ _ |
+            Ast.PaAnt _ _
+          -> False ];
     value rec is_constructor =
       fun
       [ Ast.IdAcc _ _ i -> is_constructor i
@@ -1806,7 +1818,15 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
                         (meta_loc _loc x0) ]
                 and meta_patt _loc =
                   fun
-                  [ Ast.PaVrn x0 x1 ->
+                  [ Ast.PaLaz x0 x1 ->
+                      Ast.ExApp _loc
+                        (Ast.ExApp _loc
+                           (Ast.ExId _loc
+                              (Ast.IdAcc _loc (Ast.IdUid _loc "Ast")
+                                 (Ast.IdUid _loc "PaLaz")))
+                           (meta_loc _loc x0))
+                        (meta_patt _loc x1)
+                  | Ast.PaVrn x0 x1 ->
                       Ast.ExApp _loc
                         (Ast.ExApp _loc
                            (Ast.ExId _loc
@@ -3718,7 +3738,15 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
                         (meta_loc _loc x0) ]
                 and meta_patt _loc =
                   fun
-                  [ Ast.PaVrn x0 x1 ->
+                  [ Ast.PaLaz x0 x1 ->
+                      Ast.PaApp _loc
+                        (Ast.PaApp _loc
+                           (Ast.PaId _loc
+                              (Ast.IdAcc _loc (Ast.IdUid _loc "Ast")
+                                 (Ast.IdUid _loc "PaLaz")))
+                           (meta_loc _loc x0))
+                        (meta_patt _loc x1)
+                  | Ast.PaVrn x0 x1 ->
                       Ast.PaApp _loc
                         (Ast.PaApp _loc
                            (Ast.PaId _loc
@@ -4518,7 +4546,9 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
               let _x_i1 = o#ident _x_i1 in PaTyp _x _x_i1
           | PaVrn _x _x_i1 ->
               let _x = o#loc _x in
-              let _x_i1 = o#string _x_i1 in PaVrn _x _x_i1 ];
+              let _x_i1 = o#string _x_i1 in PaVrn _x _x_i1
+          | PaLaz _x _x_i1 ->
+              let _x = o#loc _x in let _x_i1 = o#patt _x_i1 in PaLaz _x _x_i1 ];
         method module_type : module_type -> module_type =
           fun
           [ MtNil _x -> let _x = o#loc _x in MtNil _x
@@ -5237,7 +5267,8 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
               let o = o#loc _x in
               let o = o#patt _x_i1 in let o = o#ctyp _x_i2 in o
           | PaTyp _x _x_i1 -> let o = o#loc _x in let o = o#ident _x_i1 in o
-          | PaVrn _x _x_i1 -> let o = o#loc _x in let o = o#string _x_i1 in o ];
+          | PaVrn _x _x_i1 -> let o = o#loc _x in let o = o#string _x_i1 in o
+          | PaLaz _x _x_i1 -> let o = o#loc _x in let o = o#patt _x_i1 in o ];
         method module_type : module_type -> 'self_type =
           fun
           [ MtNil _x -> let o = o#loc _x in o

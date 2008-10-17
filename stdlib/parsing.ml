@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parsing.ml,v 1.18 2004/01/01 16:42:40 doligez Exp $ *)
+(* $Id: parsing.ml,v 1.19 2008/08/06 09:38:21 xleroy Exp $ *)
 
 (* The parsing engine *)
 
@@ -77,6 +77,9 @@ type parser_output =
 external parse_engine :
     parse_tables -> parser_env -> parser_input -> Obj.t -> parser_output
     = "caml_parse_engine"
+
+external set_trace: bool -> bool
+    = "caml_set_parser_trace"
 
 let env =
   { s_stack = Array.create 100 0;

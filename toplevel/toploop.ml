@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: toploop.ml,v 1.93 2006/01/04 16:55:50 doligez Exp $ *)
+(* $Id: toploop.ml,v 1.95 2007/12/04 13:38:58 doligez Exp $ *)
 
 (* The interactive toplevel loop *)
 
@@ -100,7 +100,8 @@ let remove_printer = Printer.remove_printer
 
 let parse_toplevel_phrase = ref Parse.toplevel_phrase
 let parse_use_file = ref Parse.use_file
-let print_location = Location.print
+let print_location = Location.print_error (* FIXME change back to print *)
+let print_error = Location.print_error
 let print_warning = Location.print_warning
 let input_name = Location.input_name
 
@@ -218,7 +219,8 @@ let execute_phrase print_outcome ppf phr =
       let oldenv = !toplevel_env in
       let _ = Unused_var.warn ppf sstr in
       Typecore.reset_delayed_checks ();
-      let (str, sg, newenv) = Typemod.type_structure oldenv sstr in
+      let (str, sg, newenv) = Typemod.type_structure oldenv sstr Location.none
+      in
       Typecore.force_delayed_checks ();
       let lam = Translmod.transl_toplevel_definition str in
       Warnings.check_fatal ();

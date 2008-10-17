@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lazy.mli,v 1.10 2002/07/30 13:02:56 xleroy Exp $ *)
+(* $Id: lazy.mli,v 1.11 2008/08/01 16:57:10 mauny Exp $ *)
 
 (** Deferred computations. *)
 
@@ -39,7 +39,8 @@ type 'a t = 'a lazy_t;;
 
 exception Undefined;;
 
-val force : 'a t -> 'a;;
+external force : 'a t -> 'a = "%lazy_force";;
+(* val force : 'a t -> 'a ;; *)
 (** [force x] forces the suspension [x] and returns its result.
    If [x] has already been forced, [Lazy.force x] returns the
    same value again without recomputing it.  If it raised an exception,

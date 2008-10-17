@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: signals_osdep.h,v 1.8.4.5 2007/11/26 16:58:51 doligez Exp $ */
+/* $Id: signals_osdep.h,v 1.11 2008/01/11 16:13:11 doligez Exp $ */
 
 /* Processor- and OS-dependent signal interface */
 
@@ -124,26 +124,26 @@
      static void name(int sig, siginfo_t * info, void * context)
 
   #include <sys/ucontext.h>
-  #include <AvailabilityMacros.h>  
+  #include <AvailabilityMacros.h>
 
   #ifdef __LP64__
     #define SET_SIGACT(sigact,name) \
        sigact.sa_sigaction = (name); \
        sigact.sa_flags = SA_SIGINFO | SA_64REGSET
-    
+
     typedef unsigned long long context_reg;
-    
+
     #define CONTEXT_MCONTEXT (((ucontext64_t *)context)->uc_mcontext64)
   #else
     #define SET_SIGACT(sigact,name) \
        sigact.sa_sigaction = (name); \
        sigact.sa_flags = SA_SIGINFO
-    
+
     typedef unsigned long context_reg;
-    
+
     #define CONTEXT_MCONTEXT (((ucontext_t *)context)->uc_mcontext)
   #endif
-  
+
 #if !defined(MAC_OS_X_VERSION_10_5) || MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
     #define CONTEXT_REG(r) r
   #else

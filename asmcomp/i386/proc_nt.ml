@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc_nt.ml,v 1.5.26.1 2007/10/09 14:11:26 xleroy Exp $ *)
+(* $Id: proc_nt.ml,v 1.8 2008/01/11 16:13:11 doligez Exp $ *)
 
 (* Description of the Intel 386 processor, for Windows NT *)
 
@@ -181,9 +181,6 @@ let contains_calls = ref false
 (* Calling the assembler *)
 
 let assemble_file infile outfile =
-  Ccomp.command ("ml /nologo /coff /Cp /c /Fo" ^
-                 Filename.quote outfile ^ " " ^ Filename.quote infile ^ ">NUL")
-  (* /Cp preserve case of all used identifiers
-     /c  assemble only
-     /Fo output file name *)
-     
+  Ccomp.command (Config.asm ^
+                 Filename.quote outfile ^ " " ^ Filename.quote infile ^
+		 (if !Clflags.verbose then "" else ">NUL"))

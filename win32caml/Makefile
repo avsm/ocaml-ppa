@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.11 2006/10/03 11:53:57 xleroy Exp $
+# $Id: Makefile,v 1.12 2007/11/15 13:21:15 frisch Exp $
 
 include ../config/Makefile
 
@@ -27,7 +27,7 @@ LIBS=$(call SYSLIB,kernel32) $(call SYSLIB,advapi32) $(call SYSLIB,gdi32) \
 all: ocamlwin.exe
 
 ocamlwin.exe: $(OBJS)
-	$(call MKEXE,ocamlwin.exe,$(OBJS) $(LIBS) $(EXTRALIBS))
+	$(MKEXE) -o ocamlwin.exe $(OBJS) $(LIBS) $(EXTRALIBS) -subsystem windows
 
 ocamlres.$(O): ocaml.rc ocaml.ico
 ifeq ($(TOOLCHAIN),msvc)

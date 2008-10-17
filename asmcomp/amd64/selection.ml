@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml,v 1.6 2007/02/09 13:31:14 doligez Exp $ *)
+(* $Id: selection.ml,v 1.7 2007/11/06 15:16:55 frisch Exp $ *)
 
 (* Instruction selection for the AMD64 *)
 
@@ -32,7 +32,7 @@ type addressing_expr =
 
 let rec select_addr exp =
   match exp with
-    Cconst_symbol s ->
+    Cconst_symbol s when not !Clflags.dlcode ->
       (Asymbol s, 0)
   | Cop((Caddi | Cadda), [arg; Cconst_int m]) ->
       let (a, n) = select_addr arg in (a, n + m)
@@ -144,7 +144,7 @@ method select_store addr exp =
       (Ispecific(Istore_int(Nativeint.of_int n, addr)), Ctuple [])
   | Cconst_natpointer n when self#is_immediate_natint n ->
       (Ispecific(Istore_int(n, addr)), Ctuple [])
-  | Cconst_symbol s when not !pic_code ->
+  | Cconst_symbol s when not (!pic_code || !Clflags.dlcode) ->
       (Ispecific(Istore_symbol(s, addr)), Ctuple [])
   | _ ->
       super#select_store addr exp

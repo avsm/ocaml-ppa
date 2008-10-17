@@ -12,7 +12,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: make-package-macosx,v 1.13.4.3 2008/01/25 14:00:21 doligez Exp $
+# $Id: make-package-macosx,v 1.16 2008/02/29 14:21:22 doligez Exp $
 
 cd package-macosx
 rm -rf ocaml.pkg ocaml-rw.dmg
@@ -20,21 +20,6 @@ rm -rf ocaml.pkg ocaml-rw.dmg
 VERSION=`head -1 ../VERSION`
 VERSION_MAJOR=`sed -n -e '1s/^\([0-9]*\)\..*/\1/p' ../VERSION`
 VERSION_MINOR=`sed -n -e '1s/^[0-9]*\.\([0-9]*\)[.+].*/\1/p' ../VERSION`
-
-# Worked in 10.2:
-
-# cat >ocaml.info <<EOF
-#   Title Objective Caml
-#   Version ${VERSION}
-#   Description This package installs Objective Caml version ${VERSION}
-#   DefaultLocation /
-#   Relocatable no
-#   NeedsAuthorization yes
-#   Application no
-#   InstallOnly no
-#   DisableStop no
-# EOF
-#package root ocaml.info
 
 cat >Description.plist <<EOF
   <?xml version="1.0" encoding="UTF-8"?>
@@ -101,8 +86,8 @@ mkdir -p resources
 #                                         stop here -> |
 cat >resources/ReadMe.txt <<EOF
 This package installs Objective Caml version ${VERSION}.
-You need Mac OS X 10.5.x (Leopard), with X11 and the
-XCode tools (v3.x) installed.
+You need Mac OS X 10.5.x (Leopard), with the
+XCode tools (v3.x) installed (and optionally X11).
 
 Files will be installed in the following directories:
 

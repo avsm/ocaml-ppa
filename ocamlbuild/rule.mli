@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: rule.mli,v 1.2.2.8 2007/11/28 17:03:54 ertai Exp $ *)
+(* $Id: rule.mli,v 1.12 2008/07/25 14:50:47 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Resource
@@ -24,6 +24,10 @@ type rule = Pathname.t gen_rule
 type rule_scheme = resource_pattern gen_rule
 
 type 'a rule_printer = (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a gen_rule -> unit
+
+(** This exception can be raised inside the action of a rule to make the
+    algorithm skip this rule. *)
+exception Failed
 
 val name_of_rule : 'a gen_rule -> string
 val deps_of_rule : 'a gen_rule -> Pathname.t list
@@ -43,9 +47,6 @@ val rule : string ->
 val copy_rule : string ->
   ?insert:[`top | `before of string | `after of string | `bottom] ->
   string -> string -> unit
-
-(** [dep tags deps] Will build [deps] when [tags] will be activated. *)
-val dep : string list -> string list -> unit
 
 module Common_commands : sig
   val mv : Pathname.t -> Pathname.t -> Command.t

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ccomp.mli,v 1.11.6.1 2007/11/10 12:23:37 xleroy Exp $ *)
+(* $Id: ccomp.mli,v 1.16 2008/01/11 16:13:18 doligez Exp $ *)
 
 (* Compiling C files and building C libraries *)
 
@@ -21,5 +21,12 @@ val create_archive: string -> string list -> int
 val expand_libname: string -> string
 val quote_files: string list -> string
 val quote_optfile: string option -> string
-val make_link_options: string list -> string
-val merge_manifest: string -> int
+(*val make_link_options: string list -> string*)
+
+type link_mode =
+  | Exe
+  | Dll
+  | MainDll
+  | Partial
+
+val call_linker: link_mode -> string -> string list -> string -> bool

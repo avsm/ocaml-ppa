@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: debugcom.ml,v 1.12 2002/10/29 17:53:23 doligez Exp $ *)
+(* $Id: debugcom.ml,v 1.13 2008/07/29 08:31:41 xleroy Exp $ *)
 
 (* Low-level communication with the debuggee *)
 
@@ -99,10 +99,13 @@ let rec do_go n =
 (* Perform a checkpoint *)
 
 let do_checkpoint () =
-  output_char !conn.io_out 'c';
-  flush !conn.io_out;
-  let pid = input_binary_int !conn.io_in in
-  if pid = -1 then Checkpoint_failed else Checkpoint_done pid
+  match Sys.os_type with
+    "Win32" -> failwith "do_checkpoint"
+  | _ ->
+      output_char !conn.io_out 'c';
+      flush !conn.io_out;
+      let pid = input_binary_int !conn.io_in in
+      if pid = -1 then Checkpoint_failed else Checkpoint_done pid
 
 (* Kill the given process. *)
 let stop chan =

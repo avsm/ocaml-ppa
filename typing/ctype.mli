@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ctype.mli,v 1.54 2006/04/05 02:28:13 garrigue Exp $ *)
+(* $Id: ctype.mli,v 1.55 2007/11/01 18:36:43 weis Exp $ *)
 
 (* Operations on core types *)
 
@@ -131,6 +131,9 @@ val apply:
 
 val expand_head_once: Env.t -> type_expr -> type_expr
 val expand_head: Env.t -> type_expr -> type_expr
+val expand_head_opt: Env.t -> type_expr -> type_expr
+(** The compiler's own version of [expand_head] necessary for type-based
+    optimisations. *)
 val full_expand: Env.t -> type_expr -> type_expr
 
 val enforce_constraints: Env.t -> type_expr -> unit

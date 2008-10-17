@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: camlp4-byte-only.sh,v 1.2.4.3 2007/03/12 11:58:48 pouillar Exp $
+# $Id: camlp4-byte-only.sh,v 1.3 2007/10/08 14:19:34 doligez Exp $
 set -e
 OCAMLBUILD_PARTIAL="true"
 export OCAMLBUILD_PARTIAL

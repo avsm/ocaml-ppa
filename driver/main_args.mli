@@ -10,11 +10,12 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main_args.mli,v 1.26 2005/05/09 13:39:17 doligez Exp $ *)
+(* $Id: main_args.mli,v 1.27 2007/05/16 08:21:40 doligez Exp $ *)
 
 module Make_options (F :
     sig
       val _a : unit -> unit
+      val _annot : unit -> unit
       val _c : unit -> unit
       val _cc : string -> unit
       val _cclib : string -> unit
@@ -23,7 +24,6 @@ module Make_options (F :
       val _custom : unit -> unit
       val _dllib : string -> unit
       val _dllpath : string -> unit
-      val _dtypes : unit -> unit
       val _g : unit -> unit
       val _i : unit -> unit
       val _I : string -> unit

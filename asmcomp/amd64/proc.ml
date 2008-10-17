@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc.ml,v 1.3 2007/01/29 12:10:50 xleroy Exp $ *)
+(* $Id: proc.ml,v 1.5 2007/11/06 15:16:55 frisch Exp $ *)
 
 (* Description of the AMD64 processor *)
 
@@ -170,7 +170,7 @@ let destroyed_at_oper = function
   | Iop(Istore(Single, _)) -> [| rxmm15 |]
   | Iop(Ialloc _ | Iintop(Icomp _) | Iintop_imm((Idiv|Imod|Icomp _), _))
         -> [| rax |]
-  | Iswitch(_, _) when !pic_code -> [| r11 |]
+  | Iswitch(_, _) when !pic_code || !Clflags.dlcode -> [| r11 |]
   | _ -> [||]
 
 let destroyed_at_raise = all_phys_regs
@@ -197,5 +197,5 @@ let contains_calls = ref false
 (* Calling the assembler *)
 
 let assemble_file infile outfile =
-  Ccomp.command ("as -o " ^ outfile ^ " " ^ infile)
+  Ccomp.command (Config.asm ^ " -o " ^ outfile ^ " " ^ infile)
 

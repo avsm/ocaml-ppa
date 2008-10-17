@@ -1,5 +1,19 @@
 #!/bin/sh
-# $Id: distclean.sh,v 1.4.2.6 2007/12/18 09:03:12 ertai Exp $
+
+#########################################################################
+#                                                                       #
+#                            Objective Caml                             #
+#                                                                       #
+#       Nicolas Pouillard, projet Gallium, INRIA Rocquencourt           #
+#                                                                       #
+#   Copyright 2007 Institut National de Recherche en Informatique et    #
+#   en Automatique.  All rights reserved.  This file is distributed     #
+#   under the terms of the Q Public License version 1.0.                #
+#                                                                       #
+#########################################################################
+
+# $Id: distclean.sh,v 1.7 2008/01/11 16:13:16 doligez Exp $
+
 cd `dirname $0`/..
 set -ex
 (cd byterun && make clean) || :
@@ -18,7 +32,7 @@ rm -f driver/main.byte driver/optmain.byte lex/main.byte \
       camlp4/build/location.mli \
       tools/myocamlbuild_config.ml camlp4/build/linenum.mli \
       camlp4/build/linenum.mll \
-      camlp4/build/terminfo.mli camlp4/build/terminfo.ml 
+      camlp4/build/terminfo.mli camlp4/build/terminfo.ml
 
 # from ocamlbuild bootstrap
 rm -f  ocamlbuild/_log ocamlbuild/,ocamlbuild.byte.start \

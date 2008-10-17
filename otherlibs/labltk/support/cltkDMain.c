@@ -14,10 +14,10 @@
 /*                                                                       */
 /*************************************************************************/
 
-/* $Id: cltkDMain.c,v 1.6 2001/12/07 13:40:08 xleroy Exp $ */
+/* $Id: cltkDMain.c,v 1.7 2008/07/01 09:55:52 weis Exp $ */
 
 #include <unistd.h>
-#include <fcntl.h>  
+#include <fcntl.h>
 #include <tcl.h>
 #include <tk.h>
 #include "gc.h"
@@ -34,7 +34,7 @@
 #endif
 
 
-/* 
+/*
  * Dealing with signals: when a signal handler is defined in Caml,
  * the actual execution of the signal handler upon reception of the
  * signal is delayed until we are sure we are out of the GC.
@@ -48,7 +48,7 @@
 
 int signal_events = 0; /* do we have a pending timer */
 
-void invoke_pending_caml_signals (clientdata) 
+void invoke_pending_caml_signals (clientdata)
      ClientData clientdata;
 {
   signal_events = 0;
@@ -203,7 +203,7 @@ int Caml_Init(interp)
   cltclinterp = interp;
   /* Create the camlcallback command */
   Tcl_CreateCommand(cltclinterp,
-                    CAMLCB, CamlCBCmd, 
+                    CAMLCB, CamlCBCmd,
                     (ClientData)NULL,(Tcl_CmdDeleteProc *)NULL);
 
   /* This is required by "unknown" and thus autoload */
@@ -220,7 +220,7 @@ int Caml_Init(interp)
       strcat(f, home);
       strcat(f, "/");
       strcat(f, RCNAME);
-      if (0 == access(f,R_OK)) 
+      if (0 == access(f,R_OK))
         if (TCL_OK != Tcl_EvalFile(cltclinterp,f)) {
           stat_free(f);
           tk_error(cltclinterp->result);
@@ -228,7 +228,7 @@ int Caml_Init(interp)
       stat_free(f);
     }
   }
-  
+
   /* Initialisations from caml_main */
   {
     int verbose_init = 0,

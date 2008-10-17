@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typedecl.mli,v 1.30 2006/11/02 01:10:04 garrigue Exp $ *)
+(* $Id: typedecl.mli,v 1.31 2007/10/09 10:29:37 weis Exp $ *)
 
 (* Typing of type definitions and primitive definitions *)
 
@@ -39,6 +39,9 @@ val approx_type_decl:
                                   (Ident.t * type_declaration) list
 val check_recmod_typedecl:
     Env.t -> Location.t -> Ident.t list -> Path.t -> type_declaration -> unit
+
+(* for fixed types *)
+val is_fixed_type : Parsetree.type_declaration -> bool
 
 (* for typeclass.ml *)
 val compute_variance_decls:

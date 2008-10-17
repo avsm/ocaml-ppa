@@ -11,32 +11,14 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: nice.c,v 1.10 2001/12/07 13:40:32 xleroy Exp $ */
+/* $Id: nice.c,v 1.11 2008/08/01 13:14:36 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include "unixsupport.h"
 #include <errno.h>
-
-#ifdef HAS_GETPRIORITY
-
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/resource.h>
-
-CAMLprim value unix_nice(value incr)
-{
-  int prio;
-  errno = 0;
-  prio = getpriority(PRIO_PROCESS, 0);
-  if (prio == -1 && errno != 0)
-    uerror("nice", Nothing);
-  prio += Int_val(incr);
-  if (setpriority(PRIO_PROCESS, 0, prio) == -1)
-    uerror("nice", Nothing);
-  return Val_int(prio);
-}
-
-#else
+#ifdef HAS_UNISTD
+#include <unistd.h>
+#endif
 
 CAMLprim value unix_nice(value incr)
 {
@@ -46,5 +28,3 @@ CAMLprim value unix_nice(value incr)
   if (ret == -1 && errno != 0) uerror("nice", Nothing);
   return Val_int(ret);
 }
-
-#endif

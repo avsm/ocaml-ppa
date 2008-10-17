@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexer.mll,v 1.73 2005/04/11 16:44:26 doligez Exp $ *)
+(* $Id: lexer.mll,v 1.73.24.1 2008/10/08 13:07:13 doligez Exp $ *)
 
 (* The lexer definition *)
 
@@ -136,9 +136,11 @@ let char_for_decimal_code lexbuf i =
   let c = 100 * (Char.code(Lexing.lexeme_char lexbuf i) - 48) +
            10 * (Char.code(Lexing.lexeme_char lexbuf (i+1)) - 48) +
                 (Char.code(Lexing.lexeme_char lexbuf (i+2)) - 48) in
-  if (c < 0 || c > 255) && not (in_comment ())
-  then raise (Error(Illegal_escape (Lexing.lexeme lexbuf),
-                    Location.curr lexbuf))
+  if (c < 0 || c > 255) then
+    if in_comment ()
+    then 'x'
+    else raise (Error(Illegal_escape (Lexing.lexeme lexbuf),
+                      Location.curr lexbuf))
   else Char.chr c
 
 let char_for_hexadecimal_code lexbuf i =

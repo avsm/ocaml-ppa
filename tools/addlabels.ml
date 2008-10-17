@@ -1,4 +1,4 @@
-(* $Id: addlabels.ml,v 1.11 2006/05/29 03:55:36 garrigue Exp $ *)
+(* $Id: addlabels.ml,v 1.12 2008/07/09 13:03:37 mauny Exp $ *)
 
 open StdLabels
 open Asttypes
@@ -62,6 +62,7 @@ let rec pattern_vars pat =
       List.concat (List.map l ~f:(fun (_,p) -> pattern_vars p))
   | Ppat_or (pat1, pat2) ->
       pattern_vars pat1 @ pattern_vars pat2
+  | Ppat_lazy pat -> pattern_vars pat
   | Ppat_any | Ppat_constant _ | Ppat_construct _ | Ppat_variant _
   | Ppat_type _ ->
       []

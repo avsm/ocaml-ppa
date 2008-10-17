@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc_nt.ml,v 1.3 2006/05/09 16:00:57 xleroy Exp $ *)
+(* $Id: proc_nt.ml,v 1.4 2007/10/30 12:37:16 xleroy Exp $ *)
 
 (* Description of the AMD64 processor with Win64 conventions *)
 
@@ -228,10 +228,6 @@ let contains_calls = ref false
 (* Calling the assembler *)
 
 let assemble_file infile outfile =
-  Ccomp.command ("ml64 /nologo /Cp /c /Fo" ^
+  Ccomp.command (Config.asm ^
                  Filename.quote outfile ^ " " ^ 
                  Filename.quote infile ^ "> NUL")
-
-  (* /Cp preserve case of all used identifiers
-     /c  assemble only
-     /Fo output file name *)

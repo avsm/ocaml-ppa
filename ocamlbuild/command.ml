@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: command.ml,v 1.1.4.5 2007/12/18 08:55:22 ertai Exp $ *)
+(* $Id: command.ml,v 1.8 2008/07/25 14:28:56 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 (* Command *)
 
@@ -156,7 +156,8 @@ let string_of_command_spec x = string_of_command_spec_with_calls ignore ignore f
 let string_target_and_tags_of_command_spec spec =
   let rtags = ref Tags.empty in
   let rtarget = ref "" in
-  let s = string_of_command_spec_with_calls ((:=) rtags) ((:=) rtarget) true spec in
+  let union_rtags tags = rtags := Tags.union !rtags tags in
+  let s = string_of_command_spec_with_calls union_rtags ((:=) rtarget) true spec in
   let target = if !rtarget = "" then s else !rtarget in
   s, target, !rtags
 
@@ -304,6 +305,19 @@ let iter_tags f x =
     | Seq(s) -> List.iter cmd s in
   cmd x
 
+let fold_pathnames f x =
+  let rec spec = function
+    | N | A _ | Sh _ | V _ | Quote _ | T _ -> fun acc -> acc
+    | P p | Px p -> f p
+    | S l -> List.fold_right spec l
+  in
+  let rec cmd = function
+    | Nop -> fun acc -> acc
+    | Echo(_, p) -> f p
+    | Cmd(s) -> spec s
+    | Seq(s) -> List.fold_right cmd s in
+  cmd x
+
 let rec reduce x =
   let rec self x acc =
     match x with
@@ -331,6 +345,25 @@ let digest =
     match cmd x [] with
     | [x] -> x
     | xs  -> Digest.string ("["^String.concat ";" xs^"]")
+
+let all_deps_of_tags = ref []
+
+let cons deps acc =
+  List.rev&
+    List.fold_left begin fun acc dep ->
+      if List.mem dep acc then acc else dep :: acc
+    end acc deps
+
+let deps_of_tags tags =
+  List.fold_left begin fun acc (xtags, xdeps) ->
+    if Tags.does_match tags xtags then cons xdeps acc
+    else acc
+  end [] !all_deps_of_tags
+
+let set_deps_of_tags tags deps =
+  all_deps_of_tags := (tags, deps) :: !all_deps_of_tags
+
+let dep tags deps = set_deps_of_tags (Tags.of_list tags) deps
 
 (*
 let to_string_for_digest x =

@@ -1,8 +1,6 @@
 include ../support/Makefile.common
 
-COMPFLAGS= -I ../support
-
-TOPDEPS = $(TOPDIR)/toplevel/toplevellib.cma $(TOPDIR)/toplevel/topmain.cmo
+COMPFLAGS= -I ../support -I $(OTHERS)/win32unix -I $(OTHERS)/unix
 
 all: camltkobjs
 
@@ -20,12 +18,12 @@ camltkobjsx: $(CAMLTKOBJSX)
 clean:
 	$(MAKE) -f Makefile.gen clean
 
-install: $(CAMLTKOBJS)
+install:
 	if test -d $(INSTALLDIR); then : ; else mkdir $(INSTALLDIR); fi
 	cp $(CAMLTKOBJS:.cmo=.cmi) $(CWIDGETOBJS:.cmo=.mli) $(INSTALLDIR)
 	chmod 644 $(INSTALLDIR)/*.cmi
 
-installopt: $(CAMLTKOBJSX)
+installopt:
 	@if test -d $(INSTALLDIR); then : ; else mkdir $(INSTALLDIR); fi
 	cp $(CAMLTKOBJSX) $(INSTALLDIR)
 	chmod 644 $(INSTALLDIR)/*.cmx

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlcp.ml,v 1.40 2006/11/28 15:59:35 doligez Exp $ *)
+(* $Id: ocamlcp.ml,v 1.41 2007/05/16 08:21:40 doligez Exp $ *)
 
 open Printf
 
@@ -43,6 +43,7 @@ let incompatible o =
 
 module Options = Main_args.Make_options (struct
   let _a () = make_archive := true; option "-a" ()
+  let _annot = option "-annot"
   let _c = option "-c"
   let _cc s = option_with_arg "-cc" s
   let _cclib s = option_with_arg "-cclib" s

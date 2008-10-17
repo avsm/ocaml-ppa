@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_specific.ml,v 1.6.2.21 2007/11/28 16:19:10 ertai Exp $ *)
+(* $Id: ocaml_specific.ml,v 1.23 2008/08/05 13:06:56 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format
@@ -270,16 +270,6 @@ rule "ocamldoc: document ocaml project odocl & *odoc -> man|latex|dot..."
 (* To use menhir give the -use-menhir option at command line,
    Or put true: use_menhir in your tag file. *)
 if !Options.use_menhir || Configuration.has_tag "use_menhir" then begin
-  rule "ocaml: menhir"
-    ~prods:["%.ml"; "%.mli"]
-    ~deps:["%.mly"; "%.mly.depends"]
-    (Ocaml_tools.menhir "%.mly");
-
-  rule "ocaml: menhir dependencies"
-    ~prod:"%.mly.depends"
-    ~dep:"%.mly"
-    (Ocaml_tools.menhir_ocamldep_command "%.mly" "%.mly.depends");
-
   (* Automatic handling of menhir modules, given a
      description file %.mlypack                         *)
   rule "ocaml: modular menhir (mlypack)"
@@ -290,7 +280,17 @@ if !Options.use_menhir || Configuration.has_tag "use_menhir" then begin
   rule "ocaml: menhir modular dependencies"
     ~prod:"%.mlypack.depends"
     ~dep:"%.mlypack"
-    (Ocaml_tools.menhir_modular_ocamldep_command "%.mlypack" "%.mlypack.depends")
+    (Ocaml_tools.menhir_modular_ocamldep_command "%.mlypack" "%.mlypack.depends");
+
+  rule "ocaml: menhir"
+    ~prods:["%.ml"; "%.mli"]
+    ~deps:["%.mly"; "%.mly.depends"]
+    (Ocaml_tools.menhir "%.mly");
+
+  rule "ocaml: menhir dependencies"
+    ~prod:"%.mly.depends"
+    ~dep:"%.mly"
+    (Ocaml_tools.menhir_ocamldep_command "%.mly" "%.mly.depends");
 
 end else
   rule "ocamlyacc"
@@ -319,6 +319,11 @@ rule "ocaml: mltop -> top"
   ~prod:"%.top"
   ~dep:"%.mltop"
   (Ocaml_compiler.byte_toplevel_link_mltop "%.mltop" "%.top");;
+
+rule "preprocess: ml -> pp.ml"
+  ~dep:"%.ml"
+  ~prod:"%.pp.ml"
+  (Ocaml_tools.camlp4 "pp.ml" "%.ml" "%.pp.ml");;
 
 flag ["ocaml"; "pp"] begin
   S (List.fold_right (fun x acc -> Sh x :: acc) !Options.ocaml_ppflags [])
@@ -368,7 +373,7 @@ camlp4_flags' ["camlp4orr", S[A"camlp4of"; A"-parser"; A"reloaded"];
 
 flag ["ocaml"; "pp"; "camlp4:no_quot"] (A"-no_quot");;
 
-ocaml_lib ~extern:true ~native:false "dynlink";;
+ocaml_lib ~extern:true "dynlink";;
 ocaml_lib ~extern:true "unix";;
 ocaml_lib ~extern:true "str";;
 ocaml_lib ~extern:true "bigarray";;
@@ -387,6 +392,8 @@ flag ["ocaml"; "compile"; "use_camlp4_full"]
      (S[A"-I"; A"+camlp4/Camlp4Parsers";
         A"-I"; A"+camlp4/Camlp4Printers";
         A"-I"; A"+camlp4/Camlp4Filters"]);;
+flag ["ocaml"; "use_camlp4_bin"; "link"; "byte"] (A"+camlp4/Camlp4Bin.cmo");;
+flag ["ocaml"; "use_camlp4_bin"; "link"; "native"] (A"+camlp4/Camlp4Bin.cmx");;
 
 flag ["ocaml"; "debug"; "compile"; "byte"] (A "-g");;
 flag ["ocaml"; "debug"; "link"; "byte"; "program"] (A "-g");;
@@ -402,6 +409,7 @@ flag ["ocaml"; "rectypes"; "infer_interface"] (A "-rectypes");;
 flag ["ocaml"; "linkall"; "link"] (A "-linkall");;
 flag ["ocaml"; "link"; "profile"; "native"] (A "-p");;
 flag ["ocaml"; "link"; "program"; "custom"; "byte"] (A "-custom");;
+flag ["ocaml"; "link"; "library"; "custom"; "byte"] (A "-custom");;
 flag ["ocaml"; "compile"; "profile"; "native"] (A "-p");;
 flag ["ocaml"; "compile"; "thread"] (A "-thread");;
 flag ["ocaml"; "doc"; "thread"] (S[A"-I"; A"+threads"]);;

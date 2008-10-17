@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: globroots.h,v 1.3.20.1 2007/03/26 18:01:20 doligez Exp $ */
+/* $Id: globroots.h,v 1.5 2008/03/10 19:56:39 xleroy Exp $ */
 
 /* Registration of global memory roots */
 
@@ -19,22 +19,9 @@
 #define CAML_GLOBROOTS_H
 
 #include "mlvalues.h"
+#include "roots.h"
 
-/* Skip list structure */
-
-struct global_root {
-  value * root;                    /* the address of the root */
-  struct global_root * forward[1]; /* variable-length array */
-};
-
-#define NUM_LEVELS 17
-
-struct global_root_list {
-  value * root;                 /* dummy value for layout compatibility */
-  struct global_root * forward[NUM_LEVELS]; /* forward chaining */
-  int level;                    /* max used level */
-};
-
-extern struct global_root_list caml_global_roots;
+void caml_scan_global_roots(scanning_action f);
+void caml_scan_global_young_roots(scanning_action f);
 
 #endif /* CAML_GLOBROOTS_H */

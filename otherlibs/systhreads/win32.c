@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: win32.c,v 1.44 2006/04/16 23:28:21 doligez Exp $ */
+/* $Id: win32.c,v 1.45 2007/10/31 09:12:29 xleroy Exp $ */
 
 /* Thread interface for Win32 threads */
 
@@ -226,6 +226,11 @@ static void caml_io_mutex_lock(struct channel * chan)
     HANDLE mutex = CreateMutex(NULL, FALSE, NULL);
     if (mutex == NULL) caml_wthread_error("Thread.iolock");
     chan->mutex = (void *) mutex;
+  }
+  /* PR#4351: first try to acquire mutex without releasing the master lock */
+  if (WaitForSingleObject((HANDLE) chan->mutex, 0) == WAIT_OBJECT_0) {
+    TlsSetValue(last_channel_locked_key, (void *) chan);
+    return;
   }
   enter_blocking_section();
   WaitForSingleObject((HANDLE) chan->mutex, INFINITE);
@@ -518,6 +523,9 @@ CAMLprim value caml_mutex_new(value unit)
 CAMLprim value caml_mutex_lock(value mut)
 {
   int retcode;
+  /* PR#4351: first try to acquire mutex without releasing the master lock */
+  retcode =  WaitForSingleObject(Mutex_val(mut), 0);
+  if (retcode == WAIT_OBJECT_0) return Val_unit;
   Begin_root(mut)               /* prevent deallocation of mutex */
     enter_blocking_section();
     retcode = WaitForSingleObject(Mutex_val(mut), INFINITE);
@@ -530,11 +538,8 @@ CAMLprim value caml_mutex_lock(value mut)
 CAMLprim value caml_mutex_unlock(value mut)
 {
   BOOL retcode;
-  Begin_root(mut)               /* prevent deallocation of mutex */
-    enter_blocking_section();
-    retcode = ReleaseMutex(Mutex_val(mut));
-    leave_blocking_section();
-  End_roots();
+  /* PR#4351: no need to release and reacquire master lock */
+  retcode = ReleaseMutex(Mutex_val(mut));
   if (!retcode) caml_wthread_error("Mutex.unlock");
   return Val_unit;
 }
@@ -630,12 +635,8 @@ CAMLprim value caml_condition_signal(value cond)
 
   if (Condition_val(cond)->count > 0) {
     Condition_val(cond)->count --;
-    Begin_root(cond)           /* prevent deallocation of cond */
-      enter_blocking_section();
-      /* Increment semaphore by 1, waking up one waiter */
-      ReleaseSemaphore(s, 1, NULL);
-      leave_blocking_section();
-    End_roots();
+    /* Increment semaphore by 1, waking up one waiter */
+    ReleaseSemaphore(s, 1, NULL);
   }
   return Val_unit;
 }
@@ -647,12 +648,8 @@ CAMLprim value caml_condition_broadcast(value cond)
 
   if (c > 0) {
     Condition_val(cond)->count = 0;
-    Begin_root(cond)           /* prevent deallocation of cond */
-      enter_blocking_section();
-      /* Increment semaphore by c, waking up all waiters */
-      ReleaseSemaphore(s, c, NULL);
-      leave_blocking_section();
-    End_roots();
+    /* Increment semaphore by c, waking up all waiters */
+    ReleaseSemaphore(s, c, NULL);
   }
   return Val_unit;
 }

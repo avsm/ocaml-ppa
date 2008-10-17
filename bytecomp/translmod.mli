@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: translmod.mli,v 1.12 2004/04/09 13:32:27 xleroy Exp $ *)
+(* $Id: translmod.mli,v 1.14 2008/07/24 05:35:22 frisch Exp $ *)
 
 (* Translation from typed abstract syntax to lambda terms,
    for the module language *)
@@ -19,6 +19,7 @@ open Typedtree
 open Lambda
 
 val transl_implementation: string -> structure * module_coercion -> lambda
+val transl_store_phrases: string -> structure -> int * lambda
 val transl_store_implementation:
       string -> structure * module_coercion -> int * lambda
 val transl_toplevel_definition: structure -> lambda
@@ -28,8 +29,9 @@ val transl_store_package:
       Ident.t option list -> Ident.t -> module_coercion -> int * lambda
 
 val toplevel_name: Ident.t -> string
+val nat_toplevel_name: Ident.t -> Ident.t * int
 
-val primitive_declarations: string list ref
+val primitive_declarations: Primitive.description list ref
 
 type error =
   Circular_dependency of Ident.t

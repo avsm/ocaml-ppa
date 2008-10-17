@@ -1,5 +1,19 @@
 #!/bin/sh
-# $Id: install.sh,v 1.6.2.16 2007/11/27 13:27:48 ertai Exp $
+
+#########################################################################
+#                                                                       #
+#                            Objective Caml                             #
+#                                                                       #
+#       Nicolas Pouillard, projet Gallium, INRIA Rocquencourt           #
+#                                                                       #
+#   Copyright 2007 Institut National de Recherche en Informatique et    #
+#   en Automatique.  All rights reserved.  This file is distributed     #
+#   under the terms of the Q Public License version 1.0.                #
+#                                                                       #
+#########################################################################
+
+# $Id: install.sh,v 1.11 2008/08/05 13:05:23 ertai Exp $
+
 set -e
 
 cd `dirname $0`/..
@@ -153,6 +167,7 @@ installdir \
   stdlib/arrayLabels.cmi stdlib/arrayLabels.mli \
   stdlib/buffer.cmi stdlib/buffer.mli \
   stdlib/callback.cmi stdlib/callback.mli \
+  stdlib/camlinternalLazy.cmi stdlib/camlinternalLazy.mli \
   stdlib/camlinternalMod.cmi stdlib/camlinternalMod.mli \
   stdlib/camlinternalOO.cmi stdlib/camlinternalOO.mli \
   stdlib/char.cmi stdlib/char.mli \
@@ -196,6 +211,7 @@ installdir \
  stdlib/arrayLabels.cmx stdlib/arrayLabels.p.cmx stdlib/arrayLabels.$O stdlib/arrayLabels.p.$O \
  stdlib/buffer.cmx stdlib/buffer.p.cmx stdlib/buffer.$O stdlib/buffer.p.$O \
  stdlib/callback.cmx stdlib/callback.p.cmx stdlib/callback.$O stdlib/callback.p.$O \
+ stdlib/camlinternalLazy.cmx stdlib/camlinternalLazy.p.cmx stdlib/camlinternalLazy.$O stdlib/camlinternalLazy.p.$O \
  stdlib/camlinternalMod.cmx stdlib/camlinternalMod.p.cmx stdlib/camlinternalMod.$O stdlib/camlinternalMod.p.$O \
  stdlib/camlinternalOO.cmx stdlib/camlinternalOO.p.cmx stdlib/camlinternalOO.$O stdlib/camlinternalOO.p.$O \
  stdlib/char.cmx stdlib/char.p.cmx stdlib/char.$O stdlib/char.p.$O \

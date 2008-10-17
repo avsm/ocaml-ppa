@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml,v 1.6.36.1 2007/10/23 11:53:24 xleroy Exp $ *)
+(* $Id: selection.ml,v 1.7 2008/01/11 16:13:11 doligez Exp $ *)
 
 (* Instruction selection for the ARM processor *)
 

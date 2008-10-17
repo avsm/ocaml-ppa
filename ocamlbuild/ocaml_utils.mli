@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_utils.mli,v 1.3.2.1 2007/11/21 18:29:37 ertai Exp $ *)
+(* $Id: ocaml_utils.mli,v 1.6 2008/07/25 14:26:13 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 val stdlib_dir : Pathname.t Lazy.t
 val module_name_of_filename : Pathname.t -> string
@@ -25,6 +25,7 @@ val libraries_of : Pathname.t -> Pathname.t list
 val use_lib : Pathname.t -> Pathname.t -> unit
 val cmi_of : Pathname.t -> Pathname.t
 val ocaml_add_include_flag : string -> Command.spec list -> Command.spec list
+val flag_and_dep : Tags.elt list -> Command.spec -> unit
 
 exception Ocamldep_error of string
 

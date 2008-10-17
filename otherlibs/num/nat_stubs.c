@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: nat_stubs.c,v 1.16.10.1 2007/10/25 09:23:30 xleroy Exp $ */
+/* $Id: nat_stubs.c,v 1.18 2008/01/11 16:13:16 doligez Exp $ */
 
 #include "alloc.h"
 #include "config.h"
@@ -82,6 +82,17 @@ CAMLprim value set_digit_nat(value nat, value ofs, value digit)
 CAMLprim value nth_digit_nat(value nat, value ofs)
 {
   return Val_long(Digit_val(nat, Long_val(ofs)));
+}
+
+CAMLprim value set_digit_nat_native(value nat, value ofs, value digit)
+{
+  Digit_val(nat, Long_val(ofs)) = Nativeint_val(digit);
+  return Val_unit;
+}
+
+CAMLprim value nth_digit_nat_native(value nat, value ofs)
+{
+  return caml_copy_nativeint(Digit_val(nat, Long_val(ofs)));
 }
 
 CAMLprim value num_digits_nat(value nat, value ofs, value len)

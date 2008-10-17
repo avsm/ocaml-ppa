@@ -17,8 +17,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-
-(* $Id: Lexer.mll,v 1.6.4.11 2007/11/27 14:38:03 ertai Exp $ *)
+(* $Id: Lexer.mll,v 1.10 2008/01/11 16:13:16 doligez Exp $ *)
 
 (* The lexer definition *)
 

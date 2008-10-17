@@ -1,5 +1,18 @@
 #!/bin/sh
-# $Id: partial-install.sh,v 1.5.2.11 2007/11/22 18:45:18 ertai Exp $
+
+#########################################################################
+#                                                                       #
+#                            Objective Caml                             #
+#                                                                       #
+#       Nicolas Pouillard, projet Gallium, INRIA Rocquencourt           #
+#                                                                       #
+#   Copyright 2007 Institut National de Recherche en Informatique et    #
+#   en Automatique.  All rights reserved.  This file is distributed     #
+#   under the terms of the Q Public License version 1.0.                #
+#                                                                       #
+#########################################################################
+
+# $Id: partial-install.sh,v 1.9 2008/01/11 16:13:16 doligez Exp $
 
 ######################################
 ######### Copied from build/install.sh

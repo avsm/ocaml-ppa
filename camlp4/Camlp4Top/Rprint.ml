@@ -18,8 +18,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-
-(* $Id: Rprint.ml,v 1.2.6.3 2007/05/22 10:54:59 pouillar Exp $ *)
+(* $Id: Rprint.ml,v 1.5 2008/01/11 16:13:16 doligez Exp $ *)
 
 (* There is a few Obj.magic due to the fact that we no longer have compiler
    files like Parsetree, Location, Longident but Camlp4_import that wrap them to

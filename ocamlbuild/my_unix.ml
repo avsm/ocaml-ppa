@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: my_unix.ml,v 1.2.2.2 2007/11/28 16:11:27 ertai Exp $ *)
+(* $Id: my_unix.ml,v 1.5 2008/01/11 16:13:16 doligez Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format
