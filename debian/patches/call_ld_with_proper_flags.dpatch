@@ -7,25 +7,16 @@
 ## DP: gcc.
 
 @DPATCH@
-diff -urNad trunk~/Makefile trunk/Makefile
---- trunk~/Makefile	2007-03-05 10:18:22.000000000 +0100
-+++ trunk/Makefile	2007-04-11 10:51:08.000000000 +0200
-@@ -314,6 +314,7 @@
- partialclean::
- 	rm -f ocaml toplevel/toplevellib.cma
- 
-+Wl = -Wl,
- # The configuration file
- 
- utils/config.ml: utils/config.mlp config/Makefile
-@@ -325,8 +326,8 @@
-             -e 's|%%BYTELINK%%|$(BYTECC) $(BYTECCLINKOPTS)|' \
-             -e 's|%%NATIVECC%%|$(NATIVECC) $(NATIVECCCOMPOPTS)|' \
-             -e 's|%%NATIVELINK%%|$(NATIVECC) $(NATIVECCLINKOPTS)|' \
--            -e 's|%%PARTIALLD%%|$(PARTIALLD) $(NATIVECCLINKOPTS)|' \
--            -e 's|%%PACKLD%%|$(PARTIALLD) $(NATIVECCLINKOPTS) -o |' \
-+            -e 's|%%PARTIALLD%%|$(PARTIALLD) $(subst $(Wl),,$(NATIVECCLINKOPTS))|' \
-+            -e 's|%%PACKLD%%|$(PARTIALLD) $(subst $(Wl),,$(NATIVECCLINKOPTS)) -o |' \
-             -e 's|%%BYTECCLIBS%%|$(BYTECCLIBS)|' \
-             -e 's|%%NATIVECCLIBS%%|$(NATIVECCLIBS)|' \
-             -e 's|%%RANLIBCMD%%|$(RANLIBCMD)|' \
+diff -urNad ocaml~/configure ocaml/configure
+--- ocaml~/configure	2008-10-20 14:54:55.000000000 +0200
++++ ocaml/configure	2008-10-20 14:56:17.000000000 +0200
+@@ -1544,7 +1544,8 @@
+ echo "CC_PROFILE=$cc_profile" >> Makefile
+ echo "SYSTHREAD_SUPPORT=$systhread_support" >> Makefile
+ echo "PARTIALLD=$partialld" >> Makefile
+-echo "PACKLD=\$(PARTIALLD) \$(NATIVECCLINKOPTS) -o " >> Makefile
++echo "Wl = -Wl," >> Makefile
++echo "PACKLD=\$(PARTIALLD) $(subst \$(Wl),,\$(NATIVECCLINKOPTS)) -o " >> Makefile
+ echo "DLLCCCOMPOPTS=$dllccompopts" >> Makefile
+ echo "IFLEXDIR=$iflexdir" >> Makefile
+ echo "O=o" >> Makefile
