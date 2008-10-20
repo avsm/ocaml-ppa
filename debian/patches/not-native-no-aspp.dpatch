@@ -5,12 +5,12 @@
 ## DP: No description.
 
 @DPATCH@
-diff -urNad ocaml-3.10.0~/build/mkmyocamlbuild_config.sh ocaml-3.10.0/build/mkmyocamlbuild_config.sh
---- ocaml-3.10.0~/build/mkmyocamlbuild_config.sh	2007-03-12 12:58:48.000000000 +0100
-+++ ocaml-3.10.0/build/mkmyocamlbuild_config.sh	2007-08-31 10:55:34.734613125 +0200
-@@ -5,6 +5,7 @@
- 
+diff -urNad ocaml~/build/mkmyocamlbuild_config.sh ocaml/build/mkmyocamlbuild_config.sh
+--- ocaml~/build/mkmyocamlbuild_config.sh	2008-10-17 12:22:50.000000000 +0200
++++ ocaml/build/mkmyocamlbuild_config.sh	2008-10-20 15:03:04.000000000 +0200
+@@ -19,6 +19,7 @@
  sed \
+     -e 's/^.*FLEXDIR.*$//g' \
      -e 's/^#ml \(.*\)/\1/' \
 +    -e 's/\$(AS)/no/' \
      -e 's/^\(#.*\)$/(* \1 *)/' \
