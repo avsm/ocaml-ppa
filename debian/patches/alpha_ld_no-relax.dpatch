@@ -7,10 +7,10 @@
 
 
 @DPATCH@
-diff -urNad trunk~/configure trunk/configure
---- trunk~/configure	2007-03-06 16:02:09.000000000 +0000
-+++ trunk/configure	2007-04-10 17:08:18.000000000 +0000
-@@ -271,7 +271,8 @@
+diff -urNad ocaml~/configure ocaml/configure
+--- ocaml~/configure	2008-10-17 12:22:50.000000000 +0200
++++ ocaml/configure	2008-10-20 14:34:59.000000000 +0200
+@@ -280,7 +280,8 @@
    gcc,alpha*-*-linux*)
      if cc="$bytecc" sh ./hasgot -mieee; then
        bytecccompopts="-mieee $bytecccompopts";
@@ -20,7 +20,7 @@ diff -urNad trunk~/configure trunk/configure
    cc,mips-*-irix6*)
      # Add -n32 flag to ensure compatibility with native-code compiler
      bytecccompopts="-n32"
-@@ -630,6 +631,7 @@
+@@ -684,6 +685,7 @@
                         nativecccompopts="$gcc_warnings -DSHRINKED_GNUC";;
    *,*,rhapsody,*)      nativecccompopts="$gcc_warnings -DDARWIN_VERSION_6 $dl_defs"
                         if $arch64; then partialld="ld -r -arch ppc64"; fi;;
