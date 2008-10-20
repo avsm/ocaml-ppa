@@ -247,7 +247,7 @@ install-arch: build-arch
 
 	# Remove empty directory
 	for i in `cat debian/ocaml-nox.empty-dirs`; do \
-       		if test -d "debian/ocaml-nox/$$i" && test -z "`ls -1 'debian/ocaml-nox/$$i'`"; then \
+       		if test -d "debian/ocaml-nox/$$i" && test -z `ls -1 "debian/ocaml-nox/$$i"`; then \
 			$(RM) -r "debian/ocaml-nox/$$i"; \
 		fi; \
 	done
