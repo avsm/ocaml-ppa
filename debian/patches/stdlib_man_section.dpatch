@@ -5,9 +5,9 @@
 ## DP: Put manpages in section 3o instead of 3.
 
 @DPATCH@
-diff -urNad ocaml-3.09.2~/ocamldoc/Makefile ocaml-3.09.2/ocamldoc/Makefile
---- ocaml-3.09.2~/ocamldoc/Makefile	2005-11-10 15:44:36.000000000 +0100
-+++ ocaml-3.09.2/ocamldoc/Makefile	2006-05-04 00:07:52.000000000 +0200
+diff -urNad ocaml~/ocamldoc/Makefile ocaml/ocamldoc/Makefile
+--- ocaml~/ocamldoc/Makefile	2008-10-17 12:22:50.000000000 +0200
++++ ocaml/ocamldoc/Makefile	2008-10-20 15:00:27.000000000 +0200
 @@ -318,7 +318,7 @@
  stdlib_man/Pervasives.3o: $(STDLIB_MLIS)
  	$(MKDIR) stdlib_man
