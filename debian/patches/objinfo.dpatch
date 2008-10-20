@@ -18,22 +18,21 @@ esac
 
 exit 0
 @DPATCH@
-diff -urNad ocaml-3.09.1~/man/ocamlc.m ocaml-3.09.1/man/ocamlc.m
---- ocaml-3.09.1~/man/ocamlc.m	2004-07-13 14:25:10.000000000 +0200
-+++ ocaml-3.09.1/man/ocamlc.m	2006-01-04 20:29:18.000000000 +0100
-@@ -242,7 +242,8 @@
+diff -urNad ocaml~/man/ocamlc.m ocaml/man/ocamlc.m
+--- ocaml~/man/ocamlc.m	2008-10-18 11:11:39.000000000 +0200
++++ ocaml/man/ocamlc.m	2008-10-20 14:26:37.000000000 +0200
+@@ -579,7 +579,7 @@
+ Display a short usage summary and exit.
  
  .SH SEE ALSO
- .BR ocaml (1),
--.BR ocamlrun (1).
-+.BR ocamlrun (1),
-+.BR ocamlobjinfo (1).
+-.BR ocamlopt (1), \ ocamlrun (1), \ ocaml (1).
++.BR ocamlopt (1), \ ocamlrun (1), \ ocaml (1), \ ocamlobjinfo (1).
  .br
- .I The Objective Caml user's manual,
+ .IR "The Objective Caml user's manual" ,
  chapter "Batch compilation".
-diff -urNad ocaml-3.09.1~/man/ocamlobjinfo.m ocaml-3.09.1/man/ocamlobjinfo.m
---- ocaml-3.09.1~/man/ocamlobjinfo.m	1970-01-01 01:00:00.000000000 +0100
-+++ ocaml-3.09.1/man/ocamlobjinfo.m	2006-01-04 20:29:18.000000000 +0100
+diff -urNad ocaml~/man/ocamlobjinfo.m ocaml/man/ocamlobjinfo.m
+--- ocaml~/man/ocamlobjinfo.m	1970-01-01 01:00:00.000000000 +0100
++++ ocaml/man/ocamlobjinfo.m	2008-10-20 14:26:37.000000000 +0200
 @@ -0,0 +1,40 @@
 +.TH OCAML-SOAP 1 "October 26, 2002"
 +.SH NAME
@@ -75,32 +74,32 @@ diff -urNad ocaml-3.09.1~/man/ocamlobjinfo.m ocaml-3.09.1/man/ocamlobjinfo.m
 +.SH AUTHOR
 +This manual page was written by Stefano Zacchiroli <zack@debian.org>,
 +for the Debian GNU/Linux system (but may be used by others).
-diff -urNad ocaml-3.09.1~/man/ocamlopt.m ocaml-3.09.1/man/ocamlopt.m
---- ocaml-3.09.1~/man/ocamlopt.m	2004-07-13 14:25:10.000000000 +0200
-+++ ocaml-3.09.1/man/ocamlopt.m	2006-01-04 20:29:18.000000000 +0100
-@@ -225,7 +225,8 @@
- array or string outside of its bounds.
+diff -urNad ocaml~/man/ocamlopt.m ocaml/man/ocamlopt.m
+--- ocaml~/man/ocamlopt.m	2008-10-18 11:11:39.000000000 +0200
++++ ocaml/man/ocamlopt.m	2008-10-20 14:26:37.000000000 +0200
+@@ -603,7 +603,8 @@
+ SPARC processors.
  
  .SH SEE ALSO
 -.BR ocamlc (1).
 +.BR ocamlc (1),
 +.BR ocamlobjinfo (1).
  .br
- .I The Objective Caml user's manual,
+ .IR "The Objective Caml user's manual" ,
  chapter "Native-code compilation".
-diff -urNad ocaml-3.09.1~/tools/Makefile ocaml-3.09.1/tools/Makefile
---- ocaml-3.09.1~/tools/Makefile	2005-11-17 15:26:37.000000000 +0100
-+++ ocaml-3.09.1/tools/Makefile	2006-01-04 20:30:02.000000000 +0100
+diff -urNad ocaml~/tools/Makefile.shared ocaml/tools/Makefile.shared
+--- ocaml~/tools/Makefile.shared	2008-10-17 12:22:50.000000000 +0200
++++ ocaml/tools/Makefile.shared	2008-10-20 14:26:37.000000000 +0200
 @@ -24,7 +24,7 @@
  LINKFLAGS=$(INCLUDES)
  
  all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib scrapelabels addlabels \
 -     dumpobj
 +     dumpobj objinfo
+ .PHONY: all
  
  opt.opt: ocamldep.opt
- 
-@@ -70,6 +70,7 @@
+@@ -72,6 +72,7 @@
  	cp ocamlprof $(BINDIR)/ocamlprof$(EXE)
  	cp ocamlcp $(BINDIR)/ocamlcp$(EXE)
  	cp profiling.cmi profiling.cmo $(LIBDIR)
