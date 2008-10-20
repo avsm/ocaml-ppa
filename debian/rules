@@ -257,7 +257,6 @@ install-arch: build-arch
 	cp debian/ocaml-compiler-libs.override debian/ocaml-compiler-libs/usr/share/lintian/overrides/ocaml-compiler-libs
 	cp debian/ocaml-nox.override debian/ocaml-nox/usr/share/lintian/overrides/ocaml-nox
 
-	chmod +x debian/cdbs/ocamldoc-api-ref-config
 	dh_install --sourcedir=. -a
 
 # Must not depend on anything. This is to be called by
