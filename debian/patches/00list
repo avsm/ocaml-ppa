@@ -1,7 +1,6 @@
 objinfo.dpatch
 dumpobj.dpatch
 man-ocamlmklib.dpatch
-#kbsd-gnu.dpatch
 alpha_ld_no-relax.dpatch
 call_ld_with_proper_flags.dpatch
 no_rpath.dpatch
