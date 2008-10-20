@@ -1,10 +1,13 @@
 ocaml (3.11.0~beta1-1) UNRELEASED; urgency=low
 
   [ Stephane Glondu ]
-  * New upstream beta release
+  * New upstream beta release:
+    - camlrun_shared.dpatch removed (integrated upstream)
+    - all other patches updated
   * Switching packaging to git (from svn)
   * Bump debhelper compatibility level to 7, and use debian/clean feature
     of dh_clean
+  * Add myself to uploaders, and update Julien's address
 
   [ Stefano Zacchiroli ]
   * Bump Standards-Version to 3.8.0, no changes needed
@@ -16,7 +19,7 @@ ocaml (3.11.0~beta1-1) UNRELEASED; urgency=low
     - ocaml-md5sums (therefore also disable its usage at the end of the
       build process)
 
- -- Stephane Glondu <steph@glondu.net>  Tue, 08 Jul 2008 14:30:11 +0200
+ -- Stephane Glondu <steph@glondu.net>  Mon, 20 Oct 2008 23:57:07 +0200
 
 ocaml (3.10.2-3) unstable; urgency=low
 
