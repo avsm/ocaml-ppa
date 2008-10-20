@@ -9,4 +9,3 @@ stdlib_man_section.dpatch
 install_scripts_config.dpatch
 install_ocamlbuild.dpatch
 not-native-no-aspp
-camlrun_shared.dpatch
