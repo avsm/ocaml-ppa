@@ -1,6 +1,7 @@
-ocaml (3.10.2-4) UNRELEASED; urgency=low
+ocaml (3.11.0~beta1-1) UNRELEASED; urgency=low
 
   [ Stephane Glondu ]
+  * New upstream beta release
   * Switching packaging to git (from svn)
   * Bump debhelper compatibility level to 7, and use debian/clean feature
     of dh_clean
