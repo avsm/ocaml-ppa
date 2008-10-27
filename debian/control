@@ -68,7 +68,7 @@ Description: Pre Processor Pretty Printer for OCaml
 
 Package: camlp4-extra
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, camlp4 (=${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-nox (=${binary:Version}), camlp4 (=${binary:Version})
 Description: Pre Processor Pretty Printer for OCaml - extras
  Objective Caml (OCaml) is an implementation of the ML language,
  based on the Caml Light dialect extended with a complete

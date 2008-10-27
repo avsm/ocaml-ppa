@@ -9,6 +9,7 @@ ocaml (3.11.0~beta1-1) UNRELEASED; urgency=low
   * Bump debhelper compatibility level to 7, and use debian/clean feature
     of dh_clean
   * Add myself to uploaders, and update Julien's address
+  * Add explicit dependency from camlp4-extra to ocaml-nox
 
   [ Stefano Zacchiroli ]
   * Bump Standards-Version to 3.8.0, no changes needed
@@ -20,7 +21,7 @@ ocaml (3.11.0~beta1-1) UNRELEASED; urgency=low
     - ocaml-md5sums (therefore also disable its usage at the end of the
       build process)
 
- -- Stephane Glondu <steph@glondu.net>  Mon, 27 Oct 2008 19:25:11 +0100
+ -- Stephane Glondu <steph@glondu.net>  Mon, 27 Oct 2008 19:36:23 +0100
 
 ocaml (3.10.2-3) unstable; urgency=low
 
