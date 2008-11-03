@@ -10,7 +10,7 @@ Uploaders:
  Sylvain Le Gall <gildor@debian.org>,
  Ralf Treinen <treinen@debian.org>,
  Stephane Glondu <steph@glondu.net>
-Build-Depends: debhelper (>= 7), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2, docbook-xml, docbook-utils, gcc-4.2 [arm]
+Build-Depends: debhelper (>= 7), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2, docbook-xml, docbook-utils
 Standards-Version: 3.8.0
 Vcs-Git: git://git.debian.org/git/pkg-ocaml-maint/packages/ocaml.git
 Vcs-Browser: http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git
@@ -18,7 +18,7 @@ Homepage: http://caml.inria.fr/
 
 Package: ocaml-nox
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libncurses5-dev, ocaml-base-nox (=${binary:Version}), ocaml-interp (=${binary:Version}), gcc [!arm], gcc-4.2 [arm], binutils
+Depends: ${shlibs:Depends}, ${misc:Depends}, libncurses5-dev, ocaml-base-nox (=${binary:Version}), ocaml-interp (=${binary:Version}), gcc, binutils
 Suggests: ocaml-doc, libgdbm-dev, tuareg-mode | ocaml-mode
 Recommends: camlp4, ledit, file
 Provides: ocaml-nox-${F:OCamlABI}, ${F:BestProvides}, libnums-ocaml-dev
@@ -144,7 +144,7 @@ Description: Runtime system for OCaml bytecode executables
 
 Package: ocaml-native-compilers
 Architecture: amd64 hurd-i386 i386 kfreebsd-i386 powerpc sparc
-Depends: ocaml-nox (= ${binary:Version}), gcc [!arm], gcc-4.2 [arm], binutils, ${shlibs:Depends}, ${misc:Depends}
+Depends: ocaml-nox (= ${binary:Version}), gcc, binutils, ${shlibs:Depends}, ${misc:Depends}
 Provides: ocaml-best-compilers
 Replaces: ocaml-nox (<= 3.09.2-3)
 Description: Native code compilers of the OCaml suite (the .opt ones)

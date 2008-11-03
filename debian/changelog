@@ -6,6 +6,7 @@ ocaml (3.11.0~beta1-1) UNRELEASED; urgency=low
     - not-native-no-aspp.dpatch removed (thanks to upstream bugfix)
     - all other patches updated
     - manpages.dpatch and ocamldoc.dpatch added
+    - dependency to gcc-4.2 on arm removed
   * Switching packaging to git (from svn)
   * Bump debhelper compatibility level to 7, and use debian/clean feature
     of dh_clean
@@ -22,7 +23,7 @@ ocaml (3.11.0~beta1-1) UNRELEASED; urgency=low
     - ocaml-md5sums (therefore also disable its usage at the end of the
       build process)
 
- -- Stephane Glondu <steph@glondu.net>  Sun, 02 Nov 2008 12:56:34 +0100
+ -- Stephane Glondu <steph@glondu.net>  Mon, 03 Nov 2008 23:10:06 +0100
 
 ocaml (3.10.2-3) unstable; urgency=low
 

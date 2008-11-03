@@ -35,9 +35,6 @@ endif
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
-ifeq (arm,$(DEB_BUILD_ARCH))
-CFG_CC_FLAGS = -cc gcc-4.2
-endif
 
 abi-sed:
 	for t in `find debian/ -name \*.in | grep -v debian/control.in`; do \
@@ -74,7 +71,7 @@ debian/$(SRCTARBALL):
 
 config-stamp: pre-config patch-stamp abi-sed
 	dh_testdir
-	./configure --with-pthread -prefix /usr $(CFG_CC_FLAGS)		\
+	./configure --with-pthread -prefix /usr				\
 		-libdir /usr/lib/ocaml/$(OCAMLABI)			\
 		-mandir /usr/share/man					\
 		-tkdefs "-I/usr/include/tcl8.4"				\
