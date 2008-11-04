@@ -1,4 +1,4 @@
-ocaml (3.11.0~beta1-1) UNRELEASED; urgency=low
+ocaml (3.11.0~beta1-1) experimental; urgency=low
 
   [ Stephane Glondu ]
   * New upstream beta release:
