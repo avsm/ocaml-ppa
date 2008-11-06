@@ -1,3 +1,9 @@
+ocaml (3.11.0~beta1-2) UNRELEASED; urgency=low
+
+  * Add debian/changelog entry for version 3.09.2-8
+
+ -- Stephane Glondu <steph@glondu.net>  Thu, 06 Nov 2008 10:22:39 +0100
+
 ocaml (3.11.0~beta1-1) experimental; urgency=low
 
   [ Stephane Glondu ]
@@ -333,6 +339,19 @@ ocaml (3.09.3~rc1-1) experimental; urgency=low
   * New upstream release candidate.
 
  -- Samuel Mimram <smimram@debian.org>  Sun, 10 Sep 2006 23:11:31 +0000
+
+ocaml (3.09.2-8) unstable; urgency=low
+
+  [ Samuel Mimram ]
+   * Installing ocamlbrowser in ocaml instead of ocaml-nox, closes: #397245.
+
+  [ Julien Cristau ]
+  * Add patch stolen from 3.09.3 to fix a segfault when a file is closed
+    twice (closes: #403848).
+  * Delete directories left over by the ocaml package from sarge in
+    /usr/local (closes: #355448).
+
+ -- Samuel Mimram <smimram@debian.org>  Sat, 30 Dec 2006 19:01:12 +0000
 
 ocaml (3.09.2-7) unstable; urgency=low
 
