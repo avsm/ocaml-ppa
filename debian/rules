@@ -24,6 +24,7 @@ export DH_OPTIONS
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 DEB_BUILD_ARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+THIS_NATIVE_ARCH    ?= $(findstring $(DEB_BUILD_ARCH),$(NATIVE_ARCHS))
 
 CFLAGS = -Wall -g
 
@@ -35,10 +36,16 @@ endif
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
+ifeq (,$(THIS_NATIVE_ARCH))
+	SED_HANDLE_OPT := -e '/^OPT: /d'
+else
+	SED_HANDLE_OPT := -e 's/^OPT: //'
+endif
 
 abi-sed:
 	for t in `find debian/ -name \*.in | grep -v debian/control.in`; do \
-	  sed -e 's%#OcamlABI#%$(OCAMLABI)%' -e 's%#OcamlMAJOR#%$(OCAMLMAJOR)%' $$t >$${t%.in};	\
+	  sed -e 's%#OcamlABI#%$(OCAMLABI)%' -e 's%#OcamlMAJOR#%$(OCAMLMAJOR)%' \
+	    $(SED_HANDLE_OPT) $$t >$${t%.in}; \
 	done
 	touch $@
 
@@ -103,7 +110,7 @@ build-arch-stamp: config-stamp
 	fi
 	$(MAKE) world
 	$(MAKE) bootstrap
-ifneq ($(findstring $(DEB_BUILD_ARCH),$(NATIVE_ARCHS)),)
+ifneq ($(THIS_NATIVE_ARCH),)
 	@echo "Building native compilers"
 	$(MAKE) opt opt.opt
 	touch opt-built-stamp

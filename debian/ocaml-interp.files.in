@@ -48,16 +48,12 @@ usr/lib/ocaml/#OcamlABI#/toplevellib.cma
 usr/lib/ocaml/#OcamlABI#/toploop.cmi
 usr/lib/ocaml/#OcamlABI#/topdirs.cmi
 usr/lib/ocaml/#OcamlABI#/topmain.cmi
-usr/lib/ocaml/#OcamlABI#/unix.cma
 usr/lib/ocaml/#OcamlABI#/unix.cmi
 usr/lib/ocaml/#OcamlABI#/unixLabels.cmi
-usr/lib/ocaml/#OcamlABI#/str.cma
 usr/lib/ocaml/#OcamlABI#/str.cmi
 usr/lib/ocaml/#OcamlABI#/dynlink.cmi
 usr/lib/ocaml/#OcamlABI#/dynlink.cma
 usr/lib/ocaml/#OcamlABI#/bigarray.cmi
-usr/lib/ocaml/#OcamlABI#/bigarray.cma
-usr/lib/ocaml/#OcamlABI#/nums.cma
 usr/lib/ocaml/#OcamlABI#/big_int.cmi
 usr/lib/ocaml/#OcamlABI#/nat.cmi
 usr/lib/ocaml/#OcamlABI#/num.cmi

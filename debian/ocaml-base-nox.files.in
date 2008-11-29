@@ -8,3 +8,13 @@ usr/lib/ocaml/#OcamlABI#/stublibs/dllvmthreads.so
 usr/lib/ocaml/#OcamlABI#/stublibs/dllmldbm.so
 usr/lib/ocaml/#OcamlABI#/stublibs/dllnums.so
 usr/lib/ocaml/#OcamlABI#/ld.conf
+OPT: usr/lib/ocaml/#OcamlABI#/dbm.cmxs
+OPT: usr/lib/ocaml/#OcamlABI#/unix.cmxs
+OPT: usr/lib/ocaml/#OcamlABI#/str.cmxs
+OPT: usr/lib/ocaml/#OcamlABI#/bigarray.cmxs
+OPT: usr/lib/ocaml/#OcamlABI#/nums.cmxs
+usr/lib/ocaml/#OcamlABI#/dbm.cma
+usr/lib/ocaml/#OcamlABI#/unix.cma
+usr/lib/ocaml/#OcamlABI#/str.cma
+usr/lib/ocaml/#OcamlABI#/bigarray.cma
+usr/lib/ocaml/#OcamlABI#/nums.cma
