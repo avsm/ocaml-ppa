@@ -19,8 +19,8 @@ esac
 exit 0
 @DPATCH@
 diff -urNad ocaml~/man/ocamlc.m ocaml/man/ocamlc.m
---- ocaml~/man/ocamlc.m	2008-10-18 11:11:39.000000000 +0200
-+++ ocaml/man/ocamlc.m	2008-10-20 14:26:37.000000000 +0200
+--- ocaml~/man/ocamlc.m	2008-11-29 11:16:39.000000000 +0100
++++ ocaml/man/ocamlc.m	2008-11-29 11:31:06.000000000 +0100
 @@ -579,7 +579,7 @@
  Display a short usage summary and exit.
  
@@ -32,7 +32,7 @@ diff -urNad ocaml~/man/ocamlc.m ocaml/man/ocamlc.m
  chapter "Batch compilation".
 diff -urNad ocaml~/man/ocamlobjinfo.m ocaml/man/ocamlobjinfo.m
 --- ocaml~/man/ocamlobjinfo.m	1970-01-01 01:00:00.000000000 +0100
-+++ ocaml/man/ocamlobjinfo.m	2008-10-20 14:26:37.000000000 +0200
++++ ocaml/man/ocamlobjinfo.m	2008-11-29 11:31:10.000000000 +0100
 @@ -0,0 +1,40 @@
 +.TH OCAML-SOAP 1 "October 26, 2002"
 +.SH NAME
@@ -75,8 +75,8 @@ diff -urNad ocaml~/man/ocamlobjinfo.m ocaml/man/ocamlobjinfo.m
 +This manual page was written by Stefano Zacchiroli <zack@debian.org>,
 +for the Debian GNU/Linux system (but may be used by others).
 diff -urNad ocaml~/man/ocamlopt.m ocaml/man/ocamlopt.m
---- ocaml~/man/ocamlopt.m	2008-10-18 11:11:39.000000000 +0200
-+++ ocaml/man/ocamlopt.m	2008-10-20 14:26:37.000000000 +0200
+--- ocaml~/man/ocamlopt.m	2008-11-29 11:16:39.000000000 +0100
++++ ocaml/man/ocamlopt.m	2008-11-29 11:31:10.000000000 +0100
 @@ -603,7 +603,8 @@
  SPARC processors.
  
@@ -88,8 +88,8 @@ diff -urNad ocaml~/man/ocamlopt.m ocaml/man/ocamlopt.m
  .IR "The Objective Caml user's manual" ,
  chapter "Native-code compilation".
 diff -urNad ocaml~/tools/Makefile.shared ocaml/tools/Makefile.shared
---- ocaml~/tools/Makefile.shared	2008-10-17 12:22:50.000000000 +0200
-+++ ocaml/tools/Makefile.shared	2008-10-20 14:26:37.000000000 +0200
+--- ocaml~/tools/Makefile.shared	2007-11-22 23:14:43.000000000 +0100
++++ ocaml/tools/Makefile.shared	2008-11-29 11:31:10.000000000 +0100
 @@ -24,7 +24,7 @@
  LINKFLAGS=$(INCLUDES)
  

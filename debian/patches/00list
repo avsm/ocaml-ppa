@@ -1,5 +1,3 @@
-manpages.dpatch
-ocamldoc.dpatch
 objinfo.dpatch
 dumpobj.dpatch
 man-ocamlmklib.dpatch

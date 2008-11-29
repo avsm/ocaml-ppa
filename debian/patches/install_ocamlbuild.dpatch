@@ -6,8 +6,8 @@
 
 @DPATCH@
 diff -urNad ocaml~/build/partial-install.sh ocaml/build/partial-install.sh
---- ocaml~/build/partial-install.sh	2008-10-20 15:01:52.000000000 +0200
-+++ ocaml/build/partial-install.sh	2008-10-20 15:01:52.000000000 +0200
+--- ocaml~/build/partial-install.sh	2008-11-29 11:32:25.000000000 +0100
++++ ocaml/build/partial-install.sh	2008-11-29 11:32:25.000000000 +0100
 @@ -60,6 +60,21 @@
    [ -x "$3" ] || chmod +x "$3"
  }

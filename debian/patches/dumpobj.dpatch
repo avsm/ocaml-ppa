@@ -6,8 +6,8 @@
 
 @DPATCH@
 diff -urNad ocaml~/man/ocamlc.m ocaml/man/ocamlc.m
---- ocaml~/man/ocamlc.m	2008-10-20 14:29:27.000000000 +0200
-+++ ocaml/man/ocamlc.m	2008-10-20 14:31:41.000000000 +0200
+--- ocaml~/man/ocamlc.m	2008-11-29 11:31:16.000000000 +0100
++++ ocaml/man/ocamlc.m	2008-11-29 11:31:16.000000000 +0100
 @@ -579,7 +579,8 @@
  Display a short usage summary and exit.
  
@@ -20,7 +20,7 @@ diff -urNad ocaml~/man/ocamlc.m ocaml/man/ocamlc.m
  chapter "Batch compilation".
 diff -urNad ocaml~/man/ocamldumpobj.m ocaml/man/ocamldumpobj.m
 --- ocaml~/man/ocamldumpobj.m	1970-01-01 01:00:00.000000000 +0100
-+++ ocaml/man/ocamldumpobj.m	2008-10-20 14:29:28.000000000 +0200
++++ ocaml/man/ocamldumpobj.m	2008-11-29 11:31:16.000000000 +0100
 @@ -0,0 +1,20 @@
 +.TH OCAMLDUMPOBJ 1 "January 4, 2006"
 +.SH NAME
@@ -43,8 +43,8 @@ diff -urNad ocaml~/man/ocamldumpobj.m ocaml/man/ocamldumpobj.m
 +This manual page was written by Samuel Mimram <smimram@debian.org>,
 +for the Debian GNU/Linux system (but may be used by others).
 diff -urNad ocaml~/man/ocamlopt.m ocaml/man/ocamlopt.m
---- ocaml~/man/ocamlopt.m	2008-10-20 14:29:27.000000000 +0200
-+++ ocaml/man/ocamlopt.m	2008-10-20 14:29:28.000000000 +0200
+--- ocaml~/man/ocamlopt.m	2008-11-29 11:31:16.000000000 +0100
++++ ocaml/man/ocamlopt.m	2008-11-29 11:31:16.000000000 +0100
 @@ -604,7 +604,8 @@
  
  .SH SEE ALSO
@@ -56,8 +56,8 @@ diff -urNad ocaml~/man/ocamlopt.m ocaml/man/ocamlopt.m
  .IR "The Objective Caml user's manual" ,
  chapter "Native-code compilation".
 diff -urNad ocaml~/tools/Makefile.shared ocaml/tools/Makefile.shared
---- ocaml~/tools/Makefile.shared	2008-10-20 14:29:27.000000000 +0200
-+++ ocaml/tools/Makefile.shared	2008-10-20 14:30:25.000000000 +0200
+--- ocaml~/tools/Makefile.shared	2008-11-29 11:31:16.000000000 +0100
++++ ocaml/tools/Makefile.shared	2008-11-29 11:31:16.000000000 +0100
 @@ -73,6 +73,7 @@
  	cp ocamlcp $(BINDIR)/ocamlcp$(EXE)
  	cp profiling.cmi profiling.cmo $(LIBDIR)

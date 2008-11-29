@@ -7,8 +7,8 @@
 
 @DPATCH@
 diff -urNad ocaml~/build/install.sh ocaml/build/install.sh
---- ocaml~/build/install.sh	2008-10-17 12:22:50.000000000 +0200
-+++ ocaml/build/install.sh	2008-10-20 15:01:11.000000000 +0200
+--- ocaml~/build/install.sh	2008-08-05 15:05:23.000000000 +0200
++++ ocaml/build/install.sh	2008-11-29 11:32:20.000000000 +0100
 @@ -18,7 +18,7 @@
  
  cd `dirname $0`/..
@@ -19,8 +19,8 @@ diff -urNad ocaml~/build/install.sh ocaml/build/install.sh
  not_installed=$PWD/_build/not_installed
  
 diff -urNad ocaml~/build/partial-install.sh ocaml/build/partial-install.sh
---- ocaml~/build/partial-install.sh	2008-10-17 12:22:50.000000000 +0200
-+++ ocaml/build/partial-install.sh	2008-10-20 15:01:11.000000000 +0200
+--- ocaml~/build/partial-install.sh	2008-01-11 17:13:16.000000000 +0100
++++ ocaml/build/partial-install.sh	2008-11-29 11:32:20.000000000 +0100
 @@ -22,7 +22,7 @@
  
  cd `dirname $0`/..

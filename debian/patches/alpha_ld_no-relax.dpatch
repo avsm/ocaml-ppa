@@ -8,9 +8,9 @@
 
 @DPATCH@
 diff -urNad ocaml~/configure ocaml/configure
---- ocaml~/configure	2008-10-17 12:22:50.000000000 +0200
-+++ ocaml/configure	2008-10-20 14:34:59.000000000 +0200
-@@ -280,7 +280,8 @@
+--- ocaml~/configure	2008-11-29 11:16:39.000000000 +0100
++++ ocaml/configure	2008-11-29 11:31:37.000000000 +0100
+@@ -282,7 +282,8 @@
    gcc,alpha*-*-linux*)
      if cc="$bytecc" sh ./hasgot -mieee; then
        bytecccompopts="-mieee $bytecccompopts";
@@ -26,5 +26,5 @@ diff -urNad ocaml~/configure ocaml/configure
                         if $arch64; then partialld="ld -r -arch ppc64"; fi;;
 +  alpha,gcc*,linux*,*) nativecclinkopts="-Wl,--no-relax";;
    *,gcc*,cygwin,*)     nativecccompopts="$gcc_warnings -U_WIN32";;
+   amd64,gcc*,macosx,*) partialld="ld -r -arch x86_64";;
    *,gcc*,*,*)          nativecccompopts="$gcc_warnings";;
- esac

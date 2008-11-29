@@ -8,9 +8,9 @@
 
 @DPATCH@
 diff -urNad ocaml~/configure ocaml/configure
---- ocaml~/configure	2008-10-20 14:54:55.000000000 +0200
-+++ ocaml/configure	2008-10-20 14:56:17.000000000 +0200
-@@ -1544,7 +1544,8 @@
+--- ocaml~/configure	2008-11-29 11:31:44.000000000 +0100
++++ ocaml/configure	2008-11-29 11:31:48.000000000 +0100
+@@ -1548,7 +1548,8 @@
  echo "CC_PROFILE=$cc_profile" >> Makefile
  echo "SYSTHREAD_SUPPORT=$systhread_support" >> Makefile
  echo "PARTIALLD=$partialld" >> Makefile

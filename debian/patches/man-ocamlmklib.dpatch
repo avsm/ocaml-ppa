@@ -20,7 +20,7 @@ exit 0
 @DPATCH@
 diff -urNad ocaml~/man/ocamlmklib.m ocaml/man/ocamlmklib.m
 --- ocaml~/man/ocamlmklib.m	1970-01-01 01:00:00.000000000 +0100
-+++ ocaml/man/ocamlmklib.m	2008-10-20 14:34:05.000000000 +0200
++++ ocaml/man/ocamlmklib.m	2008-11-29 11:31:28.000000000 +0100
 @@ -0,0 +1,127 @@
 +.\"                                      Hey, EMACS: -*- nroff -*-
 +.TH OCAMLMKLIB 1 "August 19, 2004"
