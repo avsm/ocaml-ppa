@@ -18,7 +18,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-(* $Id: Sig.ml,v 1.7 2008/10/04 10:47:56 ertai Exp $ *)
+
 
 (** Camlp4 signature repository *)
 
@@ -640,9 +640,11 @@ module type AstFilters = sig
 
   value register_sig_item_filter : (filter Ast.sig_item) -> unit;
   value register_str_item_filter : (filter Ast.str_item) -> unit;
+  value register_topphrase_filter : (filter Ast.str_item) -> unit;
 
   value fold_interf_filters : ('a -> filter Ast.sig_item -> 'a) -> 'a -> 'a;
   value fold_implem_filters : ('a -> filter Ast.str_item -> 'a) -> 'a -> 'a;
+  value fold_topphrase_filters : ('a -> filter Ast.str_item -> 'a) -> 'a -> 'a;
 
 end;
 

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 2006/06/29 08:12:44 pouillar Exp $
+
 
 include ../config/Makefile.cnf
 

@@ -21,7 +21,7 @@ open Camlp4;                                        (* -*- camlp4r -*- *)
 
 module Id = struct
   value name = "Camlp4GrammarParser";
-  value version = "$Id: Camlp4GrammarParser.ml,v 1.5 2008/01/11 16:13:16 doligez Exp $";
+  value version = Sys.ocaml_version;
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) = struct

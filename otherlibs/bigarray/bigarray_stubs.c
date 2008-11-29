@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: bigarray_stubs.c,v 1.23 2008/01/04 09:52:27 xleroy Exp $ */
+/* $Id: bigarray_stubs.c,v 1.23.4.1 2008/11/09 09:03:51 xleroy Exp $ */
 
 #include <stddef.h>
 #include <stdarg.h>
@@ -56,7 +56,7 @@ int caml_ba_element_size[] =
 
 /* Compute the number of bytes for the elements of a big array */
 
-uintnat caml_ba_byte_size(struct caml_ba_array * b)
+CAMLexport uintnat caml_ba_byte_size(struct caml_ba_array * b)
 {
   return caml_ba_num_elts(b)
          * caml_ba_element_size[b->flags & CAML_BA_KIND_MASK];

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ccomp.ml,v 1.28.4.1 2008/10/15 08:48:51 xleroy Exp $ *)
+(* $Id: ccomp.ml,v 1.28.4.2 2008/10/16 15:57:00 doligez Exp $ *)
 
 (* Compiling C files and building C libraries *)
 
@@ -118,7 +118,7 @@ let call_linker mode output_name files extra =
         )
         (Filename.quote output_name)
         (if !Clflags.gprofile then Config.cc_profile else "")
-        (Clflags.std_include_flag "-I")
+        ""  (*(Clflags.std_include_flag "-I")*)
         (quote_prefixed "-L" !Config.load_path)
         files
         extra

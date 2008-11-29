@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: weak.mli,v 1.16 2008/09/17 14:55:30 doligez Exp $ *)
+(* $Id: weak.mli,v 1.16.2.1 2008/11/13 10:39:46 doligez Exp $ *)
 
 (** Arrays of weak pointers and hash tables of weak pointers. *)
 
@@ -20,8 +20,11 @@
 
 type 'a t
 (** The type of arrays of weak pointers (weak arrays).  A weak
-   pointer is a value that the garbage collector may erase at
-   any time.
+   pointer is a value that the garbage collector may erase whenever
+   the value is not used any more (through normal pointers) by the
+   program.  Note that finalisation functions are run after the
+   weak pointers are erased.
+ 
    A weak pointer is said to be full if it points to a value,
    empty if the value was erased by the GC.
 

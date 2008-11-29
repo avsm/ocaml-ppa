@@ -22,7 +22,7 @@ open Camlp4;
 
 module Id = struct
   value name    = "Camlp4LocationStripper";
-  value version = "$Id: Camlp4LocationStripper.ml,v 1.2 2007/10/08 14:19:34 doligez Exp $";
+  value version = Sys.ocaml_version;
 end;
 
 module Make (AstFilters : Camlp4.Sig.AstFilters) = struct

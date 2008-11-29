@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: select.c,v 1.14 2008/07/31 12:09:18 xleroy Exp $ */
+/* $Id: select.c,v 1.14.2.1 2008/10/29 13:38:56 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -771,6 +771,9 @@ CAMLprim value unix_select(value readfds, value writefds, value exceptfds, value
   /* Time to wait */
   DWORD milliseconds;
 
+  /* Is there static select data */
+  BOOL  hasStaticData = FALSE;
+
   /* Wait return */
   DWORD waitRet;
 
@@ -797,6 +800,7 @@ CAMLprim value unix_select(value readfds, value writefds, value exceptfds, value
   iterSelectData = NULL;
   iterResult     = NULL;
   err            = 0;
+  hasStaticData  = 0;
   waitRet        = 0;
   readfds_len    = caml_list_length(readfds);
   writefds_len   = caml_list_length(writefds);
@@ -892,6 +896,16 @@ CAMLprim value unix_select(value readfds, value writefds, value exceptfds, value
   iterSelectData = lpSelectData;
   while (iterSelectData != NULL)
   {
+    /* Check if it is static data. If this is the case, launch everything
+     * but don't wait for events. It helps to test if there are events on
+     * any other fd (which are not static), knowing that there is at least
+     * one result (the static data).
+     */
+    if (iterSelectData->EType == SELECT_TYPE_STATIC)
+    {
+      hasStaticData = TRUE;
+    };
+
     /* Execute APC */
     if (iterSelectData->funcWorker != NULL)
     {
@@ -914,7 +928,7 @@ CAMLprim value unix_select(value readfds, value writefds, value exceptfds, value
   if (nEventsCount > 0)
   {
     /* Waiting for event */
-    if (err == 0)
+    if (err == 0 && !hasStaticData)
     {
       DBUG_PRINT("Waiting for one select worker to be done");
       switch (WaitForMultipleObjects(nEventsCount, lpEventsDone, FALSE, milliseconds))
@@ -958,7 +972,7 @@ CAMLprim value unix_select(value readfds, value writefds, value exceptfds, value
     }
   }
   /* Nothing to monitor but some time to wait. */
-  else 
+  else if (!hasStaticData)
   {
     Sleep(milliseconds);
   }

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: startup.c,v 1.70 2008/03/14 13:47:24 xleroy Exp $ */
+/* $Id: startup.c,v 1.70.2.1 2008/11/18 10:24:43 doligez Exp $ */
 
 /* Start-up code */
 
@@ -35,6 +35,7 @@
 #include "exec.h"
 #include "fail.h"
 #include "fix_code.h"
+#include "freelist.h"
 #include "gc_ctrl.h"
 #include "instrtrace.h"
 #include "interp.h"
@@ -298,6 +299,7 @@ static void scanmult (char *opt, uintnat *var)
 static void parse_camlrunparam(void)
 {
   char *opt = getenv ("OCAMLRUNPARAM");
+  uintnat p;
 
   if (opt == NULL) opt = getenv ("CAMLRUNPARAM");
 
@@ -313,6 +315,7 @@ static void parse_camlrunparam(void)
       case 'v': scanmult (opt, &caml_verb_gc); break;
       case 'b': caml_record_backtrace(Val_true); break;
       case 'p': caml_parser_trace = 1; break;
+      case 'a': scanmult (opt, &p); caml_set_allocation_policy (p); break;
       }
     }
   }
@@ -473,4 +476,3 @@ CAMLexport void caml_startup_code(
   if (Is_exception_result(res))
     caml_fatal_uncaught_exception(Extract_exception(res));
 }
-

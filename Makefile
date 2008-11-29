@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.222 2008/07/14 12:59:21 weis Exp $
+# $Id: Makefile,v 1.222.2.2 2008/10/23 15:29:11 ertai Exp $
 
 # The main Makefile
 
@@ -289,7 +289,7 @@ install:
 	cp toplevel/toploop.cmi toplevel/topdirs.cmi toplevel/topmain.cmi \
 	   $(LIBDIR)
 	cd tools; $(MAKE) install
-	-cd man; $(MAKE) install
+	-$(MAKE) -C man install
 	for i in $(OTHERLIBRARIES); do \
           (cd otherlibs/$$i; $(MAKE) install) || exit $$?; \
         done
@@ -680,24 +680,24 @@ alldepend::
 
 # Camlp4
 
-camlp4out: ocamlc otherlibraries ocamlbuild-partial-boot ocamlbuild.byte
+camlp4out: ocamlc otherlibraries ocamlbuild-mixed-boot ocamlbuild.byte
 	./build/camlp4-byte-only.sh
 
-camlp4opt: ocamlopt otherlibrariesopt ocamlbuild-partial-boot ocamlbuild.native
+camlp4opt: ocamlopt otherlibrariesopt ocamlbuild-mixed-boot ocamlbuild.native
 	./build/camlp4-native-only.sh
 
 # Ocamlbuild
 
-ocamlbuild.byte: ocamlc otherlibraries ocamlbuild-partial-boot
+ocamlbuild.byte: ocamlc otherlibraries ocamlbuild-mixed-boot
 	./build/ocamlbuild-byte-only.sh
 
-ocamlbuild.native: ocamlopt otherlibrariesopt ocamlbuild-partial-boot
+ocamlbuild.native: ocamlopt otherlibrariesopt ocamlbuild-mixed-boot
 	./build/ocamlbuild-native-only.sh
-ocamlbuildlib.native: ocamlopt otherlibrariesopt ocamlbuild-partial-boot
+ocamlbuildlib.native: ocamlopt otherlibrariesopt ocamlbuild-mixed-boot
 	./build/ocamlbuildlib-native-only.sh
 
-ocamlbuild-partial-boot: ocamlc otherlibraries
-	./build/partial-boot.sh
+ocamlbuild-mixed-boot: ocamlc otherlibraries
+	./build/mixed-boot.sh
 
 partialclean::
 	rm -rf _build
@@ -763,7 +763,7 @@ distclean:
 .PHONY: partialclean beforedepend alldepend cleanboot coldstart
 .PHONY: compare core coreall
 .PHONY: coreboot defaultentry depend distclean install installopt
-.PHONY: library library-cross libraryopt ocamlbuild-partial-boot
+.PHONY: library library-cross libraryopt ocamlbuild-mixed-boot
 .PHONY: ocamlbuild.byte ocamlbuild.native ocamldebugger ocamldoc
 .PHONY: ocamldoc.opt ocamllex ocamllex.opt ocamltools ocamltools.opt
 .PHONY: ocamlyacc opt-core opt opt.opt otherlibraries

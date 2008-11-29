@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: config.h,v 1.42 2008/01/03 09:37:09 xleroy Exp $ */
+/* $Id: config.h,v 1.42.4.1 2008/11/02 14:30:05 xleroy Exp $ */
 
 #ifndef CAML_CONFIG_H
 #define CAML_CONFIG_H
@@ -107,7 +107,7 @@ typedef struct { uint32 l, h; } uint64, int64;
 /* Memory model parameters */
 
 /* The size of a page for memory management (in bytes) is [1 << Page_log].
-   It must be a multiple of [sizeof (value)] and >= 8. */
+   It must be a multiple of [sizeof (value)] and >= 8 and <= 20. */
 #define Page_log 12             /* A page is 4 kilobytes. */
 
 /* Initial size of stack (bytes). */

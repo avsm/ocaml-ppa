@@ -18,7 +18,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-(* $Id: Camlp4Ast2OCamlAst.mli,v 1.5 2008/01/11 16:13:16 doligez Exp $ *)
+
 
 module Make (Camlp4Ast : Sig.Camlp4Ast) : sig
   open Camlp4Ast;

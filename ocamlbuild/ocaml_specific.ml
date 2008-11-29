@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_specific.ml,v 1.23 2008/08/05 13:06:56 ertai Exp $ *)
+(* $Id: ocaml_specific.ml,v 1.23.2.1 2008/10/22 11:23:57 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format
@@ -404,6 +404,7 @@ flag ["ocaml"; "debug"; "pack"; "native"] (A "-g");;
 flag ["ocaml"; "link"; "native"; "output_obj"] (A"-output-obj");;
 flag ["ocaml"; "link"; "byte"; "output_obj"] (A"-output-obj");;
 flag ["ocaml"; "dtypes"; "compile"] (A "-dtypes");;
+flag ["ocaml"; "annot"; "compile"] (A "-annot");;
 flag ["ocaml"; "rectypes"; "compile"] (A "-rectypes");;
 flag ["ocaml"; "rectypes"; "infer_interface"] (A "-rectypes");;
 flag ["ocaml"; "linkall"; "link"] (A "-linkall");;

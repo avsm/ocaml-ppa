@@ -18,7 +18,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-(* $Id: Top.ml,v 1.4.4.1 2008/10/13 13:34:06 ertai Exp $ *)
+
 
 (* There is a few Obj.magic due to the fact that we no longer have compiler
    files like Parsetree, Location, Longident but Camlp4_import that wrap them to
@@ -102,8 +102,13 @@ value wrap parse_fun =
 
 value toplevel_phrase token_stream =
   match Gram.parse_tokens_after_filter Syntax.top_phrase token_stream with
-  [ Some phr -> Ast2pt.phrase phr
-  | None -> raise End_of_file ];
+    [ Some str_item ->
+	let str_item =
+	  AstFilters.fold_topphrase_filters (fun t filter -> filter t) str_item
+	in
+	Ast2pt.phrase str_item
+
+    | None -> raise End_of_file ];
 
 value use_file token_stream =
   let (pl0, eoi) =

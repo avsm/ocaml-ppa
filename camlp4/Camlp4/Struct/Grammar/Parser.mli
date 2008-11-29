@@ -13,7 +13,7 @@
 (*                                                                          *)
 (****************************************************************************)
 
-(* $Id: Parser.mli,v 1.3 2008/10/03 15:18:37 ertai Exp $ *)
+
 
 (* Authors:
  * - Daniel de Rauglaudre: initial version

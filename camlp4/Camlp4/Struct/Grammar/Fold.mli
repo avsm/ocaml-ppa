@@ -13,7 +13,7 @@
 (*                                                                          *)
 (****************************************************************************)
 
-(* $Id: Fold.mli,v 1.2 2006/07/08 17:21:32 pouillar Exp $ *)
+
 
 (* Authors:
  * - Daniel de Rauglaudre: initial version

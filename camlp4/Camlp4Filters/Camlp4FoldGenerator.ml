@@ -22,7 +22,7 @@ open Camlp4;
 
 module Id = struct
   value name    = "Camlp4FoldGenerator";
-  value version = "$Id: Camlp4FoldGenerator.ml,v 1.3 2007/11/21 17:51:39 ertai Exp $";
+  value version = Sys.ocaml_version;
 end;
 
 module Make (AstFilters : Camlp4.Sig.AstFilters) = struct

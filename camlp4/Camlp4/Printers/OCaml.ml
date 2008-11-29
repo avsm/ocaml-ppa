@@ -20,7 +20,7 @@ open Format;
 
 module Id = struct
   value name = "Camlp4.Printers.OCaml";
-  value version = "$Id: OCaml.ml,v 1.39 2008/10/05 16:25:28 ertai Exp $";
+  value version = Sys.ocaml_version;
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) = struct

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: optcompile.ml,v 1.56.2.1 2008/10/08 13:07:13 doligez Exp $ *)
+(* $Id: optcompile.ml,v 1.56.2.2 2008/10/17 14:01:35 doligez Exp $ *)
 
 (* The batch compiler *)
 
@@ -134,11 +134,13 @@ let implementation ppf sourcefile outputprefix =
       Compilenv.save_unit_info cmxfile;
     end;
     Warnings.check_fatal ();
-    Pparse.remove_preprocessed inputfile
+    Pparse.remove_preprocessed inputfile;
+    Stypes.dump (outputprefix ^ ".annot");
   with x ->
     remove_file objfile;
     remove_file cmxfile;
     Pparse.remove_preprocessed_if_ast inputfile;
+    Stypes.dump (outputprefix ^ ".annot");
     raise x
 
 let c_file name =

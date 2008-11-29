@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_html.ml,v 1.64 2008/07/23 08:55:36 guesdon Exp $ *)
+(* $Id: odoc_html.ml,v 1.64.2.1 2008/11/10 13:03:55 guesdon Exp $ *)
 
 (** Generation of html documentation.*)
 
@@ -275,7 +275,7 @@ class virtual text =
               None
             else
               match s.[n] with
-              |        '\n' -> iter_first (n+1)
+              | '\n' -> iter_first (n+1)
               | _ -> Some n
           in
           match iter_first 0 with

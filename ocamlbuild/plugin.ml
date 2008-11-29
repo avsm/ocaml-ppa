@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: plugin.ml,v 1.4 2008/01/11 16:13:16 doligez Exp $ *)
+(* $Id: plugin.ml,v 1.4.4.1 2008/11/06 15:40:39 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format
@@ -98,6 +98,7 @@ module Make(U:sig end) =
           if not !Options.just_plugin then
             let spec = S[!Options.ocamlrun; P(!Options.build_dir/plugin);
                          A"-no-plugin"; atomize (List.tl (Array.to_list Sys.argv))] in
+            let () = Log.finish () in
             raise (Exit_silently_with_code (sys_command (Command.string_of_command_spec spec)))
         end
       else
