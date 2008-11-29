@@ -12,13 +12,14 @@
 #                                                                       #
 #########################################################################
 
-# $Id: distclean.sh,v 1.7 2008/01/11 16:13:16 doligez Exp $
+# $Id: distclean.sh,v 1.7.4.1 2008/10/23 15:29:11 ertai Exp $
 
 cd `dirname $0`/..
 set -ex
 (cd byterun && make clean) || :
 (cd asmrun && make clean)  || :
 (cd yacc && make clean)    || :
+rm -f build/ocamlbuild_mixed_mode
 rm -rf _build
 rm -f boot/ocamlrun boot/ocamlrun.exe boot/camlheader \
       boot/myocamlbuild boot/myocamlbuild.native boot/myocamlbuild.native.exe \

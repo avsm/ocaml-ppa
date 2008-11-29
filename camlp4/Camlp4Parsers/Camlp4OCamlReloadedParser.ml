@@ -19,7 +19,7 @@ open Camlp4;                                             (* -*- camlp4r -*- *)
 
 module Id = struct
   value name = "Camlp4Reloaded";
-  value version = "$Id: Camlp4OCamlReloadedParser.ml,v 1.2 2007/10/08 14:19:34 doligez Exp $";
+  value version = Sys.ocaml_version;
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) = struct

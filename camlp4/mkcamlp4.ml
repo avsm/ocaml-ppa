@@ -17,7 +17,7 @@
  * - Nicolas Pouillard: rewriting in OCaml
  *)
 
-(* $Id: mkcamlp4.ml,v 1.4 2008/10/03 15:50:09 ertai Exp $ *)
+
 
 open Camlp4;
 open Camlp4_config;

@@ -18,7 +18,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-(* $Id: Camlp4Ast2OCamlAst.ml,v 1.22 2008/10/04 11:11:09 ertai Exp $ *)
+
 
 module Make (Ast : Sig.Camlp4Ast) = struct
   open Format;

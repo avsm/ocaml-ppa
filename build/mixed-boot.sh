@@ -12,12 +12,9 @@
 #                                                                       #
 #########################################################################
 
-# $Id: partial-boot.sh,v 1.5 2008/01/11 16:13:16 doligez Exp $
-
 set -ex
 cd `dirname $0`/..
-OCAMLBUILD_PARTIAL="true"
-export OCAMLBUILD_PARTIAL
+touch build/ocamlbuild_mixed_mode
 mkdir -p _build
 cp -rf boot _build/
 ./build/mkconfig.sh

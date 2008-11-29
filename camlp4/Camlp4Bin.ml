@@ -18,7 +18,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-(* $Id: Camlp4Bin.ml,v 1.19 2008/10/03 15:41:24 ertai Exp $ *)
+
 
 open Camlp4;
 open PreCast.Syntax;

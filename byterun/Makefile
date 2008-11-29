@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.64 2008/09/10 05:51:11 weis Exp $
+# $Id: Makefile,v 1.64.2.1 2008/11/08 16:29:02 xleroy Exp $
 
 include Makefile.common
 
@@ -48,7 +48,7 @@ libcamlrund.a: $(DOBJS)
 	$(RANLIB) libcamlrund.a
 
 libcamlrun_shared.so: $(PICOBJS)
-	$(MKDLL) -o libcamlrun_shared.so $(PICOBJS)
+	$(MKDLL) -o libcamlrun_shared.so $(PICOBJS) $(BYTECCLIBS)
 
 .SUFFIXES: .d.o .pic.o
 

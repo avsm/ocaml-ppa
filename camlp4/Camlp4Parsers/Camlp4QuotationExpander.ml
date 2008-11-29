@@ -21,7 +21,7 @@ open Camlp4;                                        (* -*- camlp4r -*- *)
 
 module Id = struct
   value name = "Camlp4QuotationExpander";
-  value version = "$Id: Camlp4QuotationExpander.ml,v 1.1 2007/02/07 10:09:22 ertai Exp $";
+  value version = Sys.ocaml_version;
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax)

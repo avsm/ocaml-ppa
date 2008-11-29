@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: opttopdirs.ml,v 1.2 2007/11/06 15:16:56 frisch Exp $ *)
+(* $Id: opttopdirs.ml,v 1.2.4.1 2008/11/19 02:35:40 garrigue Exp $ *)
 
 (* Toplevel directives *)
 
@@ -181,6 +181,9 @@ let _ =
 
   Hashtbl.add directive_table "principal"
              (Directive_bool(fun b -> Clflags.principal := b));
+
+  Hashtbl.add directive_table "rectypes"
+             (Directive_none(fun () -> Clflags.recursive_types := true));
 
   Hashtbl.add directive_table "warnings"
              (Directive_string (parse_warnings std_out false));

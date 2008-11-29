@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml,v 1.7 2007/11/06 15:16:55 frisch Exp $ *)
+(* $Id: selection.ml,v 1.7.4.1 2008/10/29 14:32:01 xleroy Exp $ *)
 
 (* Instruction selection for the AMD64 *)
 
@@ -122,17 +122,21 @@ method is_immediate n = n <= 0x7FFFFFFF && n >= -0x80000000
 method is_immediate_natint n = n <= 0x7FFFFFFFn && n >= -0x80000000n
 
 method select_addressing exp =
-  match select_addr exp with
-    (Asymbol s, d) ->
-      (Ibased(s, d), Ctuple [])
-  | (Alinear e, d) ->
-      (Iindexed d, e)
-  | (Aadd(e1, e2), d) ->
-      (Iindexed2 d, Ctuple[e1; e2])
-  | (Ascale(e, scale), d) ->
-      (Iscaled(scale, d), e)
-  | (Ascaledadd(e1, e2, scale), d) ->
-      (Iindexed2scaled(scale, d), Ctuple[e1; e2])
+  let (a, d) = select_addr exp in
+  (* PR#4625: displacement must be a signed 32-bit immediate *)
+  if d < -0x8000_0000 || d > 0x7FFF_FFFF
+  then (Iindexed 0, exp)
+  else match a with
+    | Asymbol s ->
+        (Ibased(s, d), Ctuple [])
+    | Alinear e ->
+        (Iindexed d, e)
+    | Aadd(e1, e2) ->
+        (Iindexed2 d, Ctuple[e1; e2])
+    | Ascale(e, scale) ->
+        (Iscaled(scale, d), e)
+    | Ascaledadd(e1, e2, scale) ->
+        (Iindexed2scaled(scale, d), Ctuple[e1; e2])
 
 method select_store addr exp =
   match exp with

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 2006/11/15 14:49:26 doligez Exp $
+
 
 MAX_SAVE = 10
 
