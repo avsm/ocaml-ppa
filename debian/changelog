@@ -1,5 +1,6 @@
-ocaml (3.11.0~beta1-2) UNRELEASED; urgency=low
+ocaml (3.11.0~rc1-1) UNRELEASED; urgency=low
 
+  * New upstream release candidate
   * Add debian/changelog entry for version 3.09.2-8
 
  -- Stephane Glondu <steph@glondu.net>  Thu, 06 Nov 2008 10:22:39 +0100
