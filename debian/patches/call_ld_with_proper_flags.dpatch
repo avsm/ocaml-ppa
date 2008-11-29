@@ -8,15 +8,14 @@
 
 @DPATCH@
 diff -urNad ocaml~/configure ocaml/configure
---- ocaml~/configure	2008-11-29 11:31:44.000000000 +0100
-+++ ocaml/configure	2008-11-29 11:31:48.000000000 +0100
-@@ -1548,7 +1548,8 @@
+--- ocaml~/configure	2008-12-02 01:24:33.000000000 +0100
++++ ocaml/configure	2008-12-02 01:26:02.000000000 +0100
+@@ -1548,7 +1548,7 @@
  echo "CC_PROFILE=$cc_profile" >> Makefile
  echo "SYSTHREAD_SUPPORT=$systhread_support" >> Makefile
  echo "PARTIALLD=$partialld" >> Makefile
 -echo "PACKLD=\$(PARTIALLD) \$(NATIVECCLINKOPTS) -o " >> Makefile
-+echo "Wl = -Wl," >> Makefile
-+echo "PACKLD=\$(PARTIALLD) $(subst \$(Wl),,\$(NATIVECCLINKOPTS)) -o " >> Makefile
++echo "PACKLD=\$(PARTIALLD) $(echo $nativecclinkopts|sed s/-Wl,//g) -o " >> Makefile
  echo "DLLCCCOMPOPTS=$dllccompopts" >> Makefile
  echo "IFLEXDIR=$iflexdir" >> Makefile
  echo "O=o" >> Makefile
