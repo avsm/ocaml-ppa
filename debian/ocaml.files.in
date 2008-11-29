@@ -6,3 +6,8 @@ usr/lib/ocaml/#OcamlABI#/graphics.mli
 usr/lib/ocaml/#OcamlABI#/graphicsX11.mli
 usr/lib/ocaml/#OcamlABI#/labltk
 usr/lib/ocaml/#OcamlABI#/libgraphics.a
+OPT: usr/bin/labltk
+OPT: usr/lib/ocaml/#OcamlABI#/labltk
+OPT: usr/lib/ocaml/#OcamlABI#/graphics.cmx
+OPT: usr/lib/ocaml/#OcamlABI#/graphics.cmxa
+OPT: usr/lib/ocaml/#OcamlABI#/graphics.a

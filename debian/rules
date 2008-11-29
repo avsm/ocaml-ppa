@@ -42,7 +42,9 @@ else
 	SED_HANDLE_OPT := -e 's/^OPT: //'
 endif
 
-abi-sed:
+patch-stamp: debian/$(SRCTARBALL)
+
+abi-sed-stamp: debian/$(SRCTARBALL)
 	for t in `find debian/ -name \*.in | grep -v debian/control.in`; do \
 	  sed -e 's%#OcamlABI#%$(OCAMLABI)%' -e 's%#OcamlMAJOR#%$(OCAMLMAJOR)%' \
 	    $(SED_HANDLE_OPT) $$t >$${t%.in}; \
@@ -50,7 +52,6 @@ abi-sed:
 	touch $@
 
 abi-sed-clean:
-	rm -f abi-sed
 	for t in `find debian/ -name \*.in | grep -v debian/control.in`; do \
 	  rm -f $${t%.in}; \
 	done
@@ -60,7 +61,7 @@ abi-sed-clean:
 debian/control:
 	sed -e 's/#OcamlNativeArchs#/$(NATIVE_ARCHS)/g' debian/control.in > $@
 
-pre-config: debian/$(SRCTARBALL)
+pre-config-stamp: debian/$(SRCTARBALL)
 	for ext in sub guess; do \
 	  if [ -f /usr/share/misc/config.$$ext ] && ! [ -f debian/config.orig.$$ext ] ; then \
 	    mv config/gnu/config.$$ext debian/config.orig.$$ext; \
@@ -75,8 +76,9 @@ debian/$(SRCTARBALL):
 		--exclude=$(DISTDIR)/$(DISTDIR)	\
 		--exclude-from=debian/ocaml-source.exclude \
 		$(DISTDIR)/
+	rm -f $(DISTDIR)
 
-config-stamp: pre-config patch-stamp abi-sed
+config-stamp: pre-config-stamp patch-stamp abi-sed-stamp
 	dh_testdir
 	./configure --with-pthread -prefix /usr				\
 		-libdir /usr/lib/ocaml/$(OCAMLABI)			\
@@ -94,10 +96,10 @@ config-stamp: pre-config patch-stamp abi-sed
 		echo "Aborting.";					\
 		exit 1;							\
 	fi
-	touch config-stamp
+	touch $@
 
 
-patch-stamp: abi-sed
+patch-stamp: abi-sed-stamp
 # Architecture
 build: build-arch build-indep
 
@@ -122,10 +124,9 @@ build-indep-stamp:
 	# create ocaml source tarball
 	touch $@
 
-clean: abi-sed unpatch
+clean: abi-sed-clean unpatch
 	dh_testdir
 	dh_testroot
-	-$(RM) build-arch-stamp build-indep-stamp config-stamp abi-sed opt-built-stamp pre-config
 
 	# Add here commands to clean up after the build process.
 	[ ! -f "$(CURDIR)/config/Makefile" ] || $(MAKE) clean
@@ -143,12 +144,8 @@ clean: abi-sed unpatch
 	if head -n 1 emacs/ocamltags.in | grep -q '^#!/bin/sh'; then \
 		sed -i 1d emacs/ocamltags.in; \
 	fi
-	# Files not cleaned by upstream (most of them are cleaned
-	# using debian/clean feature of dh_clean in debhelper 7)
-	-$(RM) ocaml-$(OCAMLABI)
 
 	dh_clean
-	debian/rules abi-sed-clean
 	-$(RM) debian/$(SRCTARBALL)
 
 install: install-indep install-arch
@@ -179,25 +176,11 @@ install-arch: build-arch
 	$(MAKE) install PREFIX=$(INSTDIR)
 
 	# Now move the graphics files over
-	if [ -e opt-built-stamp ]; then					\
-		dh_movefiles -pocaml					\
-			--sourcedir=debian/ocaml-nox			\
-			`cat debian/ocaml-nox.optfiles`;		\
-	else								\
-		dh_movefiles -pocaml					\
-			--sourcedir=debian/ocaml-nox;			\
-	fi
+	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml
 
 	# Move away camlp4 stuff
-	if [ -e opt-built-stamp ]; then					\
-		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4-extra \
-			`cat debian/camlp4-extra.optfiles` ; \
-		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4 \
-			`cat debian/camlp4.optfiles` ; \
-	else \
-		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4-extra ; \
-		dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4 ; \
-	fi
+	dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4-extra
+	dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4
 
 	# Install camlp4 .mli files
 	# XXX assumption: no filename clashes
@@ -211,13 +194,10 @@ install-arch: build-arch
 	# And base's corresponding graphics stuff.
 	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-base
 
+ifneq ($(THIS_NATIVE_ARCH),)
 	# The ocaml-native-compilers, if available.
-	if [ -e opt-built-stamp ]; then					\
-		dh_movefiles -pocaml-native-compilers			\
-			--sourcedir=debian/ocaml-nox;			\
-		cp debian/ocamlfind/ocaml-native-compilers.conf		\
-			debian/ocaml-native-compilers/usr/share/ocaml-findlib/;	\
-	fi
+	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-native-compilers
+endif
 
 	# The interpreter files
 	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-interp
@@ -294,17 +274,17 @@ binary-indep: install-indep
 binary-arch: install-arch
 	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
 	dh_shlibdeps -s
-	if [ ! -e opt-built-stamp ]; then			\
-	  dh_gencontrol -pocaml-nox --				\
-		-VF:BestProvides=",ocaml-best-compilers"	\
-		-VF:OCamlABI="$(OCAMLABI)";			\
-	else 							\
-	  dh_gencontrol -pocaml-nox --				\
-	  	-VF:BestProvides=""				\
-		-VF:OCamlABI="$(OCAMLABI)";			\
-	  dh_gencontrol -pocaml-native-compilers --		\
-		-VF:OCamlABI="$(OCAMLABI)";			\
-	fi
+ifeq ($(THIS_NATIVE_ARCH),)
+	dh_gencontrol -pocaml-nox -- \
+		-VF:BestProvides=",ocaml-best-compilers" \
+		-VF:OCamlABI="$(OCAMLABI)"
+else
+	dh_gencontrol -pocaml-nox -- \
+		-VF:BestProvides="" \
+		-VF:OCamlABI="$(OCAMLABI)"
+	dh_gencontrol -pocaml-native-compilers -- \
+		-VF:OCamlABI="$(OCAMLABI)"
+endif
 	dh_gencontrol -pocaml -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_gencontrol -pocaml-base-nox -- -VF:OCamlABI="$(OCAMLABI)"
 	dh_gencontrol -pocaml-base -- -VF:OCamlABI="$(OCAMLABI)"

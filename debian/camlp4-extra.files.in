@@ -8,3 +8,7 @@ usr/lib/ocaml/#OcamlABI#/camlp4/camlp4of.cma
 usr/lib/ocaml/#OcamlABI#/camlp4/camlp4rf.cma
 usr/lib/ocaml/#OcamlABI#/camlp4/camlp4oof.cma
 usr/lib/ocaml/#OcamlABI#/camlp4/camlp4orf.cma
+OPT: usr/bin/camlp4of.opt
+OPT: usr/bin/camlp4rf.opt
+OPT: usr/bin/camlp4oof.opt
+OPT: usr/bin/camlp4orf.opt

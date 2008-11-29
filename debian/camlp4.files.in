@@ -3,3 +3,5 @@ usr/bin/camlp4o
 usr/bin/camlp4r
 usr/bin/mkcamlp4
 usr/lib/ocaml/#OcamlABI#/camlp4/
+OPT: usr/bin/camlp4o.opt
+OPT: usr/bin/camlp4r.opt
