@@ -10,7 +10,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id: caml.el,v 1.44.2.1 2008/10/29 12:30:57 doligez Exp $ *)
+;(* $Id: caml.el,v 1.44.2.2 2008/12/03 16:16:43 doligez Exp $ *)
 
 ;;; caml.el --- O'Caml code editing commands for Emacs
 
@@ -411,10 +411,10 @@ have caml-electric-indent on, which see.")
   ; backslash is an escape sequence
   (modify-syntax-entry ?\\ "\\" caml-mode-syntax-table)
   ; ( is first character of comment start
-  (modify-syntax-entry ?\( "()1" caml-mode-syntax-table)
+  (modify-syntax-entry ?\( "()1n" caml-mode-syntax-table)
   ; * is second character of comment start,
   ; and first character of comment end
-  (modify-syntax-entry ?*  ". 23" caml-mode-syntax-table)
+  (modify-syntax-entry ?*  ". 23n" caml-mode-syntax-table)
   ; ) is last character of comment end
   (modify-syntax-entry ?\) ")(4" caml-mode-syntax-table)
   ; backquote was a string-like delimiter (for character literals)
