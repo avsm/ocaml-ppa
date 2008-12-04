@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: unix.c,v 1.35 2008/04/22 12:40:14 frisch Exp $ */
+/* $Id: unix.c,v 1.35.2.1 2008/12/03 12:39:44 xleroy Exp $ */
 
 /* Unix-specific stuff */
 
@@ -190,7 +190,7 @@ void * caml_dlsym(void * handle, char * name)
 
 void * caml_globalsym(char * name)
 {
-  return flexdll_dlsym(flexdll_dlopen(NULL,0,1), name);
+  return flexdll_dlsym(flexdll_dlopen(NULL,0), name);
 }
 
 char * caml_dlerror(void)

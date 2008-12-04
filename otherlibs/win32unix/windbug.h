@@ -11,26 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: windbug.h,v 1.2 2008/07/31 12:09:18 xleroy Exp $ */
+/* $Id: windbug.h,v 1.2.2.1 2008/11/26 13:27:21 xleroy Exp $ */
 
 /*#define DBUG*/
 
 #ifdef DBUG
-
-#include <stdio.h>
-#include <windows.h>
-
-#define DBUG_PRINT(fmt, ...) \
-  do \
-  { \
-    if (dbug_test()) \
-    { \
-      fprintf(stderr, "DBUG (pid:%d, tid: %d): ", GetCurrentProcessId(), GetCurrentThreadId()); \
-      fprintf(stderr, fmt, __VA_ARGS__); \
-      fprintf(stderr, "\n"); \
-      fflush(stderr); \
-    }; \
-  } while(0)
 
 /* Initialize and cleanup dbug variable */
 void dbug_init    (void);
@@ -39,11 +24,13 @@ void dbug_cleanup (void);
 /* Test if we are in dbug mode */
 int  dbug_test    (void);
 
+/* Print if we are in dbug mode */
+void dbug_print (const char * fmt, ...);
+
 #define DBUG_INIT    dbug_init()
 #define DBUG_CLEANUP dbug_cleanup()
 
 #else
-#define DBUG_PRINT(fmt, ...) 
 #define DBUG_INIT
 #define DBUG_CLEANUP
 #endif
