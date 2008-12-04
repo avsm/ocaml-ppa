@@ -1,6 +1,6 @@
-ocaml (3.11.0~rc1-1) UNRELEASED; urgency=low
+ocaml (3.11.0-1) UNRELEASED; urgency=low
 
-  * New upstream release candidate:
+  * New upstream release:
     - manpages.dpatch, ocamldoc.dpatch removed (merged upstream)
     - for_pack_static.dpatch removed (obsolete)
     - call_ld_with_proper_flags.dpatch fixed (Closes: #506286)
@@ -8,7 +8,7 @@ ocaml (3.11.0~rc1-1) UNRELEASED; urgency=low
   * Install *.cmxs (and matching *.cma) in ocaml-base*
   * Don't put .git directory in ocaml-source
 
- -- Stephane Glondu <steph@glondu.net>  Tue, 02 Dec 2008 01:42:57 +0100
+ -- Stephane Glondu <steph@glondu.net>  Thu, 04 Dec 2008 17:06:35 +0100
 
 ocaml (3.11.0~beta1-1) experimental; urgency=low
 
