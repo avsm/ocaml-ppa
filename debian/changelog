@@ -1,3 +1,10 @@
+ocaml (3.11.0-2) UNRELEASED; urgency=low
+
+  * Add dbm_ldopts.dpatch, to add missing linking options for dbm
+    (fixes ocsigen FTBFS)
+
+ -- Stephane Glondu <steph@glondu.net>  Wed, 21 Jan 2009 01:00:18 +0100
+
 ocaml (3.11.0-1) experimental; urgency=low
 
   * New upstream release:
