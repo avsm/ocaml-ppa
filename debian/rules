@@ -115,6 +115,8 @@ build-arch-stamp: config-stamp
 ifneq ($(THIS_NATIVE_ARCH),)
 	@echo "Building native compilers"
 	$(MAKE) opt opt.opt
+	$(MAKE) -C tools dumpapprox
+	mv tools/dumpapprox tools/ocamldumpapprox
 	touch opt-built-stamp
 endif
 	touch build-arch-stamp

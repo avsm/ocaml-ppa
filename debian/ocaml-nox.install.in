@@ -1,2 +1,3 @@
 config/Makefile			/usr/lib/ocaml/#OcamlABI#/config/Makefile
 debian/native-archs		/usr/lib/ocaml/#OcamlABI#/
+OPT: tools/ocamldumpapprox           /usr/bin
