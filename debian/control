@@ -10,6 +10,7 @@ Uploaders:
  Sylvain Le Gall <gildor@debian.org>,
  Ralf Treinen <treinen@debian.org>,
  Stephane Glondu <steph@glondu.net>
+DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2, docbook-xml, docbook-utils
 Standards-Version: 3.8.0
 Vcs-Git: git://git.debian.org/git/pkg-ocaml-maint/packages/ocaml.git
