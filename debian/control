@@ -24,7 +24,7 @@ Recommends: camlp4, ledit, file
 Provides: ocaml-nox-${F:OCamlABI}, ${F:BestProvides}, libnums-ocaml-dev
 Replaces: camlp4 (<< 3.10.0), ocaml (<< 3.07.2a-3), libnums-ocaml-dev
 Conflicts: camlp4 (<< 3.10.0), camlidl (<< 1.04), ocaml (<< 3.07.2a-3), libnums-ocaml-dev
-Description: ML language implementation with a class-based object system
+Description: ML implementation with a class-based object system (no X)
  Objective Caml (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
  and a powerful module system in the style of Standard ML.
@@ -119,7 +119,7 @@ Provides: ocaml-base-nox-${F:OCamlABI}, libnums-ocaml
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: ocaml-base (<< 3.07.2a-3), libnums-ocaml
 Conflicts: ocaml (<< 3.04-2), ocaml-base (<< 3.07.2a-3), libnums-ocaml
-Description: Runtime system for OCaml bytecode executables
+Description: Runtime system for OCaml bytecode executables (no X)
  Objective Caml (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
  and a powerful module system in the style of Standard ML.
