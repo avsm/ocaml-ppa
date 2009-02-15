@@ -358,7 +358,6 @@ OPT: usr/share/man/man1/ocamlopt.1
      usr/share/man/man1/ocamlc.1
      usr/share/man/man1/ocamldep.1
      usr/share/man/man1/ocamlcp.1
-     usr/share/man/man1/ocamlmklib.1
      usr/share/man/man1/ocamlmktop.1
      usr/share/man/man1/ocamldoc.1
      usr/share/man/man1/ocamlyacc.1
