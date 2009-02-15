@@ -5,12 +5,12 @@ Maintainer: Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>
 Uploaders:
  Sven Luther <luther@debian.org>,
  Stefano Zacchiroli <zack@debian.org>,
- Julien Cristau <jcristau@debian.org>,
  Samuel Mimram <smimram@debian.org>,
  Sylvain Le Gall <gildor@debian.org>,
  Ralf Treinen <treinen@debian.org>,
  Stephane Glondu <steph@glondu.net>
-Build-Depends: debhelper (>= 7), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2, docbook-xml, docbook-utils, gcc-4.2 [arm]
+DM-Upload-Allowed: yes
+Build-Depends: debhelper (>= 7), tcl8.4-dev, tk8.4-dev, libncurses5-dev, libgdbm-dev, dpatch, bzip2, docbook-xml, docbook-utils
 Standards-Version: 3.8.0
 Vcs-Git: git://git.debian.org/git/pkg-ocaml-maint/packages/ocaml.git
 Vcs-Browser: http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git
@@ -18,13 +18,13 @@ Homepage: http://caml.inria.fr/
 
 Package: ocaml-nox
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libncurses5-dev, ocaml-base-nox (=${binary:Version}), ocaml-interp (=${binary:Version}), gcc [!arm], gcc-4.2 [arm], binutils
+Depends: ${shlibs:Depends}, ${misc:Depends}, libncurses5-dev, ocaml-base-nox (=${binary:Version}), ocaml-interp (=${binary:Version}), gcc, binutils
 Suggests: ocaml-doc, libgdbm-dev, tuareg-mode | ocaml-mode
 Recommends: camlp4, ledit, file
 Provides: ocaml-nox-${F:OCamlABI}, ${F:BestProvides}, libnums-ocaml-dev
 Replaces: camlp4 (<< 3.10.0), ocaml (<< 3.07.2a-3), libnums-ocaml-dev
 Conflicts: camlp4 (<< 3.10.0), camlidl (<< 1.04), ocaml (<< 3.07.2a-3), libnums-ocaml-dev
-Description: ML language implementation with a class-based object system
+Description: ML implementation with a class-based object system (no X)
  Objective Caml (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
  and a powerful module system in the style of Standard ML.
@@ -68,7 +68,7 @@ Description: Pre Processor Pretty Printer for OCaml
 
 Package: camlp4-extra
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, camlp4 (=${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, ocaml-nox (=${binary:Version}), camlp4 (=${binary:Version})
 Description: Pre Processor Pretty Printer for OCaml - extras
  Objective Caml (OCaml) is an implementation of the ML language,
  based on the Caml Light dialect extended with a complete
@@ -119,7 +119,7 @@ Provides: ocaml-base-nox-${F:OCamlABI}, libnums-ocaml
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: ocaml-base (<< 3.07.2a-3), libnums-ocaml
 Conflicts: ocaml (<< 3.04-2), ocaml-base (<< 3.07.2a-3), libnums-ocaml
-Description: Runtime system for OCaml bytecode executables
+Description: Runtime system for OCaml bytecode executables (no X)
  Objective Caml (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
  and a powerful module system in the style of Standard ML.
@@ -144,7 +144,7 @@ Description: Runtime system for OCaml bytecode executables
 
 Package: ocaml-native-compilers
 Architecture: @OCamlNativeArchs@
-Depends: ocaml-nox (= ${binary:Version}), gcc [!arm], gcc-4.2 [arm], binutils, ${shlibs:Depends}, ${misc:Depends}
+Depends: ocaml-nox (= ${binary:Version}), gcc, binutils, ${shlibs:Depends}, ${misc:Depends}
 Provides: ocaml-best-compilers
 Replaces: ocaml-nox (<= 3.09.2-3)
 Description: Native code compilers of the OCaml suite (the .opt ones)
@@ -160,6 +160,7 @@ Description: Native code compilers of the OCaml suite (the .opt ones)
 
 Package: ocaml-source
 Architecture: all
+Depends: ${misc:Depends}
 Provides: ocaml-source-${F:OCamlABI}
 Description: Sources for Objective Caml
  Objective Caml (OCaml) is an implementation of the ML language, based on

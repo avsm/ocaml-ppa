@@ -1,10 +1,23 @@
 ocaml (3.11.0-2) UNRELEASED; urgency=low
 
+  * Add DM-Upload-Allowed (with Stefano's blessing)
+  * Remove Julien from Uploaders (on his request)
+  * Remove binary package-specific copyright files
+  * Major changes in debian/rules:
+    - more extensive use of debhelper 7
+    - do no longer use deprecated dh_movefiles and *.files
+    - get closer to CDBS API
+    - add a build cache (for Debian debugging)
+    - ship labltk examples in a tarball
+    - reflect original locations of camlp4 *.mli files in binary packages
   * Add dbm_ldopts.dpatch, to add missing linking options for dbm
     (fixes ocsigen FTBFS)
-  * Build and install dumpapprox
+  * Remove man-ocamlmklib.dpatch, and put manpage in debian/man
+  * Remove {dumpobj,objinfo}.dpatch, and put manpages in debian/man
+  * Build and install dumpapprox, and provide a manpage
+  * Discriminate *-nox packages in short descriptions (thanks Lintian)
 
- -- Stephane Glondu <steph@glondu.net>  Fri, 13 Feb 2009 14:38:55 +0100
+ -- Stephane Glondu <steph@glondu.net>  Mon, 16 Feb 2009 00:27:36 +0100
 
 ocaml (3.11.0-1) experimental; urgency=low
 
