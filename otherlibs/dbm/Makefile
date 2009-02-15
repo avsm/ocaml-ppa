@@ -11,61 +11,19 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.25 2004/11/29 14:53:32 doligez Exp $
+# $Id: Makefile,v 1.26 2007/11/06 15:16:56 frisch Exp $
 
 # Makefile for the ndbm library
 
-include ../../config/Makefile
-
-# Compilation optiosn
-CC=$(BYTECC) -g
-CAMLC=../../ocamlcomp.sh
-CAMLOPT=../../ocamlcompopt.sh
-MKLIB=../../boot/ocamlrun ../../tools/ocamlmklib
-COMPFLAGS=-warn-error A
-
-CFLAGS=$(DBM_INCLUDES) -I../../byterun -O $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)
+LIBNAME=dbm
+CLIBNAME=mldbm
+CAMLOBJS=dbm.cmo
 COBJS=cldbm.o
+EXTRACFLAGS=$(DBM_INCLUDES)
+LINKOPTS=$(DBM_LINK)
 
-all: libmldbm.a dbm.cmi dbm.cma
+include ../Makefile
 
-allopt: libmldbm.a dbm.cmi dbm.cmxa
-
-libmldbm.a: $(COBJS)
-	$(MKLIB) -oc mldbm $(COBJS) $(DBM_LINK)
-
-dbm.cma: dbm.cmo
-	$(MKLIB) -ocamlc '$(CAMLC)' -o dbm -oc mldbm dbm.cmo $(DBM_LINK)
-
-dbm.cmxa: dbm.cmx
-	$(MKLIB) -ocamlopt '$(CAMLOPT)' -o dbm -oc mldbm dbm.cmx $(DBM_LINK)
-
-partialclean:
-	rm -f *.cm*
-
-clean: partialclean
-	rm -f *.a *.o *.so
-
-install:
-	if test -f dllmldbm.so; then cp dllmldbm.so $(STUBLIBDIR)/dllmldbm.so; fi
-	cp libmldbm.a $(LIBDIR)/libmldbm.a
-	cd $(LIBDIR); $(RANLIB) libmldbm.a
-	cp dbm.cma dbm.cmi dbm.mli $(LIBDIR)
-
-installopt:
-	cp dbm.cmx dbm.cmxa dbm.a $(LIBDIR)
-	cd $(LIBDIR); $(RANLIB) dbm.a
-
-.SUFFIXES: .ml .mli .cmo .cmi .cmx
-
-.mli.cmi:
-	$(CAMLC) -c $(COMPFLAGS) $<
-
-.ml.cmo:
-	$(CAMLC) -c $(COMPFLAGS) $<
-
-.ml.cmx:
-	$(CAMLOPT) -c $(COMPFLAGS) $<
 
 depend:
 	../../boot/ocamlrun ../../tools/ocamldep *.mli *.ml > .depend

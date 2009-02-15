@@ -1,8 +1,0 @@
-#!/bin/sh -e
-
-# TEMPORARILY DISABLED while moving ocaml-md5sums to dh-ocaml
-#if [ "$1" = "configure" ]; then
-#  ocaml-md5sums update
-#fi
-
-#DEBHELPER#

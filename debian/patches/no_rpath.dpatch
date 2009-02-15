@@ -5,11 +5,11 @@
 ## DP: Don't use rpath.
 
 @DPATCH@
-diff -urNad trunk~/tools/ocamlmklib.mlp trunk/tools/ocamlmklib.mlp
---- trunk~/tools/ocamlmklib.mlp	2007-02-07 11:31:36.000000000 +0100
-+++ trunk/tools/ocamlmklib.mlp	2007-04-11 11:10:26.000000000 +0200
-@@ -33,6 +33,11 @@
- and implib = ref ""         (* windows implib flag *)
+diff -urNad ocaml~/tools/ocamlmklib.mlp ocaml/tools/ocamlmklib.mlp
+--- ocaml~/tools/ocamlmklib.mlp	2008-01-08 16:39:47.000000000 +0100
++++ ocaml/tools/ocamlmklib.mlp	2008-11-29 11:31:52.000000000 +0100
+@@ -32,6 +32,11 @@
+ and rpath = ref []          (* rpath options *)
  and verbose = ref false
  
 +(* Debian specific: inhibit rpath *)

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: obj.ml,v 1.23.20.2 2008/01/29 13:14:57 doligez Exp $ *)
+(* $Id: obj.ml,v 1.24 2008/01/29 13:11:15 doligez Exp $ *)
 
 (* Operations on internal representations of values *)
 
@@ -54,3 +54,4 @@ let final_tag = custom_tag
 
 let int_tag = 1000
 let out_of_heap_tag = 1001
+let unaligned_tag = 1002

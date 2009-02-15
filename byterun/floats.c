@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: floats.c,v 1.49 2005/10/12 14:50:03 xleroy Exp $ */
+/* $Id: floats.c,v 1.50 2008/08/02 11:02:28 xleroy Exp $ */
 
 /* The interface of this file is in "mlvalues.h" and "alloc.h" */
 
@@ -394,7 +394,7 @@ CAMLprim value caml_classify_float(value vd)
 #else
   union { 
     double d;
-#ifdef ARCH_BIG_ENDIAN
+#if defined(ARCH_BIG_ENDIAN) || (defined(__arm__) && !defined(__ARM_EABI__))
     struct { uint32 h; uint32 l; } i;
 #else
     struct { uint32 l; uint32 h; } i;

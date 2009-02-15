@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: obj.mli,v 1.29.10.2 2008/01/29 13:14:57 doligez Exp $ *)
+(* $Id: obj.mli,v 1.30 2008/01/29 13:11:15 doligez Exp $ *)
 
 (** Operations on internal representations of values.
 
@@ -49,6 +49,7 @@ val final_tag : int  (* DEPRECATED *)
 
 val int_tag : int
 val out_of_heap_tag : int
+val unaligned_tag : int   (* should never happen *)
 
 (** The following two functions are deprecated.  Use module {!Marshal}
     instead. *)

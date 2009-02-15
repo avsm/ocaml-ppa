@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: compatibility.h,v 1.15.6.1 2008/01/21 14:09:05 doligez Exp $ */
+/* $Id: compatibility.h,v 1.17 2008/07/28 11:59:55 doligez Exp $ */
 
 /* definitions for compatibility with old identifiers */
 
@@ -211,7 +211,6 @@
 
 /* **** major_gc.c */
 #define heap_start caml_heap_start
-#define heap_end caml_heap_end
 #define page_table caml_page_table
 
 /* **** md5.c */

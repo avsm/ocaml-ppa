@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: gc.mli,v 1.42.10.1 2008/02/12 13:30:16 doligez Exp $ *)
+(* $Id: gc.mli,v 1.44.4.1 2008/11/18 10:24:43 doligez Exp $ *)
 
 (** Memory management control and statistics; finalised values. *)
 
@@ -86,7 +86,7 @@ type control =
 
     mutable major_heap_increment : int;
     (** The minimum number of words to add to the
-       major heap when increasing it.  Default: 60k. *)
+       major heap when increasing it.  Default: 124k. *)
 
     mutable space_overhead : int;
     (** The major GC speed is computed from this parameter.
@@ -125,7 +125,15 @@ type control =
     mutable stack_limit : int;
     (** The maximum size of the stack (in words).  This is only
        relevant to the byte-code runtime, as the native code runtime
-       uses the operating system's stack.  Default: 256k. *) 
+       uses the operating system's stack.  Default: 256k. *)
+
+    mutable allocation_policy : int;
+    (** The policy used for allocating in the heap.  Possible
+        values are 0 and 1.  0 is the next-fit policy, which is
+        quite fast but can result in fragmentation.  1 is the
+        first-fit policy, which can be slower in some cases but
+        can be better for programs with fragmentation problems.
+        Default: 0. *)
 }
 (** The GC parameters are given as a [control] record.  Note that
     these parameters can also be initialised by setting the

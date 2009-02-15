@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: otherlibs-targets.sh,v 1.2.4.1 2007/03/12 11:58:48 pouillar Exp $
+# $Id: otherlibs-targets.sh,v 1.4 2007/11/29 10:32:38 ertai Exp $
 OTHERLIBS_BYTE=""
 OTHERLIBS_NATIVE=""
 OTHERLIBS_UNIX_NATIVE=""
@@ -93,7 +93,9 @@ for lib in $OTHERLIBRARIES; do
     add_ocaml_lib dbm
     add_c_lib mldbm;;
   dynlink)
-    add_byte $lib.cmi $lib.cma extract_crc;;
+    add_ocaml_lib dynlink
+    add_native dynlink.cmx
+    add_file $lib.cmi extract_crc;;
   win32unix)
     UNIXDIR="otherlibs/win32unix"
     add_file unixsupport.h cst2constr.h socketaddr.h

@@ -1,1 +1,21 @@
-debian/ld.conf		/usr/lib/ocaml/#OcamlABI#/
+     usr/bin/ocamlrun
+     usr/share/man/man1/ocamlrun.1
+     @OCamlDllDir@/dllunix.so
+     @OCamlDllDir@/dllstr.so
+     @OCamlDllDir@/dllbigarray.so
+     @OCamlDllDir@/dllthreads.so
+     @OCamlDllDir@/dllvmthreads.so
+     @OCamlDllDir@/dllmldbm.so
+     @OCamlDllDir@/dllnums.so
+     @OCamlStdlibDir@/ld.conf
+     debian/ld.conf @OCamlStdlibDir@
+     @OCamlStdlibDir@/dbm.cma
+OPT: @OCamlStdlibDir@/dbm.cmxs
+     @OCamlStdlibDir@/unix.cma
+OPT: @OCamlStdlibDir@/unix.cmxs
+     @OCamlStdlibDir@/str.cma
+OPT: @OCamlStdlibDir@/str.cmxs
+     @OCamlStdlibDir@/bigarray.cma
+OPT: @OCamlStdlibDir@/bigarray.cmxs
+     @OCamlStdlibDir@/nums.cma
+OPT: @OCamlStdlibDir@/nums.cmxs

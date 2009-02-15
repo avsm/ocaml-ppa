@@ -19,7 +19,7 @@ open Camlp4;                                             (* -*- camlp4r -*- *)
 
 module Id = struct
   value name = "Camlp4QuotationCommon";
-  value version = "$Id: Camlp4QuotationCommon.ml,v 1.1.4.7 2007/12/18 09:02:19 ertai Exp $";
+  value version = Sys.ocaml_version;
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax)

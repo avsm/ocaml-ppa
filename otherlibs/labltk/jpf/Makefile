@@ -1,6 +1,6 @@
 include ../support/Makefile.common
 
-COMPFLAGS=-I ../labltk -I ../support -I $(OTHERS)/unix -I $(OTHERS)/str
+COMPFLAGS=-I ../labltk -I ../support -I $(OTHERS)/win32unix -I $(OTHERS)/unix -I $(OTHERS)/str
 
 OBJS= fileselect.cmo balloon.cmo shell.cmo jpf_font.cmo
 
@@ -20,14 +20,14 @@ jpflib.cma: $(OBJS)
 jpflib.cmxa: $(OBJSX)
 	$(CAMLOPTLIBR) -o jpflib.cmxa $(OBJSX)
 
-install: jpflib.cma
+install:
 	cp $(OBJS:.cmo=.cmi) $(OBJS:.cmo=.mli) jpflib.cma $(INSTALLDIR)
 
-installopt: jpflib.cmxa
-	cp jpflib.cmxa jpflib.a $(OBJS:.cmo=.cmx) $(INSTALLDIR)
+installopt:
+	cp jpflib.cmxa jpflib.$(A) $(OBJS:.cmo=.cmx) $(INSTALLDIR)
 
 clean:
-	rm -f *.cm* *.o *.a *~ *test
+	rm -f *.cm* *.$(O) *.$(A) *~ *test
 
 $(OBJS) $(OBJS:.cmo=.cmi): ../lib/$(LIBNAME).cma
 

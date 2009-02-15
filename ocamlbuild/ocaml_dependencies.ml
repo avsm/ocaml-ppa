@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_dependencies.ml,v 1.1.4.1 2007/11/28 16:07:39 ertai Exp $ *)
+(* $Id: ocaml_dependencies.ml,v 1.3 2008/01/11 16:13:16 doligez Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Log

@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.mingw,v 1.19 2007/03/01 14:48:53 xleroy Exp $
+# $Id: Makefile.mingw,v 1.27.2.1 2008/11/09 09:44:24 xleroy Exp $
 
 # Configuration for Windows, Mingw compiler
 
@@ -61,16 +61,16 @@ SHAREDCCCOMPOPTS=
 MKSHAREDLIBRPATH=
 NATIVECCPROFOPTS=
 NATIVECCRPATH=
-ASFLAGS=
-ASPP=
-ASPPFLAGS=
+ASM=as
+ASPP=gcc
 ASPPPROFFLAGS=
 PROFILING=noprof
 DYNLINKOPTS=
-DEBUGGER=
+DEBUGGER=ocamldebugger
 CC_PROFILE=
 SYSTHREAD_SUPPORT=true
 EXTRALIBS=
+CMXS=cmxs
 
 ########## Configuration for the bytecode compiler
 
@@ -87,19 +87,19 @@ BYTECCLINKOPTS=
 DLLCCCOMPOPTS=-O -mms-bitfields -Wall -Wno-unused -DCAML_DLL
 
 ### Libraries needed
-BYTECCLIBS=
-NATIVECCLIBS=
+BYTECCLIBS=-lws2_32
+NATIVECCLIBS=-lws2_32
 
 ### How to invoke the C preprocessor
 CPP=$(BYTECC) -E
 
-### How to build an EXE
-MKEXE=$(BYTECC) -o $(1) $(2)
-#ml let mkexe out files opts = Printf.sprintf "%s -o %s %s %s" bytecc out opts files;;
-
-### How to build a DLL
-MKDLL=$(BYTECC) -shared -o $(1) -Wl,--out-implib,$(2) $(3)
-#ml let mkdll out implib files opts = Printf.sprintf "%s -shared -o %s -Wl,--out-implib,%s %s %s" bytecc out implib files opts;;
+### Flexlink
+FLEXLINK=flexlink -chain mingw
+FLEXDIR=$(shell $(FLEXLINK) -where)
+IFLEXDIR=-I"$(FLEXDIR)"
+MKDLL=$(FLEXLINK)
+MKEXE=$(FLEXLINK) -exe
+MKMAINDLL=$(FLEXLINK) -maindll
 
 ### How to build a static library
 MKLIB=rm -f $(1); ar rcs $(1) $(2)
@@ -134,12 +134,11 @@ NATIVECCCOMPOPTS=-O -mms-bitfields -Wall -Wno-unused
 NATIVECCLINKOPTS=
 
 ### Build partially-linked object file
-PARTIALLD=ld -r $(NATIVECCLINKOPTS)
-PACKLD=$(PARTIALLD) -o #there must be a space after this '-o'
+PACKLD=ld -r $(NATIVECCLINKOPTS) -o #there must be a space after this '-o'
 
 ############# Configuration for the contributed libraries
 
-OTHERLIBRARIES=win32unix systhreads str num win32graph dynlink bigarray labltk
+OTHERLIBRARIES=win32unix str num win32graph dynlink bigarray systhreads labltk
 
 ### Name of the target architecture for the "num" library
 BNG_ARCH=ia32
@@ -150,7 +149,7 @@ BNG_ASM_LEVEL=1
 # There must be no spaces or special characters in $(TK_ROOT)
 TK_ROOT=c:/tcl
 TK_DEFS=-I$(TK_ROOT)/include
-TK_LINK=$(TK_ROOT)/lib/tk84.lib $(TK_ROOT)/lib/tcl84.lib
+TK_LINK=$(TK_ROOT)/bin/tk84.dll $(TK_ROOT)/bin/tcl84.dll -lws2_32
 
 ############# Aliases for common commands
 

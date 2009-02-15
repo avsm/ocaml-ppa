@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typedtree.mli,v 1.35.8.2 2007/07/10 07:34:35 garrigue Exp $ *)
+(* $Id: typedtree.mli,v 1.37 2008/07/09 13:03:38 mauny Exp $ *)
 
 (* Abstract syntax tree after typing *)
 
@@ -36,6 +36,7 @@ and pattern_desc =
   | Tpat_record of (label_description * pattern) list
   | Tpat_array of pattern list
   | Tpat_or of pattern * pattern * row_desc option
+  | Tpat_lazy of pattern
 
 type partial = Partial | Total
 type optional = Required | Optional

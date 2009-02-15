@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: command.mli,v 1.1.4.4 2007/12/18 08:55:22 ertai Exp $ *)
+(* $Id: command.mli,v 1.6 2008/07/25 14:25:20 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 (* Command *)
 
@@ -23,6 +23,8 @@ val string_target_and_tags_of_command_spec : spec -> string * string * Tags.t
 
 val iter_tags : (Tags.t -> unit) -> t -> unit
 
+val fold_pathnames : (pathname -> 'a -> 'a) -> t -> 'a -> 'a
+
 (** Digest the given command. *)
 val digest : t -> Digest.t
 
@@ -35,3 +37,9 @@ val tag_handler : (Tags.t -> spec) ref
 
 (** For system use only *)
 val dump_parallel_stats : unit -> unit
+
+val deps_of_tags : Tags.t -> pathname list
+
+(** [dep tags deps] Will build [deps] when [tags] will be activated. *)
+val dep : Tags.elt list -> pathname list -> unit
+

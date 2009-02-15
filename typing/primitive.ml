@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: primitive.ml,v 1.8 2001/08/06 12:28:49 ddr Exp $ *)
+(* $Id: primitive.ml,v 1.9 2008/07/24 05:35:22 frisch Exp $ *)
 
 (* Description of primitive functions *)
 
@@ -54,3 +54,11 @@ let description_list p =
   in
   let list = if p.prim_native_float then "float" :: list else list in
   List.rev list
+
+let native_name p =
+  if p.prim_native_name <> ""
+  then p.prim_native_name
+  else p.prim_name
+
+let byte_name p =
+  p.prim_name

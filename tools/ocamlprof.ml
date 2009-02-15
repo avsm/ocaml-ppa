@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlprof.ml,v 1.41 2007/02/09 13:31:15 doligez Exp $ *)
+(* $Id: ocamlprof.ml,v 1.42 2007/12/04 13:38:58 doligez Exp $ *)
 
 open Printf
 
@@ -476,7 +476,7 @@ let main () =
     let report_error ppf = function
     | Lexer.Error(err, range) ->
         fprintf ppf "@[%a%a@]@."
-        Location.print range  Lexer.report_error err
+        Location.print_error range  Lexer.report_error err
     | Syntaxerr.Error err ->
         fprintf ppf "@[%a@]@."
         Syntaxerr.report_error err

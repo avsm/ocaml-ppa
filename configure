@@ -13,7 +13,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: configure,v 1.244.4.7 2008/01/04 13:26:38 doligez Exp $
+# $Id: configure,v 1.266.2.1 2008/11/07 10:34:16 xleroy Exp $
 
 configure_options="$*"
 prefix=/usr/local
@@ -23,6 +23,8 @@ mandir=''
 manext=1
 host_type=unknown
 ccoption=''
+asoption=''
+asppoption=''
 cclibs=''
 curseslibs=''
 mathlib='-lm'
@@ -73,6 +75,10 @@ while : ; do
         host_type=$2; shift;;
     -cc*)
         ccoption="$2"; shift;;
+    -as)
+        asoption="$2"; shift;;
+    -aspp)
+        asppoption="$2"; shift;;
     -lib*)
         cclibs="$2 $cclibs"; shift;;
     -no-curses)
@@ -233,10 +239,13 @@ esac
 # Configure the bytecode compiler
 
 bytecc="$cc"
+mkexe="\$(BYTECC)"
 bytecccompopts=""
 bytecclinkopts=""
+dllccompopts=""
 ostype="Unix"
 exe=""
+iflexdir=""
 
 case "$bytecc,$host" in
   cc,*-*-nextstep*)
@@ -251,8 +260,10 @@ case "$bytecc,$host" in
     bytecccompopts="-fno-defer-pop -no-cpp-precomp $gcc_warnings"
     mathlib=""
     # Tell gcc that we can use 32-bit code addresses for threaded code
-    # even if we compile in 64-bit mode
-    echo "#define ARCH_CODE32" >> m.h;;
+    # unless we are compiled for a shared library (-fPIC option)
+    echo "#ifndef __PIC__" >> m.h
+    echo "#  define ARCH_CODE32" >> m.h
+    echo "#endif" >> m.h;;
   *,*-*-beos*)
     bytecccompopts="-fno-defer-pop $gcc_warnings"
     # No -lm library
@@ -291,6 +302,11 @@ case "$bytecc,$host" in
     bytecccompopts="-D_XOPEN_SOURCE=500";;
   gcc*,*-*-cygwin*)
     bytecccompopts="-fno-defer-pop $gcc_warnings -U_WIN32"
+    dllccompopts="-D_WIN32 -DCAML_DLL"
+    flexlink="flexlink -chain cygwin -merge-manifest"
+    flexdir=`$flexlink -where | dos2unix`
+    iflexdir="-I\"$flexdir\""
+    mkexe="$flexlink -exe"
     exe=".exe"
     ostype="Cygwin";;
   gcc*,x86_64-*-linux*)
@@ -485,27 +501,36 @@ sharedcccompopts=''
 mksharedlib=''
 byteccrpath=''
 mksharedlibrpath=''
+natdynlinkopts=""
+cmxs="cmxa"
 
 if test $withsharedlibs = "yes"; then
   case "$host" in
-    *-*-linux-gnu|*-*-linux|*-*-freebsd[3-9]*|*-*-netbsd*|*-*-gnu*)
+    *-*-cygwin*)
+      cmxs="cmxs"
+      mksharedlib="$flexlink"
+      mkmaindll="$flexlink -maindll"
+      shared_libraries_supported=true;;
+    *-*-linux-gnu|*-*-linux|*-*-freebsd[3-9]*|*-*-openbsd*|*-*-netbsd*|*-*-gnu*)
+      cmxs="cmxs"
       sharedcccompopts="-fPIC"
-      mksharedlib="$bytecc -shared -o"
+      mksharedlib="$bytecc -shared"
       bytecclinkopts="$bytecclinkopts -Wl,-E"
       byteccrpath="-Wl,-rpath,"
       mksharedlibrpath="-Wl,-rpath,"
+      natdynlinkopts="-Wl,-E"
       shared_libraries_supported=true;;
     alpha*-*-osf*)
       case "$bytecc" in
         gcc*)
           sharedcccompopts="-fPIC"
-          mksharedlib="$bytecc -shared -o"
+          mksharedlib="$bytecc -shared"
           byteccrpath="-Wl,-rpath,"
           mksharedlibrpath="-Wl,-rpath,"
           shared_libraries_supported=true;;
         cc*)
           sharedcccompopts=""
-          mksharedlib="ld -shared -expect_unresolved '*' -o"
+          mksharedlib="ld -shared -expect_unresolved '*'"
           byteccrpath="-Wl,-rpath,"
           mksharedlibrpath="-rpath "
           shared_libraries_supported=true;;
@@ -515,12 +540,13 @@ if test $withsharedlibs = "yes"; then
         gcc*)
           sharedcccompopts="-fPIC"
           if sh ./solaris-ld; then
-            mksharedlib="$bytecc -shared -o"
+            mksharedlib="$bytecc -shared"
             byteccrpath="-R"
             mksharedlibrpath="-R"
           else
-            mksharedlib="$bytecc -shared -o"
+            mksharedlib="$bytecc -shared"
             bytecclinkopts="$bytecclinkopts -Wl,-E"
+            natdynlinkopts="-Wl,-E"
             byteccrpath="-Wl,-rpath,"
             mksharedlibrpath="-Wl,-rpath,"
           fi
@@ -529,7 +555,7 @@ if test $withsharedlibs = "yes"; then
           sharedcccompopts="-KPIC"
           byteccrpath="-R"
           mksharedlibrpath="-R"
-          mksharedlib="/usr/ccs/bin/ld -G -o"
+          mksharedlib="/usr/ccs/bin/ld -G"
           shared_libraries_supported=true;;
       esac;;
     mips*-*-irix[56]*)
@@ -537,26 +563,38 @@ if test $withsharedlibs = "yes"; then
         cc*) sharedcccompopts="";;
         gcc*) sharedcccompopts="-fPIC";;
       esac
-      mksharedlib="ld -shared -rdata_shared -o"
+      mksharedlib="ld -shared -rdata_shared"
       byteccrpath="-Wl,-rpath,"
       mksharedlibrpath="-rpath "
       shared_libraries_supported=true;;
-    *-apple-darwin*)
-      mksharedlib="$bytecc -bundle -flat_namespace -undefined suppress -o"
+    i[3456]86-*-darwin*)
+      mksharedlib="$bytecc -bundle -flat_namespace -undefined suppress -read_only_relocs suppress"
       bytecccompopts="$dl_defs $bytecccompopts"
-      #sharedcccompopts="-fnocommon"
-      dl_needs_underscore=true
+      dl_needs_underscore=false
+      shared_libraries_supported=true;;
+    *-apple-darwin*)
+      mksharedlib="$bytecc -bundle -flat_namespace -undefined suppress"
+      bytecccompopts="$dl_defs $bytecccompopts"
+      dl_needs_underscore=false
+      shared_libraries_supported=true;;
+    m88k-*-openbsd*)
+      shared_libraries_supported=false;;
+    vax-*-openbsd*)
+      shared_libraries_supported=false;;
+    *-*-openbsd*)
+      sharedcccompopts="-fPIC"
+      mksharedlib="$bytecc -shared"
+      bytecclinkopts="$bytecclinkopts -Wl,-E"
+      natdynlinkopts="-Wl,-E"
+      byteccrpath="-Wl,-rpath,"
+      mksharedlibrpath="-Wl,-rpath,"
       shared_libraries_supported=true;;
   esac
 fi
 
-# Further machine-specific hacks
-
-case "$host" in
-  ia64-*-linux*|alpha*-*-linux*|x86_64-*-linux*|sparc64-*-linux*)
-    echo "Will use mmap() instead of malloc() for allocation of major heap chunks."
-    echo "#define USE_MMAP_INSTEAD_OF_MALLOC" >> s.h;;
-esac
+if test -z "$mkmaindll"; then
+  mkmaindll=$mksharedlib
+fi
 
 # Configure the native-code compiler
 
@@ -582,7 +620,11 @@ case "$host" in
   i[3456]86-*-solaris*)         arch=i386; system=solaris;;
   i[3456]86-*-beos*)            arch=i386; system=beos;;
   i[3456]86-*-cygwin*)          arch=i386; system=cygwin;;
-  i[3456]86-*-darwin*)          arch=i386; system=macosx;;
+  i[3456]86-*-darwin*)          if $arch64; then
+                                  arch=amd64; system=macosx
+                                else
+                                  arch=i386; system=macosx
+                                fi;;
   i[3456]86-*-gnu*)             arch=i386; system=gnu;;
   mips-*-irix6*)                arch=mips; system=irix;;
   hppa1.1-*-hpux*)              arch=hppa; system=hpux;;
@@ -604,6 +646,7 @@ case "$host" in
   x86_64-*-freebsd*)            arch=amd64; system=freebsd;;
   x86_64-*-netbsd*)             arch=amd64; system=netbsd;;
   x86_64-*-openbsd*)            arch=amd64; system=openbsd;;
+  x86_64-*-darwin9.5)           arch=amd64; system=macosx;;
 esac
 
 # Some platforms exist both in 32-bit and 64-bit variants, not distinguished
@@ -642,42 +685,51 @@ case "$arch,$nativecc,$system,$host_type" in
   *,*,rhapsody,*)      nativecccompopts="$gcc_warnings -DDARWIN_VERSION_6 $dl_defs"
                        if $arch64; then partialld="ld -r -arch ppc64"; fi;;
   *,gcc*,cygwin,*)     nativecccompopts="$gcc_warnings -U_WIN32";;
+  amd64,gcc*,macosx,*) partialld="ld -r -arch x86_64";;
   *,gcc*,*,*)          nativecccompopts="$gcc_warnings";;
 esac
 
-asflags=''
-aspp=''
-asppflags=''
 asppprofflags='-DPROFILING'
 
 case "$arch,$model,$system" in
-  alpha,*,digital)  aspp='as'; asflags='-O2'; asppflags='-O2 -DSYS_$(SYSTEM)';
+  alpha,*,digital)  as='as -O2 -nocpp'
+                    aspp='as -O2'
                     asppprofflags='-pg -DPROFILING';;
-  alpha,*,linux)    aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  alpha,*,gnu)      aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  alpha,*,freebsd)  aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  alpha,*,netbsd)   aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  alpha,*,openbsd)  aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  mips,*,irix)      aspp='as'; asflags='-n32 -O2'; asppflags="$asflags";;
-  sparc,*,bsd)      aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  sparc,*,linux)    aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  sparc,*,gnu)      aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  sparc,*,*)        case "$cc" in
-                      gcc*) aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-                         *) aspp='as'; asppflags='-P -DSYS_$(SYSTEM)';;
+  alpha,*,*)        as='as'
+                    aspp='gcc -c';;
+  amd64,*,macosx)   as='as -arch x86_64'
+                    aspp='gcc -arch x86_64 -c';;
+  amd64,*,*)        as='as'
+                    aspp='gcc -c';;
+  arm,*,*)          as='as';
+                    aspp='gcc -c';;
+  hppa,*,*)         as='as';
+                    aspp='gcc -traditional -c';;
+  i386,*,solaris)   as='as'
+                    aspp='/usr/ccs/bin/as -P';;
+  i386,*,*)         as='as'
+                    aspp='gcc -c';;
+  ia64,*,*)         as='as -xexplicit'
+                    aspp='gcc -c -Wa,-xexplicit';;
+  mips,*,irix)      as='as -n32 -O2 -nocpp -g0'
+                    aspp='as -n32 -O2';;
+  power,*,elf)      as='as -u -m ppc'
+                    aspp='gcc -c';;
+  power,*,bsd)      as='as'
+                    aspp='gcc -c';;
+  power,*,rhapsody) as="as -arch $model"
+                    aspp="$bytecc -c";;
+  sparc,*,solaris)  as='as'
+                    case "$cc" in
+                      gcc*) aspp='gcc -c';;
+                         *) aspp='as -P';;
                     esac;;
-  i386,*,solaris)   aspp='/usr/ccs/bin/as'; asppflags='-P -DSYS_$(SYSTEM)';;
-  i386,*,*)         aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  hppa,*,*)         aspp="$cc"; asppflags='-traditional -c -DSYS_$(SYSTEM)';;
-  power,*,elf)      aspp='gcc'; asppflags='-c';;
-  power,*,bsd)      aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  power,*,rhapsody) aspp="$bytecc"; asppflags='-c';;
-  arm,*,linux)      aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  arm,*,gnu)        aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-  ia64,*,*)         asflags=-xexplicit
-                    aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM) -Wa,-xexplicit';;
-  amd64,*,*)        aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
+  sparc,*,*)        as='as'
+                    aspp='gcc -c';;
 esac
+
+if test -n "$asoption"; then as="$asoption"; fi
+if test -n "$asppoption"; then aspp="$asppoption"; fi
 
 cc_profile='-pg'
 case "$arch,$model,$system" in
@@ -685,6 +737,7 @@ case "$arch,$model,$system" in
   i386,*,linux_elf) profiling='prof';;
   i386,*,gnu) profiling='prof';;
   i386,*,bsd_elf) profiling='prof';;
+  amd64,*,macosx) profiling='prof';;
   i386,*,macosx) profiling='prof';;
   sparc,*,solaris)
     profiling='prof'
@@ -988,10 +1041,8 @@ if sh ./hasgot -i locale.h && sh ./hasgot setlocale; then
   echo "#define HAS_LOCALE" >> s.h
 fi
 
-if sh ./hasgot -i mach-o/dyld.h && sh ./hasgot NSLinkModule; then
-  echo "NSLinkModule() found. Using darwin dynamic loading."
-  echo "#define HAS_NSLINKMODULE" >> s.h
-elif sh ./hasgot $dllib dlopen; then
+
+if sh ./hasgot $dllib dlopen; then
   echo "dlopen() found."
 elif sh ./hasgot $dllib -ldl dlopen; then
   echo "dlopen() found in -ldl."
@@ -1045,27 +1096,27 @@ fi
 # Determine if system stack overflows can be detected
 
 case "$arch,$system" in
-  i386,linux_elf|amd64,linux|power,rhapsody|i386,macosx)
+  i386,linux_elf|amd64,linux|power,rhapsody|amd64,macosx|i386,macosx|amd64,macosx)
     echo "System stack overflow can be detected."
     echo "#define HAS_STACK_OVERFLOW_DETECTION" >> s.h;;
   *)
     echo "Cannot detect system stack overflow.";;
 esac
 
-# Determine the target architecture for the "num" library
+x# Determine the target architecture for the "num" library
 
-case "$host" in
-  alpha*-*-*)    bng_arch=alpha; bng_asm_level=1;;
-  i[3456]86-*-*) bng_arch=ia32
-                 if sh ./trycompile ia32sse2.c
-                 then bng_asm_level=2
-                 else bng_asm_level=1
-                 fi;;
-  mips-*-*)      bng_arch=mips; bng_asm_level=1;;
-  powerpc-*-*)   bng_arch=ppc; bng_asm_level=1;;
-  sparc*-*-*)    bng_arch=sparc; bng_asm_level=1;;
-  x86_64-*-*)    bng_arch=amd64; bng_asm_level=1;;
-  *)             bng_arch=generic; bng_asm_level=0;;
+case "$arch" in
+  alpha)    bng_arch=alpha; bng_asm_level=1;;
+  i386)     bng_arch=ia32
+            if sh ./trycompile ia32sse2.c
+            then bng_asm_level=2
+            else bng_asm_level=1
+            fi;;
+  mips)     bng_arch=mips; bng_asm_level=1;;
+  power)    bng_arch=ppc; bng_asm_level=1;;
+  sparc)    bng_arch=sparc; bng_asm_level=1;;
+  amd64)    bng_arch=amd64; bng_asm_level=1;;
+  *)        bng_arch=generic; bng_asm_level=0;;
 esac
 
 echo "BNG_ARCH=$bng_arch" >> Makefile
@@ -1238,8 +1289,11 @@ do
     if test $dir = /usr/lib; then
       x11_link="-lX11"
     else
-      x11_link="-L$dir -lX11"
       x11_libs="-L$dir"
+      case "$host" in
+        *-*-*bsd*) x11_link="-R$dir -L$dir -lX11";;
+        *) x11_link="-L$dir -lX11";;
+      esac
     fi
     break
   fi
@@ -1333,6 +1387,9 @@ if test $has_tk = true; then
   tcl_version=`sh ./runtest $tk_defs $tk_x11_include tclversion.c`
   for tk_incs in \
     "-I/usr/local/include" \
+    "-I/usr/include" \
+    "-I/usr/local/include/tcl8.5 -I/usr/local/include/tk8.5" \
+    "-I/usr/include/tcl8.5 -I/usr/include/tk8.5" \
     "-I/usr/local/include/tcl8.4 -I/usr/local/include/tk8.4" \
     "-I/usr/include/tcl8.4 -I/usr/include/tk8.4" \
     "-I/usr/local/include/tcl8.3 -I/usr/local/include/tk8.3" \
@@ -1355,6 +1412,7 @@ if test $has_tk = true; then
     8.2) tclmaj=8 tclmin=2 tkmaj=8 tkmin=2 ;;
     8.3) tclmaj=8 tclmin=3 tkmaj=8 tkmin=3 ;;
     8.4) tclmaj=8 tclmin=4 tkmaj=8 tkmin=4 ;;
+    8.5) tclmaj=8 tclmin=5 tkmaj=8 tkmin=5 ;;
     *) echo "This version is not known."; has_tk=false ;;
     esac
   else
@@ -1390,7 +1448,10 @@ if test $has_tk = true; then
         -ltk$tkmaj$tkmin -ltcl$tclmaj$tclmin -lpthread $tkauxlibs \
                    Tcl_DoOneEvent
   then
-    tk_libs="-L/usr/pkg/lib $tk_libs $tk_x11_libs -ltk$tkmaj$tkmin -ltcl$tclmaj$tclmin -lpthread $tkauxlibs"
+    case "$host" in
+      *-*-*bsd*) tk_libs="-R/usr/pkg/lib -L/usr/pkg/lib $tk_libs $tk_x11_libs -ltk$tkmaj$tkmin -ltcl$tclmaj$tclmin -lpthread $tkauxlibs";;
+      *) tk_libs="-L/usr/pkg/lib $tk_libs $tk_x11_libs -ltk$tkmaj$tkmin -ltcl$tclmaj$tclmin -lpthread $tkauxlibs";;
+    esac
   else
     echo "Tcl library not found."
     has_tk=false
@@ -1401,11 +1462,17 @@ if test $has_tk = true; then
   if sh ./hasgot $tk_libs $tk_x11_libs $tkauxlibs Tk_SetGrid; then
     echo "Tcl/Tk libraries found."
   elif sh ./hasgot -L/sw/lib $tk_libs $tk_x11_libs $tkauxlibs Tk_SetGrid; then
-    tk_libs="-L/sw/lib $tk_libs"
+    case "$host" in
+      *-*-*bsd*) tk_libs="-R/sw/lib -L/sw/lib $tk_libs";;
+      *) tk_libs="-L/sw/lib $tk_libs";;
+    esac
     echo "Tcl/Tk libraries found."
   elif sh ./hasgot -L/usr/pkg/lib $tk_libs $tk_x11_libs $tkauxlibs \
                    Tk_SetGrid; then
-    tk_libs="-L/usr/pkg/lib $tk_libs"
+    case "$host" in
+      *-*-*bsd*) tk_libs="-R/usr/pkg/lib -L/usr/pkg/lib $tk_libs";;
+      *) tk_libs="-L/usr/pkg/lib $tk_libs";;
+    esac
     echo "Tcl/Tk libraries found."
   else
     echo "Tcl library found."
@@ -1451,16 +1518,10 @@ echo "EXE=$exe" >> Makefile
 echo "SUPPORTS_SHARED_LIBRARIES=$shared_libraries_supported" >> Makefile
 echo "SHAREDCCCOMPOPTS=$sharedcccompopts" >> Makefile
 echo "MKSHAREDLIBRPATH=$mksharedlibrpath" >> Makefile
+echo "NATDYNLINKOPTS=$natdynlinkopts" >> Makefile
 cat >> Makefile <<EOF
 SYSLIB=-l\$(1)
 #ml let syslib x = "-l"^x;;
-
-MKEXE=\$(BYTECC) -o \$(1) \$(2)
-#ml let mkexe out files opts = Printf.sprintf "%s -o %s %s %s" bytecc out opts files;;
-
-### How to build a DLL
-MKDLL=$mksharedlib \$(1) \$(3)
-#ml let mkdll out _implib files opts = Printf.sprintf "%s %s %s %s" "$mksharedlib" out opts files;;
 
 ### How to build a static library
 MKLIB=ar rc \$(1) \$(2); ranlib \$(1)
@@ -1475,9 +1536,8 @@ echo "NATIVECCPROFOPTS=$nativeccprofopts" >> Makefile
 echo "NATIVECCLINKOPTS=$nativecclinkopts" >> Makefile
 echo "NATIVECCRPATH=$nativeccrpath" >> Makefile
 echo "NATIVECCLIBS=$cclibs $dllib" >> Makefile
-echo "ASFLAGS=$asflags" >> Makefile
+echo "ASM=$as" >> Makefile
 echo "ASPP=$aspp" >> Makefile
-echo "ASPPFLAGS=$asppflags" >> Makefile
 echo "ASPPPROFFLAGS=$asppprofflags" >> Makefile
 echo "PROFILING=$profiling" >> Makefile
 echo "DYNLINKOPTS=$dllib" >> Makefile
@@ -1486,9 +1546,12 @@ echo "DEBUGGER=$debugger" >> Makefile
 echo "CC_PROFILE=$cc_profile" >> Makefile
 echo "SYSTHREAD_SUPPORT=$systhread_support" >> Makefile
 echo "PARTIALLD=$partialld" >> Makefile
-echo "DLLCCCOMPOPTS=" >> Makefile
+echo "PACKLD=\$(PARTIALLD) \$(NATIVECCLINKOPTS) -o " >> Makefile
+echo "DLLCCCOMPOPTS=$dllccompopts" >> Makefile
+echo "IFLEXDIR=$iflexdir" >> Makefile
 echo "O=o" >> Makefile
 echo "A=a" >> Makefile
+echo "SO=so" >> Makefile
 echo "EXT_OBJ=.o" >> Makefile
 echo "EXT_ASM=.s" >> Makefile
 echo "EXT_LIB=.a" >> Makefile
@@ -1496,6 +1559,10 @@ echo "EXT_DLL=.so" >> Makefile
 echo "EXTRALIBS=" >> Makefile
 echo "CCOMPTYPE=cc" >> Makefile
 echo "TOOLCHAIN=cc" >> Makefile
+echo "CMXS=$cmxs" >> Makefile
+echo "MKEXE=$mkexe" >> Makefile
+echo "MKDLL=$mksharedlib" >> Makefile
+echo "MKMAINDLL=$mkmaindll" >> Makefile
 
 rm -f tst hasgot.c
 rm -f ../m.h ../s.h ../Makefile
@@ -1518,7 +1585,7 @@ echo "        options for linking....... $bytecclinkopts $cclibs $dllib $cursesl
 if $shared_libraries_supported; then
 echo "        shared libraries are supported"
 echo "        options for compiling..... $sharedcccompopts $bytecccompopts"
-echo "        command for building...... $mksharedlib lib.so $mksharedlibrpath/a/path objs"
+echo "        command for building...... $mksharedlib -o lib.so $mksharedlibrpath/a/path objs"
 else
 echo "        shared libraries not supported"
 fi
@@ -1538,8 +1605,8 @@ else
   echo "        C compiler used........... $nativecc"
   echo "        options for compiling..... $nativecccompopts"
   echo "        options for linking....... $nativecclinkopts $cclibs"
-  echo "        assembler ................ \$(AS) $asflags"
-  echo "        preprocessed assembler ... $aspp $asppflags"
+  echo "        assembler ................ $as"
+  echo "        preprocessed assembler ... $aspp"
   if test "$profiling" = "prof"; then
   echo "        profiling with gprof ..... supported"
   else

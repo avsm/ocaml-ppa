@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: finalise.c,v 1.19.10.2 2008/01/17 15:57:23 doligez Exp $ */
+/* $Id: finalise.c,v 1.23 2008/07/28 12:03:55 doligez Exp $ */
 
 /* Handling of finalised values. */
 
@@ -88,9 +88,9 @@ void caml_final_update (void)
           value fv;
           Assert (final_table[i].offset == 0);
           fv = Forward_val (final_table[i].val);
-          if (Is_block (fv) && (Is_young (fv) || Is_in_heap (fv))
-              && (Tag_val (fv) == Forward_tag || Tag_val (fv) == Lazy_tag
-                  || Tag_val (fv) == Double_tag)){
+          if (Is_block (fv)
+              && (!Is_in_value_area(fv) || Tag_val (fv) == Forward_tag
+                  || Tag_val (fv) == Lazy_tag || Tag_val (fv) == Double_tag)){
             /* Do not short-circuit the pointer. */
           }else{
             final_table[i].val = fv;
@@ -209,7 +209,7 @@ void caml_final_empty_young (void)
 /* Put (f,v) in the recent set. */
 CAMLprim value caml_final_register (value f, value v)
 {
-  if (!(Is_block (v) && (Is_in_heap (v) || Is_young (v)))){
+  if (!(Is_block (v) && Is_in_heap_or_young(v))) {
     caml_invalid_argument ("Gc.finalise");
   }
   Assert (old <= young);

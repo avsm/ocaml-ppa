@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: major_gc.c,v 1.58.10.3 2008/01/21 14:09:05 doligez Exp $ */
+/* $Id: major_gc.c,v 1.62.2.1 2008/11/12 12:53:07 doligez Exp $ */
 
 #include <limits.h>
 
@@ -31,9 +31,7 @@
 
 uintnat caml_percent_free;
 intnat caml_major_heap_increment;
-CAMLexport char *caml_heap_start, *caml_heap_end;
-CAMLexport page_table_entry *caml_page_table;
-asize_t caml_page_low, caml_page_high;
+CAMLexport char *caml_heap_start;
 char *caml_gc_sweep_hp;
 int caml_gc_phase;        /* always Phase_mark, Phase_sweep, or Phase_idle */
 static value *gray_vals;
@@ -146,9 +144,9 @@ static void mark_slice (intnat work)
             hd = Hd_val (child);
             if (Tag_hd (hd) == Forward_tag){
               value f = Forward_val (child);
-              if (Is_block (f) && (Is_young (f) || Is_in_heap (f))
-                  && (Tag_val (f) == Forward_tag || Tag_val (f) == Lazy_tag
-                      || Tag_val (f) == Double_tag)){
+              if (Is_block (f)
+                  && (!Is_in_value_area(f) || Tag_val (f) == Forward_tag
+                      || Tag_val (f) == Lazy_tag || Tag_val (f) == Double_tag)){
                 /* Do not short-circuit the pointer. */
               }else{
                 Field (v, i) = f;
@@ -217,9 +215,9 @@ static void mark_slice (intnat work)
                 && Is_block (curfield) && Is_in_heap (curfield)){
               if (Tag_val (curfield) == Forward_tag){
                 value f = Forward_val (curfield);
-                if (Is_block (f) && (Is_young (f) || Is_in_heap (f))){
-                  if (Tag_val (f) == Forward_tag || Tag_val (f) == Lazy_tag
-                      || Tag_val (f) == Double_tag){
+                if (Is_block (f)) {
+                  if (!Is_in_value_area(f) || Tag_val (f) == Forward_tag
+                      || Tag_val (f) == Lazy_tag || Tag_val (f) == Double_tag){
                     /* Do not short-circuit the pointer. */
                   }else{
                     Field (cur, i) = curfield = f;
@@ -360,13 +358,25 @@ intnat caml_major_collection_slice (intnat howmuch)
                  MW = caml_stat_heap_size * 100 / (100 + caml_percent_free)
      Amount of sweeping work for the GC cycle:
                  SW = caml_stat_heap_size
-     Amount of marking work for this slice:
-                 MS = P * MW
-                 MS = P * caml_stat_heap_size * 100 / (100 + caml_percent_free)
-     Amount of sweeping work for this slice:
-                 SS = P * SW
-                 SS = P * caml_stat_heap_size
-     This slice will either mark 2*MS words or sweep 2*SS words.
+
+     In order to finish marking with a non-empty free list, we will
+     use 40% of the time for marking, and 60% for sweeping.
+
+     If TW is the total work for this cycle,
+                 MW = 40/100 * TW
+                 SW = 60/100 * TW
+
+     Amount of work to do for this slice:
+                 W  = P * TW
+
+     Amount of marking work for a marking slice:
+                 MS = P * MW / (40/100)
+                 MS = P * caml_stat_heap_size * 250 / (100 + caml_percent_free)
+     Amount of sweeping work for a sweeping slice:
+                 SS = P * SW / (60/100)
+                 SS = P * caml_stat_heap_size * 5 / 3
+
+     This slice will either mark MS words or sweep SS words.
   */
 
   if (caml_gc_phase == Phase_idle) start_cycle ();
@@ -393,10 +403,10 @@ intnat caml_major_collection_slice (intnat howmuch)
                    (uintnat) (p * 1000000));
 
   if (caml_gc_phase == Phase_mark){
-    computed_work = 2 * (intnat) (p * Wsize_bsize (caml_stat_heap_size) * 100
-                                / (100 + caml_percent_free));
+    computed_work = (intnat) (p * Wsize_bsize (caml_stat_heap_size) * 250
+                              / (100 + caml_percent_free));
   }else{
-    computed_work = 2 * (intnat) (p * Wsize_bsize (caml_stat_heap_size));
+    computed_work = (intnat) (p * Wsize_bsize (caml_stat_heap_size) * 5 / 3);
   }
   caml_gc_message (0x40, "ordered work = %ld words\n", howmuch);
   caml_gc_message (0x40, "computed work = %ld words\n", computed_work);
@@ -469,10 +479,6 @@ asize_t caml_round_heap_chunk_size (asize_t request)
 
 void caml_init_major_heap (asize_t heap_size)
 {
-  asize_t i;
-  asize_t page_table_size;
-  page_table_entry *page_table_block;
-
   caml_stat_heap_size = clip_heap_chunk_size (heap_size);
   caml_stat_top_heap_size = caml_stat_heap_size;
   Assert (caml_stat_heap_size % Page_size == 0);
@@ -480,23 +486,11 @@ void caml_init_major_heap (asize_t heap_size)
   if (caml_heap_start == NULL)
     caml_fatal_error ("Fatal error: not enough memory for the initial heap.\n");
   Chunk_next (caml_heap_start) = NULL;
-  caml_heap_end = caml_heap_start + caml_stat_heap_size;
-  Assert ((uintnat) caml_heap_end % Page_size == 0);
-
   caml_stat_heap_chunks = 1;
 
-  caml_page_low = Page (caml_heap_start);
-  caml_page_high = Page (caml_heap_end);
-
-  page_table_size = caml_page_high - caml_page_low;
-  page_table_block =
-    (page_table_entry *) malloc (page_table_size * sizeof (page_table_entry));
-  if (page_table_block == NULL){
-    caml_fatal_error ("Fatal error: not enough memory for the initial heap.\n");
-  }
-  caml_page_table = page_table_block - caml_page_low;
-  for (i = Page (caml_heap_start); i < Page (caml_heap_end); i++){
-    caml_page_table [i] = In_heap;
+  if (caml_page_table_add(In_heap, caml_heap_start,
+                          caml_heap_start + caml_stat_heap_size) != 0) {
+    caml_fatal_error ("Fatal error: not enough memory for the initial page table.\n");
   }
 
   caml_fl_init_merge ();
@@ -506,7 +500,7 @@ void caml_init_major_heap (asize_t heap_size)
   gray_vals_size = 2048;
   gray_vals = (value *) malloc (gray_vals_size * sizeof (value));
   if (gray_vals == NULL)
-    caml_fatal_error ("Fatal error: not enough memory for the initial heap.\n");
+    caml_fatal_error ("Fatal error: not enough memory for the gray cache.\n");
   gray_vals_cur = gray_vals;
   gray_vals_end = gray_vals + gray_vals_size;
   heap_is_pure = 1;

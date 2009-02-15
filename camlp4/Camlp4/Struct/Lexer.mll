@@ -18,7 +18,6 @@
  *)
 
 
-(* $Id: Lexer.mll,v 1.6.4.11 2007/11/27 14:38:03 ertai Exp $ *)
 
 (* The lexer definition *)
 

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_man.ml,v 1.26 2006/01/04 16:55:50 doligez Exp $ *)
+(* $Id: odoc_man.ml,v 1.28.2.1 2008/10/29 11:58:35 guesdon Exp $ *)
 
 (** The man pages generator. *)
 open Odoc_info
@@ -204,6 +204,8 @@ class man =
         match s.[i] with
           '\\' -> Buffer.add_string b "\\(rs"
         | '.' -> Buffer.add_string b "\\&."
+        | '\'' -> Buffer.add_string b "\\&'"
+        | '-' -> Buffer.add_string b "\\-"
         | c -> Buffer.add_char b c
       done;
       Buffer.contents b
@@ -410,17 +412,19 @@ class man =
       );
       bs b (Name.simple t.ty_name);
       bs b " \n";
+      let priv = t.ty_private = Asttypes.Private in
       (
        match t.ty_manifest with
          None -> ()
        | Some typ ->
            bs b "= ";
+           if priv then bs b "private ";
            self#man_of_type_expr b father typ
       );
       (
        match t.ty_kind with
         Type_abstract -> ()
-      | Type_variant (l, priv) ->
+      | Type_variant l ->
           bs b "=";
           if priv then bs b " private";
           bs b "\n ";
@@ -448,7 +452,7 @@ class man =
               )
             )
             l
-      | Type_record (l, priv) ->
+      | Type_record l ->
           bs b "= ";
           if priv then bs b "private ";
           bs b "{";
@@ -477,6 +481,7 @@ class man =
     (** Print groff string for a class attribute. *)
     method man_of_attribute b a =
       bs b ".I val ";
+      if a.att_virtual then bs b ("virtual ");
       if a.att_mutable then bs b (Odoc_messages.mutab^" ");
       bs b ((Name.simple a.att_value.val_name)^" : ");
       self#man_of_type_expr b (Name.father a.att_value.val_name) a.att_value.val_type;
@@ -630,15 +635,15 @@ class man =
 
     (** Print groff string for a module comment.*)
     method man_of_module_comment b text =
-      bs b "\n.pp\n";
+      bs b "\n.PP\n";
       self#man_of_text b [Code ("=== "^(Odoc_misc.string_of_text text)^" ===")];
-      bs b "\n.pp\n"
+      bs b "\n.PP\n"
 
     (** Print groff string for a class comment.*)
     method man_of_class_comment b text =
-      bs b "\n.pp\n";
+      bs b "\n.PP\n";
       self#man_of_text b [Code ("=== "^(Odoc_misc.string_of_text text)^" ===")];
-      bs b "\n.pp\n"
+      bs b "\n.PP\n"
 
     (** Print groff string for an included module. *)
     method man_of_included_module b m_name im =

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: signatures.mli,v 1.8.2.19 2007/12/18 08:55:23 ertai Exp $ *)
+(* $Id: signatures.mli,v 1.28 2008/07/25 14:42:28 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 (** This module contains all module signatures that the user
     could use to build an ocamlbuild plugin. *)
@@ -527,6 +527,14 @@ module type PLUGIN = sig
       ([command_spec]) when all [tags] will be activated. *)
   val flag : Tags.elt list -> Command.spec -> unit
 
+  (** [flag_and_dep tags command_spec]
+      Combines [flag] and [dep] function.
+      Basically it calls [flag tags command_spec], and calls [dep tags files]
+      where [files] is the list of all pathnames in [command_spec].
+      Pathnames selected are those in the constructor [P] or [Px], or the
+      pathname argument of builtins like [Echo]. *)
+  val flag_and_dep : Tags.elt list -> Command.spec -> unit
+
   (** [non_dependency module_path module_name]
        Example: 
          [non_dependency "foo/bar/baz" "Goo"]
@@ -608,6 +616,9 @@ module type PLUGIN = sig
 
   (** Returns the set of tags that applies to the given pathname. *)
   val tags_of_pathname : Pathname.t -> Tags.t
+
+  (** Run the given command and returns it's output as a string. *)
+  val run_and_read : string -> string
 
   (** Here is the list of hooks that the dispatch function have to handle.
       Generally one respond to one or two hooks (like After_rules) and do

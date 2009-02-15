@@ -1,9 +1,23 @@
 #!/bin/sh
-# $Id: mkmyocamlbuild_config.sh,v 1.5.2.3 2007/05/28 09:26:51 pouillar Exp $
+
+#########################################################################
+#                                                                       #
+#                            Objective Caml                             #
+#                                                                       #
+#       Nicolas Pouillard, projet Gallium, INRIA Rocquencourt           #
+#                                                                       #
+#   Copyright 2007 Institut National de Recherche en Informatique et    #
+#   en Automatique.  All rights reserved.  This file is distributed     #
+#   under the terms of the Q Public License version 1.0.                #
+#                                                                       #
+#########################################################################
+
+# $Id: mkmyocamlbuild_config.sh,v 1.10 2008/01/11 16:13:16 doligez Exp $
 
 cd `dirname $0`/..
 
 sed \
+    -e 's/^.*FLEXDIR.*$//g' \
     -e 's/^#ml \(.*\)/\1/' \
     -e 's/^\(#.*\)$/(* \1 *)/' \
     -e 's/^\(.*\$([0-9]).*\)$/(* \1 *)/' \

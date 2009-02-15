@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: fail.h,v 1.26 2006/11/24 14:40:11 doligez Exp $ */
+/* $Id: fail.h,v 1.27 2008/09/18 11:23:28 xleroy Exp $ */
 
 #ifndef CAML_FAIL_H
 #define CAML_FAIL_H
@@ -60,6 +60,7 @@ extern value caml_exn_bucket;
 CAMLextern void caml_raise (value bucket) Noreturn;
 CAMLextern void caml_raise_constant (value tag) Noreturn;
 CAMLextern void caml_raise_with_arg (value tag, value arg) Noreturn;
+CAMLextern void caml_raise_with_args (value tag, int nargs, value arg[]) Noreturn;
 CAMLextern void caml_raise_with_string (value tag, char const * msg) Noreturn;
 CAMLextern void caml_failwith (char const *) Noreturn;
 CAMLextern void caml_invalid_argument (char const *) Noreturn;

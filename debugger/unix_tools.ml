@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unix_tools.ml,v 1.8 2002/11/02 22:36:45 doligez Exp $ *)
+(* $Id: unix_tools.ml,v 1.9 2008/07/29 08:31:41 xleroy Exp $ *)
 
 (****************** Tools for Unix *************************************)
 
@@ -36,7 +36,9 @@ let convert_address address =
                prerr_endline "The port number should be an integer";
                failwith "Can't convert address")))
   with Not_found ->
-      (PF_UNIX, ADDR_UNIX address)
+    match Sys.os_type with
+      "Win32" -> failwith "Unix sockets not supported"
+    | _ -> (PF_UNIX, ADDR_UNIX address)
 
 (*** Report a unix error. ***)
 let report_error = function

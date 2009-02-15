@@ -5,11 +5,13 @@ PREREQUISITES
 
 * The GNU C compiler gcc is recommended, as the bytecode
   interpreter takes advantage of gcc-specific features to enhance
-  performance.
+  performance.  gcc is the standard compiler under Linux, MacOS X,
+  and many other systems.
 
-* Under HP/UX, the GNU C compiler gcc, the GNU assembler gas, and GNU make
-  are all *required*.  The vendor-provided compiler, assembler and make
-  have major problems.
+* Under MacOS X 10.5, you need version 3.1 or later of the XCode
+  development tools.  The version of XCode found on MacOS X 10.5
+  installation media causes linking problems.  XCode updates
+  are available free of charge at http://developer.apple.com/tools/xcode/
 
 * Under MacOS X up to version 10.2.8, you must raise the limit on the
   stack size with one of the following commands:
@@ -19,6 +21,10 @@ PREREQUISITES
 
 * If you do not have write access to /tmp, you should set the environment
   variable TMPDIR to the name of some other temporary directory.
+
+* Under HP/UX, the GNU C compiler gcc, the GNU assembler gas, and GNU make
+  are all *required*.  The vendor-provided compiler, assembler and make
+  have major problems.
 
 
 INSTALLATION INSTRUCTIONS
@@ -100,21 +106,39 @@ The "configure" script accepts the following options:
         options for finding the header files, and "-dllibs" for finding
         the C libraries.
 
--binutils <directory>
-        This option specifies where to find the GNU binutils (objcopy
-        and nm) executables.
+-as <assembler and options>     (default: determined automatically)
+        The assembler to use for assembling ocamlopt-generated code.
+
+-aspp <assembler and options>   (default: determined automatically>
+        The assembler to use for assembling the parts of the
+        run-time system manually written in assembly language.
+        This assembler must preprocess its input with the C preprocessor.
 
 -verbose
         Verbose output of the configuration tests. Use it if the outcome
         of configure is not what you were expecting.
 
 Examples:
-    ./configure -prefix /usr/bin
+
+  Standard installation in /usr/{bin,lib,man} instead of /usr/local:
+    ./configure -prefix /usr
+
+  Installation in /usr, man pages in section "l":
     ./configure -bindir /usr/bin -libdir /usr/lib/ocaml -mandir /usr/man/manl
+
+  On a MacOSX/Intel Core 2 or MacOSX/PowerPC host, to build a 64-bit version
+  of OCaml:
+    ./configure -cc "gcc -m64"
+
+  On a Linux x86/64 bits host, to build a 32-bit version of OCaml:
+    ./configure -cc "gcc -m32" -as "as --32" -aspp "gcc -m32 -c"
+
+  For Sun Solaris with the "acc" compiler:
     ./configure -cc "acc -fast" -libs "-lucb"
-                    # For Sun Solaris with the acc compiler
+
+  For AIX 4.3 with the IBM compiler xlc:
     ./configure -cc "xlc_r -D_AIX43 -Wl,-bexpall,-brtl -qmaxmem=8192"
-                    # For AIX 4.3 with the IBM compiler
+
 
 If something goes wrong during the automatic configuration, or if the
 generated files cause errors later on, then look at the template files

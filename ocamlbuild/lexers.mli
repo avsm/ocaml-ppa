@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexers.mli,v 1.2.2.2 2007/11/21 21:02:58 ertai Exp $ *)
+(* $Id: lexers.mli,v 1.5 2008/01/11 16:13:16 doligez Exp $ *)
 (* Original author: Nicolas Pouillard *)
 exception Error of string
 

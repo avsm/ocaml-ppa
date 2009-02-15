@@ -18,7 +18,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-(* $Id: Camlp4Ast2OCamlAst.ml,v 1.15.2.8 2007/09/19 13:20:33 ertai Exp $ *)
+
 
 module Make (Ast : Sig.Camlp4Ast) = struct
   open Format;
@@ -114,10 +114,10 @@ module Make (Ast : Sig.Camlp4Ast) = struct
     | Ast.BFalse -> Nonrecursive
     | Ast.BAnt _ -> assert False ];
 
-  value mkli s =
-    loop (fun s -> lident s) where rec loop f =
+  value mkli s = loop lident
+    where rec loop f =
       fun
-      [ [i :: il] -> loop (fun s -> ldot (f i) s) il
+      [ [i :: il] -> loop (ldot (f i)) il
       | [] -> f s ]
   ;
 
@@ -199,7 +199,7 @@ module Make (Ast : Sig.Camlp4Ast) = struct
   value rec ty_var_list_of_ctyp =
     fun
     [ <:ctyp< $t1$ $t2$ >> -> ty_var_list_of_ctyp t1 @ ty_var_list_of_ctyp t2
-    | <:ctyp< '$s$ >> -> [s] 
+    | <:ctyp< '$s$ >> -> [s]
     | _ -> assert False ];
 
   value rec ctyp =
@@ -278,10 +278,11 @@ module Make (Ast : Sig.Camlp4Ast) = struct
     | _ -> assert False ]
   ;
 
-  value mktype loc tl cl tk tm =
+  value mktype loc tl cl tk tp tm =
     let (params, variance) = List.split tl in
     {ptype_params = params; ptype_cstrs = cl; ptype_kind = tk;
-    ptype_manifest = tm; ptype_loc = mkloc loc; ptype_variance = variance}
+     ptype_private = tp; ptype_manifest = tm; ptype_loc = mkloc loc;
+     ptype_variance = variance}
   ;
   value mkprivate' m = if m then Private else Public;
   value mkprivate m = mkprivate' (mb2b m);
@@ -306,10 +307,10 @@ module Make (Ast : Sig.Camlp4Ast) = struct
         type_decl tl cl loc m True t
     | <:ctyp< { $t$ } >> ->
         mktype loc tl cl
-          (Ptype_record (List.map mktrecord (list_of_ctyp t [])) (mkprivate' pflag)) m
+          (Ptype_record (List.map mktrecord (list_of_ctyp t []))) (mkprivate' pflag) m
     | <:ctyp< [ $t$ ] >> ->
         mktype loc tl cl
-          (Ptype_variant (List.map mkvariant (list_of_ctyp t [])) (mkprivate' pflag)) m
+          (Ptype_variant (List.map mkvariant (list_of_ctyp t []))) (mkprivate' pflag) m
     | t ->
         if m <> None then
           error loc "only one manifest type allowed by definition" else
@@ -318,8 +319,7 @@ module Make (Ast : Sig.Camlp4Ast) = struct
           [ <:ctyp<>> -> None
           | _ -> Some (ctyp t) ]
         in
-        let k = if pflag then Ptype_private else Ptype_abstract in
-        mktype loc tl cl k m ]
+        mktype loc tl cl Ptype_abstract (mkprivate' pflag) m ]
   ;
 
   value type_decl tl cl t = type_decl tl cl (loc_of_ctyp t) None False t;
@@ -343,8 +343,8 @@ module Make (Ast : Sig.Camlp4Ast) = struct
 
   value opt_private_ctyp =
     fun
-    [ <:ctyp< private $t$ >> -> (Ptype_private, ctyp t)
-    | t -> (Ptype_abstract, ctyp t) ];
+    [ <:ctyp< private $t$ >> -> (Ptype_abstract, Private, ctyp t)
+    | t -> (Ptype_abstract, Public, ctyp t) ];
 
   value rec type_parameters t acc =
     match t with
@@ -376,11 +376,12 @@ module Make (Ast : Sig.Camlp4Ast) = struct
     | WcTyp loc id_tpl ct ->
         let (id, tpl) = type_parameters_and_type_name id_tpl [] in
         let (params, variance) = List.split tpl in
-        let (kind, ct) = opt_private_ctyp ct in
+        let (kind, priv, ct) = opt_private_ctyp ct in
         [(id,
         Pwith_type
           {ptype_params = params; ptype_cstrs = [];
             ptype_kind = kind;
+            ptype_private = priv;
             ptype_manifest = Some ct;
             ptype_loc = mkloc loc; ptype_variance = variance}) :: acc]
     | WcMod _ i1 i2 ->
@@ -494,11 +495,12 @@ module Make (Ast : Sig.Camlp4Ast) = struct
         mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
     | <:patt@loc< ($p1$, $p2$) >> ->
          mkpat loc (Ppat_tuple
-           (List.map patt (list_of_patt p1 (list_of_patt p2 [])))) 
+           (List.map patt (list_of_patt p1 (list_of_patt p2 []))))
     | <:patt@loc< ($tup:_$) >> -> error loc "singleton tuple pattern"
     | PaTyc loc p t -> mkpat loc (Ppat_constraint (patt p) (ctyp t))
     | PaTyp loc i -> mkpat loc (Ppat_type (long_type_ident i))
     | PaVrn loc s -> mkpat loc (Ppat_variant s None)
+    | PaLaz loc p -> mkpat loc (Ppat_lazy (patt p))
     | PaEq _ _ _ | PaSem _ _ _ | PaCom _ _ _ | PaNil _ as p ->
         error (loc_of_patt p) "invalid pattern" ]
   and mklabpat =
@@ -554,7 +556,7 @@ module Make (Ast : Sig.Camlp4Ast) = struct
           match sep_expr_acc [] e with
           [ [(loc, ml, <:expr< $uid:s$ >>) :: l] ->
               let ca = constructors_arity () in
-              (mkexp loc (Pexp_construct (mkli s ml) None ca), l)
+              (mkexp loc (Pexp_construct (mkli (conv_con s) ml) None ca), l)
           | [(loc, ml, <:expr< $lid:s$ >>) :: l] ->
               (mkexp loc (Pexp_ident (mkli s ml)), l)
           | [(_, [], e) :: l] -> (expr e, l)
@@ -677,7 +679,7 @@ module Make (Ast : Sig.Camlp4Ast) = struct
     | ExLmd loc i me e -> mkexp loc (Pexp_letmodule i (module_expr me) (expr e))
     | ExMat loc e a -> mkexp loc (Pexp_match (expr e) (match_case a []))
     | ExNew loc id -> mkexp loc (Pexp_new (long_type_ident id))
-    | ExObj loc po cfl -> 
+    | ExObj loc po cfl ->
         let p =
           match po with
           [ <:patt<>> -> <:patt@loc< _ >>
@@ -715,7 +717,7 @@ module Make (Ast : Sig.Camlp4Ast) = struct
         mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
     | ExTry loc e a -> mkexp loc (Pexp_try (expr e) (match_case a []))
     | <:expr@loc< ($e1$, $e2$) >> ->
-         mkexp loc (Pexp_tuple (List.map expr (list_of_expr e1 (list_of_expr e2 [])))) 
+         mkexp loc (Pexp_tuple (List.map expr (list_of_expr e1 (list_of_expr e2 []))))
     | <:expr@loc< ($tup:_$) >> -> error loc "singleton tuple"
     | ExTyc loc e t -> mkexp loc (Pexp_constraint (expr e) (Some (ctyp t)) None)
     | <:expr@loc< () >> ->
@@ -919,7 +921,7 @@ module Make (Ast : Sig.Camlp4Ast) = struct
         error loc "invalid virtual class inside a class type"
     | CtAnt _ _ | CtEq _ _ _ | CtCol _ _ _ | CtAnd _ _ _ | CtNil _ ->
         assert False ]
-        
+
   and class_info_class_expr ci =
     match ci with
     [ CeEq _ (CeCon loc vir (IdLid _ name) params) ce ->

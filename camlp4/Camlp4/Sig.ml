@@ -18,6 +18,8 @@
  * - Nicolas Pouillard: refactoring
  *)
 
+
+
 (** Camlp4 signature repository *)
 
 (** {6 Basic signatures} *)
@@ -42,7 +44,7 @@ module type Id = sig
   (** The name of the extension, typically the module name. *)
   value name    : string;
 
-  (** The version of the extension, typically $Id: Sig.ml,v 1.2.2.13 2007/06/23 16:00:09 ertai Exp $ with a versionning system. *)
+  (** The version of the extension, typically $ Id$ with a versionning system. *)
   value version : string;
 
 end;
@@ -638,9 +640,11 @@ module type AstFilters = sig
 
   value register_sig_item_filter : (filter Ast.sig_item) -> unit;
   value register_str_item_filter : (filter Ast.str_item) -> unit;
+  value register_topphrase_filter : (filter Ast.str_item) -> unit;
 
   value fold_interf_filters : ('a -> filter Ast.sig_item -> 'a) -> 'a -> 'a;
   value fold_implem_filters : ('a -> filter Ast.str_item -> 'a) -> 'a -> 'a;
+  value fold_topphrase_filters : ('a -> filter Ast.str_item -> 'a) -> 'a -> 'a;
 
 end;
 
@@ -863,6 +867,9 @@ module type DynLoader = sig
   (** [find_in_path f] Returns the full path of the file [f] if
       [f] is in the current load path, raises [Not_found] otherwise. *)
   value find_in_path : t -> string -> string;
+
+  (** [is_native] [True] if we are in native code, [False] for bytecode. *)
+  value is_native : bool;
 end;
 
 (** A signature for grammars. *)
@@ -1261,6 +1268,7 @@ module type Camlp4Syntax = sig
   value expr_eoi : Gram.Entry.t Ast.expr;
   value expr_quot : Gram.Entry.t Ast.expr;
   value field_expr : Gram.Entry.t Ast.rec_binding;
+  value field_expr_list : Gram.Entry.t Ast.rec_binding;
   value fun_binding : Gram.Entry.t Ast.expr;
   value fun_def : Gram.Entry.t Ast.expr;
   value ident : Gram.Entry.t Ast.ident;
@@ -1269,13 +1277,18 @@ module type Camlp4Syntax = sig
   value ipatt_tcon : Gram.Entry.t Ast.patt;
   value label : Gram.Entry.t string;
   value label_declaration : Gram.Entry.t Ast.ctyp;
+  value label_declaration_list : Gram.Entry.t Ast.ctyp;
   value label_expr : Gram.Entry.t Ast.rec_binding;
+  value label_expr_list : Gram.Entry.t Ast.rec_binding;
   value label_ipatt : Gram.Entry.t Ast.patt;
+  value label_ipatt_list : Gram.Entry.t Ast.patt;
   value label_longident : Gram.Entry.t Ast.ident;
   value label_patt : Gram.Entry.t Ast.patt;
+  value label_patt_list : Gram.Entry.t Ast.patt;
   value labeled_ipatt : Gram.Entry.t Ast.patt;
   value let_binding : Gram.Entry.t Ast.binding;
-  value meth_list : Gram.Entry.t Ast.ctyp;
+  value meth_list : Gram.Entry.t (Ast.ctyp * Ast.meta_bool);
+  value meth_decl : Gram.Entry.t Ast.ctyp;
   value module_binding : Gram.Entry.t Ast.module_binding;
   value module_binding0 : Gram.Entry.t Ast.module_expr;
   value module_binding_quot : Gram.Entry.t Ast.module_binding;

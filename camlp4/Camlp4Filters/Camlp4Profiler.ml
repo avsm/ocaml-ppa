@@ -21,7 +21,7 @@ open Camlp4;
 
 module Id = struct
   value name    = "Camlp4Profiler";
-  value version = "$Id: Camlp4Profiler.ml,v 1.1 2007/02/07 10:09:22 ertai Exp $";
+  value version = Sys.ocaml_version;
 end;
 
 module Make (AstFilters : Camlp4.Sig.AstFilters) = struct

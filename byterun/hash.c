@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: hash.c,v 1.23 2005/09/22 14:21:50 xleroy Exp $ */
+/* $Id: hash.c,v 1.26 2008/08/01 14:10:36 xleroy Exp $ */
 
 /* The generic hashing primitive */
 
@@ -62,7 +62,7 @@ static void hash_aux(value obj)
      We can inspect the block contents. */
 
   Assert (Is_block (obj));  
-  if (Is_atom(obj) || Is_young(obj) || Is_in_heap(obj)) {
+  if (Is_in_value_area(obj)) {
     tag = Tag_val(obj);
     switch (tag) {
     case String_tag:
@@ -142,7 +142,7 @@ static void hash_aux(value obj)
 
 /* Hashing variant tags */
 
-CAMLexport value caml_hash_variant(char * tag)
+CAMLexport value caml_hash_variant(char const * tag)
 {
   value accu;
   /* Same hashing algorithm as in ../typing/btype.ml, function hash_variant */

@@ -21,7 +21,7 @@ open Camlp4;                                        (* -*- camlp4r -*- *)
 
 module Id : Sig.Id = struct
   value name = "Camlp4OCamlParser";
-  value version = "$Id: Camlp4OCamlParser.ml,v 1.3.2.19 2007/12/18 08:53:26 ertai Exp $";
+  value version = Sys.ocaml_version;
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) = struct
@@ -175,6 +175,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
   DELETE_RULE Gram module_type: SELF; SELF; dummy END;
   DELETE_RULE Gram module_type: SELF; "."; SELF END;
   DELETE_RULE Gram label_expr: label_longident; fun_binding END;
+  DELETE_RULE Gram meth_list: meth_decl; opt_dot_dot END;
   DELETE_RULE Gram expr: "let"; opt_rec; binding; "in"; SELF END;
   DELETE_RULE Gram expr: "let"; "module"; a_UIDENT; module_binding0; "in"; SELF END;
   DELETE_RULE Gram expr: "fun"; "["; LIST0 match_case0 SEP "|"; "]" END;
@@ -183,8 +184,8 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
   DELETE_RULE Gram expr: SELF; SELF END;
   DELETE_RULE Gram expr: "new"; class_longident END;
   DELETE_RULE Gram expr: "["; sem_expr_for_list; "::"; expr; "]" END;
-  DELETE_RULE Gram expr: "{"; label_expr; "}" END;
-  DELETE_RULE Gram expr: "{"; "("; SELF; ")"; "with"; label_expr; "}" END;
+  DELETE_RULE Gram expr: "{"; label_expr_list; "}" END;
+  DELETE_RULE Gram expr: "{"; "("; SELF; ")"; "with"; label_expr_list; "}" END;
   DELETE_RULE Gram expr: "("; SELF; ","; comma_expr; ")" END;
   DELETE_RULE Gram expr: SELF; ":="; SELF; dummy END;
   DELETE_RULE Gram expr: "~"; a_LIDENT; ":"; SELF END;
@@ -234,10 +235,11 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
       comma_ctyp comma_expr comma_ipatt comma_patt comma_type_parameter
       constrain constructor_arg_list constructor_declaration
       constructor_declarations ctyp ctyp_quot cvalue_binding direction_flag
-      dummy eq_expr expr expr_eoi expr_quot field_expr fun_binding
+      dummy eq_expr expr expr_eoi expr_quot fun_binding
       fun_def ident ident_quot implem interf ipatt ipatt_tcon label
-      label_declaration label_expr label_ipatt label_longident label_patt
-      labeled_ipatt let_binding meth_list module_binding module_binding0
+      label_declaration label_declaration_list label_expr label_expr_list
+      label_longident label_patt_list meth_list
+      labeled_ipatt let_binding module_binding module_binding0
       module_binding_quot module_declaration module_expr module_expr_quot
       module_longident module_longident_with_app module_rec_declaration
       module_type module_type_quot more_ctyp name_tags opt_as_lident
@@ -284,11 +286,13 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
               <:str_item< let module $m$ = $mb$ in $e$ >>
       ] ]
     ;
-    expr: BEFORE "top"
-      [ ";" RIGHTA
-        [ e1 = SELF; ";"; e2 = SELF ->
+    seq_expr:
+      [ [ e1 = expr LEVEL "top"; ";"; e2 = SELF ->
             conc_seq e1 e2
-        | e1 = SELF; ";" -> e1 ] ];
+        | e1 = expr LEVEL "top"; ";" -> e1
+        | e1 = expr LEVEL "top" -> e1 ] ];
+    expr: BEFORE "top"
+      [ ";" [ e = seq_expr -> e ] ];
     expr: LEVEL "top"
       [ [ "let"; r = opt_rec; bi = binding; "in";
           x = expr LEVEL ";" ->
@@ -306,8 +310,8 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
       ] ];
     expr: BEFORE "||"
       [ ","
-        [ e = SELF; ","; el = (*FIXME comma_expr*)LIST1 NEXT SEP "," ->
-            <:expr< ( $e$, $Ast.exCom_of_list el$ ) >> ]
+        [ e1 = SELF; ","; e2 = comma_expr ->
+            <:expr< ( $e1$, $e2$ ) >> ]
       | ":=" NONA
         [ e1 = SELF; ":="; e2 = expr LEVEL "top" ->
             <:expr< $e1$.val := $e2$ >>
@@ -331,9 +335,9 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     expr: LEVEL "simple" (* LEFTA *)
       [ [ "false" -> <:expr< False >>
         | "true" -> <:expr< True >>
-        | "{"; test_label_eq; lel = label_expr; "}" ->
+        | "{"; test_label_eq; lel = label_expr_list; "}" ->
             <:expr< { $lel$ } >>
-        | "{"; e = expr LEVEL "."; "with"; lel = label_expr; "}" ->
+        | "{"; e = expr LEVEL "."; "with"; lel = label_expr_list; "}" ->
             <:expr< { ($e$) with $lel$ } >>
         | "new"; i = class_longident -> <:expr< new $i$ >>
       ] ]
@@ -372,6 +376,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
                 List.fold_left (fun p1 p2 -> <:patt< $p1$ $p2$ >>) p1
                                 (Ast.list_of_patt p [])
             | _ -> <:patt< $p1$ $p2$ >> ]
+        | "lazy"; p = SELF -> <:patt< lazy $p$ >>
         | `ANTIQUOT (""|"pat"|"anti" as n) s ->
             <:patt< $anti:mk_anti ~c:"patt" n s$ >>
         | p = patt_constr -> p ]
@@ -404,7 +409,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
             mk_list <:patt< [] >>
         | "[|"; "|]" -> <:patt< [||] >>
         | "[|"; pl = sem_patt; "|]" -> <:patt< [| $pl$ |] >>
-        | "{"; pl = label_patt; "}" -> <:patt< { $pl$ } >>
+        | "{"; pl = label_patt_list; "}" -> <:patt< { $pl$ } >>
         | "("; ")" -> <:patt< () >>
         | "("; p = patt; ":"; t = ctyp; ")" -> <:patt< ($p$ : $t$) >>
         | "("; p = patt; ")" -> <:patt< $p$ >>
@@ -412,10 +417,10 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
         | "`"; s = a_ident -> <:patt< ` $s$ >>
         | "#"; i = type_longident -> <:patt< # $i$ >> ] ]
     ;
-    (* comma_expr:
-      [ [ e1 = SELF; ","; e2 = SELF -> <:expr< $e1$, $e2$ >>
-        | e = expr LEVEL ":=" -> e ] ]
-    ;                                                           *)
+    comma_expr:
+      [ [ e1 = expr LEVEL ":="; ","; e2 = SELF -> <:expr< $e1$, $e2$ >>
+        | e1 = expr LEVEL ":=" -> e1 ] ]
+    ;
     (* comma_patt:
       [ [ p1 = SELF; ","; p2 = SELF -> <:patt< $p1$, $p2$ >>
         | p = patt LEVEL ".." -> p ] ]
@@ -507,8 +512,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
             mk <:ctyp< $i$ $t$ >>
         | "("; t = SELF; ")" -> <:ctyp< $t$ >>
         | "#"; i = class_longident -> <:ctyp< # $i$ >>
-        | "<"; ml = opt_meth_list; v = opt_dot_dot; ">" ->
-            <:ctyp< < $ml$ $..:v$ > >>
+        | "<"; t = opt_meth_list; ">" -> t
         | "["; OPT "|"; rfl = row_field; "]" ->
             <:ctyp< [ = $rfl$ ] >>
         | "["; ">"; "]" -> <:ctyp< [ > $<:ctyp<>>$ ] >>
@@ -520,6 +524,8 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
             <:ctyp< [ < $rfl$ > $ntl$ ] >>
         ] ]
     ;
+    meth_list:
+      [ [ m = meth_decl -> (m, Ast.BFalse) ] ];
     comma_ctyp_app:
       [ [ t1 = ctyp; ","; t2 = SELF -> fun acc -> t2 <:ctyp< $acc$ $t1$ >>
         | t = ctyp -> fun acc -> <:ctyp< $acc$ $t$ >>
@@ -569,11 +575,11 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
         | t = ctyp -> <:ctyp< $t$ >>
         | t = ctyp; "="; "private"; tk = type_kind ->
             <:ctyp< $t$ == private $tk$ >>
-        | t1 = ctyp; "="; "{"; t2 = label_declaration; "}" ->
+        | t1 = ctyp; "="; "{"; t2 = label_declaration_list; "}" ->
             <:ctyp< $t1$ == { $t2$ } >>
         | t1 = ctyp; "="; OPT "|"; t2 = constructor_declarations ->
             <:ctyp< $t1$ == [ $t2$ ] >>
-        | "{"; t = label_declaration; "}" ->
+        | "{"; t = label_declaration_list; "}" ->
             <:ctyp< { $t$ } >> ] ]
     ;
     module_expr: LEVEL "apply"
@@ -600,9 +606,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
       [ [ "val" -> () ] ]
     ;
     label_declaration:
-      [ LEFTA
-        [ t1 = SELF; ";"; t2 = SELF -> <:ctyp< $t1$; $t2$ >>
-        | `ANTIQUOT (""|"typ" as n) s ->
+      [ [ `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $anti:mk_anti ~c:"ctyp" n s$ >>
         | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
         | s = a_LIDENT; ":"; t = poly_type ->  <:ctyp< $lid:s$ : $t$ >>

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit_nt.mlp,v 1.27.4.1 2007/10/09 14:04:05 xleroy Exp $ *)
+(* $Id: emit_nt.mlp,v 1.28 2008/01/11 16:13:11 doligez Exp $ *)
 
 (* Emission of Intel 386 assembly code, MASM syntax. *)
 

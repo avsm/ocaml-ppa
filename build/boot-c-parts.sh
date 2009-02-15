@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: boot-c-parts.sh,v 1.1.4.3 2007/03/12 11:58:48 pouillar Exp $
+# $Id: boot-c-parts.sh,v 1.2 2007/10/08 14:19:34 doligez Exp $
 cd `dirname $0`/..
 set -ex
 

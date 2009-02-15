@@ -20,7 +20,7 @@ open Format;
 
 module Id = struct
   value name = "Camlp4.Printers.OCamlr";
-  value version = "$Id: OCamlr.ml,v 1.17.4.6 2007/11/27 14:35:13 ertai Exp $";
+  value version = Sys.ocaml_version;
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) = struct
@@ -147,7 +147,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
         | Some x -> pp f "@[<2>[ %a ::@ %a ]@]" (list o#patt ";@ ") pl o#patt x ]
     | p -> super#patt4 f p ];
 
-    method expr_list_cons _ f e = 
+    method expr_list_cons _ f e =
       let (el, c) = o#mk_expr_list e in
       match c with
       [ None -> o#expr_list f el
@@ -224,8 +224,15 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     let () = o#node f me Ast.loc_of_module_expr in
     match me with
     [ <:module_expr< $me1$ $me2$ >> ->
-          pp f "@[<2>%a@,(%a)@]" o#module_expr me1 o#module_expr me2
+          pp f "@[<2>%a@ %a@]" o#module_expr me1 o#simple_module_expr me2
     | me -> super#module_expr f me ];
+
+    method simple_module_expr f me =
+    let () = o#node f me Ast.loc_of_module_expr in
+    match me with
+    [ <:module_expr< $_$ $_$ >> ->
+          pp f "(%a)" o#module_expr me
+    | _ -> super#simple_module_expr f me ];
 
     method implem f st = pp f "@[<v0>%a@]@." o#str_item st;
 

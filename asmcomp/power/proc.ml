@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc.ml,v 1.13 2006/05/31 08:16:34 xleroy Exp $ *)
+(* $Id: proc.ml,v 1.14 2007/10/30 12:37:16 xleroy Exp $ *)
 
 (* Description of the Power PC *)
 
@@ -234,16 +234,8 @@ let contains_calls = ref false
 (* Calling the assembler *)
 
 let assemble_file infile outfile =
-  let infile = Filename.quote infile
-  and outfile = Filename.quote outfile in
-  match Config.system with
-  | "elf" ->
-      Ccomp.command ("as -u -m ppc -o " ^ outfile ^ " " ^ infile)
-  | "rhapsody" ->
-      Ccomp.command ("as -arch " ^ Config.model ^ " -o " ^ outfile ^ " " ^ infile)
-  | "bsd" ->
-      Ccomp.command ("as -o " ^ outfile ^ " " ^ infile)
-  | _ -> assert false
+  Ccomp.command (Config.asm ^ " -o " ^
+                 Filename.quote outfile ^ " " ^ Filename.quote infile)
 
 open Clflags;;
 open Config;;

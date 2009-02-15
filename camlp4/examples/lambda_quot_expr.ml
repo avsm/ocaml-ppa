@@ -35,6 +35,7 @@ END;;
 let expand_lambda_quot_expr loc _loc_name_opt quotation_contents =
   LambdaGram.parse_string term_eoi loc quotation_contents;;
 
+(* to have this syntax <:lam< fun k -> k >> *)
 Syntax.Quotation.add "lam" Syntax.Quotation.DynAst.expr_tag expand_lambda_quot_expr;;
 
 Syntax.Quotation.default := "lam";;

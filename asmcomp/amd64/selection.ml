@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml,v 1.6 2007/02/09 13:31:14 doligez Exp $ *)
+(* $Id: selection.ml,v 1.7.4.1 2008/10/29 14:32:01 xleroy Exp $ *)
 
 (* Instruction selection for the AMD64 *)
 
@@ -32,7 +32,7 @@ type addressing_expr =
 
 let rec select_addr exp =
   match exp with
-    Cconst_symbol s ->
+    Cconst_symbol s when not !Clflags.dlcode ->
       (Asymbol s, 0)
   | Cop((Caddi | Cadda), [arg; Cconst_int m]) ->
       let (a, n) = select_addr arg in (a, n + m)
@@ -122,17 +122,21 @@ method is_immediate n = n <= 0x7FFFFFFF && n >= -0x80000000
 method is_immediate_natint n = n <= 0x7FFFFFFFn && n >= -0x80000000n
 
 method select_addressing exp =
-  match select_addr exp with
-    (Asymbol s, d) ->
-      (Ibased(s, d), Ctuple [])
-  | (Alinear e, d) ->
-      (Iindexed d, e)
-  | (Aadd(e1, e2), d) ->
-      (Iindexed2 d, Ctuple[e1; e2])
-  | (Ascale(e, scale), d) ->
-      (Iscaled(scale, d), e)
-  | (Ascaledadd(e1, e2, scale), d) ->
-      (Iindexed2scaled(scale, d), Ctuple[e1; e2])
+  let (a, d) = select_addr exp in
+  (* PR#4625: displacement must be a signed 32-bit immediate *)
+  if d < -0x8000_0000 || d > 0x7FFF_FFFF
+  then (Iindexed 0, exp)
+  else match a with
+    | Asymbol s ->
+        (Ibased(s, d), Ctuple [])
+    | Alinear e ->
+        (Iindexed d, e)
+    | Aadd(e1, e2) ->
+        (Iindexed2 d, Ctuple[e1; e2])
+    | Ascale(e, scale) ->
+        (Iscaled(scale, d), e)
+    | Ascaledadd(e1, e2, scale) ->
+        (Iindexed2scaled(scale, d), Ctuple[e1; e2])
 
 method select_store addr exp =
   match exp with
@@ -144,7 +148,7 @@ method select_store addr exp =
       (Ispecific(Istore_int(Nativeint.of_int n, addr)), Ctuple [])
   | Cconst_natpointer n when self#is_immediate_natint n ->
       (Ispecific(Istore_int(n, addr)), Ctuple [])
-  | Cconst_symbol s when not !pic_code ->
+  | Cconst_symbol s when not (!pic_code || !Clflags.dlcode) ->
       (Ispecific(Istore_symbol(s, addr)), Ctuple [])
   | _ ->
       super#select_store addr exp

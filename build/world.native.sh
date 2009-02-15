@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: world.native.sh,v 1.2.4.1 2007/03/12 11:58:48 pouillar Exp $
+# $Id: world.native.sh,v 1.3 2007/10/08 14:19:34 doligez Exp $
 set -e
 cd `dirname $0`/..
 . build/targets.sh

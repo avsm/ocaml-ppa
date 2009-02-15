@@ -21,7 +21,7 @@ open Camlp4;                                             (* -*- camlp4r -*- *)
 
 module Id = struct
   value name = "Camlp4ListComprenhsion";
-  value version = "$Id: Camlp4ListComprehension.ml,v 1.1.2.1 2007/05/27 16:23:35 pouillar Exp $";
+  value version = Sys.ocaml_version;
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) = struct

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: memory.h,v 1.56.4.1 2008/01/21 14:09:05 doligez Exp $ */
+/* $Id: memory.h,v 1.59.4.1 2008/11/02 14:30:05 xleroy Exp $ */
 
 /* Allocation macros and functions */
 
@@ -48,6 +48,44 @@ color_t caml_allocation_color (void *hp);
 /* void caml_shrink_heap (char *);        Only used in compact.c */
 
 /* <private> */
+
+#define Not_in_heap 0
+#define In_heap 1
+#define In_young 2
+#define In_static_data 4
+#define In_code_area 8
+
+#ifdef ARCH_SIXTYFOUR
+
+/* 64 bits: Represent page table as a sparse hash table */
+int caml_page_table_lookup(void * addr);
+#define Classify_addr(a) (caml_page_table_lookup((void *)(a)))
+
+#else
+
+/* 32 bits: Represent page table as a 2-level array */
+#define Pagetable2_log 11
+#define Pagetable2_size (1 << Pagetable2_log)
+#define Pagetable1_log (Page_log + Pagetable2_log)
+#define Pagetable1_size (1 << (32 - Pagetable1_log))
+CAMLextern unsigned char * caml_page_table[Pagetable1_size];
+
+#define Pagetable_index1(a) (((uintnat)(a)) >> Pagetable1_log)
+#define Pagetable_index2(a) \
+  ((((uintnat)(a)) >> Page_log) & (Pagetable2_size - 1))
+#define Classify_addr(a) \
+  caml_page_table[Pagetable_index1(a)][Pagetable_index2(a)]
+
+#endif
+
+#define Is_in_value_area(a) \
+  (Classify_addr(a) & (In_heap | In_young | In_static_data))
+#define Is_in_heap(a) (Classify_addr(a) & In_heap)
+#define Is_in_heap_or_young(a) (Classify_addr(a) & (In_heap | In_young))
+
+int caml_page_table_add(int kind, void * start, void * end);
+int caml_page_table_remove(int kind, void * start, void * end);
+int caml_page_table_initialize(mlsize_t bytesize);
 
 #ifdef DEBUG
 #define DEBUG_clear(result, wosize) do{ \
@@ -389,5 +427,33 @@ CAMLextern void caml_register_global_root (value *);
 
 CAMLextern void caml_remove_global_root (value *);
 
+/* [caml_register_generational_global_root] registers a global C
+   variable as a memory root for the duration of the program, or until
+   [caml_remove_generational_global_root] is called.
+   The program guarantees that the value contained in this variable
+   will not be assigned directly.  If the program needs to change
+   the value of this variable, it must do so by calling
+   [caml_modify_generational_global_root].  The [value *] pointer
+   passed to [caml_register_generational_global_root] must contain
+   a valid Caml value before the call.
+   In return for these constraints, scanning of memory roots during
+   minor collection is made more efficient. */
+
+CAMLextern void caml_register_generational_global_root (value *);
+
+/* [caml_remove_generational_global_root] removes a memory root
+   registered on a global C variable with
+   [caml_register_generational_global_root]. */
+
+CAMLextern void caml_remove_generational_global_root (value *);
+
+/* [caml_modify_generational_global_root(r, newval)]
+   modifies the value contained in [r], storing [newval] inside.
+   In other words, the assignment [*r = newval] is performed,
+   but in a way that is compatible with the optimized scanning of
+   generational global roots.  [r] must be a global memory root
+   previously registered with [caml_register_generational_global_root]. */
+
+CAMLextern void caml_modify_generational_global_root(value *r, value newval);
 
 #endif /* CAML_MEMORY_H */

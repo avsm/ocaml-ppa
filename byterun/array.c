@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: array.c,v 1.23 2005/09/22 14:21:50 xleroy Exp $ */
+/* $Id: array.c,v 1.26 2008/09/08 09:43:28 frisch Exp $ */
 
 /* Operations on arrays */
 
@@ -20,8 +20,6 @@
 #include "memory.h"
 #include "misc.h"
 #include "mlvalues.h"
-
-#ifndef NATIVE_CODE
 
 CAMLprim value caml_array_get_addr(value array, value index)
 {
@@ -125,8 +123,6 @@ CAMLprim value caml_array_unsafe_set(value array, value index, value newval)
     return caml_array_unsafe_set_addr(array, index, newval);
 }
 
-#endif
-
 CAMLprim value caml_make_vect(value len, value init)
 {
   CAMLparam2 (len, init);
@@ -139,7 +135,7 @@ CAMLprim value caml_make_vect(value len, value init)
     res = Atom(0);
   }
   else if (Is_block(init)
-           && (Is_atom(init) || Is_young(init) || Is_in_heap(init))
+           && Is_in_value_area(init)
            && Tag_val(init) == Double_tag) {
     d = Double_val(init);
     wsize = size * Double_wosize;
@@ -181,7 +177,7 @@ CAMLprim value caml_make_array(value init)
   } else {
     v = Field(init, 0);
     if (Is_long(v)
-        || (!Is_atom(v) && !Is_young(v) && !Is_in_heap(v))
+        || ! Is_in_value_area(v)
         || Tag_val(v) != Double_tag) {
       CAMLreturn (init);
     } else {

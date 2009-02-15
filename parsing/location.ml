@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: location.ml,v 1.48.16.1 2007/12/06 13:36:03 doligez Exp $ *)
+(* $Id: location.ml,v 1.50 2008/01/11 16:13:16 doligez Exp $ *)
 
 open Lexing
 
@@ -61,7 +61,7 @@ let rhs_loc n = {
   loc_ghost = false;
 };;
 
-let input_name = ref ""
+let input_name = ref "_none_"
 let input_lexbuf = ref (None : lexbuf option)
 
 (* Terminal info *)
@@ -230,6 +230,14 @@ let print ppf loc =
     fprintf ppf "%s%i" msg_chars startchar;
     fprintf ppf "%s%i%s@.%s" msg_to endchar msg_colon msg_head;
   end
+;;
+
+let print_error ppf loc =
+  print ppf loc;
+  fprintf ppf "Error: ";
+;;
+
+let print_error_cur_file ppf = print_error ppf (in_file !input_name);;
 
 let print_warning loc ppf w =
   if Warnings.is_active w then begin

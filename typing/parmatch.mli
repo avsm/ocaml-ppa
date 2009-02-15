@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parmatch.mli,v 1.10 2005/03/11 10:12:05 maranget Exp $ *)
+(* $Id: parmatch.mli,v 1.12 2008/07/09 13:03:37 mauny Exp $ *)
 
 (* Detection of partial matches and unused match cases. *)
 open Types
@@ -54,5 +54,6 @@ val pressure_variants: Env.t -> pattern list -> unit
 val check_partial: Location.t -> (pattern * expression) list -> partial
 val check_unused: Env.t -> (pattern * expression) list -> unit
 
-
-
+(* Irrefutability tests *)
+val irrefutable : pattern -> bool
+val fluid : pattern -> bool

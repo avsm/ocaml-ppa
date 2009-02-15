@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: gc.ml,v 1.20 2004/06/14 13:27:36 doligez Exp $ *)
+(* $Id: gc.ml,v 1.20.24.1 2008/11/18 10:24:43 doligez Exp $ *)
 
 type stat = {
   minor_words : float;
@@ -38,6 +38,7 @@ type control = {
   mutable verbose : int;
   mutable max_overhead : int;
   mutable stack_limit : int;
+  mutable allocation_policy : int;
 };;
 
 external stat : unit -> stat = "caml_gc_stat";;

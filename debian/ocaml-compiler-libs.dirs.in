@@ -1,4 +1,3 @@
-usr/lib/ocaml/#OcamlABI#/compiler-libs/parsing
-usr/lib/ocaml/#OcamlABI#/compiler-libs/typing
-usr/lib/ocaml/#OcamlABI#/compiler-libs/utils
-usr/share/lintian/overrides
+@OCamlStdlibDir@/compiler-libs/parsing
+@OCamlStdlibDir@/compiler-libs/typing
+@OCamlStdlibDir@/compiler-libs/utils

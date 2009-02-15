@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit.mlp,v 1.38.4.2 2007/10/09 13:54:27 xleroy Exp $ *)
+(* $Id: emit.mlp,v 1.41.2.2 2008/11/08 16:08:09 xleroy Exp $ *)
 
 (* Emission of Intel 386 assembly code *)
 
@@ -35,7 +35,7 @@ let stack_offset = ref 0
 (* Layout of the stack frame *)
 
 let frame_size () =                     (* includes return address *)
-  let sz = 
+  let sz =
     !stack_offset + 4 * num_stack_slots.(0) + 8 * num_stack_slots.(1) + 4
   in Misc.align sz stack_alignment
 
@@ -116,12 +116,12 @@ let emit_align =
       (fun n -> `	.align	{emit_int n}\n`)
   | _ ->
       (fun n -> `	.align	{emit_int(Misc.log2 n)}\n`)
-  
+
 let emit_Llabel fallthrough lbl =
   if not fallthrough && !fastcode_flag then
     emit_align 16 ;
   emit_label lbl
-  
+
 (* Output a pseudo-register *)
 
 let emit_reg = function
@@ -299,7 +299,7 @@ let name_for_cond_branch = function
   | Iunsigned Ceq -> "e"   | Iunsigned Cne -> "ne"
   | Iunsigned Cle -> "be"  | Iunsigned Cgt -> "a"
   | Iunsigned Clt -> "b"  | Iunsigned Cge -> "ae"
-    
+
 (* Output an = 0 or <> 0 test. *)
 
 let output_test_zero arg =
@@ -737,7 +737,7 @@ let emit_instr fallthrough i =
             `	cmpl	{emit_reg i.arg.(1)}, {emit_reg i.arg.(0)}\n`;
             let b = name_for_cond_branch cmp in
             `	j{emit_string b}	{emit_label lbl}\n`
-        | Iinttest_imm((Isigned Ceq | Isigned Cne | 
+        | Iinttest_imm((Isigned Ceq | Isigned Cne |
                         Iunsigned Ceq | Iunsigned Cne) as cmp, 0) ->
             output_test_zero i.arg.(0);
             let b = name_for_cond_branch cmp in
@@ -875,15 +875,6 @@ let emit_profile () =
       `	popl	%eax\n`
   | _ -> () (*unsupported yet*)
 
-(* Declare a global function symbol *)
-
-let declare_function_symbol name =
-  `	.globl	{emit_symbol name}\n`;
-  match Config.system with
-    "linux_elf" | "bsd_elf" | "gnu" ->
-      `	.type	{emit_symbol name},@function\n`
-  | _ -> ()
-
 (* Emission of a function declaration *)
 
 let fundecl fundecl =
@@ -897,7 +888,7 @@ let fundecl fundecl =
   bound_error_call := 0;
   `	.text\n`;
   emit_align 16;
-  declare_function_symbol fundecl.fun_name;
+  `	.globl	{emit_symbol fundecl.fun_name}\n`;
   `{emit_symbol fundecl.fun_name}:\n`;
   if !Clflags.gprofile then emit_profile();
   let n = frame_size() - 4 in
@@ -907,7 +898,13 @@ let fundecl fundecl =
   emit_all true fundecl.fun_body;
   List.iter emit_call_gc !call_gc_sites;
   emit_call_bound_errors ();
-  List.iter emit_float_constant !float_constants
+  List.iter emit_float_constant !float_constants;
+  match Config.system with
+    "linux_elf" | "bsd_elf" | "gnu" ->
+      `	.type	{emit_symbol fundecl.fun_name},@function\n`;
+      `	.size	{emit_symbol fundecl.fun_name},.-{emit_symbol fundecl.fun_name}\n`
+  | _ -> ()
+
 
 (* Emission of data *)
 
@@ -962,6 +959,7 @@ let begin_assembly() =
 let end_assembly() =
   let lbl_end = Compilenv.make_symbol (Some "code_end") in
   `	.text\n`;
+  if macosx then `	NOP\n`; (* suppress "ld warning: atom sorting error" *)
   `	.globl	{emit_symbol lbl_end}\n`;
   `{emit_symbol lbl_end}:\n`;
   `	.data\n`;
@@ -986,4 +984,7 @@ let end_assembly() =
         if use_ascii_dir
         then emit_string_directive "	.ascii	" s
         else emit_bytes_directive  "	.byte	" s) };
-  if macosx then emit_external_symbols ()
+  if macosx then emit_external_symbols ();
+  if Config.system = "linux_elf" then
+    (* Mark stack as non-executable, PR#4564 *)
+    `\n	.section .note.GNU-stack,\"\",%progbits\n`

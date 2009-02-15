@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typeopt.ml,v 1.10.20.1 2008/01/18 03:54:57 garrigue Exp $ *)
+(* $Id: typeopt.ml,v 1.13 2008/02/29 14:21:22 doligez Exp $ *)
 
 (* Auxiliaries for type-based optimizations, e.g. array kinds *)
 
@@ -24,22 +24,22 @@ open Lambda
 
 let has_base_type exp base_ty_path =
   let exp_ty =
-    Ctype.expand_head exp.exp_env (Ctype.correct_levels exp.exp_type) in
+    Ctype.expand_head_opt exp.exp_env (Ctype.correct_levels exp.exp_type) in
   match Ctype.repr exp_ty with
     {desc = Tconstr(p, _, _)} -> Path.same p base_ty_path
   | _ -> false
 
 let maybe_pointer exp =
   let exp_ty =
-    Ctype.expand_head exp.exp_env (Ctype.correct_levels exp.exp_type) in
+    Ctype.expand_head_opt exp.exp_env (Ctype.correct_levels exp.exp_type) in
   match (Ctype.repr exp_ty).desc with
     Tconstr(p, args, abbrev) ->
       not (Path.same p Predef.path_int) &&
       not (Path.same p Predef.path_char) &&
       begin try
         match Env.find_type p exp.exp_env with
-          {type_kind = Type_variant([], _)} -> true (* type exn *)
-        | {type_kind = Type_variant(cstrs, _)} ->
+          {type_kind = Type_variant []} -> true (* type exn *)
+        | {type_kind = Type_variant cstrs} ->
             List.exists (fun (name, args) -> args <> []) cstrs
         | _ -> true
       with Not_found -> true
@@ -50,7 +50,7 @@ let maybe_pointer exp =
   | _ -> true
 
 let array_element_kind env ty =
-  let ty = Ctype.repr (Ctype.expand_head env ty) in
+  let ty = Ctype.repr (Ctype.expand_head_opt env ty) in
   match ty.desc with
     Tvar | Tunivar ->
       Pgenarray
@@ -70,7 +70,7 @@ let array_element_kind env ty =
           match Env.find_type p env with
             {type_kind = Type_abstract} ->
               Pgenarray
-          | {type_kind = Type_variant(cstrs, _)}
+          | {type_kind = Type_variant cstrs}
             when List.for_all (fun (name, args) -> args = []) cstrs ->
               Pintarray
           | {type_kind = _} ->
@@ -85,7 +85,7 @@ let array_element_kind env ty =
       Paddrarray
 
 let array_kind_gen ty env =
-  let array_ty = Ctype.expand_head env (Ctype.correct_levels ty) in
+  let array_ty = Ctype.expand_head_opt env (Ctype.correct_levels ty) in
   match (Ctype.repr array_ty).desc with
     Tconstr(p, [elt_ty], _) | Tpoly({desc = Tconstr(p, [elt_ty], _)}, _)
     when Path.same p Predef.path_array ->
@@ -125,7 +125,7 @@ let layout_table =
    "fortran_layout", Pbigarray_fortran_layout]
 
 let bigarray_kind_and_layout exp =
-  let ty = Ctype.repr (Ctype.expand_head exp.exp_env exp.exp_type) in
+  let ty = Ctype.repr (Ctype.expand_head_opt exp.exp_env exp.exp_type) in
   match ty.desc with
     Tconstr(p, [caml_type; elt_type; layout_type], abbrev) ->
       (bigarray_decode_type elt_type kind_table Pbigarray_unknown,

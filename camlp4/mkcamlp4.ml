@@ -17,7 +17,7 @@
  * - Nicolas Pouillard: rewriting in OCaml
  *)
 
-(* $Id: mkcamlp4.ml,v 1.3 2007/02/07 10:09:21 ertai Exp $ *)
+
 
 open Camlp4;
 open Camlp4_config;
@@ -61,7 +61,7 @@ try do {
     close_out cout
   };
 
-  run (["ocamlc"; "-I"; camlp4_standard_library; "Camlp4.cma"; crc_ml]
+  run (["ocamlc"; "-I"; camlp4_standard_library; "camlp4lib.cma"; crc_ml]
        @ includes @ options @ ["Camlp4Bin.cmo"; "-linkall"]);
   clean();
 }

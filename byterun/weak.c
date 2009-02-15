@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: weak.c,v 1.25.6.1 2008/01/21 14:09:05 doligez Exp $ */
+/* $Id: weak.c,v 1.29 2008/09/17 14:55:30 doligez Exp $ */
 
 /* Operations on weak arrays */
 
@@ -70,7 +70,7 @@ CAMLprim value caml_weak_set (value ar, value n, value el)
   if (offset < 1 || offset >= Wosize_val (ar)){
     caml_invalid_argument ("Weak.set");
   }
-  if (el != None_val){
+  if (el != None_val && Is_block (el)){
                                               Assert (Wosize_val (el) == 1);
     do_set (ar, offset, Field (el, 0));
   }else{
@@ -120,7 +120,7 @@ CAMLprim value caml_weak_get_copy (value ar, value n)
 
   v = Field (ar, offset);
   if (v == caml_weak_none) CAMLreturn (None_val);
-  if (Is_block (v) && (Is_young (v) || Is_in_heap (v))){
+  if (Is_block (v) && Is_in_heap_or_young(v)) {
     elt = caml_alloc (Wosize_val (v), Tag_val (v));
           /* The GC may erase or move v during this call to caml_alloc. */
     v = Field (ar, offset);

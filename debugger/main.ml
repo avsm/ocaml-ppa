@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml,v 1.19.6.1 2007/09/24 07:45:31 garrigue Exp $ *)
+(* $Id: main.ml,v 1.21 2008/07/29 08:31:41 xleroy Exp $ *)
 
 open Primitives
 open Misc
@@ -148,8 +148,15 @@ let speclist = [
 
 let main () =
   try
-    socket_name := Filename.concat Filename.temp_dir_name
-                          ("camldebug" ^ (string_of_int (Unix.getpid ())));
+    socket_name := 
+      (match Sys.os_type with
+        "Win32" -> 
+          (Unix.string_of_inet_addr Unix.inet_addr_loopback)^
+          ":"^
+          (string_of_int (10000 + ((Unix.getpid ()) mod 10000)))
+      | _ -> Filename.concat Filename.temp_dir_name
+                                ("camldebug" ^ (string_of_int (Unix.getpid ())))
+      );
     begin try
       Arg.parse speclist anonymous "";
       Arg.usage speclist

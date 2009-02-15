@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: misc.h,v 1.31.10.1 2008/02/12 13:30:16 doligez Exp $ */
+/* $Id: misc.h,v 1.33 2008/02/29 12:56:15 doligez Exp $ */
 
 /* Miscellaneous macros and variables. */
 
@@ -49,19 +49,9 @@ typedef char * addr;
 
 /* Export control (to mark primitives and to handle Windows DLL) */
 
-#if defined(_WIN32) && defined(CAML_DLL)
-# define CAMLexport __declspec(dllexport)
-# define CAMLprim __declspec(dllexport)
-# if defined(IN_OCAMLRUN)
-#  define CAMLextern __declspec(dllexport) extern
-# else
-#  define CAMLextern __declspec(dllimport) extern
-# endif
-#else
-# define CAMLexport
-# define CAMLprim
-# define CAMLextern extern
-#endif
+#define CAMLexport
+#define CAMLprim
+#define CAMLextern extern
 
 /* Assertions */
 
@@ -76,8 +66,8 @@ CAMLextern int caml_failed_assert (char *, char *, int);
 
 CAMLextern void caml_fatal_error (char *msg) Noreturn;
 CAMLextern void caml_fatal_error_arg (char *fmt, char *arg) Noreturn;
-CAMLextern void caml_fatal_error_arg2 (char *fmt1, char *arg1, 
-				       char *fmt2, char *arg2) Noreturn;
+CAMLextern void caml_fatal_error_arg2 (char *fmt1, char *arg1,
+                                       char *fmt2, char *arg2) Noreturn;
 
 /* Data structures */
 

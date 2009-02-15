@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: startup.c,v 1.68 2005/09/22 14:21:50 xleroy Exp $ */
+/* $Id: startup.c,v 1.70.2.1 2008/11/18 10:24:43 doligez Exp $ */
 
 /* Start-up code */
 
@@ -35,6 +35,7 @@
 #include "exec.h"
 #include "fail.h"
 #include "fix_code.h"
+#include "freelist.h"
 #include "gc_ctrl.h"
 #include "instrtrace.h"
 #include "interp.h"
@@ -72,6 +73,10 @@ static void init_atoms(void)
 {
   int i;
   for(i = 0; i < 256; i++) caml_atom_table[i] = Make_header(0, i, Caml_white);
+  if (caml_page_table_add(In_static_data,
+                          caml_atom_table, caml_atom_table + 256) != 0) {
+    caml_fatal_error("Fatal error: not enough memory for the initial page table");
+  }
 }
 
 /* Read the trailer of a bytecode file */
@@ -254,7 +259,7 @@ static int parse_command_line(char **argv)
       exit(0);
       break;
     case 'b':
-      caml_init_backtrace();
+      caml_record_backtrace(Val_true);
       break;
     case 'I':
       if (argv[i + 1] != NULL) {
@@ -294,6 +299,7 @@ static void scanmult (char *opt, uintnat *var)
 static void parse_camlrunparam(void)
 {
   char *opt = getenv ("OCAMLRUNPARAM");
+  uintnat p;
 
   if (opt == NULL) opt = getenv ("CAMLRUNPARAM");
 
@@ -307,8 +313,9 @@ static void parse_camlrunparam(void)
       case 'o': scanmult (opt, &percent_free_init); break;
       case 'O': scanmult (opt, &max_percent_free_init); break;
       case 'v': scanmult (opt, &caml_verb_gc); break;
-      case 'b': caml_init_backtrace(); break;
+      case 'b': caml_record_backtrace(Val_true); break;
       case 'p': caml_parser_trace = 1; break;
+      case 'a': scanmult (opt, &p); caml_set_allocation_policy (p); break;
       }
     }
   }
@@ -469,4 +476,3 @@ CAMLexport void caml_startup_code(
   if (Is_exception_result(res))
     caml_fatal_uncaught_exception(Extract_exception(res));
 }
-

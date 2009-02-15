@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml,v 1.8.2.14 2007/12/18 08:58:02 ertai Exp $ *)
+(* $Id: main.ml,v 1.21.4.1 2008/11/06 15:40:39 ertai Exp $ *)
 (* Original author: Berke Durak *)
 open My_std
 open Log
@@ -24,6 +24,7 @@ exception Exit_build_error of string
 exception Exit_silently
 
 let clean () =
+  Log.finish ();
   Shell.rm_rf !Options.build_dir;
   if !Options.make_links then begin
     let entry =

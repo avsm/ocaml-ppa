@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: dumpobj.ml,v 1.37 2006/05/15 09:00:48 weis Exp $ *)
+(* $Id: dumpobj.ml,v 1.38 2008/09/10 12:53:05 doligez Exp $ *)
 
 (* Disassembler for executable and .cmo object files *)
 
@@ -451,7 +451,7 @@ let print_instr ic =
         print_int nvars;
         for i = 0 to nfuncs - 1 do
           print_string ", ";
-          print_int (orig + inputu ic);
+          print_int (orig + inputs ic);
         done;
   | Pubmet
      -> let tag = inputs ic in

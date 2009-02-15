@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlbuild_unix_plugin.ml,v 1.1.2.1 2007/11/22 18:34:13 ertai Exp $ *)
+(* $Id: ocamlbuild_unix_plugin.ml,v 1.3 2008/07/31 07:36:12 ertai Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open Format
 open Ocamlbuild_pack
@@ -52,9 +52,10 @@ let run_and_open s kont =
     | Unix.WEXITED 0 -> ()
     | Unix.WEXITED _ | Unix.WSIGNALED _ | Unix.WSTOPPED _ ->
         failwith (Printf.sprintf "Error while running: %s" s) in
-  try
-    let res = kont ic in close (); res
-  with e -> (close (); raise e)
+  let res = try
+      kont ic
+    with e -> (close (); raise e)
+  in close (); res
 
 let stdout_isatty () =
   Unix.isatty Unix.stdout

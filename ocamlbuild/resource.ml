@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: resource.ml,v 1.1.4.7 2007/12/18 09:03:37 ertai Exp $ *)
+(* $Id: resource.ml,v 1.9 2008/01/11 16:13:16 doligez Exp $ *)
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format

@@ -19,7 +19,7 @@
 
 module Id = struct
   value name = "Camlp4.Printers.Null";
-  value version = "$Id: Null.ml,v 1.2 2007/02/07 10:09:21 ertai Exp $";
+  value version = Sys.ocaml_version;
 end;
 
 module Make (Syntax : Sig.Syntax) = struct

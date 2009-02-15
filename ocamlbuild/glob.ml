@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: glob.ml,v 1.2.2.1 2007/11/21 21:02:05 ertai Exp $ *)
+(* $Id: glob.ml,v 1.5 2008/07/25 14:38:31 ertai Exp $ *)
 (* Original author: Berke Durak *)
 (* Glob *)
 open My_std;;
@@ -270,7 +270,7 @@ module Brute =
                 (match_character_class cl u.[i + k]) && check (k + 1)
             in
             check 0
-        | Star p -> raise Too_hard
+        | Star _ -> raise Too_hard
         | Class cl -> n = 1 && match_character_class cl u.[i]
         | Concat(p1,p2) ->
             let rec scan j =

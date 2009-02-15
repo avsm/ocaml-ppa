@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: winwait.c,v 1.18.6.1 2007/10/25 08:31:58 xleroy Exp $ */
+/* $Id: winwait.c,v 1.20 2008/01/11 16:13:16 doligez Exp $ */
 
 #include <windows.h>
 #include <mlvalues.h>
@@ -19,6 +19,7 @@
 #include <memory.h>
 #include "unixsupport.h"
 #include <sys/types.h>
+#include <signals.h>
 
 static value alloc_process_status(HANDLE pid, int status)
 {
