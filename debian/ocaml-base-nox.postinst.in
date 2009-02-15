@@ -1,20 +1,20 @@
-#!/bin/sh
+#!/bin/sh -e
 if [ ! -e /usr/local/lib/ocaml ]; then
     if mkdir /usr/local/lib/ocaml 2>/dev/null; then
 	chown root:staff /usr/local/lib/ocaml
 	chmod 2775 /usr/local/lib/ocaml
     fi
 fi
-if [ ! -e /usr/local/lib/ocaml/#OcamlABI# ]; then
-    if mkdir /usr/local/lib/ocaml/#OcamlABI# 2>/dev/null; then
-	chown root:staff /usr/local/lib/ocaml/#OcamlABI#
-	chmod 2775 /usr/local/lib/ocaml/#OcamlABI#
+if [ ! -e /usr/local/lib/ocaml/@OCamlABI@ ]; then
+    if mkdir /usr/local/lib/ocaml/@OCamlABI@ 2>/dev/null; then
+	chown root:staff /usr/local/lib/ocaml/@OCamlABI@
+	chmod 2775 /usr/local/lib/ocaml/@OCamlABI@
     fi
 fi
-if [ ! -e /usr/local/lib/ocaml/#OcamlABI#/stublibs ]; then
-    if mkdir /usr/local/lib/ocaml/#OcamlABI#/stublibs 2>/dev/null; then
-	chown root:staff /usr/local/lib/ocaml/#OcamlABI#/stublibs
-	chmod 2775 /usr/local/lib/ocaml/#OcamlABI#/stublibs
+if [ ! -e /usr/local/lib/ocaml/@OCamlABI@/stublibs ]; then
+    if mkdir /usr/local/lib/ocaml/@OCamlABI@/stublibs 2>/dev/null; then
+	chown root:staff /usr/local/lib/ocaml/@OCamlABI@/stublibs
+	chmod 2775 /usr/local/lib/ocaml/@OCamlABI@/stublibs
     fi
 fi
 

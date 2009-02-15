@@ -1,17 +1,24 @@
 #!/usr/bin/make -f
 include /usr/share/dpatch/dpatch.make
 
-PACKAGE = ocaml
-OCAMLMAJOR = 3.11
-OCAMLMINOR = 0
-OCAMLABI = $(OCAMLMAJOR).$(OCAMLMINOR)
-STDLIBDIR = /usr/lib/ocaml/$(OCAMLABI)
-MD5SUMSDIR = /var/lib/ocaml/md5sums
-INSTDIR = $(CURDIR)/debian/ocaml-nox/usr
+PACKAGE := ocaml
+ALL_PACKAGES := $(shell sed -ne 's/^Package: //p' debian/control)
+OCAMLMAJOR := 3.11
+OCAMLMINOR := 0
 
-NATIVE_ARCHS = $(shell cat debian/native-archs)
-DISTDIR = $(PACKAGE)-$(OCAMLMAJOR).$(OCAMLMINOR)
-SRCTARBALL = $(PACKAGE)-source-$(OCAMLMAJOR).$(OCAMLMINOR).tar.bz2
+# Build cache (for Debian debugging)
+BUILDCACHE := $(wildcard ../ocaml.cache)
+
+# These are also in CDBS
+OCAML_ABI := $(OCAMLMAJOR).$(OCAMLMINOR)
+OCAML_STDLIB_DIR := /usr/lib/ocaml/$(OCAML_ABI)
+OCAML_DLL_DIR = $(OCAML_STDLIB_DIR)/stublibs
+OCAML_NATIVE_ARCHS := $(shell cat debian/native-archs)
+
+MD5SUMSDIR = /var/lib/ocaml/md5sums
+INSTDIR = $(CURDIR)/debian/tmp/usr
+DISTDIR = $(PACKAGE)-$(OCAML_ABI)
+SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar.bz2
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
@@ -24,7 +31,7 @@ export DH_OPTIONS
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 DEB_BUILD_ARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
-THIS_NATIVE_ARCH    ?= $(findstring $(DEB_BUILD_ARCH),$(NATIVE_ARCHS))
+OCAML_OPT_ARCH      ?= $(findstring $(DEB_BUILD_ARCH),$(OCAML_NATIVE_ARCHS))
 
 CFLAGS = -Wall -g
 
@@ -36,34 +43,49 @@ endif
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
-ifeq (,$(THIS_NATIVE_ARCH))
-	SED_HANDLE_OPT := -e '/^OPT: /d'
+
+CONFIGURE_OPTS := \
+  --with-pthread -prefix /usr \
+  -libdir $(OCAML_STDLIB_DIR) \
+  -mandir /usr/share/man \
+  -tkdefs "-I/usr/include/tcl8.4" \
+  -tklibs "-L/usr/lib -ltk8.4 -ltcl8.4"
+
+CONFIGURE_SED := \
+  -e "s%MANDIR=.*$$%MANDIR=\$$(PREFIX)/share/man%g" \
+  -e "s%LIBDIR=.*$$%LIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAML_ABI)%g" \
+  -e "s%STUBLIBDIR=.*$$%STUBLIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAML_ABI)/stublibs%g"
+
+# These are also in CDBS
+OCAML_IN_FILES := $(filter-out debian/control,$(patsubst %.in,%,$(wildcard debian/*.in)))
+OCAMLINIT_SED := -e 's%^ \+%%' \
+  -e 's%@OCamlABI@%$(OCAML_ABI)%' \
+  -e 's%@OCamlStdlibDir@%$(OCAML_STDLIB_DIR)%' \
+  -e 's%@OCamlDllDir@%$(OCAML_DLL_DIR)%'
+ifeq (,$(OCAML_OPT_ARCH))
+  OCAMLINIT_SED += -e '/^OPT: /d'
 else
-	SED_HANDLE_OPT := -e 's/^OPT: //'
+  OCAMLINIT_SED += -e 's/^OPT: //'
 endif
 
 patch-stamp: debian/$(SRCTARBALL)
 
-abi-sed-stamp: debian/$(SRCTARBALL)
-	for t in `find debian/ -name \*.in | grep -v debian/control.in`; do \
-	  sed -e 's%#OcamlABI#%$(OCAMLABI)%' -e 's%#OcamlMAJOR#%$(OCAMLMAJOR)%' \
-	    $(SED_HANDLE_OPT) $$t >$${t%.in}; \
+ocamlinit-stamp: debian/$(SRCTARBALL)
+	for t in $(OCAML_IN_FILES); do \
+	  sed $(OCAMLINIT_SED) $$t.in > $$t; \
 	done
 	touch $@
-
-abi-sed-clean:
-	for t in `find debian/ -name \*.in | grep -v debian/control.in`; do \
-	  rm -f $${t%.in}; \
-	done
 
 # Generate ocaml-native-compilers' Architecture field.
 # Should never be called automatically.
 debian/control:
-	sed -e 's/#OcamlNativeArchs#/$(NATIVE_ARCHS)/g' debian/control.in > $@
+	sed -e 's/@OCamlNativeArchs@/$(NATIVE_ARCHS)/g' debian/control.in > $@
 
 pre-config-stamp: debian/$(SRCTARBALL)
+# Backup upstream config.{sub,guess}, and use most up-to-date ones
 	for ext in sub guess; do \
-	  if [ -f /usr/share/misc/config.$$ext ] && ! [ -f debian/config.orig.$$ext ] ; then \
+	  if [ -f /usr/share/misc/config.$$ext ] && \
+	    ! [ -f debian/config.orig.$$ext ]; then \
 	    mv config/gnu/config.$$ext debian/config.orig.$$ext; \
 	    cp -f /usr/share/misc/config.$$ext config/gnu/config.$$ext; \
 	  fi; \
@@ -73,71 +95,62 @@ pre-config-stamp: debian/$(SRCTARBALL)
 debian/$(SRCTARBALL):
 	ln -fs . $(DISTDIR)	# beware of the symlink recursion!
 	tar --anchored -chjf $@ \
-		--exclude=$(DISTDIR)/$(DISTDIR)	\
-		--exclude-from=debian/ocaml-source.exclude \
-		$(DISTDIR)/
+	  --exclude=$(DISTDIR)/$(DISTDIR)	\
+	  --exclude-from=debian/ocaml-source.exclude \
+	  $(DISTDIR)/
 	rm -f $(DISTDIR)
 
-config-stamp: pre-config-stamp patch-stamp abi-sed-stamp
-	dh_testdir
-	./configure --with-pthread -prefix /usr				\
-		-libdir /usr/lib/ocaml/$(OCAMLABI)			\
-		-mandir /usr/share/man					\
-		-tkdefs "-I/usr/include/tcl8.4"				\
-		-tklibs "-L/usr/lib -ltk8.4 -ltcl8.4"
-	sed -e "s%MANDIR=.*$$%MANDIR=\$$(PREFIX)/share/man%g"           			\
-	    -e "s%LIBDIR=.*$$%LIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAMLABI)%g"			\
-	    -e "s%STUBLIBDIR=.*$$%STUBLIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAMLABI)/stublibs%g"	\
-		config/Makefile > config/Makefile.debian
-	mv config/Makefile.debian config/Makefile
-	if test -z "`grep "OTHERLIBRARIES.*labltk" config/Makefile`"; then\
-		echo "Error, labltk library was not built";		\
-		echo "Check your tcl/tk development packages";		\
-		echo "Aborting.";					\
-		exit 1;							\
+config-stamp: pre-config-stamp patch-stamp ocamlinit-stamp
+	dh build --before dh_auto_configure
+	./configure $(CONFIGURE_OPTS)
+	sed -i $(CONFIGURE_SED) config/Makefile
+	if test -z "`grep "OTHERLIBRARIES.*labltk" config/Makefile`"; then \
+	  echo "Error, labltk library was not detected"; \
+	  echo "Check your tcl/tk development packages"; \
+	  echo "Aborting."; \
+	  exit 1; \
 	fi
 	touch $@
 
+patch-stamp: ocamlinit-stamp
 
-patch-stamp: abi-sed-stamp
-# Architecture
-build: build-arch build-indep
-
-build-arch: build-arch-stamp
-build-arch-stamp: config-stamp
-
-	# Add here commands to compile the arch part of the package.
-	if test ! -d boot.debian; then 					\
-		cp -xa boot boot.debian;				\
+build: build-stamp
+build-stamp: config-stamp
+	if test ! -d boot.debian; then \
+	  cp -xa boot boot.debian; \
 	fi
+	tar cjf debian/examples_labltk.tar.bz2 \
+	  -C otherlibs/labltk --exclude=.cvsignore \
+	  examples_labltk
+ifeq ($(BUILDCACHE),)
 	$(MAKE) world
 	$(MAKE) bootstrap
-ifneq ($(THIS_NATIVE_ARCH),)
+	$(MAKE) -C tools objinfo dumpobj
+ifneq (,$(OCAML_OPT_ARCH))
 	@echo "Building native compilers"
 	$(MAKE) opt opt.opt
 	$(MAKE) -C tools dumpapprox
-	mv tools/dumpapprox tools/ocamldumpapprox
 	touch opt-built-stamp
 endif
-	touch build-arch-stamp
-
-build-indep: build-indep-stamp config-stamp
-build-indep-stamp:
-	# create ocaml source tarball
+else
+	@echo "===> WARNING: $(BUILDCACHE) detected, compilation skipped! <==="
+	rsync -a --exclude=debian --exclude=.git $(BUILDCACHE)/ .
+	rm -f build-stamp install-stamp
+endif
+	dh build --after dh_auto_test
 	touch $@
 
-clean: abi-sed-clean unpatch
-	dh_testdir
-	dh_testroot
-
-	# Add here commands to clean up after the build process.
-	[ ! -f "$(CURDIR)/config/Makefile" ] || $(MAKE) clean
-	if test -d boot.debian; then	\
-		$(RM) -r boot;		\
-		mv boot.debian boot;	\
+clean: unpatch
+	dh clean --before dh_auto_clean
+ifneq ($(wildcard $(CURDIR)/config/Makefile),)
+	$(MAKE) clean
+	$(MAKE) -C emacs clean
+endif
+# Restore files altered by the build process
+	if test -d boot.debian; then \
+	  rm -Rf boot; \
+	  mv boot.debian boot; \
 	fi
-	[ ! -f "$(CURDIR)/config/Makefile" ] || $(MAKE) -C emacs clean
-	# Restore files altered by debian/rules
 	for ext in sub guess; do \
 	  if [ -f debian/config.orig.$$ext ] ; then \
 	    mv -f debian/config.orig.$$ext config/gnu/config.$$ext; \
@@ -146,156 +159,67 @@ clean: abi-sed-clean unpatch
 	if head -n 1 emacs/ocamltags.in | grep -q '^#!/bin/sh'; then \
 		sed -i 1d emacs/ocamltags.in; \
 	fi
+# Remaining stuff
+	-rm -Rf debian/$(SRCTARBALL) $(OCAML_IN_FILES)
+	dh clean --after dh_auto_clean
 
-	dh_clean
-	-$(RM) debian/$(SRCTARBALL)
-
-install: install-indep install-arch
-install-indep: build-indep
-	dh_testdir
-	dh_testroot
-	dh_prep -i
-	dh_installdirs -i
-
-	# Install Emacs files
-	$(MAKE) -C emacs EMACSDIR=$(CURDIR)/debian/ocaml-mode/usr/share/emacs/site-lisp/ocaml-mode \
-		NOCOMPILE=true simple-install
+install: install-stamp
+install-stamp:
+	dh install --before dh_auto_install
+# Install Emacs files
+	$(MAKE) -C emacs \
+	  EMACSDIR=$(CURDIR)/debian/ocaml-mode/usr/share/emacs/site-lisp/ocaml-mode \
+	  NOCOMPILE=true simple-install
 	if ! head -n 1 emacs/ocamltags.in | grep -q '^#!/bin/sh'; then \
-		sed -i -e '1 i #!/bin/sh' emacs/ocamltags.in; \
+	  sed -i -e '1 i #!/bin/sh' emacs/ocamltags.in; \
 	fi
 	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-mode/usr/bin install-ocamltags
-
-	dh_install --sourcedir=. -i
-
-install-arch: build-arch
-	dh_testdir
-	dh_testroot
-	dh_prep -a
-	dh_installdirs -a
-
-	# Let's install ocaml first.
+# Install OCaml
 	sed -e 's|PREFIX=\"/.*\"|PREFIX=\"$(INSTDIR)"|' < config/config.sh > config/config.debian.install.sh
 	$(MAKE) install PREFIX=$(INSTDIR)
-
-	# Now move the graphics files over
-	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml
-
-	# Move away camlp4 stuff
-	dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4-extra
-	dh_movefiles --sourcedir=debian/ocaml-nox -pcamlp4
-
-	# Install camlp4 .mli files
-	# XXX assumption: no filename clashes
+# To avoid erroneous dh_install failure
+	rm -f $(INSTDIR)/share/man/man1/ocamlopt.opt.1 $(INSTDIR)/share/man/man1/ocamlc.opt.1
+# Dispatch files with dh_install (--fail-missing forces to handle everything...)
+	dh_install --fail-missing
+# Install additional files not handled by dh_install
+# Beware: dh_install does not handle renamings, please pay attention
+	cp otherlibs/labltk/README debian/ocaml/usr/share/doc/ocaml/README.labltk
+	for u in dumpobj objinfo dumpapprox; do \
+	  if [ -f tools/$$u ]; then \
+	    cp tools/$$u debian/ocaml-nox/usr/bin/ocaml$$u; \
+	  fi \
+	done
 	for mli in `find camlp4 -name '*.mli'` ; do \
-		install -m 644 $$mli debian/camlp4$(STDLIBDIR)/camlp4/ ; \
+	  cp --parents $$mli debian/camlp4$(OCAML_STDLIB_DIR); \
 	done
+	for pkg in ocaml ocaml-nox ocaml-base; do ( \
+	  cd debian/$$pkg/usr/share/doc/$$pkg && \
+	  ln -sf ../ocaml-base-nox/Changes.gz . && \
+	  ln -sf ../ocaml-base-nox/README.gz . && \
+	  ln -sf ../ocaml-base-nox/README.Debian .; \
+	); done
+# Remove empty directory
+	rmdir $(CURDIR)/debian/ocaml-nox$(OCAML_STDLIB_DIR)/ocamldoc/custom
+# Remaining stuff
+	dh install --after dh_install
+	touch $@
 
-	# Then move the ocaml-base-nox package.
-	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-base-nox
-
-	# And base's corresponding graphics stuff.
-	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-base
-
-ifneq ($(THIS_NATIVE_ARCH),)
-	# The ocaml-native-compilers, if available.
-	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-native-compilers
-endif
-
-	# The interpreter files
-	dh_movefiles --sourcedir=debian/ocaml-nox -pocaml-interp
-
-	# TEMPORARILY DISABLED while moving ocaml-md5sums to dh-ocaml
-	## Compute core entries of the ocaml md5sums registry and install them
-	#(cd debian/ocaml-md5sums &&									\
-	# chmod +x feeding.sh &&									\
-	# for pkg in ocaml-nox ocaml ocaml-compiler-libs; do					\
-	#	mkdir -p ../$$pkg$(MD5SUMSDIR);						\
-	#	./feeding.sh $$pkg $(STDLIBDIR) $(OCAMLABI) ../$$pkg$(STDLIBDIR) >	\
-	#		../$$pkg$(MD5SUMSDIR)/$$pkg.md5sums;				\
-	# done)
-
-	# Remove .opt manpages from ocaml-nox
-	rm -f debian/ocaml-nox/usr/share/man/man1/*.opt.1
-
-	# Make some symbolic links
-	cd debian/ocaml/usr/share/doc/ocaml; \
-		ln -sf ../ocaml-base-nox/Changes.gz .; \
-		ln -sf ../ocaml-base-nox/README.gz .; \
-		ln -sf ../ocaml-base-nox/README.Debian .
-	cd debian/ocaml-nox/usr/share/doc/ocaml-nox; \
-		ln -sf ../ocaml-base-nox/Changes.gz .; \
-		ln -sf ../ocaml-base-nox/README.gz .; \
-		ln -sf ../ocaml-base-nox/README.Debian .
-	cd debian/ocaml-base/usr/share/doc/ocaml-base; \
-		ln -sf ../ocaml-base-nox/Changes.gz .; \
-		ln -sf ../ocaml-base-nox/README.gz .; \
-		ln -sf ../ocaml-base-nox/README.Debian .
-
-	# Remove empty directory
-	for i in `cat debian/ocaml-nox.empty-dirs`; do \
-       		if test -d "debian/ocaml-nox/$$i" && test -z `ls -1 "debian/ocaml-nox/$$i"`; then \
-			$(RM) -r "debian/ocaml-nox/$$i"; \
-		fi; \
+binary-stamp: install-stamp
+	dh binary --before dh_gencontrol
+	for u in $(ALL_PACKAGES); do \
+	  echo 'F:OCamlABI=$(OCAML_ABI)' >> debian/$$u.substvars; \
 	done
-	
-
-	# Install override files
-	cp debian/ocaml-compiler-libs.override debian/ocaml-compiler-libs/usr/share/lintian/overrides/ocaml-compiler-libs
-	cp debian/ocaml-nox.override debian/ocaml-nox/usr/share/lintian/overrides/ocaml-nox
-
-	dh_install --sourcedir=. -a
-
-# Must not depend on anything. This is to be called by
-# binary-arch/binary-multi in another 'make' thread.
-binary-common:
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs Changes
-	dh_installdocs
-	-find debian/ocaml -type d -name CVS -exec rm -rf {} \;
-	-find debian/ocaml -type f -name .cvsignore -exec rm -rf {} \;
-	dh_installexamples
-	dh_installmenu
-	dh_installemacsen
-	dh_installman
-	dh_link
-	dh_strip
-	dh_compress
-	dh_fixperms -Xocamldoc-api-ref-config
-	dh_makeshlibs
-	dh_installdeb
-
-# Build architecture independant packages using the common target.
-binary-indep: install-indep
-	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
-	dh_gencontrol -i -- -VF:OCamlABI="$(OCAMLABI)"
-	dh_md5sums -i
-	dh_builddeb -i
-
-# Build architecture dependant packages using the common target.
-binary-arch: install-arch
-	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
-	dh_shlibdeps -s
-ifeq ($(THIS_NATIVE_ARCH),)
-	dh_gencontrol -pocaml-nox -- \
-		-VF:BestProvides=",ocaml-best-compilers" \
-		-VF:OCamlABI="$(OCAMLABI)"
+ifeq (,$(OCAML_OPT_ARCH))
+	echo 'F:BestProvides=ocaml-best-compilers' >> debian/ocaml-nox.substvars
 else
-	dh_gencontrol -pocaml-nox -- \
-		-VF:BestProvides="" \
-		-VF:OCamlABI="$(OCAMLABI)"
-	dh_gencontrol -pocaml-native-compilers -- \
-		-VF:OCamlABI="$(OCAMLABI)"
+	echo 'F:BestProvides=' >> debian/ocaml-nox.substvars
 endif
-	dh_gencontrol -pocaml -- -VF:OCamlABI="$(OCAMLABI)"
-	dh_gencontrol -pocaml-base-nox -- -VF:OCamlABI="$(OCAMLABI)"
-	dh_gencontrol -pocaml-base -- -VF:OCamlABI="$(OCAMLABI)"
-	dh_gencontrol -pocaml-interp -- -VF:OCamlABI="$(OCAMLABI)"
-	dh_gencontrol -pocaml-compiler-libs -- -VF:OCamlABI="$(OCAMLABI)"
-	dh_gencontrol -pcamlp4 -- -VF:OCamlABI="$(OCAMLABI)"
-	dh_gencontrol -pcamlp4-extra -- -VF:OCamlABI="$(OCAMLABI)"
-	dh_md5sums -s
-	dh_builddeb -s
+	dh_gencontrol
+	dh binary --after dh_gencontrol
+	touch $@
 
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch build-arch abi-sed-clean
+binary: binary-arch binary-indep
+binary-arch: binary-stamp
+binary-indep: binary-stamp
+
+.PHONY: build clean binary-indep binary-arch binary install build ocamlinit

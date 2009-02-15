@@ -143,7 +143,7 @@ Description: Runtime system for OCaml bytecode executables
  you do not require any graphical capabilities for your runtime.
 
 Package: ocaml-native-compilers
-Architecture: #OcamlNativeArchs#
+Architecture: @OCamlNativeArchs@
 Depends: ocaml-nox (= ${binary:Version}), gcc [!arm], gcc-4.2 [arm], binutils, ${shlibs:Depends}, ${misc:Depends}
 Provides: ocaml-best-compilers
 Replaces: ocaml-nox (<= 3.09.2-3)

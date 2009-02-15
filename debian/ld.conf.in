@@ -1,2 +1,2 @@
-/usr/local/lib/ocaml/#OcamlABI#/stublibs
-/usr/lib/ocaml/#OcamlABI#/stublibs
+/usr/local/lib/ocaml/@OCamlABI@/stublibs
+@OCamlDllDir@

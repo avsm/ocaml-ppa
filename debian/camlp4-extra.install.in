@@ -4,10 +4,10 @@ usr/bin/camlp4rf
 usr/bin/camlp4oof
 usr/bin/camlp4orf
 usr/bin/camlp4prof
-usr/lib/ocaml/#OcamlABI#/camlp4/camlp4of.cma
-usr/lib/ocaml/#OcamlABI#/camlp4/camlp4rf.cma
-usr/lib/ocaml/#OcamlABI#/camlp4/camlp4oof.cma
-usr/lib/ocaml/#OcamlABI#/camlp4/camlp4orf.cma
+@OCamlStdlibDir@/camlp4/camlp4of.cma
+@OCamlStdlibDir@/camlp4/camlp4rf.cma
+@OCamlStdlibDir@/camlp4/camlp4oof.cma
+@OCamlStdlibDir@/camlp4/camlp4orf.cma
 OPT: usr/bin/camlp4of.opt
 OPT: usr/bin/camlp4rf.opt
 OPT: usr/bin/camlp4oof.opt

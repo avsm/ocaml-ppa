@@ -1,2 +1,3 @@
-usr/lib/ocaml/#OcamlABI#/stublibs
 usr/share/doc/ocaml-base
+@OCamlDllDir@
+@OCamlStdlibDir@

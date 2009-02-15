@@ -1,2 +1,2 @@
 usr/bin
-usr/lib/ocaml/#OcamlABI#/camlp4
+@OCamlStdlibDir@/camlp4
