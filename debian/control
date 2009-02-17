@@ -20,7 +20,7 @@ Build-Depends:
  bzip2,
  docbook-xml,
  docbook-utils,
- dh-ocaml
+ dh-ocaml (>= 0.2)
 Standards-Version: 3.8.0
 Vcs-Git: git://git.debian.org/git/pkg-ocaml-maint/packages/ocaml.git
 Vcs-Browser: http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git
