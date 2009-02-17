@@ -30,17 +30,6 @@ SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar.bz2
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
-CFLAGS = -Wall -g
-
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
-else
-	CFLAGS += -O2
-endif
-ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
-	INSTALL_PROGRAM += -s
-endif
-
 CONFIGURE_OPTS := \
   --with-pthread -prefix /usr \
   -libdir $(OCAML_STDLIB_DIR) \
