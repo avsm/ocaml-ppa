@@ -89,9 +89,9 @@ build-stamp: config-stamp
 	if test ! -d boot.debian; then \
 	  cp -xa boot boot.debian; \
 	fi
-	tar cjf debian/examples_labltk.tar.bz2 \
-	  -C otherlibs/labltk --exclude=.cvsignore \
-	  examples_labltk
+	rm -Rf debian/examples && mkdir debian/examples
+	cp -a otherlibs/labltk/examples_labltk debian/examples/labltk
+	find debian/examples/labltk -name .cvsignore -delete
 ifeq ($(BUILDCACHE),)
 	$(MAKE) world
 	$(MAKE) bootstrap
@@ -130,7 +130,7 @@ endif
 		sed -i 1d emacs/ocamltags.in; \
 	fi
 # Remaining stuff
-	-rm -Rf debian/$(SRCTARBALL)
+	-rm -Rf debian/$(SRCTARBALL) debian/examples
 	dh clean --after dh_auto_clean
 
 install: install-stamp
@@ -171,7 +171,9 @@ install-stamp:
 # Remove empty directory
 	rmdir $(CURDIR)/debian/ocaml-nox$(OCAML_STDLIB_DIR)/ocamldoc/custom
 # Remaining stuff
-	dh install --after dh_install
+	dh install --after dh_install --before dh_compress
+	dh_compress -Xexamples/labltk
+	dh install --after dh_compress
 	touch $@
 
 binary-stamp: install-stamp
