@@ -7,10 +7,12 @@ ocaml (3.11.0-2) UNRELEASED; urgency=low
     - more extensive use of debhelper 7
     - do no longer use deprecated dh_movefiles and *.files
     - get closer to CDBS API
+    - add versioned build-dependency to dh-ocaml
     - use ocamlinit snippet provided by dh-ocaml
     - add a build cache (for Debian debugging)
-    - ship labltk examples in a tarball
+    - do not compress labltk examples
     - reflect original locations of camlp4 *.mli files in binary packages
+    - remove special handling of CFLAGS (handled by dpkg-buildpackage now)
   * Add dbm_ldopts.dpatch, to add missing linking options for dbm
     (fixes ocsigen FTBFS)
   * Remove man-ocamlmklib.dpatch, and put manpage in debian/man
@@ -18,7 +20,7 @@ ocaml (3.11.0-2) UNRELEASED; urgency=low
   * Build and install dumpapprox, and provide a manpage
   * Discriminate *-nox packages in short descriptions (thanks Lintian)
 
- -- Stephane Glondu <steph@glondu.net>  Mon, 16 Feb 2009 16:49:39 +0100
+ -- Stephane Glondu <steph@glondu.net>  Tue, 17 Feb 2009 14:01:23 +0100
 
 ocaml (3.11.0-1) experimental; urgency=low
 
