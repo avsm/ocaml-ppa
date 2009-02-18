@@ -1,7 +1,7 @@
 ocaml (3.11.0-2) experimental; urgency=low
 
+  [ Stephane Glondu ]
   * Add DM-Upload-Allowed (with Stefano's blessing)
-  * Remove Julien from Uploaders (on his request)
   * Remove binary package-specific copyright files
   * Major changes in debian/rules:
     - more extensive use of debhelper 7
@@ -19,8 +19,13 @@ ocaml (3.11.0-2) experimental; urgency=low
   * Remove {dumpobj,objinfo}.dpatch, and put manpages in debian/man
   * Build and install dumpapprox, and provide a manpage
   * Discriminate *-nox packages in short descriptions (thanks Lintian)
+  
+  [ Stefano Zacchiroli ]
+  * debian/control:
+    - clean-up Uploaders, removing people no longer contributing and
+      handling some specific removal requests
 
- -- Stephane Glondu <steph@glondu.net>  Wed, 18 Feb 2009 13:39:27 +0100
+ -- Stefano Zacchiroli <zack@debian.org>  Wed, 18 Feb 2009 14:39:31 +0100
 
 ocaml (3.11.0-1) experimental; urgency=low
 

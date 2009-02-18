@@ -3,7 +3,6 @@ Section: devel
 Priority: optional
 Maintainer: Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>
 Uploaders:
- Sven Luther <luther@debian.org>,
  Stefano Zacchiroli <zack@debian.org>,
  Samuel Mimram <smimram@debian.org>,
  Sylvain Le Gall <gildor@debian.org>,
