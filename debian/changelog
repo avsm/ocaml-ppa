@@ -1,4 +1,4 @@
-ocaml (3.11.0-2) UNRELEASED; urgency=low
+ocaml (3.11.0-2) experimental; urgency=low
 
   * Add DM-Upload-Allowed (with Stefano's blessing)
   * Remove Julien from Uploaders (on his request)
@@ -20,7 +20,7 @@ ocaml (3.11.0-2) UNRELEASED; urgency=low
   * Build and install dumpapprox, and provide a manpage
   * Discriminate *-nox packages in short descriptions (thanks Lintian)
 
- -- Stephane Glondu <steph@glondu.net>  Tue, 17 Feb 2009 14:01:23 +0100
+ -- Stephane Glondu <steph@glondu.net>  Wed, 18 Feb 2009 13:39:27 +0100
 
 ocaml (3.11.0-1) experimental; urgency=low
 
