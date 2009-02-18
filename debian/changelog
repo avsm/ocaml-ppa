@@ -24,6 +24,8 @@ ocaml (3.11.0-2) experimental; urgency=low
   * debian/control:
     - clean-up Uploaders, removing people no longer contributing and
       handling some specific removal requests
+    - bump versioned dep on ocaml --Replaces-> ocaml-nox to avoid file
+      overwrite upgrade problems
 
  -- Stefano Zacchiroli <zack@debian.org>  Wed, 18 Feb 2009 14:39:31 +0100
 
