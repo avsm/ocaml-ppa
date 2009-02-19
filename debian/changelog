@@ -1,3 +1,10 @@
+ocaml (3.11.0-4) UNRELEASED; urgency=low
+
+  * Add native versions of ocamldep and ocamldoc in findlib's configuration
+    when ocaml-native-compilers is installed, closes: #516085.
+
+ -- Samuel Mimram <smimram@debian.org>  Thu, 19 Feb 2009 11:06:02 +0100
+
 ocaml (3.11.0-3) experimental; urgency=low
 
   * Mark libthreadsnat.a as native-only file (fix FTBFS on bytecode-only
