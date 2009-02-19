@@ -1,9 +1,15 @@
 ocaml (3.11.0-4) UNRELEASED; urgency=low
 
+  [ Samuel Mimram ]
   * Add native versions of ocamldep and ocamldoc in findlib's configuration
     when ocaml-native-compilers is installed, closes: #516085.
 
- -- Samuel Mimram <smimram@debian.org>  Thu, 19 Feb 2009 11:06:02 +0100
+  [ Stephane Glondu ]
+  * Add a script to handle native modules of standard library, and a
+    README.source to document it (fixes FTBFS on sparc and powerpc, which
+    are native, but do not provide .p.cmx files)
+
+ -- Stephane Glondu <steph@glondu.net>  Thu, 19 Feb 2009 17:21:43 +0100
 
 ocaml (3.11.0-3) experimental; urgency=low
 

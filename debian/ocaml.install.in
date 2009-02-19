@@ -2,11 +2,10 @@
      usr/bin/ocamlbrowser
      @OCamlStdlibDir@/labltk
      @OCamlStdlibDir@/libgraphics.a
-OPT: @OCamlStdlibDir@/graphics.a
-     @OCamlStdlibDir@/graphics.cmi
-OPT: @OCamlStdlibDir@/graphics.cmx
-OPT: @OCamlStdlibDir@/graphics.cmxa
-     @OCamlStdlibDir@/graphics.mli
-     @OCamlStdlibDir@/graphicsX11.cmi
-OPT: @OCamlStdlibDir@/graphicsX11.cmx
-     @OCamlStdlibDir@/graphicsX11.mli
+STD: graphics.cmi
+STD: graphics.cmx
+STD: graphics.cmxa
+STD: graphics.mli
+STD: graphicsX11.cmi
+STD: graphicsX11.cmx
+STD: graphicsX11.mli

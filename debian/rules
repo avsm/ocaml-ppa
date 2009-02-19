@@ -27,8 +27,9 @@ SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar.bz2
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-# This has to be exported to make some magic below work.
-export DH_OPTIONS
+# This has to be exported to make gen_modules work
+export OCAML_OPT_ARCH
+export OCAML_STDLIB_DIR
 
 CONFIGURE_OPTS := \
   --with-pthread -prefix /usr \
@@ -150,6 +151,11 @@ install-stamp:
 # To avoid erroneous dh_install warnings
 	rm -f $(INSTDIR)/share/man/man1/ocamlopt.opt.1 $(INSTDIR)/share/man/man1/ocamlc.opt.1
 # Dispatch files with dh_install
+	cd debian && \
+	for u in ocaml ocaml-nox; do \
+	  DESTDIR=tmp ./gen_modules.pl $$u.install > $$u.install.new; \
+	  mv $$u.install.new $$u.install; \
+	done
 	if ! dh_install --list-missing; then \
 	  @echo "===> dh_install has failed with exit code $?... <==="; \
 	  find debian/tmp; \
