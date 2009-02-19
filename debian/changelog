@@ -1,3 +1,10 @@
+ocaml (3.11.0-3) experimental; urgency=low
+
+  * Mark libthreadsnat.a as native-only file (fix FTBFS on bytecode-only
+    architectures)
+
+ -- Stephane Glondu <steph@glondu.net>  Thu, 19 Feb 2009 07:25:27 +0100
+
 ocaml (3.11.0-2) experimental; urgency=low
 
   [ Stephane Glondu ]

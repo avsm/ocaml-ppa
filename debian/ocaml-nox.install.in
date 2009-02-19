@@ -34,7 +34,7 @@ OPT: @OCamlStdlibDir@/libasmrunp.a
      @OCamlStdlibDir@/libnums.a
      @OCamlStdlibDir@/libstr.a
      @OCamlStdlibDir@/libthreads.a
-     @OCamlStdlibDir@/libthreadsnat.a
+OPT: @OCamlStdlibDir@/libthreadsnat.a
      @OCamlStdlibDir@/libunix.a
      @OCamlStdlibDir@/arg.ml
      @OCamlStdlibDir@/arg.mli
