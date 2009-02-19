@@ -150,7 +150,11 @@ install-stamp:
 # To avoid erroneous dh_install warnings
 	rm -f $(INSTDIR)/share/man/man1/ocamlopt.opt.1 $(INSTDIR)/share/man/man1/ocamlc.opt.1
 # Dispatch files with dh_install
-	dh_install --list-missing
+	if ! dh_install --list-missing; then \
+	  @echo "===> dh_install has failed with exit code $?... <==="; \
+	  find debian/tmp; \
+	  exit 1; \
+	fi
 # Install additional files not handled by dh_install
 # Beware: dh_install does not handle renamings, please pay attention
 	cp otherlibs/labltk/README debian/ocaml/usr/share/doc/ocaml/README.labltk
