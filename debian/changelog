@@ -1,4 +1,4 @@
-ocaml (3.11.0-4) UNRELEASED; urgency=low
+ocaml (3.11.0-4) experimental; urgency=low
 
   [ Samuel Mimram ]
   * Add native versions of ocamldep and ocamldoc in findlib's configuration
@@ -13,7 +13,7 @@ ocaml (3.11.0-4) UNRELEASED; urgency=low
     - tell debhelper to ignore ocaml-native-compilers
   * Add lpia (from Ubuntu) to the list of native architectures
 
- -- Stephane Glondu <steph@glondu.net>  Fri, 20 Feb 2009 09:52:26 +0100
+ -- Stephane Glondu <steph@glondu.net>  Fri, 20 Feb 2009 09:59:31 +0100
 
 ocaml (3.11.0-3) experimental; urgency=low
 
