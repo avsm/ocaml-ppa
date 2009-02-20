@@ -53,6 +53,7 @@ debian/control:
 	sed -e 's/@OCamlNativeArchs@/$(NATIVE_ARCHS)/g' debian/control.in > $@
 
 pre-config-stamp: debian/$(SRCTARBALL)
+	chmod +x debian/gen_modules.pl
 # Backup upstream config.{sub,guess}, and use most up-to-date ones
 	for ext in sub guess; do \
 	  if [ -f /usr/share/misc/config.$$ext ] && \
@@ -157,7 +158,7 @@ install-stamp:
 	  mv $$u.install.new $$u.install; \
 	done
 	if ! dh_install --list-missing; then \
-	  @echo "===> dh_install has failed with exit code $?... <==="; \
+	  echo "===> dh_install has failed <==="; \
 	  find debian/tmp; \
 	  exit 1; \
 	fi
