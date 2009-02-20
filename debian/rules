@@ -27,6 +27,11 @@ SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar.bz2
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+export DH_OPTIONS
+ifeq ($(OCAML_OPT_ARCH),)
+  DH_OPTIONS += -Nocaml-native-compilers
+endif
+
 # This has to be exported to make gen_modules work
 export OCAML_OPT_ARCH
 export OCAML_STDLIB_DIR
