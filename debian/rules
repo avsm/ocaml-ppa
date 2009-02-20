@@ -98,7 +98,11 @@ ifeq ($(BUILDCACHE),)
 	$(MAKE) world
 	$(MAKE) bootstrap
 	$(MAKE) -C tools objinfo dumpobj
-ifneq (,$(OCAML_OPT_ARCH))
+ifeq (,$(OCAML_OPT_ARCH))
+# As of 3.11.0, manpages are made only in `make opt.opt'
+	make -C ocamldoc manpages \
+	  OCAMLDOC_RUN="../boot/ocamlrun -I ../otherlibs/unix -I ../otherlibs/str ./ocamldoc"
+else
 	@echo "Building native compilers"
 	$(MAKE) opt opt.opt
 	$(MAKE) -C tools dumpapprox
