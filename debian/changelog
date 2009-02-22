@@ -1,3 +1,10 @@
+ocaml (3.11.0-5) unstable; urgency=low
+
+  * Uploading to experimental
+  * debian/control: bump dh-ocaml to (>= 0.4) to avoid buggy ocamlinit.mk
+
+ -- Stefano Zacchiroli <zack@debian.org>  Sun, 22 Feb 2009 08:49:13 +0100
+
 ocaml (3.11.0-4) experimental; urgency=low
 
   [ Samuel Mimram ]
