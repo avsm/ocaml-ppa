@@ -1,3 +1,10 @@
+ocaml (3.11.0-6) UNRELEASED; urgency=low
+
+  * Add kfreebsd-amd64 to the list of supported native architectures,
+    closes: #519916.
+
+ -- Samuel Mimram <smimram@debian.org>  Mon, 16 Mar 2009 15:07:00 +0100
+
 ocaml (3.11.0-5) unstable; urgency=low
 
   * Uploading to unstable
