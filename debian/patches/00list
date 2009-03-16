@@ -5,4 +5,3 @@ stdlib_man_section.dpatch
 install_scripts_config.dpatch
 install_ocamlbuild.dpatch
 dbm_ldopts.dpatch
-native_ocamldoc
