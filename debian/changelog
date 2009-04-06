@@ -8,6 +8,9 @@ ocaml (3.11.0-6) UNRELEASED; urgency=low
   * debian/control
     - remove recommends to ledit from ocaml-nox (does not ship "ocaml")
     - change recommends from ledit to "ledit | rlwrap" for ocaml-interp
+  * debian/patches/
+    - add new patch ocamldoc_natdynlink (from upstream): enable
+      dynamic loading of ocamldoc custom printers also for ocamldoc.opt
 
  -- Samuel Mimram <smimram@debian.org>  Mon, 16 Mar 2009 15:07:00 +0100
 
