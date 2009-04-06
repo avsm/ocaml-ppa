@@ -212,8 +212,7 @@ Description: Native code compilers of the OCaml suite (the .opt ones)
 
 Package: ocaml-source
 Architecture: all
-Depends:
- ${misc:Depends}
+Depends: ${misc:Depends}
 Provides: ocaml-source-${F:OCamlABI}
 Description: Sources for Objective Caml
  Objective Caml (OCaml) is an implementation of the ML language, based on
