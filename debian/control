@@ -38,7 +38,6 @@ Depends:
 Suggests: ocaml-doc, libgdbm-dev, tuareg-mode | ocaml-mode
 Recommends:
  camlp4,
- ledit,
  file
 Provides:
  ocaml-nox-${F:OCamlABI},
@@ -232,7 +231,7 @@ Depends:
  ocaml-base-nox (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
-Recommends: ledit
+Recommends: ledit | rlwrap
 Replaces: ocaml (<< 3.07.2a-3)
 Conflicts: ocaml (<< 3.07.2a-3)
 Description: OCaml interactive interpreter and standard libraries

@@ -4,6 +4,11 @@ ocaml (3.11.0-6) UNRELEASED; urgency=low
   * Add kfreebsd-amd64 to the list of supported native architectures.
     (Closes: #519916)
 
+  [ Stefano Zacchiroli ]
+  * debian/control
+    - remove recommends to ledit from ocaml-nox (does not ship "ocaml")
+    - change recommends from ledit to "ledit | rlwrap" for ocaml-interp
+
  -- Samuel Mimram <smimram@debian.org>  Mon, 16 Mar 2009 15:07:00 +0100
 
 ocaml (3.11.0-5) unstable; urgency=low
