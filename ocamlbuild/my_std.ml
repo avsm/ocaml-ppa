@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: my_std.ml,v 1.10 2008/10/01 08:36:26 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 open Format
 

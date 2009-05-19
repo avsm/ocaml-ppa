@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: shell.mli,v 1.1 2007/02/07 08:59:14 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 val is_simple_filename : string -> bool
 val quote_filename_if_needed : string -> string

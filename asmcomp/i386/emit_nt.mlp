@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit_nt.mlp,v 1.28 2008/01/11 16:13:11 doligez Exp $ *)
+(* $Id: emit_nt.mlp,v 1.28.4.1 2009/03/21 16:15:47 xleroy Exp $ *)
 
 (* Emission of Intel 386 assembly code, MASM syntax. *)
 
@@ -379,7 +379,7 @@ let emit_instr i =
             if is_tos src then
               `	fstp	{emit_reg dst}\n`
             else if is_tos dst then
-              `	fld	{emit_reg dst}\n`
+              `	fld	{emit_reg src}\n`
             else begin
               `	fld	{emit_reg src}\n`;
               `	fstp	{emit_reg dst}\n`

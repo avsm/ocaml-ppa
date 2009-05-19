@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.222.2.2 2008/10/23 15:29:11 ertai Exp $
+# $Id: Makefile,v 1.222.2.3 2009/05/19 14:46:13 doligez Exp $
 
 # The main Makefile
 
@@ -739,14 +739,8 @@ clean::
 	$(CAMLOPT) $(COMPFLAGS) -c $<
 
 partialclean::
-	rm -f utils/*.cm[iox] utils/*.[so] utils/*~
-	rm -f parsing/*.cm[iox] parsing/*.[so] parsing/*~
-	rm -f typing/*.cm[iox] typing/*.[so] typing/*~
-	rm -f bytecomp/*.cm[iox] bytecomp/*.[so] bytecomp/*~
-	rm -f asmcomp/*.cm[iox] asmcomp/*.[so] asmcomp/*~
-	rm -f driver/*.cm[iox] driver/*.[so] driver/*~
-	rm -f toplevel/*.cm[iox] toplevel/*.[so] toplevel/*~
-	rm -f tools/*.cm[iox] tools/*.[so] tools/*~
+	for d in utils parsing typing bytecomp asmcomp driver toplevel tools; \
+	  do rm -f $$d/*.cm[iox] $$d/*.annot $$d/*.[so] $$d/*~; done
 	rm -f *~
 
 depend: beforedepend

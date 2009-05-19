@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emitaux.mli,v 1.12 2007/01/29 12:10:50 xleroy Exp $ *)
+(* $Id: emitaux.mli,v 1.12.12.1 2009/01/26 17:06:10 xleroy Exp $ *)
 
 (* Common functions for emitting assembly code *)
 
@@ -45,3 +45,5 @@ type emit_frame_actions =
     efa_string: string -> unit }
 
 val emit_frames: emit_frame_actions -> unit
+
+val is_generic_function: string -> bool

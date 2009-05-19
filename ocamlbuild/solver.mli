@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: solver.mli,v 1.1 2007/02/07 08:59:15 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 type backtrace = private
   | Leaf of Pathname.t

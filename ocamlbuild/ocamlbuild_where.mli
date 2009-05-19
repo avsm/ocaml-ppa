@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlbuild_where.mli,v 1.2 2007/10/08 14:19:34 doligez Exp $ *)
+
 
 (* Original author: Nicolas Pouillard *)
 

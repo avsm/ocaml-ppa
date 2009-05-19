@@ -1,4 +1,4 @@
-\" $Id: ocaml.m,v 1.10 2008/09/15 14:05:30 doligez Exp $
+\" $Id: ocaml.m,v 1.10.2.1 2009/01/13 15:17:09 doligez Exp $
 
 .TH OCAML 1
 
@@ -54,7 +54,7 @@ exits after the execution of the last phrase.
 The following command-line options are recognized by
 .BR ocaml (1).
 .TP
-.BI -I \ directory
+.BI \-I \ directory
 Add the given directory to the list of directories searched for
 source and compiled files. By default, the current directory is
 searched first, then the standard library directory. Directories added

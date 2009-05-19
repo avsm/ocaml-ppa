@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.64.2.1 2008/11/08 16:29:02 xleroy Exp $
+# $Id: Makefile,v 1.64.2.3 2009/05/13 05:00:48 garrigue Exp $
 
 include Makefile.common
 
@@ -22,14 +22,14 @@ OBJS=$(COMMONOBJS) unix.o main.o
 DOBJS=$(OBJS:.o=.d.o) instrtrace.d.o
 PICOBJS=$(OBJS:.o=.pic.o)
 
-#ifeq ($(SUPPORTS_SHARED_LIBRARIES),true)
+TMP_SHARED_LIBRARIES=$(SUPPORTS_SHARED_LIBRARIES:false=)
+SHARED_LIBRARIES_DEPS=$(TMP_SHARED_LIBRARIES:true=libcamlrun_shared.so)
 
-all:: libcamlrun_shared.so
+all:: $(SHARED_LIBRARIES_DEPS)
 
 install::
-	cp libcamlrun_shared.so $(LIBDIR)/libcamlrun_shared.so
-
-#endif
+	if test -f libcamlrun_shared.so; then \
+	  cp libcamlrun_shared.so $(LIBDIR)/libcamlrun_shared.so; fi
 
 ocamlrun$(EXE): libcamlrun.a prims.o
 	$(MKEXE) $(BYTECCLINKOPTS) -o ocamlrun$(EXE) \

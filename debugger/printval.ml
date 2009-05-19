@@ -11,12 +11,10 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printval.ml,v 1.21 2002/02/13 11:09:17 ddr Exp $ *)
+(* $Id: printval.ml,v 1.21.28.1 2009/04/02 09:44:21 xclerc Exp $ *)
 
 (* To print values *)
 
-open Misc
-open Obj
 open Format
 open Parser_aux
 open Path

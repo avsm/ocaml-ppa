@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: rule.mli,v 1.12 2008/07/25 14:50:47 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Resource

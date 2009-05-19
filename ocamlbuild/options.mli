@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: options.mli,v 1.1 2007/02/07 08:59:14 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 
 include Signatures.OPTIONS with type command_spec = Command.spec

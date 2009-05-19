@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tbl.ml,v 1.13 2004/11/25 13:28:27 doligez Exp $ *)
+(* $Id: tbl.ml,v 1.13.22.1 2009/04/02 09:06:33 xclerc Exp $ *)
 
 type ('a, 'b) t =
     Empty
@@ -94,6 +94,10 @@ let rec iter f = function
     Empty -> ()
   | Node(l, v, d, r, _) ->
       iter f l; f v d; iter f r
+
+let rec map f = function
+    Empty -> Empty
+  | Node(l, v, d, r, h) -> Node(map f l, v, f v d, map f r, h)
 
 open Format
 

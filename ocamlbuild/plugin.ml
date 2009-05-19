@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: plugin.ml,v 1.4.4.1 2008/11/06 15:40:39 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format

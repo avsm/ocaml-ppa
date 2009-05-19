@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_utils.mli,v 1.6 2008/07/25 14:26:13 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 val stdlib_dir : Pathname.t Lazy.t
 val module_name_of_filename : Pathname.t -> string

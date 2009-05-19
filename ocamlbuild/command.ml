@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: command.ml,v 1.8 2008/07/25 14:28:56 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 (* Command *)
 

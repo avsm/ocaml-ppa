@@ -9,6 +9,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlbuild_unix_plugin.mli,v 1.2 2007/11/22 18:34:22 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 val setup : unit -> unit

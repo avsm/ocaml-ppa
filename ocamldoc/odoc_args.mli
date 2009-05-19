@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_args.mli,v 1.17 2008/07/25 13:28:23 guesdon Exp $ *)
+(* $Id: odoc_args.mli,v 1.17.2.1 2009/04/09 13:56:38 guesdon Exp $ *)
 
 (** Analysis of the command line arguments. *)
 
@@ -21,10 +21,6 @@ type source_file =
 
 (** The include_dirs in the OCaml compiler. *)
 val include_dirs : string list ref
-
-(** Indicate if we are in bytecode mode or not.
-   (For the [ocamldoc] command).*)
-val bytecode_mode : bool ref
 
 (** The class type of documentation generators. *)
 class type doc_generator =

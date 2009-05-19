@@ -11,14 +11,12 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: frames.ml,v 1.10 2005/08/25 15:35:16 doligez Exp $ *)
+(* $Id: frames.ml,v 1.10.18.1 2009/04/02 09:44:21 xclerc Exp $ *)
 
 (***************************** Frames **********************************)
 
 open Instruct
-open Primitives
 open Debugcom
-open Checkpoints
 open Events
 open Symbols
 

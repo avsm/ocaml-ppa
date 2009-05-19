@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: cmmgen.ml,v 1.114 2008/08/05 13:35:20 xleroy Exp $ *)
+(* $Id: cmmgen.ml,v 1.114.2.1 2009/01/26 17:06:10 xleroy Exp $ *)
 
 (* Translation from closed lambda to C-- *)
 
@@ -1943,9 +1943,8 @@ module IntSet = Set.Make(
   end)
 
 let default_apply = IntSet.add 2 (IntSet.add 3 IntSet.empty)
-  (* These apply funs are always present in the main program.
-     TODO: add more, and do the same for send and curry funs
-     (maybe up to 10-15?). *)
+  (* These apply funs are always present in the main program because
+     the run-time system needs them (cf. asmrun/<arch>.S) . *)
 
 let generic_functions shared units =
   let (apply,send,curry) =
@@ -1955,12 +1954,8 @@ let generic_functions shared units =
 	 List.fold_right IntSet.add ui.Compilenv.ui_send_fun send,
 	 List.fold_right IntSet.add ui.Compilenv.ui_curry_fun curry)
       (IntSet.empty,IntSet.empty,IntSet.empty)
-      units
-  in
-  let apply =
-    if shared then IntSet.diff apply default_apply
-    else IntSet.union apply default_apply
-  in
+      units in
+  let apply = if shared then apply else IntSet.union apply default_apply in
   let accu = IntSet.fold (fun n accu -> apply_function n :: accu) apply [] in
   let accu = IntSet.fold (fun n accu -> send_function n :: accu) send accu in
   IntSet.fold (fun n accu -> curry_function n @ accu) curry accu

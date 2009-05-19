@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tags.mli,v 1.1 2007/02/07 08:59:15 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 
 include Signatures.TAGS

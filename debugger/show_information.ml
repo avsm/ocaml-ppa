@@ -11,11 +11,10 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: show_information.ml,v 1.13 2005/08/25 15:35:16 doligez Exp $ *)
+(* $Id: show_information.ml,v 1.13.18.1 2009/04/02 09:44:21 xclerc Exp $ *)
 
 open Instruct
 open Format
-open Primitives
 open Debugcom
 open Checkpoints
 open Events

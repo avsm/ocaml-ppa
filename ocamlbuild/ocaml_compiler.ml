@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_compiler.ml,v 1.10 2008/01/11 16:13:16 doligez Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: configuration.ml,v 1.2 2007/11/28 16:03:48 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Log

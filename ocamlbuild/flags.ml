@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: flags.ml,v 1.2 2007/02/26 17:05:30 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 open Command
 open Bool (* FIXME remove me *)

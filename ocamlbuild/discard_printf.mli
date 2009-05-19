@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: discard_printf.mli,v 1.1 2007/02/07 08:59:13 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 (* Discard_printf *)
 

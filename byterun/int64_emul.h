@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: int64_emul.h,v 1.5 2005/09/22 14:21:50 xleroy Exp $ */
+/* $Id: int64_emul.h,v 1.5.18.1 2009/03/28 18:34:19 xleroy Exp $ */
 
 /* Software emulation of 64-bit integer arithmetic, for C compilers
    that do not support it.  */
@@ -96,8 +96,9 @@ static int64 I64_mul(int64 x, int64 y)
 }
 
 #define I64_is_zero(x) (((x).l | (x).h) == 0)
-
 #define I64_is_negative(x) ((int32) (x).h < 0)
+#define I64_is_min_int(x) ((x).l == 0 && (x).h = 0x80000000U)
+#define I64_is_minus_one(x) (((x).l & (x).h) == 0xFFFFFFFFU)
 
 /* Bitwise operations */
 static int64 I64_and(int64 x, int64 y)

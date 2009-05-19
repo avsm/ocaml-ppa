@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: pipe.c,v 1.7 2001/12/07 13:40:45 xleroy Exp $ */
+/* $Id: pipe.c,v 1.7.28.1 2009/03/28 15:30:08 xleroy Exp $ */
 
 #include <mlvalues.h>
 #include <memory.h>
@@ -19,7 +19,8 @@
 #include "unixsupport.h"
 #include <fcntl.h>
 
-#define SIZEBUF 1024
+/* PR#4749: pick a size that matches that of I/O buffers */
+#define SIZEBUF 4096
 
 CAMLprim value unix_pipe(value unit)
 {

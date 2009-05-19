@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: command.mli,v 1.6 2008/07/25 14:25:20 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 (* Command *)
 

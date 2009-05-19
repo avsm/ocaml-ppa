@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: debugger_config.mli,v 1.5 2002/11/17 16:42:10 xleroy Exp $ *)
+(* $Id: debugger_config.mli,v 1.5.28.1 2009/04/02 09:06:32 xclerc Exp $ *)
 
 (********************** Configuration file *****************************)
 
@@ -25,6 +25,7 @@ val event_mark_after : string
 val shell : string
 val runtime_program : string
 val history_size : int ref
+val load_path_for : (string, string list) Hashtbl.t
 
 (*** Time travel paramaters. ***)
 

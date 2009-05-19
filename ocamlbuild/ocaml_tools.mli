@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_tools.mli,v 1.7 2008/07/25 15:06:47 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 
 val ocamldoc_c : Tags.t -> string -> string -> Command.t

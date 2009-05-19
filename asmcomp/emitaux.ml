@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emitaux.ml,v 1.12 2007/01/29 12:10:50 xleroy Exp $ *)
+(* $Id: emitaux.ml,v 1.12.12.1 2009/01/26 17:06:10 xleroy Exp $ *)
 
 (* Common functions for emitting assembly code *)
 
@@ -156,3 +156,16 @@ let emit_frames a =
   List.iter emit_frame !frame_descriptors;
   Hashtbl.iter emit_filename filenames;
   frame_descriptors := []
+
+(* Detection of functions that can be duplicated between a DLL and
+   the main program (PR#4690) *)
+
+let isprefix s1 s2 =
+  String.length s1 <= String.length s2
+  && String.sub s2 0 (String.length s1) = s1
+
+let is_generic_function name =
+  List.exists
+    (fun p -> isprefix p name)
+    ["caml_apply"; "caml_curry"; "caml_send"; "caml_tuplify"]
+

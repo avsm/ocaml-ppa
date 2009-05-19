@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: symbols.ml,v 1.18 2005/08/25 15:35:16 doligez Exp $ *)
+(* $Id: symbols.ml,v 1.18.18.1 2009/04/02 09:44:21 xclerc Exp $ *)
 
 (* Handling of symbol tables (globals and events) *)
 
@@ -92,7 +92,7 @@ let read_symbols bytecode_file =
           modules := md :: !modules;
           Hashtbl.add all_events_by_module md sorted_evl;
           let real_evl =
-            Primitives.filter
+            List.filter
               (function
                  {ev_kind = Event_pseudo} -> false
                | _                        -> true)

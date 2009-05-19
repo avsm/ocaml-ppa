@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: solver.ml,v 1.8 2008/07/25 14:50:47 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Log

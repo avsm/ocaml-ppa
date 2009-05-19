@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: my_unix.mli,v 1.4 2008/01/11 16:13:16 doligez Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 type file_kind =
 | FK_dir

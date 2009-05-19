@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_compiler.mli,v 1.2 2007/02/12 10:26:08 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 
 val forpack_flags : string -> Tags.t -> Command.spec

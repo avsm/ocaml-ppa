@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parameters.mli,v 1.2 1999/11/17 18:57:26 xleroy Exp $ *)
+(* $Id: parameters.mli,v 1.2.40.1 2009/04/02 09:06:32 xclerc Exp $ *)
 
 (* Miscellaneous parameters *)
 
@@ -21,6 +21,7 @@ val arguments : string ref
 val default_load_path : string list ref
 
 val add_path : string -> unit
+val add_path_for : string -> string -> unit
 
 (* Used by emacs ? *)
 val emacs : bool ref

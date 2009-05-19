@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc.ml,v 1.5 2007/11/06 15:16:55 frisch Exp $ *)
+(* $Id: proc.ml,v 1.5.4.1 2009/03/28 15:52:13 xleroy Exp $ *)
 
 (* Description of the AMD64 processor *)
 
@@ -197,5 +197,5 @@ let contains_calls = ref false
 (* Calling the assembler *)
 
 let assemble_file infile outfile =
-  Ccomp.command (Config.asm ^ " -o " ^ outfile ^ " " ^ infile)
-
+  Ccomp.command (Config.asm ^ " -o " ^
+                 Filename.quote outfile ^ " " ^ Filename.quote infile)
