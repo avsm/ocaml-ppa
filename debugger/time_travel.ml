@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: time_travel.ml,v 1.21 2006/12/09 16:23:37 ertai Exp $ *)
+(* $Id: time_travel.ml,v 1.21.14.1 2009/04/02 09:44:21 xclerc Exp $ *)
 
 (**************************** Time travel ******************************)
 
@@ -384,7 +384,7 @@ let kill_all_checkpoints () =
 (* --- Assume that the checkpoint is valid. *)
 let forget_process fd pid =
   let checkpoint =
-    find (function c -> c.c_pid = pid) (!current_checkpoint::!checkpoints)
+    List.find (function c -> c.c_pid = pid) (!current_checkpoint::!checkpoints)
   in
     Printf.eprintf "Lost connection with process %d" pid;
     let kont =

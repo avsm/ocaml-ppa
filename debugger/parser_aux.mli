@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parser_aux.mli,v 1.4 1999/11/17 18:57:26 xleroy Exp $ *)
+(* $Id: parser_aux.mli,v 1.4.40.1 2009/04/02 09:06:32 xclerc Exp $ *)
 
 (*open Globals*)
 
@@ -28,7 +28,7 @@ type break_arg =
     BA_none                             (* break *)
   | BA_pc of int                        (* break PC *)
   | BA_function of expression           (* break FUNCTION *)
-  | BA_pos1 of string option * int * int option
+  | BA_pos1 of Longident.t option * int * int option
                                         (* break @ [MODULE] LINE [POS] *)
-  | BA_pos2 of string option * int      (* break @ [MODULE] # OFFSET *)
+  | BA_pos2 of Longident.t option * int (* break @ [MODULE] # OFFSET *)
 

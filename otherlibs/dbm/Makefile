@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.26 2007/11/06 15:16:56 frisch Exp $
+# $Id: Makefile,v 1.26.4.1 2009/03/31 11:33:25 xleroy Exp $
 
 # Makefile for the ndbm library
 
@@ -21,6 +21,7 @@ CAMLOBJS=dbm.cmo
 COBJS=cldbm.o
 EXTRACFLAGS=$(DBM_INCLUDES)
 LINKOPTS=$(DBM_LINK)
+LDOPTS=-ldopt "$(DBM_LINK)"
 
 include ../Makefile
 

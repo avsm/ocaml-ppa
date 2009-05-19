@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: options.ml,v 1.16 2008/07/25 14:49:03 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 
 let version = "ocamlbuild "^(Sys.ocaml_version);;

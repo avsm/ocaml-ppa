@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: source.ml,v 1.8 2006/12/09 13:49:10 ertai Exp $ *)
+(* $Id: source.ml,v 1.8.14.1 2009/04/02 09:06:32 xclerc Exp $ *)
 
 (************************ Source management ****************************)
 
@@ -23,17 +23,37 @@ let source_extensions = [".ml"]
 (*** Conversion function. ***)
 
 let source_of_module pos mdle =
+  let is_submodule m m' =
+    let len' = String.length m' in
+    try
+      (String.sub m 0 len') = m' && (String.get m len') = '.'
+    with
+      Invalid_argument _ -> false in
+  let path =
+    Hashtbl.fold
+      (fun mdl dirs acc ->
+        if is_submodule mdle mdl then
+          dirs
+        else
+          acc)
+      Debugger_config.load_path_for
+      !Config.load_path in
   let fname = pos.Lexing.pos_fname in
   if fname = "" then
+    let innermost_module =
+      try
+        let dot_index = String.rindex mdle '.' in
+        String.sub mdle (succ dot_index) (pred ((String.length mdle) - dot_index))
+      with Not_found -> mdle in
     let rec loop =
       function
       | [] -> raise Not_found
       | ext :: exts ->
-          try find_in_path_uncap !Config.load_path (mdle ^ ext)
+          try find_in_path_uncap path (innermost_module ^ ext)
           with Not_found -> loop exts
     in loop source_extensions
   else if Filename.is_implicit fname then
-    find_in_path !Config.load_path fname
+    find_in_path path fname
   else
     fname
 

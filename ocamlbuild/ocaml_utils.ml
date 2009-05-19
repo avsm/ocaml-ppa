@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_utils.ml,v 1.8 2008/07/25 14:49:03 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Format

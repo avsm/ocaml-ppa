@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_arch.mli,v 1.1 2007/02/07 08:59:14 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 
 include Signatures.ARCH

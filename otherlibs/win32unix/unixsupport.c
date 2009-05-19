@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: unixsupport.c,v 1.21 2007/02/07 14:45:46 doligez Exp $ */
+/* $Id: unixsupport.c,v 1.21.12.1 2009/05/19 12:32:36 xleroy Exp $ */
 
 #include <stddef.h>
 #include <mlvalues.h>
@@ -108,6 +108,7 @@ static struct error_entry win_error_table[] = {
   { ERROR_NO_PROC_SLOTS, 0, EAGAIN},
   { ERROR_DRIVE_LOCKED, 0, EACCES},
   { ERROR_BROKEN_PIPE, 0, EPIPE},
+  { ERROR_NO_DATA, 0, EPIPE},
   { ERROR_DISK_FULL, 0, ENOSPC},
   { ERROR_INVALID_TARGET_HANDLE, 0, EBADF},
   { ERROR_INVALID_HANDLE, 0, EINVAL},

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: subst.ml,v 1.52 2008/01/11 16:13:16 doligez Exp $ *)
+(* $Id: subst.ml,v 1.52.4.1 2009/04/02 09:06:32 xclerc Exp $ *)
 
 (* Substitutions *)
 
@@ -294,3 +294,12 @@ and signature_component s comp newid =
 and modtype_declaration s = function
     Tmodtype_abstract -> Tmodtype_abstract
   | Tmodtype_manifest mty -> Tmodtype_manifest(modtype s mty)
+
+(* Composition of substitutions:  
+     apply (compose s1 s2) x = apply s2 (apply s1 x) *)
+
+let compose s1 s2 =
+  { types = Tbl.map (fun id p -> type_path s2 p) s1.types;
+    modules = Tbl.map (fun id p -> module_path s2 p) s1.modules;
+    modtypes = Tbl.map (fun id mty -> modtype s2 mty) s1.modtypes;
+    for_saving = false }

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tbl.mli,v 1.7 2000/04/21 08:13:22 weis Exp $ *)
+(* $Id: tbl.mli,v 1.7.44.1 2009/04/02 09:06:33 xclerc Exp $ *)
 
 (* Association tables from any ordered type to any type.
    We use the generic ordering to compare keys. *)
@@ -23,6 +23,7 @@ val find: 'a -> ('a, 'b) t -> 'b
 val mem: 'a -> ('a, 'b) t -> bool
 val remove: 'a -> ('a,  'b) t -> ('a, 'b) t
 val iter: ('a -> 'b -> 'c) -> ('a, 'b) t -> unit
+val map: ('a -> 'b -> 'c) -> ('a, 'b) t -> ('a, 'c) t
 
 open Format
 

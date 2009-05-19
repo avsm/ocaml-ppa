@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_specific.mli,v 1.2 2007/02/26 16:27:45 ertai Exp $ *)
+
 
 (* Original author: Nicolas Pouillard *)
 

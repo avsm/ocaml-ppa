@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: signatures.mli,v 1.28 2008/07/25 14:42:28 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 (** This module contains all module signatures that the user
     could use to build an ocamlbuild plugin. *)

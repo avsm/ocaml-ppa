@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexers.mll,v 1.7 2008/07/25 14:24:29 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 {
 exception Error of string

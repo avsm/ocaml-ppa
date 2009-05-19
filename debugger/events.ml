@@ -11,13 +11,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: events.ml,v 1.6 2005/08/25 15:35:16 doligez Exp $ *)
+(* $Id: events.ml,v 1.6.18.1 2009/04/02 09:44:21 xclerc Exp $ *)
 
 (********************************* Events ******************************)
 
 open Instruct
-open Primitives
-open Checkpoints
 
 let get_pos ev =
   match ev.ev_kind with

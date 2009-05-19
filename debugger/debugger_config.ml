@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: debugger_config.ml,v 1.11 2008/07/29 08:31:41 xleroy Exp $ *)
+(* $Id: debugger_config.ml,v 1.11.2.1 2009/04/02 09:06:32 xclerc Exp $ *)
 
 (**************************** Configuration file ***********************)
 
@@ -61,6 +61,8 @@ let runtime_program = "ocamlrun"
 
 (* Time history size (for `last') *)
 let history_size = ref 30
+
+let load_path_for = Hashtbl.create 7
 
 (*** Time travel parameters. ***)
 

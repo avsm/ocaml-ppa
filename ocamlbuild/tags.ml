@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tags.ml,v 1.2 2007/02/22 15:56:23 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 include Set.Make(String)
 

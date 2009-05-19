@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: program_management.ml,v 1.13 2008/07/29 08:31:41 xleroy Exp $ *)
+(* $Id: program_management.ml,v 1.13.2.1 2009/04/02 09:44:21 xclerc Exp $ *)
 
 (* Manage the loading of the program *)
 
@@ -19,13 +19,10 @@ open Int64ops
 open Unix
 open Unix_tools
 open Debugger_config
-open Misc
-open Instruct
 open Primitives
 open Parameters
 open Input_handling
 open Question
-open Debugcom
 open Program_loading
 open Time_travel
 

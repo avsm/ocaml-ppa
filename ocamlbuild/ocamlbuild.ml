@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlbuild.ml,v 1.3 2008/01/11 16:13:16 doligez Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 Ocamlbuild_unix_plugin.setup ();
 Ocamlbuild_pack.Main.main ()

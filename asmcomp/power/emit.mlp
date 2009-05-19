@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit.mlp,v 1.26 2007/11/09 15:06:57 frisch Exp $ *)
+(* $Id: emit.mlp,v 1.26.4.1 2009/01/26 17:06:10 xleroy Exp $ *)
 
 (* Emission of PowerPC assembly code *)
 
@@ -835,6 +835,10 @@ let fundecl fundecl =
   call_gc_label := 0;
   float_literals := [];
   int_literals := [];
+  if Config.system = "rhapsody" && is_generic_function fundecl.fun_name
+  then (* PR#4690 *)
+    `	.private_extern	{emit_symbol fundecl.fun_name}\n`
+  else
   `	.globl	{emit_symbol fundecl.fun_name}\n`;
   begin match Config.system with
   | "elf" | "bsd" ->

@@ -11,11 +11,10 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: history.ml,v 1.5 2002/10/29 17:53:24 doligez Exp $ *)
+(* $Id: history.ml,v 1.5.28.1 2009/04/02 09:44:21 xclerc Exp $ *)
 
 open Int64ops
 open Checkpoints
-open Misc
 open Primitives
 open Debugger_config
 

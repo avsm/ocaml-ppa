@@ -11,12 +11,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: program_loading.ml,v 1.8 2008/07/29 08:31:41 xleroy Exp $ *)
+(* $Id: program_loading.ml,v 1.8.2.1 2009/04/02 09:44:21 xclerc Exp $ *)
 
 (* Program loading *)
 
 open Unix
-open Misc
 open Debugger_config
 open Parameters
 open Input_handling

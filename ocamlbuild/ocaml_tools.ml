@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocaml_tools.ml,v 1.12 2008/07/25 15:06:47 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 open My_std
 open Pathname.Operators

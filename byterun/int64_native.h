@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: int64_native.h,v 1.5 2005/09/22 14:21:50 xleroy Exp $ */
+/* $Id: int64_native.h,v 1.5.18.1 2009/03/28 18:34:19 xleroy Exp $ */
 
 /* Wrapper macros around native 64-bit integer arithmetic,
    so that it has the same interface as the software emulation
@@ -29,6 +29,9 @@
 #define I64_mul(x,y) ((x) * (y))
 #define I64_is_zero(x) ((x) == 0)
 #define I64_is_negative(x) ((x) < 0)
+#define I64_is_min_int(x) ((x) == ((int64)1 << 63))
+#define I64_is_minus_one(x) ((x) == -1)
+
 #define I64_div(x,y) ((x) / (y))
 #define I64_mod(x,y) ((x) % (y))
 #define I64_udivmod(x,y,quo,rem) \

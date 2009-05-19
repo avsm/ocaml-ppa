@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: subst.mli,v 1.13 2008/01/11 16:13:16 doligez Exp $ *)
+(* $Id: subst.mli,v 1.13.4.1 2009/04/02 09:06:33 xclerc Exp $ *)
 
 (* Substitutions *)
 
@@ -52,3 +52,7 @@ val cltype_declaration: t -> cltype_declaration -> cltype_declaration
 val modtype: t -> module_type -> module_type
 val signature: t -> signature -> signature
 val modtype_declaration: t -> modtype_declaration -> modtype_declaration
+
+(* Composition of substitutions:  
+     apply (compose s1 s2) x = apply s2 (apply s1 x) *)
+val compose: t -> t -> t

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: flags.mli,v 1.2 2007/02/26 17:05:30 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 val of_tags : Tags.t -> Command.spec
 val of_tag_list : Tags.elt list -> Command.spec

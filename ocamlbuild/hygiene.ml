@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: hygiene.ml,v 1.5 2007/11/22 18:29:32 ertai Exp $ *)
+
 (* Original author: Berke Durak *)
 (* Hygiene *)
 open My_std

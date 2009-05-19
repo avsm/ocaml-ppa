@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml,v 1.71.2.1 2008/10/15 08:48:51 xleroy Exp $ *)
+(* $Id: main.ml,v 1.71.2.2 2009/01/14 13:19:32 doligez Exp $ *)
 
 open Config
 open Clflags
@@ -154,9 +154,13 @@ let main () =
     Arg.parse Options.list anonymous usage;
     if
       List.length (List.filter (fun x -> !x)
-		     [make_archive;make_package;compile_only;output_c_object]) > 1
+                      [make_archive;make_package;compile_only;output_c_object])
+        > 1
     then
-      fatal "Please specify at most one of -pack, -a, -c, -output-obj";
+      if !print_types then
+        fatal "Option -i is incompatible with -pack, -a, -output-obj"
+      else
+        fatal "Please specify at most one of -pack, -a, -c, -output-obj";
 
     if !make_archive then begin
       Compile.init_path();

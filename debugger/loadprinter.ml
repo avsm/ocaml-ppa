@@ -10,12 +10,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: loadprinter.ml,v 1.19 2004/11/29 02:27:25 garrigue Exp $ *)
+(* $Id: loadprinter.ml,v 1.19.20.1 2009/04/02 09:44:21 xclerc Exp $ *)
 
 (* Loading and installation of user-defined printer functions *)
 
 open Misc
-open Debugger_config
 open Longident
 open Path
 open Types

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlbuild_unix_plugin.ml,v 1.3 2008/07/31 07:36:12 ertai Exp $ *)
+
 (* Original author: Nicolas Pouillard *)
 open Format
 open Ocamlbuild_pack

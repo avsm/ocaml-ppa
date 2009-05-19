@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bytegen.ml,v 1.72 2008/10/03 15:02:55 maranget Exp $ *)
+(* $Id: bytegen.ml,v 1.72.2.1 2009/04/02 09:06:32 xclerc Exp $ *)
 
 (*  bytegen.ml : translation of lambda terms to lists of instructions. *)
 
@@ -171,6 +171,7 @@ let copy_event ev kind info repr =
     ev_kind = kind;
     ev_info = info;
     ev_typenv = ev.ev_typenv;
+    ev_typsubst = ev.ev_typsubst;
     ev_compenv = ev.ev_compenv;
     ev_stacksize = ev.ev_stacksize;
     ev_repr = repr }
@@ -714,6 +715,7 @@ let rec comp_expr env exp sz cont =
           ev_kind = kind;
           ev_info = info;
           ev_typenv = lev.lev_env;
+          ev_typsubst = Subst.identity;
           ev_compenv = env;
           ev_stacksize = sz;
           ev_repr =
