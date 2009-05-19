@@ -1,5 +1,5 @@
 #!/usr/bin/make -f
-include /usr/share/dpatch/dpatch.make
+include /usr/share/quilt/quilt.make
 
 PACKAGE := ocaml
 ALL_PACKAGES := $(shell sed -ne 's/^Package: //p' debian/control)
@@ -215,3 +215,10 @@ binary-arch: binary-stamp
 binary-indep: binary-stamp
 
 .PHONY: build clean binary-indep binary-arch binary install build ocamlinit
+
+.PHONY: redo-patches
+redo-patches:
+	rm -f debian/patches/*
+	git format-patch -N -o debian/patches upstream...patch-queue | \
+	  sed -e 's%debian/patches/%%' > debian/patches/series
+	sed -i -e 1d debian/patches/*.patch

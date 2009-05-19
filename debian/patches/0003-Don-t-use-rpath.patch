@@ -1,0 +1,27 @@
+From: Stefano Zacchiroli <zack@debian.org>
+Date: Tue, 19 May 2009 17:24:14 +0200
+Subject: [PATCH] Don't use rpath
+
+---
+ tools/ocamlmklib.mlp |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/tools/ocamlmklib.mlp b/tools/ocamlmklib.mlp
+index cec4877..4db288f 100644
+--- a/tools/ocamlmklib.mlp
++++ b/tools/ocamlmklib.mlp
+@@ -32,6 +32,11 @@ and output_c = ref ""       (* Output name for C part of library *)
+ and rpath = ref []          (* rpath options *)
+ and verbose = ref false
+ 
++(* Debian specific: inhibit rpath *)
++let byteccrpath = ""
++and nativeccrpath = ""
++and mksharedlibrpath = ""
++
+ let starts_with s pref =
+   String.length s >= String.length pref &&
+   String.sub s 0 (String.length pref) = pref
+-- 
+1.6.2.4
+

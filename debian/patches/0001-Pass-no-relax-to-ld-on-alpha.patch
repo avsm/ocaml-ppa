@@ -1,16 +1,18 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## alpha_ld_no-relax.dpatch by Stefano Zacchiroli <zack@debian.org>
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: Pass the --no-relax option to ld to fix a segfault in initialization
-## DP: code (bug#338437)
+From: Stefano Zacchiroli <zack@debian.org>
+Date: Tue, 19 May 2009 17:22:39 +0200
+Subject: [PATCH] Pass --no-relax to ld on alpha
 
+Pass the --no-relax option to ld to fix a segfault in initialization
+code (bug#338437)
+---
+ configure |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-@DPATCH@
-diff -urNad ocaml~/configure ocaml/configure
---- ocaml~/configure	2008-11-29 11:16:39.000000000 +0100
-+++ ocaml/configure	2008-11-29 11:31:37.000000000 +0100
-@@ -282,7 +282,8 @@
+diff --git a/configure b/configure
+index 503f555..eba3528 100755
+--- a/configure
++++ b/configure
+@@ -282,7 +282,8 @@ case "$bytecc,$host" in
    gcc,alpha*-*-linux*)
      if cc="$bytecc" sh ./hasgot -mieee; then
        bytecccompopts="-mieee $bytecccompopts";
@@ -20,7 +22,7 @@ diff -urNad ocaml~/configure ocaml/configure
    cc,mips-*-irix6*)
      # Add -n32 flag to ensure compatibility with native-code compiler
      bytecccompopts="-n32"
-@@ -684,6 +685,7 @@
+@@ -684,6 +685,7 @@ case "$arch,$nativecc,$system,$host_type" in
                         nativecccompopts="$gcc_warnings -DSHRINKED_GNUC";;
    *,*,rhapsody,*)      nativecccompopts="$gcc_warnings -DDARWIN_VERSION_6 $dl_defs"
                         if $arch64; then partialld="ld -r -arch ppc64"; fi;;
@@ -28,3 +30,6 @@ diff -urNad ocaml~/configure ocaml/configure
    *,gcc*,cygwin,*)     nativecccompopts="$gcc_warnings -U_WIN32";;
    amd64,gcc*,macosx,*) partialld="ld -r -arch x86_64";;
    *,gcc*,*,*)          nativecccompopts="$gcc_warnings";;
+-- 
+1.6.2.4
+

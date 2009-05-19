@@ -1,17 +1,24 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## ocamldoc_natdynlink.dpatch by Stefano Zacchiroli <zack@debian.org>
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: Add to ocamldoc support for native code dynamic loading.
-## DP: That enables using ocamldoc flags such as "-g" also with
-## DP: ocamldoc.opt. Patch is taken from OCaml CVS and is already
-## DP: integrated upstream for future releases.
+From: Stefano Zacchiroli <zack@debian.org>
+Date: Tue, 19 May 2009 17:25:59 +0200
+Subject: [PATCH] Add to ocamldoc support for native code dynamic loading
 
-@DPATCH@
-diff -urNad ocaml~/man/ocamldoc.m ocaml/man/ocamldoc.m
---- ocaml~/man/ocamldoc.m	2009-02-21 12:54:30.000000000 +0100
-+++ ocaml/man/ocamldoc.m	2009-04-06 13:57:21.520452487 +0200
-@@ -110,10 +110,7 @@
+That enables using ocamldoc flags such as "-g" also with
+ocamldoc.opt. Patch is taken from OCaml CVS and is already
+integrated upstream for future releases.
+---
+ man/ocamldoc.m            |    5 +----
+ ocamldoc/Makefile         |   29 +++++++++++++++--------------
+ ocamldoc/odoc.ml          |   18 +++++++++---------
+ ocamldoc/odoc_args.ml     |    8 ++------
+ ocamldoc/odoc_args.mli    |    4 ----
+ ocamldoc/odoc_messages.ml |    5 ++---
+ 6 files changed, 29 insertions(+), 40 deletions(-)
+
+diff --git a/man/ocamldoc.m b/man/ocamldoc.m
+index 5d1ed6a..757ec58 100644
+--- a/man/ocamldoc.m
++++ b/man/ocamldoc.m
+@@ -110,10 +110,7 @@ to display it.
  .TP
  .BI \-g \ file
  Dynamically load the given file (which extension usually is .cmo or .cma),
@@ -23,10 +30,11 @@ diff -urNad ocaml~/man/ocamldoc.m ocaml/man/ocamldoc.m
  If the given file is a simple one and does not exist in
  the current directory, then ocamldoc looks for it in the custom
  generators default directory, and in the directories specified with the
-diff -urNad ocaml~/ocamldoc/Makefile ocaml/ocamldoc/Makefile
---- ocaml~/ocamldoc/Makefile	2009-04-06 13:56:34.000451820 +0200
-+++ ocaml/ocamldoc/Makefile	2009-04-06 13:56:34.272459850 +0200
-@@ -111,16 +111,17 @@
+diff --git a/ocamldoc/Makefile b/ocamldoc/Makefile
+index f53046c..a3cf8fa 100644
+--- a/ocamldoc/Makefile
++++ b/ocamldoc/Makefile
+@@ -111,16 +111,17 @@ CMOFILES= odoc_config.cmo \
  CMXFILES= $(CMOFILES:.cmo=.cmx)
  CMIFILES= $(CMOFILES:.cmo=.cmi)
  
@@ -53,7 +61,7 @@ diff -urNad ocaml~/ocamldoc/Makefile ocaml/ocamldoc/Makefile
  
  EXECMXFILES= $(EXECMOFILES:.cmo=.cmx)
  EXECMIFILES= $(EXECMOFILES:.cmo=.cmi)
-@@ -199,10 +200,10 @@
+@@ -199,10 +200,10 @@ libopt: $(OCAMLDOC_LIBCMXA) $(OCAMLDOC_LIBCMI)
  debug:
  	make OCAMLPP=""
  
@@ -68,7 +76,7 @@ diff -urNad ocaml~/ocamldoc/Makefile ocaml/ocamldoc/Makefile
  
  $(OCAMLDOC_LIBCMA): $(LIBCMOFILES)
  	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(OCAMLCMOFILES) $(LIBCMOFILES)
-@@ -211,7 +212,7 @@
+@@ -211,7 +212,7 @@ $(OCAMLDOC_LIBCMXA): $(LIBCMXFILES)
  
  manpages: stdlib_man/Pervasives.3o
  
@@ -77,10 +85,11 @@ diff -urNad ocaml~/ocamldoc/Makefile ocaml/ocamldoc/Makefile
  	$(OCAMLDOC_RUN) -dot -dot-reduce -o ocamldoc.dot $(INCLUDES) \
  	odoc*.ml
  
-diff -urNad ocaml~/ocamldoc/odoc.ml ocaml/ocamldoc/odoc.ml
---- ocaml~/ocamldoc/odoc.ml	2009-04-06 13:52:17.000000000 +0200
-+++ ocaml/ocamldoc/odoc.ml	2009-04-06 13:56:34.272459850 +0200
-@@ -25,17 +25,18 @@
+diff --git a/ocamldoc/odoc.ml b/ocamldoc/odoc.ml
+index 472e93b..14ef26c 100644
+--- a/ocamldoc/odoc.ml
++++ b/ocamldoc/odoc.ml
+@@ -25,17 +25,18 @@ let print_DEBUG s = print_string s ; print_newline ()
  
  (* we check if we must load a module given on the command line *)
  let arg_list = Array.to_list Sys.argv
@@ -105,7 +114,7 @@ diff -urNad ocaml~/ocamldoc/odoc.ml ocaml/ocamldoc/odoc.ml
          iter (f_opt, inc) q
    in
    iter (None, []) arg_list
-@@ -63,12 +64,11 @@
+@@ -63,12 +64,11 @@ let get_real_filename name =
       )
  
  let _ =
@@ -120,10 +129,11 @@ diff -urNad ocaml~/ocamldoc/odoc.ml ocaml/ocamldoc/odoc.ml
        Dynlink.allow_unsafe_modules true;
        try
          let real_file = get_real_filename file in
-diff -urNad ocaml~/ocamldoc/odoc_args.ml ocaml/ocamldoc/odoc_args.ml
---- ocaml~/ocamldoc/odoc_args.ml	2009-04-06 13:52:17.000000000 +0200
-+++ ocaml/ocamldoc/odoc_args.ml	2009-04-06 13:56:34.272459850 +0200
-@@ -24,8 +24,6 @@
+diff --git a/ocamldoc/odoc_args.ml b/ocamldoc/odoc_args.ml
+index f82458a..2b1943d 100644
+--- a/ocamldoc/odoc_args.ml
++++ b/ocamldoc/odoc_args.ml
+@@ -24,8 +24,6 @@ type source_file =
  
  let include_dirs = Clflags.include_dirs
  
@@ -132,7 +142,7 @@ diff -urNad ocaml~/ocamldoc/odoc_args.ml ocaml/ocamldoc/odoc_args.ml
  class type doc_generator =
      object
        method generate : Odoc_module.t_module list -> unit
-@@ -254,10 +252,8 @@
+@@ -254,10 +252,8 @@ let options = ref [
    "-dot", Arg.Unit (fun () -> set_doc_generator !default_dot_generator), M.generate_dot ;
    "-customdir", Arg.Unit (fun () -> Printf.printf "%s\n" Odoc_config.custom_generators_path; exit 0),
    M.display_custom_generators_dir ;
@@ -145,10 +155,11 @@ diff -urNad ocaml~/ocamldoc/odoc_args.ml ocaml/ocamldoc/odoc_args.ml
    "\n\n *** HTML options ***\n";
  
  (* html only options *)
-diff -urNad ocaml~/ocamldoc/odoc_args.mli ocaml/ocamldoc/odoc_args.mli
---- ocaml~/ocamldoc/odoc_args.mli	2009-04-06 13:52:17.000000000 +0200
-+++ ocaml/ocamldoc/odoc_args.mli	2009-04-06 13:56:34.272459850 +0200
-@@ -22,10 +22,6 @@
+diff --git a/ocamldoc/odoc_args.mli b/ocamldoc/odoc_args.mli
+index bd34ec5..c646536 100644
+--- a/ocamldoc/odoc_args.mli
++++ b/ocamldoc/odoc_args.mli
+@@ -22,10 +22,6 @@ type source_file =
  (** The include_dirs in the OCaml compiler. *)
  val include_dirs : string list ref
  
@@ -159,10 +170,11 @@ diff -urNad ocaml~/ocamldoc/odoc_args.mli ocaml/ocamldoc/odoc_args.mli
  (** The class type of documentation generators. *)
  class type doc_generator =
    object method generate : Odoc_module.t_module list -> unit end
-diff -urNad ocaml~/ocamldoc/odoc_messages.ml ocaml/ocamldoc/odoc_messages.ml
---- ocaml~/ocamldoc/odoc_messages.ml	2009-04-06 13:52:17.000000000 +0200
-+++ ocaml/ocamldoc/odoc_messages.ml	2009-04-06 13:56:34.272459850 +0200
-@@ -24,7 +24,6 @@
+diff --git a/ocamldoc/odoc_messages.ml b/ocamldoc/odoc_messages.ml
+index f288da1..9753adf 100644
+--- a/ocamldoc/odoc_messages.ml
++++ b/ocamldoc/odoc_messages.ml
+@@ -24,7 +24,6 @@ let message_version = software^" "^config_version
  let usage = "Usage : "^(Sys.argv.(0))^" [options] <files>\n"
  let options_are = "Options are :"
  let option_version = "\tPrint version and exit"
@@ -170,7 +182,7 @@ diff -urNad ocaml~/ocamldoc/odoc_messages.ml ocaml/ocamldoc/odoc_messages.ml
  let latex_only = "(LaTeX only)"
  let texi_only = "(TeXinfo only)"
  let latex_texi_only = "(LaTeX and TeXinfo only)"
-@@ -41,8 +40,8 @@
+@@ -41,8 +40,8 @@ let option_intf ="<file>\tConsider <file> as a .mli file"
  let option_text ="<file>\tConsider <file> as a .txt file"
  let display_custom_generators_dir = "\tDisplay custom generators standard directory and exit"
  let add_load_dir = "<dir>\tAdd the given directory to the search path for custom\n"^
@@ -181,3 +193,6 @@ diff -urNad ocaml~/ocamldoc/odoc_messages.ml ocaml/ocamldoc/odoc_messages.ml
  let nolabels = "\tIgnore non-optional labels in types"
  let werr = "\tTreat ocamldoc warnings as errors"
  let hide_warnings = "\n\t\tdo not print ocamldoc warnings"
+-- 
+1.6.2.4
+

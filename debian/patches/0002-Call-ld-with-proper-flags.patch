@@ -1,0 +1,27 @@
+From: Stefano Zacchiroli <zack@debian.org>
+Date: Tue, 19 May 2009 17:23:34 +0200
+Subject: [PATCH] Call ld with proper flags
+
+Filter linkflags passed to ld by ocamlopt -pack and -output-obj
+to remove the "-Wl," parts, which are only used when ocamlopt calls
+gcc.
+---
+ configure |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/configure b/configure
+index eba3528..be13adc 100755
+--- a/configure
++++ b/configure
+@@ -1548,7 +1548,7 @@ echo "DEBUGGER=$debugger" >> Makefile
+ echo "CC_PROFILE=$cc_profile" >> Makefile
+ echo "SYSTHREAD_SUPPORT=$systhread_support" >> Makefile
+ echo "PARTIALLD=$partialld" >> Makefile
+-echo "PACKLD=\$(PARTIALLD) \$(NATIVECCLINKOPTS) -o " >> Makefile
++echo "PACKLD=\$(PARTIALLD) $(echo $nativecclinkopts|sed s/-Wl,//g) -o " >> Makefile
+ echo "DLLCCCOMPOPTS=$dllccompopts" >> Makefile
+ echo "IFLEXDIR=$iflexdir" >> Makefile
+ echo "O=o" >> Makefile
+-- 
+1.6.2.4
+

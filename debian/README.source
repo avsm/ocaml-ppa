@@ -9,3 +9,14 @@ are generated from *.install.in by ocamlinit.mk (from dh-ocaml), and
 the gen_modules.pl script (in ocaml source package). You should have a
 look at the comments in gen_modules.pl to understand the format of
 *.install.in files.
+
+
+Patching upstream sources
+-------------------------
+
+This source package uses quilt to apply and remove its patches. Please
+refer to `/usr/share/doc/quilt/README.source' for information about
+how to use quilt for source packages.
+
+The quilt series is generated from the Git repository. Have a look at
+the `redo-patches' target of debian/rules for more details.

@@ -15,7 +15,7 @@ Build-Depends:
  tk8.4-dev,
  libncurses5-dev,
  libgdbm-dev,
- dpatch,
+ quilt,
  bzip2,
  docbook-xml,
  docbook-utils,
