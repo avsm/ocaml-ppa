@@ -16,8 +16,9 @@ ocaml (3.11.1~rc0-1) UNRELEASED; urgency=low
   * New upstream release candidate:
     - remove dbm_ldopts.dpatch (merged upstream)
     - switch patch system to quilt
+    - add Backport-ocamlbuild-where-fix patch (from upstream)
 
- -- Stephane Glondu <steph@glondu.net>  Tue, 19 May 2009 17:41:47 +0200
+ -- Stephane Glondu <steph@glondu.net>  Tue, 26 May 2009 18:55:07 +0200
 
 ocaml (3.11.0-5) unstable; urgency=low
 

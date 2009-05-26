@@ -5,3 +5,4 @@
 0005-Add-to-ocamldoc-support-for-native-code-dynamic-load.patch
 0006-Patch-config.sh-for-installation.patch
 0007-Install-ocamlbuild-as-a-link-on-either-.native-or-.b.patch
+0008-Backport-ocamlbuild-where-fix.patch

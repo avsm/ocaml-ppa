@@ -1,0 +1,25 @@
+From: Stephane Glondu <steph@glondu.net>
+Date: Tue, 26 May 2009 18:54:22 +0200
+Subject: [PATCH] Backport ocamlbuild -where fix
+
+---
+ ocamlbuild/ocamlbuild_where.ml |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/ocamlbuild/ocamlbuild_where.ml b/ocamlbuild/ocamlbuild_where.ml
+index 1703a53..14fcde5 100644
+--- a/ocamlbuild/ocamlbuild_where.ml
++++ b/ocamlbuild/ocamlbuild_where.ml
+@@ -1,5 +1,7 @@
+ let bindir = ref Ocamlbuild_Myocamlbuild_config.bindir;;
+ let libdir = ref begin
+-  try Filename.concat (Sys.getenv "OCAMLLIB") "ocamlbuild"
+-  with Not_found -> Ocamlbuild_Myocamlbuild_config.libdir
++  Filename.concat
++    (try Sys.getenv "OCAMLLIB"
++     with Not_found -> Ocamlbuild_Myocamlbuild_config.libdir)
++    "ocamlbuild"
+ end;;
+-- 
+1.6.2.4
+
