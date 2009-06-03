@@ -23,5 +23,3 @@ index cec4877..4db288f 100644
    String.length s >= String.length pref &&
    String.sub s 0 (String.length pref) = pref
 -- 
-1.6.2.4
-

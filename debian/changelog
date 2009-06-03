@@ -1,4 +1,4 @@
-ocaml (3.11.1~rc0-1) UNRELEASED; urgency=low
+ocaml (3.11.1~rc1-1) UNRELEASED; urgency=low
 
   [ Samuel Mimram ]
   * Add kfreebsd-amd64 to the list of supported native architectures.
@@ -15,10 +15,10 @@ ocaml (3.11.1~rc0-1) UNRELEASED; urgency=low
   [ Stephane Glondu ]
   * New upstream release candidate:
     - remove dbm_ldopts.dpatch (merged upstream)
+    - remove ocamldoc_natdynlink.dpatch (merged upstream)
     - switch patch system to quilt
-    - add Backport-ocamlbuild-where-fix patch (from upstream)
 
- -- Stephane Glondu <steph@glondu.net>  Tue, 26 May 2009 18:55:07 +0200
+ -- Stephane Glondu <steph@glondu.net>  Wed, 03 Jun 2009 13:16:25 +0200
 
 ocaml (3.11.0-5) unstable; urgency=low
 

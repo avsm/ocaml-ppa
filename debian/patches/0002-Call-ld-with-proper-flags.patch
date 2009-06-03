@@ -10,10 +10,10 @@ gcc.
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/configure b/configure
-index 9028530..156c72a 100755
+index 0327f64..1d0d767 100755
 --- a/configure
 +++ b/configure
-@@ -1560,7 +1560,7 @@ echo "DEBUGGER=$debugger" >> Makefile
+@@ -1566,7 +1566,7 @@ echo "DEBUGGER=$debugger" >> Makefile
  echo "CC_PROFILE=$cc_profile" >> Makefile
  echo "SYSTHREAD_SUPPORT=$systhread_support" >> Makefile
  echo "PARTIALLD=$partialld" >> Makefile
@@ -23,5 +23,3 @@ index 9028530..156c72a 100755
  echo "IFLEXDIR=$iflexdir" >> Makefile
  echo "O=o" >> Makefile
 -- 
-1.6.2.4
-

@@ -9,7 +9,7 @@ code (bug#338437)
  1 files changed, 3 insertions(+), 1 deletions(-)
 
 diff --git a/configure b/configure
-index e736a92..9028530 100755
+index 166ceaf..0327f64 100755
 --- a/configure
 +++ b/configure
 @@ -282,7 +282,8 @@ case "$bytecc,$host" in
@@ -31,5 +31,3 @@ index e736a92..9028530 100755
    amd64,gcc*,macosx,*) partialld="ld -r -arch x86_64";;
    amd64,gcc*,solaris,*) partialld="ld -r -m elf_x86_64";;
 -- 
-1.6.2.4
-
