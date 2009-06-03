@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.common,v 1.6 2008/09/10 05:51:11 weis Exp $
+# $Id: Makefile.common,v 1.6.2.1 2009/05/25 12:25:25 doligez Exp $
 
 include ../config/Makefile
 
@@ -86,7 +86,7 @@ jumptbl.h : instruct.h
 version.h : ../VERSION
 	echo "#define OCAML_VERSION \"`head -1 ../VERSION`\"" > version.h
 
-clean:
+clean ::
 	rm -f ocamlrun$(EXE) ocamlrund$(EXE) *.$(O) *.$(A) *.$(SO)
 	rm -f primitives prims.c opnames.h jumptbl.h ld.conf
 	rm -f version.h

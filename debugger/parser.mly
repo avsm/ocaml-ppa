@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: parser.mly,v 1.7.28.3 2009/04/15 11:09:56 xclerc Exp $ */
+/* $Id: parser.mly,v 1.7.28.4 2009/05/23 14:42:57 xclerc Exp $ */
 
 %{
 
@@ -182,6 +182,7 @@ longident_eol :
 
 opt_longident :
     UIDENT                      { Some (Lident $1) }
+  | LIDENT                      { Some (Lident $1) }
   | module_path DOT UIDENT      { Some (Ldot($1, $3)) }
   |                             { None };
 

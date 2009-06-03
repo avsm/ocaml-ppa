@@ -1,4 +1,4 @@
-\" $Id: ocamldoc.m,v 1.5 2008/09/15 14:12:56 doligez Exp $
+\" $Id: ocamldoc.m,v 1.5.2.1 2009/05/27 14:35:27 doligez Exp $
 
 .TH OCAMLDOC 1
 
@@ -110,10 +110,7 @@ to display it.
 .TP
 .BI \-g \ file
 Dynamically load the given file (which extension usually is .cmo or .cma),
-which defines a custom documentation generator. This option is supported by the
-.BR ocamldoc (1)
-command, but not by its native-code version
-.BR ocamldoc.opt .
+which defines a custom documentation generator.
 If the given file is a simple one and does not exist in
 the current directory, then ocamldoc looks for it in the custom
 generators default directory, and in the directories specified with the

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: fastworld.sh,v 1.3.4.1 2008/10/23 15:29:11 ertai Exp $
+# $Id: fastworld.sh,v 1.3.4.2 2009/06/02 09:37:47 doligez Exp $
 cd `dirname $0`
 set -e
 if [ -e ocamlbuild_mixed_mode ]; then
@@ -10,7 +10,7 @@ fi
 ./mkconfig.sh
 ./mkmyocamlbuild_config.sh
 . ../config/config.sh
-if [ "x$EXE" = "x.exe" ]; then
+if [ "x$EXE" = "x.exe" -a "x$SYSTEM" != "xcygwin" ]; then
   ./boot-c-parts-windows.sh
 else
   ./boot-c-parts.sh

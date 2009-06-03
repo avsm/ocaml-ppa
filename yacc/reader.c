@@ -12,7 +12,7 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: reader.c,v 1.32 2005/10/06 06:34:51 garrigue Exp $ */
+/* $Id: reader.c,v 1.32.18.1 2009/05/20 11:58:43 doligez Exp $ */
 
 #include <string.h>
 #include "defs.h"
@@ -163,6 +163,7 @@ char *substring (char *str, int start, int len)
   for (i = 0; i < len; i++){
     buf[i] = str[start+i];
   }
+  buf[i] = '\0';      /* PR#4796 */
   return buf;
 }
 
@@ -710,7 +711,7 @@ get_literal(void)
     n = cinc;
     s = MALLOC(n);
     if (s == 0) no_space();
-    
+
     for (i = 0; i < n; ++i)
         s[i] = cache[i];
 
@@ -1306,7 +1307,7 @@ loop:
         {
             ++cptr;
             i = get_number();
-            
+
             if (i <= 0 || i > n)
               unknown_rhs(i);
             item = pitem[nitems + i - n - 1];
@@ -1393,7 +1394,7 @@ loop:
           fwrite(cptr, 1, 2, f);
           cptr += 2;
         } else
-        if (cptr[0] == '\\' 
+        if (cptr[0] == '\\'
             && isdigit((unsigned char) cptr[1])
             && isdigit((unsigned char) cptr[2])
             && isdigit((unsigned char) cptr[3])
