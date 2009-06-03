@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: big_int.ml,v 1.24.2.1 2009/05/18 13:08:03 xleroy Exp $ *)
+(* $Id: big_int.ml,v 1.24.2.2 2009/05/24 19:46:44 xleroy Exp $ *)
 
 open Int_misc
 open Nat
@@ -378,7 +378,9 @@ let int64_of_big_int bi =
   else begin
     let i =
       match num_digits_big_int bi with
-      | 1 -> Int64.of_nativeint (nth_digit_nat_native bi.abs_value 0)
+      | 1 -> Int64.logand
+               (Int64.of_nativeint (nth_digit_nat_native bi.abs_value 0))
+               0xFFFFFFFFL
       | 2 -> Int64.logor
                (Int64.logand
                  (Int64.of_nativeint (nth_digit_nat_native bi.abs_value 0))

@@ -13,7 +13,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: configure,v 1.266.2.4 2009/05/19 13:23:47 doligez Exp $
+# $Id: configure,v 1.266.2.5 2009/05/20 15:33:09 weis Exp $
 
 configure_options="$*"
 prefix=/usr/local
@@ -1197,6 +1197,12 @@ x11_link="not found"
 
 for dir in \
     $x11_include_dir          \
+                              \
+    /usr/X11R7/include        \
+    /usr/include/X11R7        \
+    /usr/local/X11R7/include  \
+    /usr/local/include/X11R7  \
+    /opt/X11R7/include        \
                               \
     /usr/X11R6/include        \
     /usr/include/X11R6        \
