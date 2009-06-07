@@ -5,20 +5,21 @@ ocaml (3.11.1~rc1-1) UNRELEASED; urgency=low
     (Closes: #519916)
 
   [ Stefano Zacchiroli ]
-  * debian/control
+  * debian/control:
     - remove recommends to ledit from ocaml-nox (does not ship "ocaml")
-    - change recommends from ledit to "ledit | rlwrap" for ocaml-interp
-  * debian/patches/
-    - add new patch ocamldoc_natdynlink (from upstream): enable
-      dynamic loading of ocamldoc custom printers also for ocamldoc.opt
 
   [ Stephane Glondu ]
   * New upstream release candidate:
     - remove dbm_ldopts.dpatch (merged upstream)
-    - remove ocamldoc_natdynlink.dpatch (merged upstream)
     - switch patch system to quilt
+  * debian/control:
+    - update Standards-Version to 3.8.1
+    - move to new section ocaml
+    - change Recommends from ledit to "ledit | readline-editor" for
+      ocaml-interp
+    - remove various obsolete Conflicts and Replaces
 
- -- Stephane Glondu <steph@glondu.net>  Wed, 03 Jun 2009 13:16:25 +0200
+ -- Stephane Glondu <steph@glondu.net>  Sun, 07 Jun 2009 16:07:40 +0200
 
 ocaml (3.11.0-5) unstable; urgency=low
 

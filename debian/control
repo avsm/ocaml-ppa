@@ -1,5 +1,5 @@
 Source: ocaml
-Section: devel
+Section: ocaml
 Priority: optional
 Maintainer: Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>
 Uploaders:
@@ -20,7 +20,7 @@ Build-Depends:
  docbook-xml,
  docbook-utils,
  dh-ocaml (>= 0.4)
-Standards-Version: 3.8.0
+Standards-Version: 3.8.1
 Vcs-Git: git://git.debian.org/git/pkg-ocaml-maint/packages/ocaml.git
 Vcs-Browser: http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git
 Homepage: http://caml.inria.fr/
@@ -45,12 +45,10 @@ Provides:
  libnums-ocaml-dev
 Replaces:
  camlp4 (<< 3.10.0),
- focaml (<< 3.07.2a-3),
  libnums-ocaml-dev
 Conflicts:
  camlp4 (<< 3.10.0),
  camlidl (<< 1.04),
- ocaml (<< 3.07.2a-3),
  libnums-ocaml-dev
 Description: ML implementation with a class-based object system (no X)
  Objective Caml (OCaml) is an implementation of the ML language, based on
@@ -162,8 +160,6 @@ Provides: ocaml-base-nox-${F:OCamlABI}, libnums-ocaml
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: ocaml-base (<< 3.07.2a-3), libnums-ocaml
-Conflicts: ocaml (<< 3.04-2), ocaml-base (<< 3.07.2a-3), libnums-ocaml
 Description: Runtime system for OCaml bytecode executables (no X)
  Objective Caml (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
@@ -230,9 +226,7 @@ Depends:
  ocaml-base-nox (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
-Recommends: ledit | rlwrap
-Replaces: ocaml (<< 3.07.2a-3)
-Conflicts: ocaml (<< 3.07.2a-3)
+Recommends: ledit | readline-editor
 Description: OCaml interactive interpreter and standard libraries
  Objective Caml (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
