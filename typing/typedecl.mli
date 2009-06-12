@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typedecl.mli,v 1.31 2007/10/09 10:29:37 weis Exp $ *)
+(* $Id: typedecl.mli,v 1.31.4.1 2009/06/08 04:08:14 garrigue Exp $ *)
 
 (* Typing of type definitions and primitive definitions *)
 
@@ -70,6 +70,7 @@ type error =
   | Bad_variance of int * (bool*bool) * (bool*bool)
   | Unavailable_type_constructor of Path.t
   | Bad_fixed_type of string
+  | Unbound_type_var_exc of type_expr * type_expr
 
 exception Error of Location.t * error
 

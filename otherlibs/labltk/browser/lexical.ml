@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: lexical.ml,v 1.15 2002/11/01 17:06:45 doligez Exp $ *)
+(* $Id: lexical.ml,v 1.15.32.1 2009/06/08 04:43:32 garrigue Exp $ *)
 
 open StdLabels
 open Tk
@@ -39,6 +39,8 @@ let tag ?(start=tstart) ?(stop=tend) tw =
   let tpos c = (Text.index tw ~index:start, [`Char c]) in
   let text = Text.get tw ~start ~stop in
   let buffer = Lexing.from_string text in
+  Location.init buffer "";
+  Location.input_name := "";
   List.iter tags
     ~f:(fun tag -> Text.tag_remove tw ~start ~stop ~tag);
   let last = ref (EOF, 0, 0) in
