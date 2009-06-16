@@ -18,6 +18,7 @@ ocaml (3.11.1-1) UNRELEASED; urgency=low
     - change Recommends from ledit to "ledit | readline-editor" for
       ocaml-interp
     - remove various obsolete Conflicts and Replaces
+  * Move OCaml standard library to /usr/lib/ocaml
 
  -- Stephane Glondu <steph@glondu.net>  Fri, 12 Jun 2009 15:50:22 +0200
 

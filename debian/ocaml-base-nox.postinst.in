@@ -18,7 +18,7 @@ if [ ! -e /usr/local/lib/ocaml/@OCamlABI@/stublibs ]; then
     fi
 fi
 
-for i in /usr/lib/ocaml/3.06 /etc/ocaml /var/lib/ocaml /usr/lib/ocaml;	\
+for i in /usr/lib/ocaml/3.06 /etc/ocaml /var/lib/ocaml; 		\
 do									\
 	if [ -e $i/ld.conf ]; then					\
 		echo "Removing leftover $i/ld.conf";			\

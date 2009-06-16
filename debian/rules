@@ -11,7 +11,7 @@ BUILDCACHE := $(wildcard ../ocaml.cache)
 
 # These are defined here to avoid definition of them in ocamlvars.mk
 OCAML_ABI := $(OCAMLMAJOR).$(OCAMLMINOR)
-OCAML_STDLIB_DIR := /usr/lib/ocaml/$(OCAML_ABI)
+OCAML_STDLIB_DIR := /usr/lib/ocaml
 OCAML_NATIVE_ARCHS := $(shell cat debian/native-archs)
 DEB_BUILD_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
 OCAML_OPT_ARCH := $(findstring $(DEB_BUILD_ARCH),$(OCAML_NATIVE_ARCHS))
@@ -45,8 +45,8 @@ CONFIGURE_OPTS := \
 
 CONFIGURE_SED := \
   -e "s%MANDIR=.*$$%MANDIR=\$$(PREFIX)/share/man%g" \
-  -e "s%LIBDIR=.*$$%LIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAML_ABI)%g" \
-  -e "s%STUBLIBDIR=.*$$%STUBLIBDIR=\$$(PREFIX)/lib/ocaml/$(OCAML_ABI)/stublibs%g"
+  -e "s%LIBDIR=.*$$%LIBDIR=\$$(PREFIX)/lib/ocaml%g" \
+  -e "s%STUBLIBDIR=.*$$%STUBLIBDIR=\$$(PREFIX)/lib/ocaml/stublibs%g"
 
 
 $(QUILT_STAMPFN): debian/$(SRCTARBALL)
