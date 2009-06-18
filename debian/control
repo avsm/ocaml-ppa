@@ -20,7 +20,7 @@ Build-Depends:
  docbook-xml,
  docbook-utils,
  dh-ocaml (>= 0.4)
-Standards-Version: 3.8.1
+Standards-Version: 3.8.2
 Vcs-Git: git://git.debian.org/git/pkg-ocaml-maint/packages/ocaml.git
 Vcs-Browser: http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git
 Homepage: http://caml.inria.fr/

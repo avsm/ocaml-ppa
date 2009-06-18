@@ -13,7 +13,7 @@ ocaml (3.11.1-1) UNRELEASED; urgency=low
     - remove dbm_ldopts.dpatch (merged upstream)
     - switch patch system to quilt
   * debian/control:
-    - update Standards-Version to 3.8.1
+    - update Standards-Version to 3.8.2
     - move to new section ocaml
     - change Recommends from ledit to "ledit | readline-editor" for
       ocaml-interp
