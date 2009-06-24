@@ -17,8 +17,6 @@ Build-Depends:
  libgdbm-dev,
  quilt,
  bzip2,
- docbook-xml,
- docbook-utils,
  dh-ocaml (>= 0.4)
 Standards-Version: 3.8.2
 Vcs-Git: git://git.debian.org/git/pkg-ocaml-maint/packages/ocaml.git

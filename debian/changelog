@@ -1,3 +1,10 @@
+ocaml (3.11.1-2) unstable; urgency=low
+
+  * Remove build-dependency to docbook-* (not needed anymore, since
+    policy has been moved to dh-ocaml)
+
+ -- Stephane Glondu <steph@glondu.net>  Wed, 24 Jun 2009 12:47:31 +0200
+
 ocaml (3.11.1-1) unstable; urgency=low
 
   [ Samuel Mimram ]
