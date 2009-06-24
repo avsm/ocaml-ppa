@@ -1,4 +1,4 @@
-ocaml (3.11.1-1) UNRELEASED; urgency=low
+ocaml (3.11.1-1) unstable; urgency=low
 
   [ Samuel Mimram ]
   * Add kfreebsd-amd64 to the list of supported native architectures.
@@ -20,7 +20,7 @@ ocaml (3.11.1-1) UNRELEASED; urgency=low
     - remove various obsolete Conflicts and Replaces
   * Move OCaml standard library to /usr/lib/ocaml
 
- -- Stephane Glondu <steph@glondu.net>  Fri, 12 Jun 2009 15:50:22 +0200
+ -- Stephane Glondu <steph@glondu.net>  Wed, 24 Jun 2009 10:59:46 +0200
 
 ocaml (3.11.0-5) unstable; urgency=low
 
