@@ -101,7 +101,7 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
- ocaml-nox (= ${binary:Version})
+ ocaml-nox (= ${binary:Version}),
  camlp4 (= ${binary:Version})
 Description: Pre Processor Pretty Printer for OCaml - extras
  Objective Caml (OCaml) is an implementation of the ML language,
