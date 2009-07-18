@@ -111,6 +111,7 @@ else
 	@echo "Building native compilers"
 	$(MAKE) opt opt.opt
 	$(MAKE) -C tools dumpapprox
+	$(MAKE) -f debian/ocamlbyteinfo/Makefile
 	touch opt-built-stamp
 endif
 else
