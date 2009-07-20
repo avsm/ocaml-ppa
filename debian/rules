@@ -107,6 +107,7 @@ ifeq (,$(OCAML_OPT_ARCH))
 # As of 3.11.0, manpages are made only in `make opt.opt'
 	make -C ocamldoc manpages \
 	  OCAMLDOC_RUN="../boot/ocamlrun -I ../otherlibs/unix -I ../otherlibs/str ./ocamldoc"
+	$(MAKE) -f debian/ocamlbyteinfo/Makefile ocamlbyteinfo
 else
 	@echo "Building native compilers"
 	$(MAKE) opt opt.opt
@@ -143,6 +144,7 @@ endif
 	fi
 # Remaining stuff
 	-rm -Rf debian/$(SRCTARBALL) debian/examples
+	$(MAKE) -f debian/ocamlbyteinfo/Makefile clean
 	dh clean --after dh_auto_clean
 
 install: install-stamp
@@ -178,6 +180,11 @@ install-stamp:
 	for u in dumpobj objinfo dumpapprox; do \
 	  if [ -f tools/$$u ]; then \
 	    cp tools/$$u debian/ocaml-nox/usr/bin/ocaml$$u; \
+	  fi \
+	done
+	for u in ocamlbyteinfo ocamlplugininfo; do \
+	  if [ -f debian/ocamlbyteinfo/$$u ]; then \
+	    cp debian/ocamlbyteinfo/$$u debian/ocaml-nox/usr/bin/$$u; \
 	  fi \
 	done
 	for mli in `find camlp4 -name '*.mli'` ; do \
