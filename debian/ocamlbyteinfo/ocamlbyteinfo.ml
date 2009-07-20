@@ -1,76 +1,101 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                           Objective Caml                            *)
+(*                                                                     *)
+(*            Xavier Leroy, projet Gallium, INRIA Rocquencourt         *)
+(*                                                                     *)
+(*  Copyright 2009 Institut National de Recherche en Informatique et   *)
+(*  en Automatique.  All rights reserved.  This file is distributed    *)
+(*  under the terms of the GNU Library General Public License, with    *)
+(*  the special exception on linking described in file ../../LICENSE.  *)
+(*                                                                     *)
+(***********************************************************************)
 
-(*
- * Copyright (C) 2009 Mehdi Dogguy
- * You have permission to copy, modify, and redistribute under the
- * terms of the LGPL-2.1.
- *)
+(* $Id$ *)
+
+(* Dumps a bytecode binary file *)
 
 open Sys
-
-let get_string_list sect len =
-  let rec fold s e acc =
-    if e != len then
-      if sect.[e] = '\000' then
-        fold (e+1) (e+1) (String.sub sect s (e-s) :: acc)
-      else fold s (e+1) acc
-    else acc
-  in fold 0 0 []
+open Dynlinkaux
 
 let input_stringlist ic len =
+  let get_string_list sect len =
+    let rec fold s e acc =
+      if e != len then
+        if sect.[e] = '\000' then
+          fold (e+1) (e+1) (String.sub sect s (e-s) :: acc)
+        else fold s (e+1) acc
+      else acc
+    in fold 0 0 []
+  in
   let sect = String.create len in
   let _ = really_input ic sect 0 len in
-    get_string_list sect len
+  get_string_list sect len
 
 let print = Printf.printf
+let perr s =
+  Printf.eprintf "%s\n" s;
+  exit(1)
+let p_title title = print "%s:\n" title
 
-type prefix = C | P | M | S | R | D
-let p_prefix = function
-  | C -> "DLLS"
-  | M -> "UNIT"
-  | P -> "DLPT"
-  | S -> "SYMB"
-  | R -> "PRIM"
-  | D -> "DBUG"
+let p_section title format pdata = function
+  | [] -> ()
+  | l ->
+      p_title title;
+      List.iter
+        (fun (name, data) -> print format (pdata data) name)
+        l
 
-let p_section prefix =
-  List.iter
-    (fun name -> print "%s %s\n" (p_prefix prefix) name)
+let p_list title format = function
+  | [] -> ()
+  | l ->
+      p_title title;
+      List.iter
+        (fun name -> print format name)
+        l
 
 let _ =
-  let input_name = Sys.argv.(1) in
-  let ic = open_in_bin input_name in
-  let _ = Bytesections.read_toc ic in
-  let toc = Bytesections.toc () in
+  try
+    let input_name = Sys.argv.(1) in
+    let ic = open_in_bin input_name in
+    Bytesections.read_toc ic;
     List.iter
-      (fun (sec, len) ->
-         if len > 0 then
-           let _ = Bytesections.seek_section ic sec in
-             match sec with
-               | "CRCS" ->
-                   let crcs = (input_value ic : (string * Digest.t) list)
-                   in List.iter
-                        (fun (name, dig) -> print "%s %s %s\n"
-                           (p_prefix M)
-                           (Digest.to_hex dig)
-                           name
-                        ) crcs
-               | "DLLS" -> p_section C (input_stringlist ic len)
-               | "DLPT" -> p_section P (input_stringlist ic len)
-               | "SYMB" ->
-                   let (_, sym_table) = (input_value ic
-                                           : int * (Ident.t, int) Tbl.t)
-                   in let list = ref []
-                   in let _ = Tbl.map
-                       (fun id pos -> list := (id,pos) :: !list) sym_table
-                   in List.iter (fun (id, pos) -> print "%s %.10d %s\n"
-                                   (p_prefix S)
-                                   pos
-                                   (Ident.name id))
-                        (List.sort
-                           (fun (_, pos) (_,pos') -> Pervasives.compare pos pos')
-                           !list)
-               | "PRIM" -> p_section R (input_stringlist ic len)
-               | _ -> ()
+      (fun section ->
+         try
+           let len = Bytesections.seek_section ic section in
+           if len > 0 then match section with
+             | "CRCS" ->
+                 p_section
+                   "Imported Units"
+                   "\t%s\t%s\n"
+                   Digest.to_hex
+                   (input_value ic : (string * Digest.t) list)
+             | "DLLS" ->
+                 p_list
+                   "Used Dlls" "\t%s\n"
+                   (input_stringlist ic len)
+             | "DLPT" ->
+                 p_list
+                   "Additional Dll paths"
+                   "\t%s\n"
+                   (input_stringlist ic len)
+             | "PRIM" ->
+                 let prims = (input_stringlist ic len) in
+                 print "Uses unsafe features: ";
+                 begin match prims with
+                     [] -> print "no\n"
+                   | l  -> print "YES\n";
+                       p_list "Primitives declared in this module"
+                         "\t%s\n"
+                         l
+                 end
+             | _ -> ()
+         with Not_found | Failure _ | Invalid_argument _ -> ()
       )
-      toc;
+      ["CRCS"; "DLLS"; "DLPT"; "PRIM"];
     close_in ic
+  with
+    | Sys_error msg ->
+        perr msg
+    | Invalid_argument("index out of bounds") ->
+        perr (Printf.sprintf "Usage: %s filename" Sys.argv.(0))
