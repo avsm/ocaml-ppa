@@ -1,0 +1,27 @@
+.TH OCAMLPLUGININFO 1 "July 21, 2009"
+.SH NAME
+ocamlplugininfo \- dump an OCaml native shared object file description
+.SH SYNOPSIS
+.B ocamlplugininfo
+.RI file
+.SH DESCRIPTION
+Dump information contained in OCaml native sahred object.
+It works on .cmxs files.
+.sp 2
+.B ocamlplugininfo
+is able to show information regarding:
+.br
+.IP
+CRC of implementation
+.sp 2
+CRC of imported interfaces and implementations
+.SH SEE ALSO
+.BR ocamlc (1),
+.BR ocamlopt (1),
+.BR ocamlobjinfo (1),
+.BR ocamlbyteinfo (1),
+.BR ocamldumpapprox (1)
+.br
+.SH AUTHOR
+This manual page was written by Mehdi Dogguy <mehdi@dogguy.org>,
+for the Debian GNU/Linux system (but may be used by others).

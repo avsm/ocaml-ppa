@@ -1,3 +1,12 @@
+ocaml (3.11.1-3) UNRELEASED; urgency=low
+
+  * Add two tools:
+    - ocamlbyteinfo to read content of bytecode binaries
+    - ocamlplugininfo to read content of shared object files (.cmxs)
+  * Add myself to Uploaders
+
+ -- Mehdi Dogguy <dogguy@pps.jussieu.fr>  Tue, 21 Jul 2009 17:09:31 +0200
+
 ocaml (3.11.1-2) unstable; urgency=low
 
   * Remove build-dependency to docbook-* (not needed anymore, since
