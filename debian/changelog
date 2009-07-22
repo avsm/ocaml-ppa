@@ -5,6 +5,8 @@ ocaml (3.11.1-3) UNRELEASED; urgency=low
     - ocamlplugininfo to read content of shared object files (.cmxs)
   * Move some files from ocaml-interp to ocaml-nox and ocaml-base-nox
   * Synchronize debian/control and debian/control.in
+  * Remove cma files shipped in camlp4 package and camlp4boot since
+    they are not used
   * Add myself to Uploaders
 
  -- Mehdi Dogguy <dogguy@pps.jussieu.fr>  Tue, 21 Jul 2009 17:09:31 +0200
