@@ -54,6 +54,7 @@ ocamlinit-stamp: debian/$(SRCTARBALL)
 
 # Generate ocaml-native-compilers' Architecture field.
 # Should never be called automatically.
+.PHONY: debian/control
 debian/control:
 	sed -e 's/@OCamlNativeArchs@/$(OCAML_NATIVE_ARCHS)/g' debian/control.in > $@
 
