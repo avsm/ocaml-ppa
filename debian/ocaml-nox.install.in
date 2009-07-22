@@ -13,6 +13,9 @@
      debian/native-archs @OCamlStdlibDir@
 OPT: usr/bin/ocamlbuild.native
 OPT: usr/bin/ocamlopt
+     @OCamlStdlibDir@/stdlib.cma
+     @OCamlStdlibDir@/toplevellib.cma
+     @OCamlStdlibDir@/dynlink.cma
      @OCamlStdlibDir@/addlabels
      @OCamlStdlibDir@/scrapelabels
      @OCamlStdlibDir@/caml

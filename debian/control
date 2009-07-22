@@ -43,11 +43,15 @@ Provides:
  ${F:BestProvides},
  libnums-ocaml-dev
 Replaces:
+ ocaml-interp (<< 3.11.1-2),
  camlp4 (<< 3.10.0),
+ focaml (<< 3.07.2a-3),
  libnums-ocaml-dev
 Conflicts:
+ ocaml-interp (<< 3.11.1-2),
  camlp4 (<< 3.10.0),
  camlidl (<< 1.04),
+ ocaml (<< 3.07.2a-3),
  libnums-ocaml-dev
 Description: ML implementation with a class-based object system (no X)
  Objective Caml (OCaml) is an implementation of the ML language, based on
@@ -159,6 +163,15 @@ Provides: ocaml-base-nox-${F:OCamlABI}, libnums-ocaml
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces:
+ ocaml-interp (<< 3.11.1-2),
+ ocaml-base (<< 3.07.2a-3),
+ libnums-ocaml
+Conflicts:
+ ocaml-interp (<< 3.11.1-2),
+ ocaml (<< 3.04-2),
+ ocaml-base (<< 3.07.2a-3),
+ libnums-ocaml
 Description: Runtime system for OCaml bytecode executables (no X)
  Objective Caml (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
