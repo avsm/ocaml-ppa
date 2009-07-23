@@ -24,6 +24,16 @@ INSTDIR = $(CURDIR)/debian/tmp/usr
 DISTDIR = $(PACKAGE)-$(OCAML_ABI)
 SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar.bz2
 
+# Environment variable for dh_ocaml 
+OCAMLBYTEINFO = debian/ocamlbyteinfo/ocamlbyteinfo
+OCAMLPLUGININFO = debian/ocamlbyteinfo/ocamlplugininfo
+OCAMLDUMPAPPROX = tools/dumpapprox
+OCAMLOBJINFO = tools/objinfo
+export OCAMLBYTEINFO
+export OCAMLPLUGININFO
+export OCAMLDUMPAPPROX
+export OCAMLOBJINFO
+
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
@@ -119,6 +129,7 @@ endif
 else
 	@echo "===> WARNING: $(BUILDCACHE) detected, compilation skipped! <==="
 	rsync -a --exclude=debian --exclude=.git $(BUILDCACHE)/ .
+	rsync -a $(BUILDCACHE)/debian/ocamlbyteinfo/ debian/ocamlbyteinfo/
 	rm -f build-stamp install-stamp
 endif
 	dh build --after dh_auto_test
@@ -215,6 +226,12 @@ ifeq (,$(OCAML_OPT_ARCH))
 else
 	echo 'F:BestProvides=' >> debian/ocaml-nox.substvars
 endif
+	# Create .md5sums files and compute dependencies. Use
+	# $(OCAML_ABI) because we know that OCaml ABI represents
+	# best dependencies for OCaml package.
+	dh_ocaml \
+	 --runtime-map ocaml-nox:ocaml-base-nox,ocaml:ocaml-base,camlp4 \
+	 --checksum $(OCAML_ABI)
 	dh_gencontrol
 	dh binary --after dh_gencontrol
 	touch $@
