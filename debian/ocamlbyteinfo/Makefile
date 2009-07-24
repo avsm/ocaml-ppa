@@ -10,7 +10,8 @@ GENERATED=$(BEXE) $(NEXE) *.cm* natdynlink.* *.a *.o
 
 BDEPS=otherlibs/dynlink/dynlinkaux.cmo
 NDEPS=$(DIR)/natdynlink.cmxa
-INCLUDES= -I stdlib -I utils -I typing -I bytecomp -I otherlibs/dynlink -I $(DIR)
+INCLUDES= -I stdlib -I utils -I typing -I bytecomp -I $(DIR) \
+  -I otherlibs/dynlink -I otherlibs/unix -I otherlibs/str
 
 all: $(BEXE) $(NEXE)
 
