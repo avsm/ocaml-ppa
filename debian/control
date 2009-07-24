@@ -129,7 +129,7 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
- ${ocaml:Depends}
+ ${ocaml:Depends},
  libx11-dev
 Provides: 
  ${ocaml:Provides}
