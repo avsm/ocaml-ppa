@@ -25,10 +25,10 @@ DISTDIR = $(PACKAGE)-$(OCAML_ABI)
 SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar.bz2
 
 # Environment variable for dh_ocaml 
-OCAMLBYTEINFO = debian/ocamlbyteinfo/ocamlbyteinfo
+OCAMLBYTEINFO = boot/ocamlrun debian/ocamlbyteinfo/ocamlbyteinfo
 OCAMLPLUGININFO = debian/ocamlbyteinfo/ocamlplugininfo
-OCAMLDUMPAPPROX = tools/dumpapprox
-OCAMLOBJINFO = tools/objinfo
+OCAMLDUMPAPPROX = boot/ocamlrun tools/dumpapprox
+OCAMLOBJINFO = boot/ocamlrun tools/objinfo
 export OCAMLBYTEINFO
 export OCAMLPLUGININFO
 export OCAMLDUMPAPPROX
