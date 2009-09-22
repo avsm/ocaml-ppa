@@ -18,8 +18,8 @@ Build-Depends:
  libgdbm-dev,
  quilt,
  bzip2,
- dh-ocaml (>= 0.4)
-Standards-Version: 3.8.2
+ dh-ocaml (>= 0.9)
+Standards-Version: 3.8.3
 Vcs-Git: git://git.debian.org/git/pkg-ocaml-maint/packages/ocaml.git
 Vcs-Browser: http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git
 Homepage: http://caml.inria.fr/
