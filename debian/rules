@@ -17,14 +17,16 @@ DEB_BUILD_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
 OCAML_OPT_ARCH := $(findstring $(DEB_BUILD_ARCH),$(OCAML_NATIVE_ARCHS))
 OCAML_HAVE_OCAMLOPT := $(if $(OCAML_OPT_ARCH),yes,no)
 OCAML_OCAMLDOC_DESTDIR_HTML =
-include /usr/share/ocaml/ocamlinit.mk
+
+# dh_ocamlinit cannot be used for ocaml itself
+include debian/ocamlinit.mk
 
 MD5SUMSDIR = /var/lib/ocaml/md5sums
 INSTDIR = $(CURDIR)/debian/tmp/usr
 DISTDIR = $(PACKAGE)-$(OCAML_ABI)
 SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar.bz2
 
-# Environment variable for dh_ocaml 
+# Environment variable for dh_ocaml
 OCAMLBYTEINFO = boot/ocamlrun debian/ocamlbyteinfo/ocamlbyteinfo
 OCAMLPLUGININFO = debian/ocamlbyteinfo/ocamlplugininfo
 OCAMLDUMPAPPROX = boot/ocamlrun tools/dumpapprox
