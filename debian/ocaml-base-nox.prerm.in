@@ -1,4 +1,5 @@
-#!/bin/sh -e
+#!/bin/sh
+set -e
 
 rmdir /usr/local/lib/ocaml/@OCamlABI@/stublibs 2>/dev/null || true
 rmdir /usr/local/lib/ocaml/@OCamlABI@ 2>/dev/null || true

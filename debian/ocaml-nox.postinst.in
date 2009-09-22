@@ -1,10 +1,8 @@
-#!/bin/sh -e
+#!/bin/sh
+set -e
 
 if [ "$1" = "configure" ]; then
   ln -sf @OCamlStdlibDir@/caml /usr/include/
-
-  # TEMPORARILY DISABLED while moving ocaml-md5sums to dh-ocaml
-  #ocaml-md5sums update
 
   # Save Emacs conffiles from previous ocaml versions
   for f in ocaml ocaml-nox ; do

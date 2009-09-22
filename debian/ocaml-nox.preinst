@@ -1,4 +1,5 @@
-#!/bin/sh -e
+#!/bin/sh
+set -e
 
 if [ ! -h /usr/include/caml ] && [ -e /usr/include/caml ]; then
 	echo "WARNING, /usr/include/caml is not a symlink !!!!"
