@@ -231,7 +231,7 @@ endif
 	# Create .md5sums files and compute dependencies. Use
 	# $(OCAML_ABI) because we know that OCaml ABI represents
 	# best dependencies for OCaml package.
-	dh_ocaml \
+	dh_ocaml -Xcompiler-libs \
 	 --runtime-map ocaml-nox:ocaml-base-nox,ocaml:ocaml-base,camlp4 \
 	 --checksum $(OCAML_ABI)
 	dh_gencontrol
