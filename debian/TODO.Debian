@@ -10,3 +10,6 @@ TODO list for ocaml 3.10.0 (and beyond ...)
   W: ocaml: binary-without-manpage usr/bin/labltk
   W: ocaml: binary-without-manpage usr/bin/ocamlbrowser
 
+- old bugreports
+
+  * http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=255245 is (will be) fixed in 3.12
