@@ -8,17 +8,18 @@ Uploaders:
  Sylvain Le Gall <gildor@debian.org>,
  Ralf Treinen <treinen@debian.org>,
  Stéphane Glondu <glondu@debian.org>,
- Mehdi Dogguy <mehddi@debian.org>
+ Mehdi Dogguy <mehdi@debian.org>
 Build-Depends:
  debhelper (>= 7),
+ autotools-dev,
  tcl8.4-dev,
  tk8.4-dev,
  libncurses5-dev,
  libgdbm-dev,
  quilt,
  bzip2,
- dh-ocaml (>= 0.4)
-Standards-Version: 3.8.2
+ dh-ocaml (>= 0.9)
+Standards-Version: 3.8.3
 Vcs-Git: git://git.debian.org/git/pkg-ocaml-maint/packages/ocaml.git
 Vcs-Browser: http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git
 Homepage: http://caml.inria.fr/
@@ -34,12 +35,12 @@ Depends:
  gcc,
  binutils
 Provides:
- ${ocaml:Provides}, 
+ ${ocaml:Provides},
  ${F:BestProvides},
  libnums-ocaml-dev
-Suggests: 
- ocaml-doc, 
- libgdbm-dev, 
+Suggests:
+ ocaml-doc,
+ libgdbm-dev,
  tuareg-mode | ocaml-mode
 Recommends:
  camlp4,
@@ -107,7 +108,7 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends},
  ${ocaml:Depends},
- camlp4-${F:OCamlABI} 
+ camlp4-${F:OCamlABI}
 Description: Pre Processor Pretty Printer for OCaml - extras
  Objective Caml (OCaml) is an implementation of the ML language,
  based on the Caml Light dialect extended with a complete
@@ -130,7 +131,7 @@ Depends:
  ${misc:Depends},
  ${ocaml:Depends},
  libx11-dev
-Provides: 
+Provides:
  ${ocaml:Provides}
 Suggests:
  tcl8.4-dev,
@@ -165,7 +166,7 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends},
  ${ocaml:Depends}
-Provides: 
+Provides:
  ${ocaml:Provides}
 Replaces:
  ocaml-interp (<< 3.11.1-3),
@@ -191,7 +192,7 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends},
  ${ocaml:Depends}
-Provides: 
+Provides:
  ${ocaml:Provides}
 Description: Runtime system for OCaml bytecode executables
  Objective Caml (OCaml) is an implementation of the ML language, based on
@@ -242,7 +243,7 @@ Depends:
  ${ocaml:Depends},
  ${shlibs:Depends},
  ${misc:Depends}
-Provides: 
+Provides:
  ocaml-interp-${F:OCamlABI}
 Recommends: ledit | readline-editor
 Replaces: ocaml (<< 3.07.2a-3)
@@ -262,7 +263,7 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends},
  ocaml-nox-${F:OCamlABI}
-Provides: 
+Provides:
  ocaml-compiler-libs-${F:OCamlABI}
 Description: OCaml interpreter and standard libraries
  Objective (OCaml) is an implementation of the ML language, based on
