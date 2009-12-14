@@ -52,8 +52,8 @@ CONFIGURE_OPTS := \
   --with-pthread -prefix /usr \
   -libdir $(OCAML_STDLIB_DIR) \
   -mandir /usr/share/man \
-  -tkdefs "-I/usr/include/tcl8.4" \
-  -tklibs "-L/usr/lib -ltk8.4 -ltcl8.4"
+  -tkdefs "-I/usr/include/tcl8.5" \
+  -tklibs "-L/usr/lib -ltk8.5 -ltcl8.5"
 
 CONFIGURE_SED := \
   -e "s%MANDIR=.*$$%MANDIR=\$$(PREFIX)/share/man%g" \
