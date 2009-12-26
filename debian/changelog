@@ -2,6 +2,7 @@ ocaml (3.11.1-6) unstable; urgency=low
 
   * camlp4-extra:
     - Add cma files back into the package (Requested by users).
+    - Don't install a manpage for camlp4boot (which is not installed).
   * debian/rules:
     - Do not compute dependencies for camlp4-extra
 
