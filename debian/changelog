@@ -5,6 +5,8 @@ ocaml (3.11.1-6) UNRELEASED; urgency=low
     - Don't install a manpage for camlp4boot (which is not installed).
   * debian/rules:
     - Do not compute dependencies for camlp4-extra
+  * debian/control:
+    - Make camlp4-extra depend on ocaml-base-nox
 
  -- Mehdi Dogguy <mehdi@debian.org>  Wed, 16 Dec 2009 13:21:56 +0100
 

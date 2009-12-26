@@ -108,6 +108,7 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends},
  ${ocaml:Depends},
+ ocaml-nox-${F:OCamlABI},
  camlp4-${F:OCamlABI}
 Description: Pre Processor Pretty Printer for OCaml - extras
  Objective Caml (OCaml) is an implementation of the ML language,
