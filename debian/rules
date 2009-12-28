@@ -4,7 +4,7 @@ include /usr/share/quilt/quilt.make
 PACKAGE := ocaml
 ALL_PACKAGES := $(shell sed -ne 's/^Package: //p' debian/control)
 OCAMLMAJOR := 3.11
-OCAMLMINOR := 1
+OCAMLMINOR := 2+rc1
 
 # Build cache (for Debian debugging)
 BUILDCACHE := $(wildcard ../ocaml.cache)
