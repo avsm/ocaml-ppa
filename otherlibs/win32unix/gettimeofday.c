@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: gettimeofday.c,v 1.7 2007/03/01 13:51:24 xleroy Exp $ */
+/* $Id: gettimeofday.c 7946 2007-03-01 13:51:24Z xleroy $ */
 
 #include <mlvalues.h>
 #include <alloc.h>

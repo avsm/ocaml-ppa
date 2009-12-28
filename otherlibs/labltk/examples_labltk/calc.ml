@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: calc.ml,v 1.3 2002/10/11 18:56:18 doligez Exp $ *)
+(* $Id: calc.ml 5175 2002-10-11 19:01:19Z doligez $ *)
 
 (* A simple calculator demonstrating OO programming with O'Labl
    and LablTk.

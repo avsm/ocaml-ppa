@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: textvariable.ml,v 1.16 2002/07/23 14:11:59 doligez Exp $ *)
+(* $Id: textvariable.ml 5029 2002-07-23 14:12:03Z doligez $ *)
 
 open Support
 open Protocol

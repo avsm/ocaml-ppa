@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: event.mli,v 1.10 2006/01/12 03:24:56 garrigue Exp $ *)
+(* $Id: event.mli 7322 2006-01-12 03:24:56Z garrigue $ *)
 
 (** First-class synchronous communication.
 

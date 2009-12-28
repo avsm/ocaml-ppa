@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: graphicsX11.ml,v 1.3 2004/03/24 15:02:06 starynke Exp $ *)
+(* $Id: graphicsX11.ml 6171 2004-03-24 15:02:06Z starynke $ *)
 
 (* Module [GraphicsX11]: additional graphics primitives for the X Windows system *)
 

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: myocamlbuild.ml,v 1.23.2.7 2009/06/04 11:33:21 doligez Exp $ *)
+(* $Id: myocamlbuild.ml 9290 2009-06-04 11:33:21Z doligez $ *)
 
 open Ocamlbuild_plugin
 open Command

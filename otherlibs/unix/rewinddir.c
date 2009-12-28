@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: rewinddir.c,v 1.12 2005/03/24 17:20:53 doligez Exp $ */
+/* $Id: rewinddir.c 6824 2005-03-24 17:20:54Z doligez $ */
 
 #include <fail.h>
 #include <mlvalues.h>

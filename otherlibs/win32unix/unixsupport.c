@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: unixsupport.c,v 1.21.12.1 2009/05/19 12:32:36 xleroy Exp $ */
+/* $Id: unixsupport.c 9450 2009-12-07 10:39:54Z xleroy $ */
 
 #include <stddef.h>
 #include <mlvalues.h>
@@ -65,6 +65,8 @@ value win_alloc_socket(SOCKET s)
   return res;
 }
 
+#if 0
+/* PR#4750: this function is no longer used */
 value win_alloc_handle_or_socket(HANDLE h)
 {
   value res = win_alloc_handle(h);
@@ -74,6 +76,7 @@ value win_alloc_handle_or_socket(HANDLE h)
     Descr_kind_val(res) = KIND_SOCKET;
   return res;
 }
+#endif
 
 /* Mapping of Windows error codes to POSIX error codes */
 

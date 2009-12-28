@@ -16,7 +16,7 @@
 open Camltk
 open Widget
 
-let version = "$Id: frx_widget.ml,v 1.2 2002/04/26 12:16:10 furuse Exp $"
+let version = "$Id: frx_widget.ml 4745 2002-04-26 12:16:26Z furuse $"
 (* Make a window (toplevel widget) resizeable *)
 let resizeable t =
   update_idletasks(); (* wait until layout is computed *)

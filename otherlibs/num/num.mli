@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: num.mli,v 1.8 2001/12/28 23:15:23 guesdon Exp $ *)
+(* $Id: num.mli 4199 2001-12-28 23:15:23Z guesdon $ *)
 
 (** Operation on arbitrary-precision numbers.
 

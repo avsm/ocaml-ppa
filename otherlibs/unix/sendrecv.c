@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: sendrecv.c,v 1.19 2005/03/24 17:20:53 doligez Exp $ */
+/* $Id: sendrecv.c 6824 2005-03-24 17:20:54Z doligez $ */
 
 #include <string.h>
 #include <mlvalues.h>

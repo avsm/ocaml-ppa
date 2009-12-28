@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.34 2008/04/16 06:50:31 frisch Exp $
+# $Id: Makefile 8868 2008-04-16 06:50:31Z frisch $
 
 # Makefile for the dynamic link library
 

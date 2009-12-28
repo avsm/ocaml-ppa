@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: support.ml,v 1.9 2002/04/26 12:16:21 furuse Exp $ *)
+(* $Id: support.ml 4745 2002-04-26 12:16:26Z furuse $ *)
 
 (* Parsing results of Tcl *)
 (* List.split a string according to char_sep predicate *)

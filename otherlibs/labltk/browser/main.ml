@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: main.ml,v 1.34 2006/04/16 23:28:21 doligez Exp $ *)
+(* $Id: main.ml 7382 2006-04-16 23:28:22Z doligez $ *)
 
 open StdLabels
 module Unix = UnixLabels

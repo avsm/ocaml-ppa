@@ -15,7 +15,7 @@
 (***********************************************************************)
 open Camltk
 
-let version = "$Id: frx_fileinput.ml,v 1.2 2002/04/26 12:16:03 furuse Exp $"
+let version = "$Id: frx_fileinput.ml 4745 2002-04-26 12:16:26Z furuse $"
 
 (*
  * Simple spooling for fileinput callbacks

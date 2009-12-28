@@ -15,7 +15,7 @@
 (***********************************************************************)
 open Camltk
 
-let version = "$Id: frx_entry.ml,v 1.2 2002/04/26 12:16:02 furuse Exp $"
+let version = "$Id: frx_entry.ml 4745 2002-04-26 12:16:26Z furuse $"
 
 (*
  * Tk 4.0 has emacs bindings for entry widgets

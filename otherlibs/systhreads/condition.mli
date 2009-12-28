@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: condition.mli,v 1.6 2001/12/07 13:40:19 xleroy Exp $ *)
+(* $Id: condition.mli 4144 2001-12-07 13:41:02Z xleroy $ *)
 
 (** Condition variables to synchronize between threads.
 

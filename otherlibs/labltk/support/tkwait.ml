@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tkwait.ml,v 1.7 2002/04/26 12:16:21 furuse Exp $ *)
+(* $Id: tkwait.ml 4745 2002-04-26 12:16:26Z furuse $ *)
 
 external internal_tracevis : string -> string -> unit
         = "camltk_wait_vis"

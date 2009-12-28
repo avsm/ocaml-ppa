@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: winworker.c,v 1.2.2.2 2008/11/26 13:41:01 xleroy Exp $ */
+/* $Id: winworker.c 9144 2008-11-26 13:41:01Z xleroy $ */
 
 #include "winworker.h"
 #include "winlist.h"

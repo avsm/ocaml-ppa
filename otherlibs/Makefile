@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.4 2007/11/08 09:17:47 frisch Exp $
+# $Id: Makefile 8489 2007-11-08 09:17:48Z frisch $
 
 # Common Makefile for otherlibs on the Unix ports
 

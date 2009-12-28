@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: big_int.mli,v 1.11 2008/01/04 13:15:52 xleroy Exp $ *)
+(* $Id: big_int.mli 8751 2008-01-04 13:15:52Z xleroy $ *)
 
 (** Operations on arbitrary-precision integers.
 

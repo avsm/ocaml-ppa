@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: graphicsX11.mli,v 1.4 2001/12/07 13:39:54 xleroy Exp $ *)
+(* $Id: graphicsX11.mli 4144 2001-12-07 13:41:02Z xleroy $ *)
 
 (** Additional graphics primitives for the X Windows system. *)
 

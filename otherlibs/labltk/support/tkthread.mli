@@ -12,7 +12,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tkthread.mli,v 1.4 2008/01/11 16:13:16 doligez Exp $ *)
+(* $Id: tkthread.mli 8768 2008-01-11 16:13:18Z doligez $ *)
 
 (* Helper functions for using LablTk with threads.
    To use, add tkthread.cmo or tkthread.cmx to your command line *)

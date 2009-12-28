@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: condition.ml,v 1.8 2001/12/07 13:40:21 xleroy Exp $ *)
+(* $Id: condition.ml 4144 2001-12-07 13:41:02Z xleroy $ *)
 
 type t = { mutable waiting: Thread.t list }
 

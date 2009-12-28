@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: mutex.ml,v 1.8 2001/12/07 13:40:22 xleroy Exp $ *)
+(* $Id: mutex.ml 4144 2001-12-07 13:41:02Z xleroy $ *)
 
 type t = { mutable locked: bool; mutable waiting: Thread.t list }
 

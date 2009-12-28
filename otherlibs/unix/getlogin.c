@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getlogin.c,v 1.9 2005/03/24 17:20:53 doligez Exp $ */
+/* $Id: getlogin.c 6824 2005-03-24 17:20:54Z doligez $ */
 
 #include <mlvalues.h>
 #include <alloc.h>

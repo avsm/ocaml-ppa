@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arith_status.mli,v 1.6 2001/12/07 13:40:14 xleroy Exp $ *)
+(* $Id: arith_status.mli 4144 2001-12-07 13:41:02Z xleroy $ *)
 
 (** Flags that control rational arithmetic. *)
 

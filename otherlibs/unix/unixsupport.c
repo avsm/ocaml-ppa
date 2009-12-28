@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: unixsupport.c,v 1.18 2005/09/06 12:38:32 doligez Exp $ */
+/* $Id: unixsupport.c 7045 2005-09-06 12:38:32Z doligez $ */
 
 #include <mlvalues.h>
 #include <alloc.h>

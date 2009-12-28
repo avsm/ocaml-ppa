@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tetris.ml,v 1.4 2004/06/12 03:20:00 garrigue Exp $ *)
+(* $Id: tetris.ml 6385 2004-06-12 03:20:00Z garrigue $ *)
 
 (* A Tetris game for LablTk *)
 (* written by Jun P. Furuse *)

@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile,v 1.37 2008/09/10 16:10:43 weis Exp $
+# $Id: Makefile 9021 2008-09-10 16:10:43Z weis $
 
 # Makefile for the "num" (exact rational arithmetic) library
 

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: setgid.c,v 1.8 2001/12/07 13:40:33 xleroy Exp $ */
+/* $Id: setgid.c 4144 2001-12-07 13:41:02Z xleroy $ */
 
 #include <mlvalues.h>
 #include "unixsupport.h"

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: ftruncate.c,v 1.11 2007/02/09 13:31:15 doligez Exp $ */
+/* $Id: ftruncate.c 7849 2007-02-09 13:31:15Z doligez $ */
 
 #include <sys/types.h>
 #include <fail.h>
