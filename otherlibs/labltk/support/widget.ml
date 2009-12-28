@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: widget.ml,v 1.16 2002/04/26 12:16:22 furuse Exp $ *)
+(* $Id: widget.ml 4745 2002-04-26 12:16:26Z furuse $ *)
 
 (* Hack to permit having the different data type with the same name
    [widget] for CamlTk and LablTk. *)

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: winworker.h,v 1.2 2008/07/31 12:09:18 xleroy Exp $ */
+/* $Id: winworker.h 8961 2008-07-31 12:09:18Z xleroy $ */
 #ifndef _WINWORKER_H
 #define _WINWORKER_H
 

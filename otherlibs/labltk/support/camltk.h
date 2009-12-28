@@ -14,7 +14,7 @@
 /*                                                                       */
 /*************************************************************************/
 
-/* $Id: camltk.h,v 1.13 2008/09/26 07:35:24 garrigue Exp $ */
+/* $Id: camltk.h 9036 2008-09-26 07:35:24Z garrigue $ */
 
 #if defined(_WIN32) && defined(CAML_DLL) && defined(IN_CAMLTKSUPPORT)
 #define CAMLTKextern CAMLexport

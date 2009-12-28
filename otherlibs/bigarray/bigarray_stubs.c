@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: bigarray_stubs.c,v 1.23.4.1 2008/11/09 09:03:51 xleroy Exp $ */
+/* $Id: bigarray_stubs.c 9123 2008-11-09 09:03:51Z xleroy $ */
 
 #include <stddef.h>
 #include <stdarg.h>

@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unixLabels.mli,v 1.19 2008/08/01 13:46:08 xleroy Exp $ *)
+(* $Id: unixLabels.mli 8968 2008-08-01 13:46:08Z xleroy $ *)
 
 (** Interface to the Unix system.
    To use as replacement to default {!Unix} module,

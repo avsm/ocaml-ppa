@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: int_misc.mli,v 1.4 2001/12/07 13:40:15 xleroy Exp $ *)
+(* $Id: int_misc.mli 4144 2001-12-07 13:41:02Z xleroy $ *)
 
 (* Some extra operations on integers *)
 

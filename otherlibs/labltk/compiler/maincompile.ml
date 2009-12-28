@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: maincompile.ml,v 1.20 2005/01/28 16:13:11 doligez Exp $ *)
+(* $Id: maincompile.ml 6757 2005-01-28 16:13:11Z doligez $ *)
 
 open StdLabels
 open Support

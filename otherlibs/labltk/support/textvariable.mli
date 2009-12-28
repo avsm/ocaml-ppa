@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: textvariable.mli,v 1.10 2002/04/26 12:16:21 furuse Exp $ *)
+(* $Id: textvariable.mli 4745 2002-04-26 12:16:26Z furuse $ *)
 
 (* Support for Tk -textvariable option *)
 open Widget

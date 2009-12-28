@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: slave.ml,v 1.5 2002/04/26 12:16:21 furuse Exp $ *)
+(* $Id: slave.ml 4745 2002-04-26 12:16:26Z furuse $ *)
 
 (* The code run on initialisation, in addition to normal Tk code
  * NOTE: camltk has not fully been initialised yet

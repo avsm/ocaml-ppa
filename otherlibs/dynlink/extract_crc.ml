@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: extract_crc.ml,v 1.10 2004/04/09 13:26:41 xleroy Exp $ *)
+(* $Id: extract_crc.ml 6195 2004-04-09 13:26:41Z xleroy $ *)
 
 (* Print the digests of unit interfaces *)
 

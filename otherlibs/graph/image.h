@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: image.h,v 1.8 2004/03/24 15:02:06 starynke Exp $ */
+/* $Id: image.h 6171 2004-03-24 15:02:06Z starynke $ */
 
 struct grimage {
   int width, height;            /* Dimensions of the image */

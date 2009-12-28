@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: nat.h,v 1.6 2003/10/24 09:17:34 xleroy Exp $ */
+/* $Id: nat.h 5880 2003-10-24 09:18:01Z xleroy $ */
 
 /* Nats are represented as unstructured blocks with tag Custom_tag. */
 

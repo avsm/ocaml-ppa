@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: bng_mips.c,v 1.1 2003/10/24 09:17:33 xleroy Exp $ */
+/* $Id: bng_mips.c 5880 2003-10-24 09:18:01Z xleroy $ */
 
 /* Code specific to the MIPS architecture. */
 

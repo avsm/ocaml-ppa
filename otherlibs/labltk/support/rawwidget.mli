@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: rawwidget.mli,v 1.2 2002/04/26 12:16:20 furuse Exp $ *)
+(* $Id: rawwidget.mli 4745 2002-04-26 12:16:26Z furuse $ *)
 
 (* Support for widget manipulations *)
 

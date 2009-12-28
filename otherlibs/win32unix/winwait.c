@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: winwait.c,v 1.20 2008/01/11 16:13:16 doligez Exp $ */
+/* $Id: winwait.c 8768 2008-01-11 16:13:18Z doligez $ */
 
 #include <windows.h>
 #include <mlvalues.h>

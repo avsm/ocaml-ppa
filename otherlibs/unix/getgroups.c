@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getgroups.c,v 1.11 2005/03/24 17:20:53 doligez Exp $ */
+/* $Id: getgroups.c 6824 2005-03-24 17:20:54Z doligez $ */
 
 #include <mlvalues.h>
 #include <alloc.h>

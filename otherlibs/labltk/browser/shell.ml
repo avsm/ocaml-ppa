@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: shell.ml,v 1.41 2006/01/18 13:26:03 garrigue Exp $ *)
+(* $Id: shell.ml 7327 2006-01-18 13:26:03Z garrigue $ *)
 
 open StdLabels
 module Unix = UnixLabels

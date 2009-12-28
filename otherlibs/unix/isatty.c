@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: isatty.c,v 1.1 2006/09/21 13:54:26 xleroy Exp $ */
+/* $Id: isatty.c 7632 2006-09-21 13:54:26Z xleroy $ */
 
 #include <mlvalues.h>
 #include "unixsupport.h"

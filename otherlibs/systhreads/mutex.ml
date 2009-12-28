@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: mutex.ml,v 1.4 2001/12/07 13:40:19 xleroy Exp $ *)
+(* $Id: mutex.ml 4144 2001-12-07 13:41:02Z xleroy $ *)
 
 type t
 external create: unit -> t = "caml_mutex_new"

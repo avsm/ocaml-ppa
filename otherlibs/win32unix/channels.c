@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: channels.c,v 1.12 2006/09/21 09:41:04 xleroy Exp $ */
+/* $Id: channels.c 9450 2009-12-07 10:39:54Z xleroy $ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -82,7 +82,10 @@ CAMLprim value win_filedescr_of_channel(value vchan)
 CAMLprim value win_handle_fd(value vfd)
 {
   int crt_fd = Int_val(vfd);
-  value res = win_alloc_handle_or_socket((HANDLE) _get_osfhandle(crt_fd));
+  /* PR#4750: do not use the _or_socket variant as it can cause performance
+     degradation and this function is only used with the standard
+     handles 0, 1, 2, which are not sockets. */
+  value res = win_alloc_handle((HANDLE) _get_osfhandle(crt_fd));
   CRT_fd_val(res) = crt_fd;
   return res;
 }

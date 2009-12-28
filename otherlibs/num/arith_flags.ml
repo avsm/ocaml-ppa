@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arith_flags.ml,v 1.4 2001/12/07 13:40:14 xleroy Exp $ *)
+(* $Id: arith_flags.ml 4144 2001-12-07 13:41:02Z xleroy $ *)
 
 let error_when_null_denominator_flag = ref true;;
 

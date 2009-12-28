@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ratio.mli,v 1.4 2001/12/07 13:40:16 xleroy Exp $ *)
+(* $Id: ratio.mli 4144 2001-12-07 13:41:02Z xleroy $ *)
 
 (* Module [Ratio]: operations on rational numbers *)
 

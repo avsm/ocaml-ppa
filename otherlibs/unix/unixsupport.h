@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: unixsupport.h,v 1.8 2005/09/06 12:38:32 doligez Exp $ */
+/* $Id: unixsupport.h 7045 2005-09-06 12:38:32Z doligez $ */
 
 #ifdef HAS_UNISTD
 #include <unistd.h>

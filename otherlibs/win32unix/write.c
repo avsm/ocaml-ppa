@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: write.c,v 1.11 2006/10/18 08:26:54 xleroy Exp $ */
+/* $Id: write.c 9315 2009-07-15 12:19:12Z xleroy $ */
 
 #include <errno.h>
 #include <string.h>
@@ -66,7 +66,7 @@ CAMLprim value unix_single_write(value fd, value buf, value vofs, value vlen)
   intnat ofs, len, written;
   DWORD numbytes, numwritten;
   char iobuf[UNIX_BUFFER_SIZE];
-  DWORD err;
+  DWORD err = 0;
 
   Begin_root (buf);
     ofs = Long_val(vofs);

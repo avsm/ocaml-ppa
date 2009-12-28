@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.msvc,v 1.30.2.1 2008/11/10 15:24:51 xleroy Exp $
+# $Id: Makefile.msvc 9126 2008-11-10 15:24:51Z xleroy $
 
 # Configuration for Windows, Visual C++ compiler
 

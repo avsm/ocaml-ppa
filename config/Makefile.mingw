@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.mingw,v 1.27.2.1 2008/11/09 09:44:24 xleroy Exp $
+# $Id: Makefile.mingw 9124 2008-11-09 09:44:24Z xleroy $
 
 # Configuration for Windows, Mingw compiler
 
