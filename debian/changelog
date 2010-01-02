@@ -1,5 +1,6 @@
 ocaml (3.11.1-6) UNRELEASED; urgency=low
 
+  [ Mehdi Dogguy ]
   * camlp4-extra:
     - Add cma files back into the package (Requested by users).
     - Don't install a manpage for camlp4boot (which is not installed).
@@ -8,7 +9,10 @@ ocaml (3.11.1-6) UNRELEASED; urgency=low
   * debian/control:
     - Make camlp4-extra depend on ocaml-base-nox
 
- -- Mehdi Dogguy <mehdi@debian.org>  Wed, 16 Dec 2009 13:21:56 +0100
+  [ Ralf Treinen ]
+  * debian/control.in: bump dependency of ocaml-mode on emacs22 to emacs23.
+
+ -- Ralf Treinen <treinen@debian.org>  Sat, 02 Jan 2010 13:42:30 +0100
 
 ocaml (3.11.1-5) unstable; urgency=low
 

@@ -278,7 +278,7 @@ Description: OCaml interpreter and standard libraries
 Package: ocaml-mode
 Architecture: all
 Depends:
- emacs22 | emacsen,
+ emacs23 | emacsen,
  ${shlibs:Depends},
  ${misc:Depends}
 Suggests: ocaml
