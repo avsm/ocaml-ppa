@@ -7,6 +7,7 @@ Bug fixes:
 - PR#4710, PR#4720: ocamlbuild does not use properly configuration information
 - PR#4750: under some Windows installations, high start-up times for Unix lib
 - PR#4777: problem with scanf and CRLF
+- PR#4783: ocamlmklib problem under Windows
 - PR#4810: BSD problem with socket addresses, e.g. in Unix.getnameinfo
 - PR#4813: issue with parsing of float literals by the GNU assembler
 - PR#4816: problem with modules and private types
@@ -27,9 +28,13 @@ Bug fixes:
 - PR#4922: ocamlbuild recompiles too many files
 - PR#4923: missing \xff for scanf %S
 - PR#4933: functors not handling private types correctly
+- PR#4940: problem with end-of-line in DOS text mode, tentative fix
+- PR#4953: problem compiling bytecode interpreter on ARM in Thumb mode.
+- PR#4955: compiler crash when typing recursive type expression with constraint
 - Module Printf: the simple conversion %F (without width indication) was not
            treated properly.
 - Makefile: problem with cygwin, flexdll, and symbolic links
+- Various build problems with ocamlbuild under Windows with msvc
 
 Feature wishes:
 - PR#9: (tentative implementation) make ocamldebug use #linenum annotations
@@ -2488,4 +2493,4 @@ Caml Special Light 1.06:
 
 * First public release.
 
-$Id: Changes 9482 2009-12-22 13:32:12Z doligez $
+$Id: Changes 9536 2010-01-20 11:44:20Z doligez $
