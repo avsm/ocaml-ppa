@@ -1,4 +1,7 @@
-ocaml (3.11.2~rc1-1) UNRELEASED; urgency=low
+ocaml (3.11.2-1) UNRELEASED; urgency=low
+
+  [ Stéphane Glondu ]
+  * New upstream release
 
   [ Mehdi Dogguy ]
   * camlp4-extra:
@@ -9,10 +12,7 @@ ocaml (3.11.2~rc1-1) UNRELEASED; urgency=low
   * debian/control:
     - Make camlp4-extra depend on ocaml-base-nox
 
-  [ Stéphane Glondu ]
-  * New upstream release candidate
-
- -- Stéphane Glondu <glondu@debian.org>  Mon, 28 Dec 2009 18:50:43 +0100
+ -- Stéphane Glondu <glondu@debian.org>  Wed, 20 Jan 2010 18:32:10 +0100
 
 ocaml (3.11.1-5) unstable; urgency=low
 
