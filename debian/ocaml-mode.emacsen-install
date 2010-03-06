@@ -35,7 +35,7 @@ install -m 755 -d ${ELCDIR}
 cd ${ELDIR}
 case "${FLAVOR}" in
     xemacs21)
-	FILES=`ls *.el | grep -v caml-emacs`
+	FILES=`ls *.el | egrep -v caml-emacs\|camldebug.el`
 	;;
 
     *)

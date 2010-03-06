@@ -1,3 +1,10 @@
+ocaml (3.11.2-2) UNRELEASED; urgency=low
+
+  * debian/ocaml-mode.emacs-install: do not byte-compile camldebug.el
+    for xemacs21 (closes: #508813)
+
+ -- Ralf Treinen <treinen@debian.org>  Sat, 06 Mar 2010 11:23:45 +0100
+
 ocaml (3.11.2-1) unstable; urgency=low
 
   [ Stéphane Glondu ]
