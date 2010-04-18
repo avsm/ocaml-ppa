@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: gc.mli 9131 2008-11-18 10:24:43Z doligez $ *)
+(* $Id$ *)
 
 (** Memory management control and statistics; finalised values. *)
 

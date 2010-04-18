@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: stat.c 5540 2003-05-05 14:20:58Z xleroy $ */
+/* $Id$ */
 
 #include <errno.h>
 #include <mlvalues.h>
@@ -137,4 +137,3 @@ CAMLprim value unix_fstat_64(value fd)
   if (ret == -1) uerror("fstat", Nothing);
   return stat_aux(1, &buf);
 }
-

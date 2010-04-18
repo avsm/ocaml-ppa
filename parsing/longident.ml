@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: longident.ml 2990 2000-03-25 18:55:45Z xleroy $ *)
+(* $Id$ *)
 
 type t =
     Lident of string
@@ -23,6 +23,11 @@ let rec flat accu = function
   | Lapply(l1, l2) -> Misc.fatal_error "Longident.flat"
 
 let flatten lid = flat [] lid
+
+let last = function
+    Lident s -> s
+  | Ldot(lid, s) -> s
+  | Lapply(l1, l2) -> Misc.fatal_error "Longident.last"
 
 let rec split_at_dots s pos =
   try

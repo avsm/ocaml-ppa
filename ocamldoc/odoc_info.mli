@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_info.mli 8932 2008-07-25 13:28:23Z guesdon $ *)
+(* $Id$ *)
 
 (** Interface to the information collected in source files. *)
 
@@ -45,14 +45,17 @@ and text_element = Odoc_types.text_element =
              (** Style number, optional label, and text. *)
   | Latex of string (** A string for latex. *)
   | Link of string * text (** A reference string and the link text. *)
-  | Ref of string * ref_kind option
-       (** A reference to an element. Complete name and kind. *)
+  | Ref of string * ref_kind option * text option
+       (** A reference to an element. Complete name and kind.
+        An optional text can be given to display this text instead
+        of the element name.*)
   | Superscript of text (** Superscripts. *)
   | Subscript of text (** Subscripts. *)
   | Module_list of string list
        (** The table of the given modules with their abstract. *)
   | Index_list (** The links to the various indexes (values, types, ...) *)
   | Custom of string * text (** to extend \{foo syntax *)
+  | Target of string * string (** (target, code) : to specify code specific to a target format *)
 
 (** A text is a list of [text_element]. The order matters. *)
 and text = text_element list

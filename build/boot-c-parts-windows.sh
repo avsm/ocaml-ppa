@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: boot-c-parts-windows.sh 9527 2010-01-14 14:45:42Z xclerc $
+# $Id$
 cd `dirname $0`/..
 set -ex
 

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: bng_digit.c 5880 2003-10-24 09:18:01Z xleroy $ */
+/* $Id$ */
 
 /**** Generic operations on digits ****/
 
@@ -168,4 +168,3 @@ static void bng_div_aux(bngdigit * quo, bngdigit * rem,
 }
 
 #endif
-

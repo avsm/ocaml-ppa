@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.msvc64 9526 2010-01-14 14:42:00Z xclerc $
+# $Id$
 
 # Configuration for Windows, Visual C++ compiler
 
@@ -154,5 +154,5 @@ TK_LINK=
 
 ############# Aliases for common commands
 
-MAKEREC=$(MAKE) -f Makefile.nt 
+MAKEREC=$(MAKE) -f Makefile.nt
 MAKECMD=$(MAKE)

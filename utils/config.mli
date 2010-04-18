@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: config.mli 8868 2008-04-16 06:50:31Z frisch $ *)
+(* $Id$ *)
 
 (* System configuration *)
 
@@ -27,12 +27,12 @@ val ccomp_type: string
                "msvc" (Microsoft Visual C++)
                "mrc" (Macintosh MPW) *)
 val bytecomp_c_compiler: string
-        (* The C compiler to use for compiling C files 
+        (* The C compiler to use for compiling C files
            with the bytecode compiler *)
 val bytecomp_c_libraries: string
         (* The C libraries to link with custom runtimes *)
 val native_c_compiler: string
-        (* The C compiler to use for compiling C files 
+        (* The C compiler to use for compiling C files
            with the native-code compiler *)
 val native_c_libraries: string
         (* The C libraries to link with native-code programs *)

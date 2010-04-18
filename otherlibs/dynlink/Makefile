@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 8868 2008-04-16 06:50:31Z frisch $
+# $Id$
 
 # Makefile for the dynamic link library
 
@@ -93,4 +93,4 @@ clean: partialclean
 depend:
 
 dynlink.cmo: dynlinkaux.cmi dynlink.cmi
-extract_crc.cmo: dynlink.cmi 
+extract_crc.cmo: dynlink.cmi

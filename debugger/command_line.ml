@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: command_line.ml 9299 2009-06-17 08:15:39Z xclerc $ *)
+(* $Id$ *)
 
 (************************ Reading and executing commands ***************)
 
@@ -77,10 +77,10 @@ let error text =
   raise Toplevel
 
 let check_not_windows feature =
-  match Sys.os_type with 
+  match Sys.os_type with
   | "Win32" ->
       error ("'"^feature^"' feature not supported on Windows")
-  | _ -> 
+  | _ ->
       ()
 
 let eol =
@@ -227,7 +227,7 @@ let instr_shell ppf lexbuf =
   let cmd = String.concat " " cmdarg in
   (* perhaps we should use $SHELL -c ? *)
   let err = Sys.command cmd in
-  if (err != 0) then 
+  if (err != 0) then
     eprintf "Shell command %S failed with exit code %d\n%!" cmd err
 
 let instr_pwd ppf lexbuf =
@@ -363,8 +363,8 @@ let print_info_list ppf =
 
 let instr_complete ppf lexbuf =
   let ppf = Format.err_formatter in
-  let rec print_list l = 
-    try 
+  let rec print_list l =
+    try
       eol lexbuf;
       List.iter (function i -> fprintf ppf "%s@." i) l
     with _ ->
@@ -395,7 +395,7 @@ let instr_complete ppf lexbuf =
                   | [i] -> if i.info_name = ident then [] else [i.info_name]
                   | l   -> List.map (fun i -> i.info_name) l
                   end
-              | None -> 
+              | None ->
                   List.map (fun i -> i.info_name) !info_list
             end
             else ["info"]
@@ -1065,7 +1065,7 @@ using \"load_printer\"." };
        var_action = loading_mode_variable ppf;
        var_help =
 "mode of loading.\n\
-It can be either :
+It can be either :\n\
   direct : the program is directly called by the debugger.\n\
   runtime : the debugger execute `ocamlrun programname arguments'.\n\
   manual : the program is not launched by the debugger,\n\
@@ -1075,7 +1075,7 @@ It can be either :
                                      checkpoint_max_count;
        var_help =
 "maximum number of process to keep." };
-     { var_name = "checkpoints"; 
+     { var_name = "checkpoints";
        var_action = boolean_variable false make_checkpoints;
        var_help =
 "whether to make checkpoints or not." };

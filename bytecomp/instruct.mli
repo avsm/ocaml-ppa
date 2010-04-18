@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: instruct.mli 9221 2009-04-02 09:06:33Z xclerc $ *)
+(* $Id$ *)
 
 (* The type of the instructions of the abstract machine *)
 

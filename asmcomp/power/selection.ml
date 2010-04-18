@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml 8499 2007-11-09 15:06:57Z frisch $ *)
+(* $Id$ *)
 
 (* Instruction selection for the Power PC processor *)
 
@@ -69,7 +69,7 @@ method select_operation op args =
      a power of 2, which do not correspond to an instruction. *)
     (Cdivi, [arg; Cconst_int n]) when n = 1 lsl (Misc.log2 n) ->
       (Iintop_imm(Idiv, n), [arg])
-  | (Cdivi, _) -> 
+  | (Cdivi, _) ->
       (Iintop Idiv, args)
   | (Cmodi, [arg; Cconst_int n]) when n = 1 lsl (Misc.log2 n) ->
       (Iintop_imm(Imod, n), [arg])

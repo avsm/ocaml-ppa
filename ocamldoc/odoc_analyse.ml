@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_analyse.ml 8705 2007-12-04 13:38:58Z doligez $ *)
+(* $Id$ *)
 
 (** Analysis of source files. This module is strongly inspired from
     driver/main.ml :-) *)
@@ -195,7 +195,9 @@ let process_error exn =
       fprintf ppf "Error-enabled warnings (%d occurrences)" n
   | x ->
       fprintf ppf "@]";
-      fprintf ppf "Compilation error. Use the OCaml compiler to get more details."
+      fprintf ppf
+        "Compilation error(%s). Use the OCaml compiler to get more details."
+        (Printexc.to_string x)
   in
   Format.fprintf Format.err_formatter "@[%a@]@." report exn
 

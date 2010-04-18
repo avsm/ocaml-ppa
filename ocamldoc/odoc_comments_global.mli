@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_comments_global.mli 5973 2003-11-24 10:44:07Z starynke $ *)
+(* $Id$ *)
 
 (** The global variables used by the special comment parser.*)
 

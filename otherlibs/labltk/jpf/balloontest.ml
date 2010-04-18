@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: balloontest.ml 4745 2002-04-26 12:16:26Z furuse $ *)
+(* $Id$ *)
 
 open Tk
 open Widget
@@ -29,4 +29,3 @@ let _ =
   pack [b];
   Balloon.put ~on: b ~ms: 1000 "Balloon";
   Printexc.catch mainLoop ()
- 

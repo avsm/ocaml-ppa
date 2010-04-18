@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: compilenv.mli 8477 2007-11-06 15:16:56Z frisch $ *)
+(* $Id$ *)
 
 (* Compilation environments for compilation units *)
 
@@ -106,5 +106,3 @@ type error =
 exception Error of error
 
 val report_error: Format.formatter -> error -> unit
-
-

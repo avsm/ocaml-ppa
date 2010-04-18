@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printval.ml 9226 2009-04-02 09:44:21Z xclerc $ *)
+(* $Id$ *)
 
 (* To print values *)
 
@@ -106,4 +106,3 @@ let print_named_value max_depth exp env obj ppf ty =
   print_value_name exp
   Printtyp.type_expr ty
   (print_value max_depth env obj) ty
-

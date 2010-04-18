@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 8916 2008-07-15 15:31:32Z frisch $
+# $Id$
 
 include ../../config/Makefile
 
@@ -50,15 +50,15 @@ posix_n.o: posix.c
 
 threads.cma: $(THREAD_OBJS)
 	$(MKLIB) -ocamlc '$(CAMLC)' -o threads $(THREAD_OBJS) \
-          -cclib -lunix $(PTHREAD_LINK)
+	  -cclib -lunix $(PTHREAD_LINK)
 
 # See remark above: force static linking of libthreadsnat.a
 threads.cmxa: $(THREAD_OBJS:.cmo=.cmx)
 	$(CAMLOPT) -a -o threads.cmxa $(THREAD_OBJS:.cmo=.cmx) \
-          -cclib -lthreadsnat $(PTHREAD_LINK)
+	  -cclib -lthreadsnat $(PTHREAD_LINK)
 
-# Note: I removed "-cclib -lunix" from the line above. 
-# Indeed, if we link threads.cmxa, then we must also link unix.cmxa, 
+# Note: I removed "-cclib -lunix" from the line above.
+# Indeed, if we link threads.cmxa, then we must also link unix.cmxa,
 # which itself will pass -lunix to the C linker.  It seems more
 # modular to me this way. -- Alain
 

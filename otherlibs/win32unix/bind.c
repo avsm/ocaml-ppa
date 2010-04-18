@@ -11,12 +11,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: bind.c 4765 2002-04-30 15:00:48Z xleroy $ */
+/* $Id$ */
 
 #include <mlvalues.h>
 #include "unixsupport.h"
 #include "socketaddr.h"
-  
+
 CAMLprim value unix_bind(socket, address)
      value socket, address;
 {

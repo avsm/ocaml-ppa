@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: program_management.ml 9226 2009-04-02 09:44:21Z xclerc $ *)
+(* $Id$ *)
 
 (* Manage the loading of the program *)
 

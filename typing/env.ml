@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: env.ml 9240 2009-04-28 05:11:54Z garrigue $ *)
+(* $Id$ *)
 
 (* Environment handling *)
 
@@ -675,7 +675,7 @@ let components_of_functor_appl f p1 p2 =
     Hashtbl.find f.fcomp_cache p2
   with Not_found ->
     let p = Papply(p1, p2) in
-    let mty = 
+    let mty =
       Subst.modtype (Subst.add_module f.fcomp_param p2 Subst.identity)
                     f.fcomp_res in
     let comps = components_of_module f.fcomp_env f.fcomp_subst p mty in
@@ -739,10 +739,32 @@ let add_item comp env =
   | Tsig_class(id, decl, _)  -> add_class id decl env
   | Tsig_cltype(id, decl, _) -> add_cltype id decl env
 
+(* Remove a previous identifier with same name *)
+let rec filter_value id = function
+    Env_empty -> Env_empty
+  | Env_value (sum, id', vd) ->
+      if Ident.equal id id' then sum
+      else Env_value(filter_value id sum, id', vd)
+  | Env_type (sum, id', td) -> Env_type (filter_value id sum, id', td)
+  | Env_exception (sum, id', ed) -> Env_exception (filter_value id sum, id', ed)
+  | Env_module (sum, id', mty) -> Env_module (filter_value id sum, id', mty)
+  | Env_modtype (sum, id', mty) -> Env_modtype (filter_value id sum, id', mty)
+  | Env_class (sum, id', cty) -> Env_class (filter_value id sum, id', cty)
+  | Env_cltype (sum, id', cty) -> Env_cltype (filter_value id sum, id', cty)
+  | Env_open (sum, path) -> Env_open (filter_value id sum, path)
+
+let remove_value id env =
+  { env with summary = filter_value id env.summary }
+
+let add_item_for_signature comp env =
+  match comp with
+    Tsig_value(id, decl) -> add_value id decl (remove_value id env)
+  | _ -> add_item comp env
+
 let rec add_signature sg env =
   match sg with
     [] -> env
-  | comp :: rem -> add_signature rem (add_item comp env)
+  | comp :: rem -> add_signature rem (add_item_for_signature comp env)
 
 (* Open a signature path *)
 
@@ -777,7 +799,7 @@ let open_signature root sg env =
                          (Subst.cltype_declaration sub decl) env)
       env sg pl in
   { newenv with summary = Env_open(env.summary, root) }
-  
+
 (* Open a signature from a file *)
 
 let open_pers_signature name env =

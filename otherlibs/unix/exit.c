@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: exit.c 4144 2001-12-07 13:41:02Z xleroy $ */
+/* $Id$ */
 
 #include <mlvalues.h>
 #include "unixsupport.h"
@@ -22,5 +22,3 @@ CAMLprim value unix_exit(value n)
   return Val_unit;                  /* never reached, but suppress warnings */
                                     /* from smart compilers */
 }
-
-

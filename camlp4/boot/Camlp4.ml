@@ -57,7 +57,7 @@ module Debug :
         in
           open_out_gen [ Open_wronly; Open_creat; Open_append; Open_text ]
             0o666 f
-      with | Not_found -> stderr
+      with | Not_found -> Pervasives.stderr
       
     module StringSet = Set.Make(String)
       
@@ -13890,7 +13890,7 @@ module Struct =
                        error loc "range pattern allowed only for characters")
               | PaRec (loc, p) ->
                   mkpat loc
-                    (Ppat_record (List.map mklabpat (list_of_patt p [])))
+                    (Ppat_record (List.map mklabpat (list_of_patt p []), Closed))
               | PaStr (loc, s) ->
                   mkpat loc
                     (Ppat_constant
@@ -14539,9 +14539,9 @@ module Struct =
                   (Pcf_cstr (((ctyp t1), (ctyp t2), (mkloc loc)))) :: l
               | Ast.CrSem (_, cst1, cst2) ->
                   class_str_item cst1 (class_str_item cst2 l)
-              | CrInh (_, ce, "") -> (Pcf_inher (class_expr ce, None)) :: l
+              | CrInh (_, ce, "") -> (Pcf_inher (Fresh, class_expr ce, None)) :: l
               | CrInh (_, ce, pb) ->
-                  (Pcf_inher (class_expr ce, Some pb)) :: l
+                  (Pcf_inher (Fresh, class_expr ce, Some pb)) :: l
               | CrIni (_, e) -> (Pcf_init (expr e)) :: l
               | CrMth (loc, s, b, e, t) ->
                   let t =
@@ -14549,9 +14549,9 @@ module Struct =
                      | Ast.TyNil _ -> None
                      | t -> Some (mkpolytype (ctyp t))) in
                   let e = mkexp loc (Pexp_poly (expr e, t))
-                  in (Pcf_meth ((s, (mkprivate b), e, (mkloc loc)))) :: l
+                  in (Pcf_meth ((s, (mkprivate b), Fresh, e, (mkloc loc)))) :: l
               | CrVal (loc, s, b, e) ->
-                  (Pcf_val ((s, (mkmutable b), (expr e), (mkloc loc)))) :: l
+                  (Pcf_val ((s, (mkmutable b), Fresh, (expr e), (mkloc loc)))) :: l
               | CrVir (loc, s, b, t) ->
                   (Pcf_virt
                      ((s, (mkprivate b), (mkpolytype (ctyp t)), (mkloc loc)))) ::
@@ -16597,7 +16597,7 @@ module Struct =
                            (eprintf
                               "<W> Changing associativity of level \"%s\"\n"
                               n;
-                            flush stderr)
+                            flush Pervasives.stderr)
                          else ();
                          a)
                   in
@@ -16608,7 +16608,7 @@ module Struct =
                               !(entry.egram.warning_verbose)
                           then
                             (eprintf "<W> Level label \"%s\" ignored\n" n;
-                             flush stderr)
+                             flush Pervasives.stderr)
                           else ()
                       | None -> ());
                      {
@@ -16632,7 +16632,7 @@ module Struct =
                              (eprintf
                                 "No level labelled \"%s\" in entry \"%s\"\n"
                                 n entry.ename;
-                              flush stderr;
+                              flush Pervasives.stderr;
                               failwith "Grammar.extend")
                          | lev :: levs ->
                              if Tools.is_level_labelled n lev
@@ -16648,7 +16648,7 @@ module Struct =
                              (eprintf
                                 "No level labelled \"%s\" in entry \"%s\"\n"
                                 n entry.ename;
-                              flush stderr;
+                              flush Pervasives.stderr;
                               failwith "Grammar.extend")
                          | lev :: levs ->
                              if Tools.is_level_labelled n lev
@@ -16664,7 +16664,7 @@ module Struct =
                              (eprintf
                                 "No level labelled \"%s\" in entry \"%s\"\n"
                                 n entry.ename;
-                              flush stderr;
+                              flush Pervasives.stderr;
                               failwith "Grammar.extend")
                          | lev :: levs ->
                              if Tools.is_level_labelled n lev
@@ -16688,7 +16688,7 @@ module Struct =
                            "\
   Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
                            entry.ename e.ename;
-                         flush stderr;
+                         flush Pervasives.stderr;
                          failwith "Grammar.extend error")
                       else ()
                   | Snterml (e, _) ->
@@ -16698,7 +16698,7 @@ module Struct =
                            "\
   Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
                            entry.ename e.ename;
-                         flush stderr;
+                         flush Pervasives.stderr;
                          failwith "Grammar.extend error")
                       else ()
                   | Smeta (_, sl, _) -> List.iter (check_gram entry) sl
@@ -16852,7 +16852,7 @@ module Struct =
                     | Dparser _ ->
                         (eprintf "Error: entry not extensible: \"%s\"\n"
                            entry.ename;
-                         flush stderr;
+                         flush Pervasives.stderr;
                          failwith "Grammar.extend")
                   in
                     if rules = []

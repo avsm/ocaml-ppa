@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc_nt.ml 8768 2008-01-11 16:13:18Z doligez $ *)
+(* $Id$ *)
 
 (* Description of the Intel 386 processor, for Windows NT *)
 
@@ -183,4 +183,4 @@ let contains_calls = ref false
 let assemble_file infile outfile =
   Ccomp.command (Config.asm ^
                  Filename.quote outfile ^ " " ^ Filename.quote infile ^
-		 (if !Clflags.verbose then "" else ">NUL"))
+                 (if !Clflags.verbose then "" else ">NUL"))

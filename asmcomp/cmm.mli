@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: cmm.mli 7812 2007-01-29 12:11:18Z xleroy $ *)
+(* $Id$ *)
 
 (* Second intermediate language (machine independent) *)
 
@@ -115,4 +115,3 @@ type data_item =
 type phrase =
     Cfunction of fundecl
   | Cdata of data_item list
-

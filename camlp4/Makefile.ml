@@ -89,7 +89,7 @@ let windows = Sys.os_type = "Win32"
 let may_define_unix = if windows then [] else ["-D UNIX"]
 
 let () =
-  !options.ocaml_Flags ^= "-w Ale -warn-error Ale"^^
+  !options.ocaml_Flags ^= "-w Aler -warn-error Aler"^^
                             (if getenv "DTYPES" "" <> "" then "-annot"
                              else "");
   !options.ocaml_P4     := camlp4boot_may_debug may_define_unix;
@@ -275,8 +275,8 @@ let file ppf f =
     loop ()
   in try loop () with End_of_file -> ()
 let ext_split f = split '.' f
-  
-  
+
+
 let print_packed_sources ppf ?(skip = fun _ -> false) package_dir =
   let _ =
   fold_units_sources [package_dir] (fun name sources k (skip, inside) ->
@@ -356,4 +356,3 @@ let just_doc () =
 
 let doc () =
   pack (); just_doc ()
-

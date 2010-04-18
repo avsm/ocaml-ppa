@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typedecl.mli 9292 2009-06-08 04:08:14Z garrigue $ *)
+(* $Id$ *)
 
 (* Typing of type definitions and primitive definitions *)
 
@@ -50,7 +50,7 @@ val compute_variance_decls:
        cltype_declaration * ((bool * bool) list * Location.t)) list ->
     (type_declaration * type_declaration * class_declaration *
        cltype_declaration) list
-    
+
 type error =
     Repeated_parameter
   | Duplicate_constructor of string

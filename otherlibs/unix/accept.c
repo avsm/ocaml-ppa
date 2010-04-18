@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: accept.c 6824 2005-03-24 17:20:54Z doligez $ */
+/* $Id$ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -50,5 +50,5 @@ CAMLprim value unix_accept(value sock)
 
 CAMLprim value unix_accept(value sock)
 { invalid_argument("accept not implemented"); }
-  
+
 #endif

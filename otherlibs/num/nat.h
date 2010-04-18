@@ -11,9 +11,8 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: nat.h 5880 2003-10-24 09:18:01Z xleroy $ */
+/* $Id$ */
 
 /* Nats are represented as unstructured blocks with tag Custom_tag. */
 
 #define Digit_val(nat,pos) (((bng) Data_custom_val(nat))[pos])
-

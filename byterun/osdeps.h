@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: osdeps.h 8873 2008-04-22 12:24:10Z frisch $ */
+/* $Id$ */
 
 /* Operating system - specific stuff */
 
@@ -69,4 +69,3 @@ extern int caml_executable_name(char * name, int name_len);
 #endif
 
 #endif /* CAML_OSDEPS_H */
-

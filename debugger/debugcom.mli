@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: debugcom.mli 5200 2002-10-29 17:53:24Z doligez $ *)
+(* $Id$ *)
 
 (* Low-level communication with the debuggee *)
 
@@ -83,7 +83,7 @@ exception Marshalling_error
 module Remote_value :
   sig
     type t
-    
+
     val obj : t -> 'a
     val is_block : t -> bool
     val tag : t -> int

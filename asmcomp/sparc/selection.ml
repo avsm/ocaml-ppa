@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml 5303 2002-11-29 15:03:08Z xleroy $ *)
+(* $Id$ *)
 
 (* Instruction selection for the Sparc processor *)
 

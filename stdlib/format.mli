@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: format.mli 9420 2009-11-19 10:17:41Z weis $ *)
+(* $Id$ *)
 
 (** Pretty printing.
 
@@ -36,10 +36,11 @@
    than the [fprintf] concise formats.
 
    For instance, the sequence
-   [open_box 0; print_string "x ="; print_space (); print_int 1; close_box ()]
+   [open_box 0; print_string "x ="; print_space ();
+    print_int 1; close_box (); print_newline ()]
    that prints [x = 1] within a pretty-printing box, can be
-   abbreviated as [printf "@[%s@ %i@]" "x =" 1], or even shorter
-   [printf "@[x =@ %i@]" 1].
+   abbreviated as [printf "@[%s@ %i@]@." "x =" 1], or even shorter
+   [printf "@[x =@ %i@]@." 1].
 
    Rule of thumb for casual users of this library:
  - use simple boxes (as obtained by [open_box 0]);
@@ -50,8 +51,8 @@
    functions (e. g. [print_int] and [print_string]);
  - when the material for a box has been printed, call [close_box ()] to
    close the box;
- - at the end of your routine, evaluate [print_newline ()] to close
-   all remaining boxes and flush the pretty-printer.
+ - at the end of your routine, flush the pretty-printer to display all the
+   remaining material, e.g. evaluate [print_newline ()].
 
    The behaviour of pretty-printing commands is unspecified
    if there is no opened pretty-printing box. Each box opened via
@@ -265,14 +266,14 @@ val set_ellipsis_text : string -> unit;;
 val get_ellipsis_text : unit -> string;;
 (** Return the text of the ellipsis. *)
 
-(** {6 Semantics Tags} *)
+(** {6:tags Semantics Tags} *)
 
 type tag = string;;
 
 (** {i Semantics tags} (or simply {e tags}) are used to decorate printed
    entities for user's defined purposes, e.g. setting font and giving size
-   indications for a display device, or marking delimitation of semantics entities
-   (e.g. HTML or TeX elements or terminal escape sequences).
+   indications for a display device, or marking delimitation of semantics
+   entities (e.g. HTML or TeX elements or terminal escape sequences).
 
    By default, those tags do not influence line breaking calculation:
    the tag ``markers'' are not considered as part of the printing
@@ -284,7 +285,7 @@ type tag = string;;
    pretty printing routine can output both simple ``verbatim''
    material or richer decorated output depending on the treatment of
    tags. By default, tags are not active, hence the output is not
-   decorated with tag information.  Once [set_tags] is set to [true],
+   decorated with tag information. Once [set_tags] is set to [true],
    the pretty printer engine honours tags and decorates the output
    accordingly.
 
@@ -358,7 +359,7 @@ val get_formatter_output_functions :
   unit -> (string -> int -> int -> unit) * (unit -> unit);;
 (** Return the current output functions of the pretty-printer. *)
 
-(** {6 Changing the meaning of standard formatter pretty printing} *)
+(** {6:meaning Changing the meaning of standard formatter pretty printing} *)
 
 (** The [Format] module is versatile enough to let you completely redefine
  the meaning of pretty printing: you may provide your own functions to define
@@ -370,7 +371,7 @@ val set_all_formatter_output_functions :
   flush:(unit -> unit) ->
   newline:(unit -> unit) ->
   spaces:(int -> unit) ->
-  unit;;
+  unit
 (** [set_all_formatter_output_functions out flush outnewline outspace]
    redirects the pretty-printer output to the functions [out] and
    [flush] as described in [set_formatter_output_functions]. In
@@ -436,9 +437,8 @@ val get_formatter_tag_functions :
 (** {6 Multiple formatted output} *)
 
 type formatter;;
-(** Abstract data type corresponding to a pretty-printer (also called a
-  formatter) and all its machinery.
-  Defining new pretty-printers permits the output of
+(** Abstract data corresponding to a pretty-printer (also called a
+  formatter) and all its machinery.  Defining new pretty-printers permits the output of
   material in parallel on several channels.
   Parameters of a pretty-printer are local to this pretty-printer:
   margin, maximum indentation limit, maximum number of boxes
@@ -530,7 +530,7 @@ val pp_get_max_boxes : formatter -> unit -> int;;
 val pp_over_max_boxes : formatter -> unit -> bool;;
 val pp_set_ellipsis_text : formatter -> string -> unit;;
 val pp_get_ellipsis_text : formatter -> unit -> string;;
-val pp_set_formatter_out_channel : formatter -> out_channel -> unit;;
+val pp_set_formatter_out_channel : formatter -> Pervasives.out_channel -> unit;;
 val pp_set_formatter_output_functions :
   formatter -> (string -> int -> int -> unit) -> (unit -> unit) -> unit;;
 val pp_get_formatter_output_functions :
@@ -550,7 +550,6 @@ val pp_get_formatter_tag_functions :
    operating on the standard formatter are defined via partial
    evaluation of these primitives. For instance,
    [print_string] is equal to [pp_print_string std_formatter]. *)
-
 
 (** {6 [printf] like functions for pretty-printing.} *)
 
@@ -610,8 +609,9 @@ val fprintf : formatter -> ('a, formatter, unit) format -> 'a;;
    - [@\}]: close the most recently opened tag.
    - [@@]: print a plain [@] character.
 
-   Example: [printf "@[%s@ %d@]" "x =" 1] is equivalent to
-   [open_box (); print_string "x ="; print_space (); print_int 1; close_box ()].
+   Example: [printf "@[%s@ %d@]@." "x =" 1] is equivalent to
+   [open_box (); print_string "x ="; print_space ();
+    print_int 1; close_box (); print_newline ()].
    It prints [x = 1] within a pretty-printing box.
 *)
 
@@ -621,11 +621,15 @@ val printf : ('a, formatter, unit) format -> 'a;;
 val eprintf : ('a, formatter, unit) format -> 'a;;
 (** Same as [fprintf] above, but output on [err_formatter]. *)
 
+val ifprintf : formatter -> ('a, formatter, unit) format -> 'a;;
+(** Same as [fprintf] above, but does not print anything.
+   Useful to ignore some material when conditionally printing. *)
+
 val sprintf : ('a, unit, string) format -> 'a;;
 (** Same as [printf] above, but instead of printing on a formatter,
    returns a string containing the result of formatting the arguments.
-   Note that the pretty-printer queue is flushed at the end of each
-   call to [sprintf].
+   Note that the pretty-printer queue is flushed at the end of {e each
+   call} to [sprintf].
 
    In case of multiple and related calls to [sprintf] to output
    material on a single string, you should consider using [fprintf]
@@ -647,13 +651,16 @@ val bprintf : Buffer.t -> ('a, formatter, unit) format -> 'a;;
    pretty-printer queue would result in unexpected and badly formatted
    output. *)
 
+(** Formatted output functions with continuations. *)
+
 val kfprintf : (formatter -> 'a) -> formatter ->
               ('b, formatter, unit, 'a) format4 -> 'b;;
 (** Same as [fprintf] above, but instead of returning immediately,
    passes the formatter to its first argument at the end of printing. *)
 
-val ifprintf : formatter -> ('a, formatter, unit) format -> 'a;;
-(** Same as [fprintf] above, but does not print anything.
+val ikfprintf : (formatter -> 'a) -> formatter ->
+              ('b, formatter, unit, 'a) format4 -> 'b;;
+(** Same as [kfprintf] above, but does not print anything.
    Useful to ignore some material when conditionally printing. *)
 
 val ksprintf : (string -> 'a) -> ('b, unit, string, 'a) format4 -> 'b;;

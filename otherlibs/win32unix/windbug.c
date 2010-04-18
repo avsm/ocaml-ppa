@@ -11,16 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: windbug.c 9144 2008-11-26 13:41:01Z xleroy $ */
+/* $Id$ */
 
 #include <windows.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include "windbug.h"
 
-#ifdef DBUG
-
-static int dbug = 0;
+int dbug = 0;
 
 void dbug_init (void)
 {
@@ -35,17 +30,3 @@ int dbug_test (void)
 {
   return dbug;
 }
-
-void dbug_print(const char * fmt, ...)
-{
-  va_list ap;
-  if (dbug) {
-    va_start(ap, fmt);
-    vfprintf(stderr, fmt, ap);
-    fprintf(stderr, "\n");
-    fflush(stderr);
-    va_end(ap);
-  }
-}
-
-#endif

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_name.mli 6173 2004-03-26 09:09:50Z guesdon $ *)
+(* $Id$ *)
 
 (** Representation of element names. *)
 
@@ -63,4 +63,3 @@ val to_path : t -> Path.t
 
 (** Get a name from a [Longident.t].*)
 val from_longident : Longident.t -> t
-

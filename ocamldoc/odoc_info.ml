@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_info.ml 8416 2007-10-08 14:19:34Z doligez $ *)
+(* $Id$ *)
 
 (** Interface for analysing documented OCaml source files and to the collected information. *)
 
@@ -43,12 +43,13 @@ and text_element = Odoc_types.text_element =
   | Title of int * string option * text
   | Latex of string
   | Link of string * text
-  | Ref of string * ref_kind option
+  | Ref of string * ref_kind option * text option
   | Superscript of text
   | Subscript of text
   | Module_list of string list
   | Index_list
   | Custom of string * text
+  | Target of string * string
 
 and text = text_element list
 

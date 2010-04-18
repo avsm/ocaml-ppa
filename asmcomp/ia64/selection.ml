@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml 6276 2004-05-03 12:27:07Z xleroy $ *)
+(* $Id$ *)
 
 (* Instruction selection for the IA64 processor *)
 
@@ -106,7 +106,7 @@ method select_operation op args =
      Turn general division and modulus into calls to C library functions *)
   | (Cdivi, [arg; Cconst_int n]) when n = 1 lsl (Misc.log2 n) ->
       (Iintop_imm(Idiv, n), [arg])
-  | (Cdivi, _) -> 
+  | (Cdivi, _) ->
       (Iextcall("__divdi3", false), args)
   | (Cmodi, [arg; Cconst_int n]) when n = 1 lsl (Misc.log2 n) && n <> 1 ->
       (Iintop_imm(Imod, n), [arg])

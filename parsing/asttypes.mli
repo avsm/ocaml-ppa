@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asttypes.mli 5510 2003-04-25 12:27:31Z xleroy $ *)
+(* $Id$ *)
 
 (* Auxiliary a.s.t. types used by parsetree and typedtree. *)
 
@@ -32,5 +32,9 @@ type private_flag = Private | Public
 type mutable_flag = Immutable | Mutable
 
 type virtual_flag = Virtual | Concrete
+
+type override_flag = Override | Fresh
+
+type closed_flag = Closed | Open
 
 type label = string
