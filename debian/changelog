@@ -1,13 +1,17 @@
 ocaml (3.12.0~0dev17+10268-1) UNRELEASED; urgency=low
 
   [ Stéphane Glondu ]
-  * New upstream snapshot
+  * New upstream SVN snapshot (Closes: #255245, #570920)
+    - add armel to native architectures
+  * debian/rules: switch to dh with overrides
+  * Switch source package format to 3.0 (quilt)
+  * Bump version in debhelper build-dependency (Closes: #562606)
 
   [ Ralf Treinen ]
   * debian/ocaml-mode.emacs-install: do not byte-compile camldebug.el
     and inf-caml.el for xemacs21 (Closes: #508813, LP: #464587).
 
- -- Ralf Treinen <treinen@debian.org>  Sat, 06 Mar 2010 11:23:45 +0100
+ -- Stéphane Glondu <glondu@debian.org>  Sun, 18 Apr 2010 16:26:54 +0200
 
 ocaml (3.11.2-1) unstable; urgency=low
 
