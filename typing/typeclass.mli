@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typeclass.mli 7372 2006-04-05 02:28:13Z garrigue $ *)
+(* $Id$ *)
 
 open Asttypes
 open Types
@@ -75,6 +75,7 @@ type error =
       Ident.t * Types.class_declaration * (type_expr * type_expr) list
   | Final_self_clash of (type_expr * type_expr) list
   | Mutability_mismatch of string * mutable_flag
+  | No_overriding of string * string
 
 exception Error of Location.t * error
 

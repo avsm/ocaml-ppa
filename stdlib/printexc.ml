@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printexc.ml 9335 2009-09-16 13:34:57Z xclerc $ *)
+(* $Id$ *)
 
 open Printf;;
 
@@ -86,7 +86,7 @@ type loc_info =
                     * int    (* end char *)
   | Unknown_location of bool (*is_raise*)
 
-external get_exception_backtrace: 
+external get_exception_backtrace:
   unit -> loc_info array option = "caml_get_exception_backtrace"
 
 let format_loc_info pos li =

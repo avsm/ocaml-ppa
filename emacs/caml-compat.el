@@ -10,7 +10,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id: caml-compat.el 6612 2004-08-20 17:04:35Z doligez $ *)
+;(* $Id$ *)
 
 ;; function definitions for old versions of emacs
 
@@ -39,4 +39,3 @@ only if necessary.  It leaves point at end of indentation."
   (defalias 'buffer-substring-no-properties 'buffer-substring)))
 
 (provide 'caml-compat)
-

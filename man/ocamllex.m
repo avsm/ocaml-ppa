@@ -1,4 +1,4 @@
-\" $Id: ocamllex.m 9026 2008-09-15 14:12:56Z doligez $
+\" $Id$
 .TH OCAMLLEX 1
 
 .SH NAME

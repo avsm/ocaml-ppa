@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: thread_win32.ml 7000 2005-07-31 12:32:41Z xleroy $ *)
+(* $Id$ *)
 
 (* User-level threads *)
 
@@ -24,7 +24,7 @@ external yield : unit -> unit = "caml_thread_yield"
 external self : unit -> t = "caml_thread_self"
 external id : t -> int = "caml_thread_id"
 external join : t -> unit = "caml_thread_join"
-external thread_uncaught_exception : exn -> unit = 
+external thread_uncaught_exception : exn -> unit =
             "caml_thread_uncaught_exception"
 
 (* For new, make sure the function passed to thread_new never
@@ -74,4 +74,3 @@ let wait_pid p = Unix.waitpid [] p
 
 let sigmask cmd set = invalid_arg "Thread.sigmask: not implemented"
 let wait_signal set = invalid_arg "Thread.wait_signal: not implemented"
-

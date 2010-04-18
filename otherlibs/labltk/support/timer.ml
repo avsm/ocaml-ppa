@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: timer.ml 5128 2002-09-12 10:12:26Z furuse $ *)
+(* $Id$ *)
 
 (* Timers *)
 open Support
@@ -55,4 +55,3 @@ let set ~ms ~callback = ignore (add ~ms ~callback);;
 let remove (tkTimer, id) =
   internal_rem_timer tkTimer;
   clear_callback id
-

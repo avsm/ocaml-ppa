@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: predef.ml 8418 2007-10-09 10:29:37Z weis $ *)
+(* $Id$ *)
 
 (* Predefined type constructors (with special typing rules in typecore) *)
 
@@ -100,7 +100,7 @@ let build_initial_env add_type add_exception empty_env =
      type_manifest = None;
      type_variance = []}
   and decl_unit =
-    {type_params = []; 
+    {type_params = [];
      type_arity = 0;
      type_kind = Type_variant(["()", []]);
      type_private = Public;

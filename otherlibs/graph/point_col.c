@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: point_col.c 6171 2004-03-24 15:02:06Z starynke $ */
+/* $Id$ */
 
 #include "libgraph.h"
 
@@ -28,5 +28,3 @@ value caml_gr_point_color(value vx, value vy)
   XDestroyImage(im);
   return Val_int(rgb);
 }
-
-                     

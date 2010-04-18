@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: longident.mli 2990 2000-03-25 18:55:45Z xleroy $ *)
+(* $Id$ *)
 
 (* Long identifiers, used in parsetree. *)
 
@@ -20,4 +20,5 @@ type t =
   | Lapply of t * t
 
 val flatten: t -> string list
+val last: t -> string
 val parse: string -> t

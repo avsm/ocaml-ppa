@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: scheduling.ml 5303 2002-11-29 15:03:08Z xleroy $ *)
+(* $Id$ *)
 
 open Cmm
 open Mach
@@ -62,4 +62,3 @@ method oper_issue_cycles = function
 end
 
 let fundecl f = (new scheduler)#schedule_fundecl f
-

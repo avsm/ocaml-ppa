@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_cross.ml 8418 2007-10-09 10:29:37Z weis $ *)
+(* $Id$ *)
 
 (** Cross referencing. *)
 
@@ -244,28 +244,28 @@ let lookup_exception name =
 class scan =
   object
     inherit Odoc_scan.scanner
-    method scan_value v =
+    method! scan_value v =
       add_known_element v.val_name (Odoc_search.Res_value v)
-    method scan_type t =
+    method! scan_type t =
       add_known_element t.ty_name (Odoc_search.Res_type t)
-    method scan_exception e =
+    method! scan_exception e =
       add_known_element e.ex_name (Odoc_search.Res_exception e)
-    method scan_attribute a =
+    method! scan_attribute a =
       add_known_element a.att_value.val_name
         (Odoc_search.Res_attribute a)
-    method scan_method m =
+    method! scan_method m =
       add_known_element m.met_value.val_name
         (Odoc_search.Res_method m)
-    method scan_class_pre c =
+    method! scan_class_pre c =
       add_known_element c.cl_name (Odoc_search.Res_class c);
       true
-    method scan_class_type_pre c =
+    method! scan_class_type_pre c =
       add_known_element c.clt_name (Odoc_search.Res_class_type c);
       true
-    method scan_module_pre m =
+    method! scan_module_pre m =
       add_known_element m.m_name (Odoc_search.Res_module m);
       true
-    method scan_module_type_pre m =
+    method! scan_module_type_pre m =
       add_known_element m.mt_name (Odoc_search.Res_module_type m);
       true
 
@@ -611,7 +611,7 @@ let rec assoc_comments_text_elements parent_name module_list t_ele =
   | Subscript t -> Subscript (assoc_comments_text parent_name module_list t)
   | Title (n, l_opt, t) -> Title (n, l_opt, (assoc_comments_text parent_name module_list t))
   | Link (s, t) -> Link (s, (assoc_comments_text parent_name module_list t))
-  | Ref (initial_name, None) ->
+  | Ref (initial_name, None, text_option) ->
       (
        let rec iter_parent ?parent_name name =
          let res =
@@ -647,12 +647,12 @@ let rec assoc_comments_text_elements parent_name module_list t_ele =
                (name, Some kind)
          in
          match res with
-         | (name, Some k) -> Ref (name, Some k)
+         | (name, Some k) -> Ref (name, Some k, text_option)
          | (_, None) ->
              match parent_name with
                None ->
                  Odoc_messages.pwarning (Odoc_messages.cross_element_not_found initial_name);
-                 Ref (initial_name, None)
+                 Ref (initial_name, None, text_option)
              | Some p ->
                  let parent_name =
                    match Name.father p with
@@ -663,12 +663,12 @@ let rec assoc_comments_text_elements parent_name module_list t_ele =
        in
        iter_parent ~parent_name initial_name
       )
-  | Ref (initial_name, Some kind) ->
+  | Ref (initial_name, Some kind, text_option) ->
       (
        let rec iter_parent ?parent_name name =
          let v = (name, Some kind) in
          if was_verified v then
-           Ref (name, Some kind)
+           Ref (name, Some kind, text_option)
          else
            let res =
              match kind with
@@ -708,12 +708,12 @@ let rec assoc_comments_text_elements parent_name module_list t_ele =
                    (name, None)
            in
            match res with
-           | (name, Some k) -> Ref (name, Some k)
+           | (name, Some k) -> Ref (name, Some k, text_option)
            | (_, None) ->
                match parent_name with
                  None ->
                    Odoc_messages.pwarning (not_found_of_kind kind initial_name);
-                   Ref (initial_name, None)
+                   Ref (initial_name, None, text_option)
                | Some p ->
                    let parent_name =
                      match Name.father p with
@@ -729,6 +729,7 @@ let rec assoc_comments_text_elements parent_name module_list t_ele =
   | Index_list ->
       Index_list
   | Custom (s,t) -> Custom (s, (assoc_comments_text parent_name module_list t))
+  | Target (target, code) -> Target (target, code)
 
 and assoc_comments_text parent_name module_list text =
   List.map (assoc_comments_text_elements parent_name module_list) text

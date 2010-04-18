@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: format.ml 9244 2009-04-29 18:33:31Z weis $ *)
+(* $Id$ *)
 
 (* A pretty-printing facility and definition of formatters for ``parallel''
    (i.e. unrelated or independent) pretty-printing on multiple out channels. *)
@@ -794,7 +794,7 @@ let pp_set_margin state n =
          new margin, if it is greater than 1. *)
        max (max (state.pp_margin - state.pp_min_space_left)
                 (state.pp_margin / 2)) 1 in
-  (* Rebuild invariants. *)
+    (* Rebuild invariants. *)
     pp_set_max_indent state new_max_indent
 ;;
 
@@ -809,8 +809,8 @@ let pp_get_formatter_output_functions state () =
 let pp_set_all_formatter_output_functions state
     ~out:f ~flush:g ~newline:h ~spaces:i =
   pp_set_formatter_output_functions state f g;
-  state.pp_output_newline <- (function () -> h ());
-  state.pp_output_spaces <- (function n -> i n)
+  state.pp_output_newline <- h;
+  state.pp_output_spaces <- i;
 ;;
 let pp_get_all_formatter_output_functions state () =
   (state.pp_output_function, state.pp_flush_function,
@@ -842,7 +842,8 @@ let pp_make_formatter f g h i =
   add_queue sys_tok pp_q;
   let sys_scan_stack =
       (Scan_elem (1, sys_tok)) :: scan_stack_bottom in
-  {pp_scan_stack = sys_scan_stack;
+  {
+   pp_scan_stack = sys_scan_stack;
    pp_format_stack = [];
    pp_tbox_stack = [];
    pp_tag_stack = [];
@@ -905,9 +906,9 @@ let formatter_of_buffer b =
 let stdbuf = Buffer.create 512;;
 
 (* Predefined formatters. *)
-let str_formatter = formatter_of_buffer stdbuf
-and std_formatter = formatter_of_out_channel stdout
-and err_formatter = formatter_of_out_channel stderr
+let std_formatter = formatter_of_out_channel Pervasives.stdout
+and err_formatter = formatter_of_out_channel Pervasives.stderr
+and str_formatter = formatter_of_buffer stdbuf
 ;;
 
 let flush_str_formatter () =
@@ -1066,7 +1067,7 @@ let implode_rev s0 = function
 (* [mkprintf] is the printf-like function generator: given the
    - [to_s] flag that tells if we are printing into a string,
    - the [get_out] function that has to be called to get a [ppf] function to
-   output onto.
+     output onto.
    It generates a [kprintf] function that takes as arguments a [k]
    continuation function to be called at the end of formatting,
    and a printing format string to print the rest of the arguments
@@ -1301,9 +1302,10 @@ let mkprintf to_s get_out =
  **************************************************************)
 
 let kfprintf k ppf = mkprintf false (fun _ -> ppf) k;;
-let ifprintf ppf = Tformat.kapr (fun _ -> Obj.magic ignore);;
+let ikfprintf k ppf = Tformat.kapr (fun _ _ -> Obj.magic (k ppf));;
 
 let fprintf ppf = kfprintf ignore ppf;;
+let ifprintf ppf = ikfprintf ignore ppf;;
 let printf fmt = fprintf std_formatter fmt;;
 let eprintf fmt = fprintf err_formatter fmt;;
 
@@ -1322,9 +1324,10 @@ let ksprintf k =
   mkprintf true (fun _ -> formatter_of_buffer b) k
 ;;
 
-let kprintf = ksprintf;;
-
 let sprintf fmt = ksprintf (fun s -> s) fmt;;
+
+(* Obsolete alias for ksprintf. *)
+let kprintf = ksprintf;;
 
 at_exit print_flush
 ;;

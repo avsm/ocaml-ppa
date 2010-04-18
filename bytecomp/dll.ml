@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: dll.ml 9249 2009-05-01 01:46:50Z garrigue $ *)
+(* $Id$ *)
 
 (* Handling of dynamically-linked libraries *)
 
@@ -172,4 +172,3 @@ let init_toplevel dllpath =
   opened_dlls := Array.to_list (get_current_dlls());
   names_of_opened_dlls := [];
   linking_in_core := true
-

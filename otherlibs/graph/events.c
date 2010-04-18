@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: events.c 7019 2005-08-13 20:59:37Z doligez $ */
+/* $Id$ */
 
 #include <signal.h>
 #include "libgraph.h"
@@ -165,7 +165,7 @@ static value caml_gr_wait_event_poll(void)
     mouse_x = -1;
     mouse_y = -1;
   }
-  button = modifiers & (Button1Mask | Button2Mask | Button3Mask 
+  button = modifiers & (Button1Mask | Button2Mask | Button3Mask
                           | Button4Mask | Button5Mask);
   /* Look inside event queue for pending KeyPress events */
   key = 0;

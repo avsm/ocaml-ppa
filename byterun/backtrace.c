@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: backtrace.c 9300 2009-06-18 11:17:16Z xclerc $ */
+/* $Id$ */
 
 /* Stack backtrace for uncaught exceptions */
 
@@ -308,4 +308,3 @@ CAMLprim value caml_get_exception_backtrace(value unit)
   }
   CAMLreturn(res);
 }
-

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: fork.c 4144 2001-12-07 13:41:02Z xleroy $ */
+/* $Id$ */
 
 #include <mlvalues.h>
 #include "unixsupport.h"
@@ -23,4 +23,3 @@ CAMLprim value unix_fork(value unit)
   if (ret == -1) uerror("fork", Nothing);
   return Val_int(ret);
 }
-

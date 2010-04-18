@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typecore.mli 8768 2008-01-11 16:13:18Z doligez $ *)
+(* $Id$ *)
 
 (* Type inference for the core language *)
 
@@ -22,7 +22,7 @@ val is_nonexpansive: Typedtree.expression -> bool
 
 val type_binding:
         Env.t -> rec_flag ->
-          (Parsetree.pattern * Parsetree.expression) list -> 
+          (Parsetree.pattern * Parsetree.expression) list ->
           Annot.ident option ->
           (Typedtree.pattern * Typedtree.expression) list * Env.t
 val type_let:
@@ -66,6 +66,8 @@ type error =
     Unbound_value of Longident.t
   | Unbound_constructor of Longident.t
   | Unbound_label of Longident.t
+  | Unbound_module of Longident.t
+  | Unbound_functor of Longident.t
   | Polymorphic_label of Longident.t
   | Constructor_arity_mismatch of Longident.t * int * int
   | Label_mismatch of Longident.t * (type_expr * type_expr) list
@@ -107,7 +109,11 @@ val report_error: formatter -> error -> unit
 
 (* Forward declaration, to be filled in by Typemod.type_module *)
 val type_module: (Env.t -> Parsetree.module_expr -> Typedtree.module_expr) ref
+(* Forward declaration, to be filled in by Typemod.type_open *)
+val type_open: (Env.t -> Location.t -> Longident.t -> Env.t) ref
 (* Forward declaration, to be filled in by Typeclass.class_structure *)
 val type_object:
   (Env.t -> Location.t -> Parsetree.class_structure ->
    Typedtree.class_structure * class_signature * string list) ref
+
+val create_package_type: Location.t -> Env.t -> Parsetree.package_type -> type_expr

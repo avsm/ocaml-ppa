@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: header.c 4144 2001-12-07 13:41:02Z xleroy $ */
+/* $Id$ */
 
 /* The launcher for bytecode executables (if #! is not working) */
 
@@ -121,7 +121,7 @@ static char * searchpath(char * name)
   return name;
 }
 
-#endif  
+#endif
 
 static unsigned long read_size(char * ptr)
 {

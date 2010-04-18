@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_man.ml 9109 2008-10-29 11:58:35Z guesdon $ *)
+(* $Id$ *)
 
 (** The man pages generator. *)
 open Odoc_info
@@ -273,7 +273,7 @@ class man =
           ()
       | Odoc_info.Link (s, t) ->
           self#man_of_text2 b t
-      | Odoc_info.Ref (name, _) ->
+      | Odoc_info.Ref (name, _, _) ->
           self#man_of_text_element b
             (Odoc_info.Code (Odoc_info.use_hidden_modules name))
       | Odoc_info.Superscript t ->
@@ -285,8 +285,12 @@ class man =
       | Odoc_info.Index_list ->
           ()
       | Odoc_info.Custom (s,t) -> self#man_of_custom_text b s t
+      | Odoc_info.Target (target, code) -> self#man_of_Target b ~target ~code
 
     method man_of_custom_text b s t = ()
+
+    method man_of_Target b ~target ~code =
+      if String.lowercase target = "man" then bs b code else ()
 
     (** Print groff string to display code. *)
     method man_of_code b s = self#man_of_text b [ Code s ]

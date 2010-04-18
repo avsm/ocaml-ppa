@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_type.ml 8883 2008-05-21 05:56:39Z guesdon $ *)
+(* $Id$ *)
 
 (** Representation and manipulation of a type, but not class nor module type.*)
 
@@ -39,7 +39,7 @@ type type_kind =
   | Type_variant of variant_constructor list
                    (** constructors *)
   | Type_record of record_field list
-	           (** fields *)
+                   (** fields *)
 
 (** Representation of a type. *)
 type t_type = {
@@ -53,4 +53,3 @@ type t_type = {
     mutable ty_loc : Odoc_types.location ;
     mutable ty_code : string option;
   }
-

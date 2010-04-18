@@ -11,13 +11,13 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.shared 8974 2008-08-01 16:57:10Z mauny $
+# $Id$
 
 include ../config/Makefile
 RUNTIME=../boot/ocamlrun
 COMPILER=../ocamlc
 CAMLC=$(RUNTIME) $(COMPILER)
-COMPFLAGS=-g -warn-error A -nostdlib
+COMPFLAGS=-strict-sequence -g -warn-error A -nostdlib
 OPTCOMPILER=../ocamlopt
 CAMLOPT=$(RUNTIME) $(OPTCOMPILER)
 OPTCOMPFLAGS=-warn-error A -nostdlib -g

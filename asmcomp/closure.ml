@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: closure.ml 8966 2008-08-01 12:52:14Z xleroy $ *)
+(* $Id$ *)
 
 (* Introduction of closures, uncurrying, recognition of direct calls *)
 

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: roots.c 8828 2008-03-10 19:56:39Z xleroy $ */
+/* $Id$ */
 
 /* To walk the memory roots for garbage collection */
 
@@ -101,4 +101,3 @@ CAMLexport void caml_do_local_roots (scanning_action f, value *stack_low,
     }
   }
 }
-

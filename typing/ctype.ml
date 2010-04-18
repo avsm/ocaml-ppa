@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ctype.ml 9453 2009-12-07 13:04:54Z garrigue $ *)
+(* $Id$ *)
 
 (* Operations on core types *)
 
@@ -616,6 +616,8 @@ let rec update_level env level ty =
           (* +++ Levels should be restored... *)
           raise (Unify [(ty, newvar2 level)])
         end
+    | Tpackage (p, _, _) when level < Path.binding_time p ->
+        raise (Unify [(ty, newvar2 level)])
     | Tobject(_, ({contents=Some(p, tl)} as nm))
       when level < Path.binding_time p ->
         set_name nm None;
@@ -657,6 +659,8 @@ let rec generalize_expansive env var_level ty =
               if ct then update_level env var_level t
               else generalize_expansive env var_level t)
             variance tyl
+      | Tpackage (_, _, tyl) ->
+          List.iter (update_level env var_level) tyl
       | Tarrow (_, t1, t2, _) ->
           update_level env var_level t1;
           generalize_expansive env var_level t2
@@ -953,7 +957,7 @@ let rec copy_sep fixed free bound visited ty =
     let t = newvar() in          (* Stub *)
     let visited =
       match ty.desc with
-        Tarrow _ | Ttuple _ | Tvariant _ | Tconstr _ | Tobject _ ->
+        Tarrow _ | Ttuple _ | Tvariant _ | Tconstr _ | Tobject _ | Tpackage _ ->
           (ty,(t,bound)) :: visited
       | _ -> visited in
     let copy_rec = copy_sep fixed free bound visited in
@@ -1653,6 +1657,8 @@ and unify3 env t1 t1' t2 t2' =
         unify env t1 t2
     | (Tpoly (t1, tl1), Tpoly (t2, tl2)) ->
         enter_poly env univar_pairs t1 tl1 t2 tl2 (unify env)
+    | (Tpackage (p1, n1, tl1), Tpackage (p2, n2, tl2)) when Path.same p1 p2 && n1 = n2 ->
+        unify_list env tl1 tl2
     | (_, _) ->
         raise (Unify [])
     end;
@@ -1834,7 +1840,7 @@ and unify_row_field env fixed1 fixed2 l f1 f2 =
       if e1 == e2 then () else
       let redo =
         (m1 || m2 ||
-	 !rigid_variants && (List.length tl1 = 1 || List.length tl2 = 1)) &&
+         !rigid_variants && (List.length tl1 = 1 || List.length tl2 = 1)) &&
         begin match tl1 @ tl2 with [] -> false
         | t1 :: tl ->
             if c1 || c2 then raise (Unify []);
@@ -2052,6 +2058,8 @@ let rec moregen inst_nongen type_pairs env t1 t2 =
               moregen_list inst_nongen type_pairs env tl1 tl2
           | (Tconstr (p1, tl1, _), Tconstr (p2, tl2, _))
                 when Path.same p1 p2 ->
+              moregen_list inst_nongen type_pairs env tl1 tl2
+          | Tpackage (p1, n1, tl1), Tpackage (p2, n2, tl2) when Path.same p1 p2 && n1 = n2 ->
               moregen_list inst_nongen type_pairs env tl1 tl2
           | (Tvariant row1, Tvariant row2) ->
               moregen_row inst_nongen type_pairs env row1 row2
@@ -2311,6 +2319,8 @@ let rec eqtype rename type_pairs subst env t1 t2 =
               eqtype_list rename type_pairs subst env tl1 tl2
           | (Tconstr (p1, tl1, _), Tconstr (p2, tl2, _))
                 when Path.same p1 p2 ->
+              eqtype_list rename type_pairs subst env tl1 tl2
+          | Tpackage (p1, n1, tl1), Tpackage (p2, n2, tl2) when Path.same p1 p2 && n1 = n2 ->
               eqtype_list rename type_pairs subst env tl1 tl2
           | (Tvariant row1, Tvariant row2) ->
               eqtype_row rename type_pairs subst env row1 row2
@@ -2918,7 +2928,7 @@ let rec build_subtype env visited loops posi level t =
       let (t1', c) = build_subtype env visited loops posi level t1 in
       if c > Unchanged then (newty (Tpoly(t1', tl)), c)
       else (t, Unchanged)
-  | Tunivar ->
+  | Tunivar | Tpackage _ ->
       (t, Unchanged)
 
 let enlarge_type env ty =
@@ -3216,15 +3226,15 @@ let rec normalize_type_rec env visited ty =
         begin match !nm with
         | None -> ()
         | Some (n, v :: l) ->
-	    if deep_occur ty (newgenty (Ttuple l)) then
-	      (* The abbreviation may be hiding something, so remove it *)
-	      set_name nm None
-	    else let v' = repr v in
+            if deep_occur ty (newgenty (Ttuple l)) then
+              (* The abbreviation may be hiding something, so remove it *)
+              set_name nm None
+            else let v' = repr v in
             begin match v'.desc with
             | Tvar|Tunivar ->
                 if v' != v then set_name nm (Some (n, v' :: l))
             | Tnil ->
-		log_type ty; ty.desc <- Tconstr (n, l, ref Mnil)
+                log_type ty; ty.desc <- Tconstr (n, l, ref Mnil)
             | _ -> set_name nm None
             end
         | _ ->
@@ -3252,38 +3262,38 @@ let normalize_type env ty =
 (*
    Variables are left unchanged. Other type nodes are duplicated, with
    levels set to generic level.
-   During copying, the description of a (non-variable) node is first
-   replaced by a link to a stub ([Tsubst (newgenvar ())]).
-   Once the copy is made, it replaces the stub.
-   After copying, the description of node, which was stored by
-   [save_desc], must be put back, using [cleanup_types].
+   We cannot use Tsubst here, because unification may be called by
+   expand_abbrev.
 *)
 
+let nondep_hash     = TypeHash.create 47
+let nondep_variants = TypeHash.create 17
+let clear_hash ()   =
+  TypeHash.clear nondep_hash; TypeHash.clear nondep_variants
+
 let rec nondep_type_rec env id ty =
-  let ty = repr ty in
   match ty.desc with
     Tvar | Tunivar -> ty
-  | Tsubst ty -> ty
-  | _ ->
-    let desc = ty.desc in
-    save_desc ty desc;
+  | Tlink ty -> nondep_type_rec env id ty
+  | _ -> try TypeHash.find nondep_hash ty
+  with Not_found ->
     let ty' = newgenvar () in        (* Stub *)
-    ty.desc <- Tsubst ty';
+    TypeHash.add nondep_hash ty ty';
     ty'.desc <-
-      begin match desc with
+      begin match ty.desc with
       | Tconstr(p, tl, abbrev) ->
           if Path.isfree id p then
             begin try
               Tlink (nondep_type_rec env id
-                       (expand_abbrev env (newty2 ty.level desc)))
+                       (expand_abbrev env (newty2 ty.level ty.desc)))
               (*
                  The [Tlink] is important. The expanded type may be a
                  variable, or may not be completely copied yet
                  (recursive type), so one cannot just take its
                  description.
                *)
-            with Cannot_expand | Unify _ -> (* expand_abbrev failed *)
-              raise Not_found               (* cf. PR4775 for Unify *)
+            with Cannot_expand | Unify _ ->
+              raise Not_found
             end
           else
             Tconstr(p, List.map (nondep_type_rec env id) tl, ref Mnil)
@@ -3297,39 +3307,36 @@ let rec nondep_type_rec env id ty =
       | Tvariant row ->
           let row = row_repr row in
           let more = repr row.row_more in
-          (* We must substitute in a subtle way *)
-          (* Tsubst denotes the variant itself, as the row var is unchanged *)
-          begin match more.desc with
-            Tsubst ty2 ->
-              (* This variant type has been already copied *)
-              ty.desc <- Tsubst ty2; (* avoid Tlink in the new type *)
-              Tlink ty2
-          | _ ->
-              let static = static_row row in
-              (* Register new type first for recursion *)
-              save_desc more more.desc;
-              more.desc <- ty.desc;
-              let more' = if static then newgenvar () else more in
-              (* Return a new copy *)
-              let row =
-                copy_row (nondep_type_rec env id) true row true more' in
-              match row.row_name with
-                Some (p, tl) when Path.isfree id p ->
-                  Tvariant {row with row_name = None}
-              | _ -> Tvariant row
+          (* We must keep sharing according to the row variable *)
+          begin try
+            let ty2 = TypeHash.find nondep_variants more in
+            (* This variant type has been already copied *)
+            TypeHash.add nondep_hash ty ty2;
+            Tlink ty2
+          with Not_found ->
+            (* Register new type first for recursion *)
+            TypeHash.add nondep_variants more ty';
+            let static = static_row row in
+            let more' = if static then newgenvar () else more in
+            (* Return a new copy *)
+            let row =
+              copy_row (nondep_type_rec env id) true row true more' in
+            match row.row_name with
+              Some (p, tl) when Path.isfree id p ->
+                Tvariant {row with row_name = None}
+            | _ -> Tvariant row
           end
-      | _ -> copy_type_desc (nondep_type_rec env id) desc
+      | _ -> copy_type_desc (nondep_type_rec env id) ty.desc
       end;
     ty'
 
 let nondep_type env id ty =
   try
     let ty' = nondep_type_rec env id ty in
-    cleanup_types ();
-    unmark_type ty';
+    clear_hash ();
     ty'
   with Not_found ->
-    cleanup_types ();
+    clear_hash ();
     raise Not_found
 
 (* Preserve sharing inside type declarations. *)
@@ -3360,19 +3367,7 @@ let nondep_type_decl env mid id is_covariant decl =
       with Not_found when is_covariant ->
         None
     in
-    cleanup_types ();
-    List.iter unmark_type decl.type_params;
-    begin match decl.type_kind with
-      Type_abstract -> ()
-    | Type_variant cstrs ->
-        List.iter (fun (c, tl) -> List.iter unmark_type tl) cstrs
-    | Type_record(lbls, rep) ->
-        List.iter (fun (c, mut, t) -> unmark_type t) lbls
-    end;
-    begin match decl.type_manifest with
-      None    -> ()
-    | Some ty -> unmark_type ty
-    end;
+    clear_hash ();
     let priv =
       match tm with
       | Some ty when Btype.has_constr_row ty -> Private
@@ -3386,7 +3381,7 @@ let nondep_type_decl env mid id is_covariant decl =
       type_variance = decl.type_variance;
     }
   with Not_found ->
-    cleanup_types ();
+    clear_hash ();
     raise Not_found
 
 (* Preserve sharing inside class types. *)
@@ -3425,13 +3420,7 @@ let nondep_class_declaration env id decl =
         | Some ty -> Some (nondep_type_rec env id ty)
         end }
   in
-  cleanup_types ();
-  List.iter unmark_type decl.cty_params;
-  unmark_class_type decl.cty_type;
-  begin match decl.cty_new with
-    None    -> ()
-  | Some ty -> unmark_type ty
-  end;
+  clear_hash ();
   decl
 
 let nondep_cltype_declaration env id decl =
@@ -3442,9 +3431,7 @@ let nondep_cltype_declaration env id decl =
       clty_type = nondep_class_type env id decl.clty_type;
       clty_path = decl.clty_path }
   in
-  cleanup_types ();
-  List.iter unmark_type decl.clty_params;
-  unmark_class_type decl.clty_type;
+  clear_hash ();
   decl
 
 (* collapse conjonctive types in class parameters *)

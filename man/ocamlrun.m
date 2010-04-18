@@ -1,4 +1,5 @@
-\" $Id: ocamlrun.m 9133 2008-11-18 10:41:17Z doligez $
+\" $Id$
+
 .TH OCAMLRUN 1
 
 .SH NAME

@@ -11,21 +11,22 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 8477 2007-11-06 15:16:56Z frisch $
+# $Id$
 
 # Makefile for the str library
 
 
 LIBNAME=str
 COBJS=strstubs.$(O)
+CLIBNAME=camlstr
 CAMLOBJS=str.cmo
 
 include ../Makefile
 
 depend:
 
-str.cmo: str.cmi 
-str.cmx: str.cmi 
+str.cmo: str.cmi
+str.cmx: str.cmi
 
 depend:
 	gcc -MM $(CFLAGS) *.c > .depend

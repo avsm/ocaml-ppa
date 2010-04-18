@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml 9310 2009-07-08 14:30:05Z xclerc $ *)
+(* $Id$ *)
 
 open Input_handling
 open Question
@@ -179,9 +179,9 @@ let speclist = [
 
 let main () =
   try
-    socket_name := 
+    socket_name :=
       (match Sys.os_type with
-        "Win32" -> 
+        "Win32" ->
           (Unix.string_of_inet_addr Unix.inet_addr_loopback)^
           ":"^
           (string_of_int (10000 + ((Unix.getpid ()) mod 10000)))

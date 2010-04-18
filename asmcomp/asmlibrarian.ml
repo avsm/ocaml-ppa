@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asmlibrarian.ml 7079 2005-09-24 16:45:56Z xleroy $ *)
+(* $Id$ *)
 
 (* Build libraries of .cmx files *)
 
@@ -71,4 +71,3 @@ let report_error ppf = function
       fprintf ppf "Cannot find file %s" name
   | Archiver_error name ->
       fprintf ppf "Error while creating the library %s" name
-

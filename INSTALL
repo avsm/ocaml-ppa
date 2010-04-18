@@ -78,7 +78,7 @@ The "configure" script accepts the following options:
         LablTk. "-tkdefs" helps to find the headers, and "-tklibs"
         the C libraries. "-tklibs" may contain either only -L/path and
         -Wl,... flags, in which case the library names are determined
-        automatically, or the actual libraries, which are used as given. 
+        automatically, or the actual libraries, which are used as given.
         Example: for a Japanese tcl/tk whose headers are in specific
         directories and libraries in /usr/local/lib, you can use
         ./configure -tklibs "-L/usr/local/lib -ltk8.0jp -ltcl8.0jp"
@@ -135,6 +135,11 @@ Examples:
 
   On a Linux x86/64 bits host, to build a 32-bit version of OCaml:
     ./configure -cc "gcc -m32" -as "as --32" -aspp "gcc -m32 -c"
+
+  On a Linux x86/64 bits host, to build the run-time system in PIC mode
+  (enables putting the runtime in a shared library, 
+   at a small performance cost):
+    ./configure -cc "gcc -fPIC" -aspp "gcc -c -fPIC"
 
   For Sun Solaris with the "acc" compiler:
     ./configure -cc "acc -fast" -libs "-lucb"

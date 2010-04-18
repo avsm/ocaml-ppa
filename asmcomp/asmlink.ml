@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asmlink.ml 9338 2009-09-16 14:03:37Z garrigue $ *)
+(* $Id$ *)
 
 (* Link a set of .cmx/.o files and produce an executable *)
 

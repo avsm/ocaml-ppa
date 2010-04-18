@@ -1,4 +1,4 @@
-\" $Id: ocamldebug.m 9025 2008-09-15 14:05:30Z doligez $
+\" $Id$
 
 .TH OCAMLDEBUG 1
 

@@ -11,7 +11,7 @@
 #(*                                                                     *)
 #(***********************************************************************)
 
-# $Id: remove_DEBUG 9312 2009-07-09 17:09:48Z doligez $
+# $Id$
 
 # usage: remove_DEBUG <file>
 # remove from <file> every line that contains the string "DEBUG",

@@ -10,9 +10,9 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: spill.mli 2553 1999-11-17 18:59:06Z xleroy $ *)
+(* $Id$ *)
 
-(* Insertion of moves to suggest possible spilling / reloading points 
+(* Insertion of moves to suggest possible spilling / reloading points
    before register allocation. *)
 
 val fundecl: Mach.fundecl -> Mach.fundecl

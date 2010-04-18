@@ -39,11 +39,40 @@ type error =
   | Variant_tags of string * string
   | Invalid_variable_name of string
   | Cannot_quantify of string * type_expr
+  | Multiple_constraints_on_type of string
   | Repeated_method_label of string
 
 exception Error of Location.t * error
 
 type variable_context = int * (string, type_expr) Tbl.t
+
+(* Support for first-class modules. *)
+
+let transl_modtype_longident = ref (fun _ -> assert false)
+let transl_modtype = ref (fun _ -> assert false)
+
+let create_package_mty fake loc env (p, l) =
+  let l =
+    List.sort
+      (fun (s1, t1) (s2, t2) ->
+         if s1 = s2 then raise (Error (loc, Multiple_constraints_on_type s1));
+         compare s1 s2)
+      l
+  in
+  l,
+  List.fold_left
+    (fun mty (s, t) ->
+      let d = {ptype_params = [];
+               ptype_cstrs = [];
+               ptype_kind = Ptype_abstract;
+               ptype_private = Asttypes.Public;
+               ptype_manifest = if fake then None else Some t;
+               ptype_variance = [];
+               ptype_loc = loc} in
+      {pmty_desc=Pmty_with (mty, [ Longident.Lident s, Pwith_type d ]); pmty_loc=loc}
+    )
+    {pmty_desc=Pmty_ident p; pmty_loc=loc}
+    l
 
 (* Translation of type expressions *)
 
@@ -123,12 +152,12 @@ let rec transl_type env policy styp =
       newty (Ttuple(List.map (transl_type env policy) stl))
   | Ptyp_constr(lid, stl) ->
       let (path, decl) =
-	let lid, env =
-	  match lid with
-	  | Longident.Ldot (Longident.Lident "*predef*", lid) -> 
-	      Longident.Lident lid, Env.initial
-	  | _ -> lid, env
-	in
+        let lid, env =
+          match lid with
+          | Longident.Ldot (Longident.Lident "*predef*", lid) ->
+              Longident.Lident lid, Env.initial
+          | _ -> lid, env
+        in
         try
           Env.lookup_type lid env
         with Not_found ->
@@ -320,7 +349,7 @@ let rec transl_type env policy styp =
                 let row = Btype.row_repr row in
                 row.row_fields
             | {desc=Tvar}, Some(p, _) ->
-                raise(Error(sty.ptyp_loc, Unbound_type_constructor_2 p)) 
+                raise(Error(sty.ptyp_loc, Unbound_type_constructor_2 p))
             | _ ->
                 raise(Error(sty.ptyp_loc, Not_a_variant ty))
             in
@@ -384,6 +413,14 @@ let rec transl_type env policy styp =
       let ty' = Btype.newgenty (Tpoly(ty, List.rev ty_list)) in
       unify_var env (newvar()) ty';
       ty'
+  | Ptyp_package (p, l) ->
+      let l, mty = create_package_mty true styp.ptyp_loc env (p, l) in
+      let z = narrow () in
+      ignore (!transl_modtype env mty);
+      widen z;
+      newty (Tpackage (!transl_modtype_longident styp.ptyp_loc env p,
+                       List.map fst l,
+                       List.map (transl_type env policy) (List.map snd l)))
 
 and transl_fields env policy seen =
   function
@@ -422,6 +459,8 @@ let rec make_fixed_univars ty =
 let make_fixed_univars ty =
   make_fixed_univars ty;
   Btype.unmark_type ty
+
+let create_package_mty = create_package_mty false
 
 let globalize_used_variables env fixed =
   let r = ref [] in
@@ -483,6 +522,7 @@ let transl_simple_type_univars env styp =
 let transl_simple_type_delayed env styp =
   univars := []; used_variables := Tbl.empty;
   let typ = transl_type env Extensible styp in
+  make_fixed_univars typ;
   (typ, globalize_used_variables env false)
 
 let transl_type_scheme env styp =
@@ -559,6 +599,8 @@ let report_error ppf = function
         (if v.desc = Tvar then "it escapes this scope" else
          if v.desc = Tunivar then "it is aliased to another variable"
          else "it is not a variable")
+  | Multiple_constraints_on_type s ->
+      fprintf ppf "Multiple constraints for type %s" s
   | Repeated_method_label s ->
       fprintf ppf "@[This is the second method `%s' of this object type.@ %s@]"
         s "Multiple occurences are not allowed."

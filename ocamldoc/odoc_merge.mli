@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_merge.mli 5973 2003-11-24 10:44:07Z starynke $ *)
+(* $Id$ *)
 
 (** Merge of information from [.ml] and [.mli] for a module.*)
 
@@ -29,4 +29,3 @@ val merge_info_opt :
 val merge :
   Odoc_types.merge_option list ->
   Odoc_module.t_module list -> Odoc_module.t_module list
-

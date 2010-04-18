@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: addrofstr.c 6193 2004-04-09 13:25:23Z xleroy $ */
+/* $Id$ */
 
 #include <mlvalues.h>
 #include <fail.h>
@@ -49,5 +49,5 @@ CAMLprim value unix_inet_addr_of_string(value s)
 
 CAMLprim value unix_inet_addr_of_string(value s)
 { invalid_argument("inet_addr_of_string not implemented"); }
-  
+
 #endif

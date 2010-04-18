@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_lexer.mll 8928 2008-07-23 11:14:22Z guesdon $ *)
+(* $Id$ *)
 
 (** The lexer for special comments. *)
 
@@ -220,9 +220,9 @@ and special_comment = parse
         let len = String.length (Lexing.lexeme lexbuf) in
         lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_curr_pos - len;
         lexbuf.Lexing.lex_curr_p <-
-	  { lexbuf.Lexing.lex_curr_p with
-	    pos_cnum = lexbuf.Lexing.lex_curr_p.pos_cnum - len
-	  } ;
+          { lexbuf.Lexing.lex_curr_p with
+            pos_cnum = lexbuf.Lexing.lex_curr_p.pos_cnum - len
+          } ;
         (* we don't increment the Odoc_comments_global.nb_chars *)
         special_comment_part2 lexbuf
       }
@@ -409,4 +409,3 @@ and simple = parse
         incr Odoc_comments_global.nb_chars;
         simple lexbuf
       }
-

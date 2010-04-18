@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlcp.ml 8232 2007-05-16 08:21:41Z doligez $ *)
+(* $Id$ *)
 
 open Printf
 
@@ -41,7 +41,7 @@ let incompatible o =
   fprintf stderr "ocamlcp: profiling is incompatible with the %s option\n" o;
   exit 2
 
-module Options = Main_args.Make_options (struct
+module Options = Main_args.Make_bytecomp_options (struct
   let _a () = make_archive := true; option "-a" ()
   let _annot = option "-annot"
   let _c = option "-c"
@@ -62,6 +62,7 @@ module Options = Main_args.Make_options (struct
   let _labels = option "-labels"
   let _linkall = option "-linkall"
   let _make_runtime = option "-make-runtime"
+  let _no_app_funct = option "-no-app-funct"
   let _noassert = option "-noassert"
   let _nolabels = option "-nolabels"
   let _noautolink = option "-noautolink"
@@ -72,6 +73,7 @@ module Options = Main_args.Make_options (struct
   let _pp s = incompatible "-pp"
   let _principal = option "-principal"
   let _rectypes = option "-rectypes"
+  let _strict_sequence = option "-strict-sequence"
   let _thread () = option "-thread" ()
   let _vmthread () = option "-vmthread" ()
   let _unsafe = option "-unsafe"

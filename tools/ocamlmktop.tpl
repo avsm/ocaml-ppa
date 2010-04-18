@@ -11,6 +11,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: ocamlmktop.tpl 6128 2004-02-22 14:52:50Z xleroy $
+# $Id$
 
 exec %%BINDIR%%/ocamlc -linkall toplevellib.cma "$@" topstart.cmo

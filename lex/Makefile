@@ -10,10 +10,10 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 6708 2004-11-29 14:49:24Z doligez $
+# $Id$
 
 # The lexer generator
-CAMLC=../boot/ocamlrun ../boot/ocamlc -nostdlib -I ../boot
+CAMLC=../boot/ocamlrun ../boot/ocamlc -strict-sequence -nostdlib -I ../boot
 CAMLOPT=../boot/ocamlrun ../ocamlopt -nostdlib -I ../stdlib
 COMPFLAGS=-warn-error A
 CAMLYACC=../boot/ocamlyacc

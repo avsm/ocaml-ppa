@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: thread_posix.ml 7000 2005-07-31 12:32:41Z xleroy $ *)
+(* $Id$ *)
 
 (* User-level threads *)
 
@@ -19,7 +19,7 @@ type t
 
 external thread_initialize : unit -> unit = "caml_thread_initialize"
 external thread_new : (unit -> unit) -> t = "caml_thread_new"
-external thread_uncaught_exception : exn -> unit = 
+external thread_uncaught_exception : exn -> unit =
             "caml_thread_uncaught_exception"
 
 external yield : unit -> unit = "caml_thread_yield"
