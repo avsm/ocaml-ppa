@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 PACKAGE := ocaml
-ALL_PACKAGES := $(shell sed -ne 's/^Package: //p' debian/control)
+ALL_PACKAGES := $(shell dh_listpackages)
 OCAMLMAJOR := 3.12
 OCAMLMINOR := 0+dev17+10268
 
@@ -59,6 +59,8 @@ CONFIGURE_SED := \
   -e "s%LIBDIR=.*$$%LIBDIR=\$$(PREFIX)/lib/ocaml%g" \
   -e "s%STUBLIBDIR=.*$$%STUBLIBDIR=\$$(PREFIX)/lib/ocaml/stublibs%g"
 
+%:
+	dh $@
 
 ocamlinit-stamp: debian/$(SRCTARBALL)
 
@@ -88,8 +90,10 @@ debian/$(SRCTARBALL):
 	  $(DISTDIR)/
 	rm -f $(DISTDIR)
 
+.PHONY: override_dh_auto_configure
+override_dh_auto_configure: config-stamp
+
 config-stamp: pre-config-stamp ocamlinit-stamp
-	dh build --before dh_auto_configure
 	./configure $(CONFIGURE_OPTS)
 	sed -i $(CONFIGURE_SED) config/Makefile
 	if test -z "`grep "OTHERLIBRARIES.*labltk" config/Makefile`"; then \
@@ -100,7 +104,9 @@ config-stamp: pre-config-stamp ocamlinit-stamp
 	fi
 	touch $@
 
-build: build-stamp
+.PHONY: override_dh_auto_build
+override_dh_auto_build: build-stamp
+
 build-stamp: config-stamp
 	if test ! -d boot.debian; then \
 	  cp -xa boot boot.debian; \
@@ -130,11 +136,10 @@ else
 	rsync -a $(BUILDCACHE)/debian/ocamlbyteinfo/ debian/ocamlbyteinfo/
 	rm -f build-stamp install-stamp
 endif
-	dh build --after dh_auto_test
 	touch $@
 
-clean: ocamlinit-clean
-	dh clean --before dh_auto_clean
+.PHONY: override_dh_auto_clean
+override_dh_auto_clean: ocamlinit-clean
 ifneq ($(wildcard $(CURDIR)/config/Makefile),)
 	$(MAKE) clean
 	$(MAKE) -C emacs clean
@@ -155,11 +160,11 @@ endif
 # Remaining stuff
 	-rm -Rf debian/$(SRCTARBALL) debian/examples
 	$(MAKE) -f debian/ocamlbyteinfo/Makefile clean
-	dh clean --after dh_auto_clean
 
-install: install-stamp
+.PHONY: override_dh_auto_install
+override_dh_auto_install: install-stamp
+
 install-stamp:
-	dh install --before dh_auto_install
 # Install Emacs files
 	$(MAKE) -C emacs \
 	  EMACSDIR=$(CURDIR)/debian/ocaml-mode/usr/share/emacs/site-lisp/ocaml-mode \
@@ -209,13 +214,14 @@ install-stamp:
 # Remove empty directory
 	rmdir $(CURDIR)/debian/ocaml-nox$(OCAML_STDLIB_DIR)/ocamldoc/custom
 # Remaining stuff
-	dh install --after dh_install --before dh_compress
-	dh_compress -Xexamples/labltk
-	dh install --after dh_compress
 	touch $@
 
-binary-stamp: install-stamp
-	dh binary --before dh_gencontrol
+.PHONY: override_dh_compress
+override_dh_compress:
+	dh_compress -Xexamples/labltk
+
+.PHONY: override_dh_gencontrol
+override_dh_gencontrol:
 	for u in $(ALL_PACKAGES); do \
 	  echo 'F:OCamlABI=$(OCAML_ABI)' >> debian/$$u.substvars; \
 	done
@@ -224,23 +230,15 @@ ifeq (,$(OCAML_OPT_ARCH))
 else
 	echo 'F:BestProvides=' >> debian/ocaml-nox.substvars
 endif
-	# Create .md5sums files and compute dependencies. Use
-	# $(OCAML_ABI) because we know that OCaml ABI represents
-	# best dependencies for OCaml package.
+# Create .md5sums files and compute dependencies. Use $(OCAML_ABI)
+# because we know that OCaml ABI represents best dependencies for
+# OCaml package.
 	dh_ocaml -Xcompiler-libs -Xcamlp4-extra \
 	 --runtime-map ocaml-nox:ocaml-base-nox,ocaml:ocaml-base,camlp4 \
 	 --checksum $(OCAML_ABI)
 	dh_gencontrol
-	# Check that OCAML_ABI is correct
+# Check that OCAML_ABI is correct
 	if [ "$(OCAML_ABI)" != "$(shell boot/ocamlrun ./ocamlc -version)" ]; then \
 	  echo "Please adjust OCAML_ABI in debian/rules"; \
 	  exit 2; \
 	fi
-	dh binary --after dh_gencontrol
-	touch $@
-
-binary: binary-arch binary-indep
-binary-arch: binary-stamp
-binary-indep: binary-stamp
-
-.PHONY: build clean binary-indep binary-arch binary install build ocamlinit
