@@ -10,7 +10,7 @@ Uploaders:
  Stéphane Glondu <glondu@debian.org>,
  Mehdi Dogguy <mehdi@debian.org>
 Build-Depends:
- debhelper (>= 7),
+ debhelper (>= 7.1.0~),
  autotools-dev,
  tcl8.5-dev,
  tk8.5-dev,
