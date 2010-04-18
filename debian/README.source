@@ -14,9 +14,8 @@ look at the comments in gen_modules.pl to understand the format of
 Patching upstream sources
 -------------------------
 
-This source package uses quilt to apply and remove its patches. Please
-refer to `/usr/share/doc/quilt/README.source' for information about
-how to use quilt for source packages.
-
 The quilt series is generated from the Git repository. Have a look at
-the `redo-patches' target of debian/rules for more details.
+dom-apply-patches(1) and dom-save-patches(1) from dh-ocaml package for
+more details.
+
+ -- Stéphane Glondu <glondu@debian.org>, Sun, 18 Apr 2010 15:20:53 +0200

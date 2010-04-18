@@ -1,5 +1,4 @@
 #!/usr/bin/make -f
-include /usr/share/quilt/quilt.make
 
 PACKAGE := ocaml
 ALL_PACKAGES := $(shell sed -ne 's/^Package: //p' debian/control)
@@ -61,7 +60,6 @@ CONFIGURE_SED := \
   -e "s%STUBLIBDIR=.*$$%STUBLIBDIR=\$$(PREFIX)/lib/ocaml/stublibs%g"
 
 
-$(QUILT_STAMPFN): debian/$(SRCTARBALL)
 ocamlinit-stamp: debian/$(SRCTARBALL)
 
 # Generate ocaml-native-compilers' Architecture field.
@@ -90,7 +88,7 @@ debian/$(SRCTARBALL):
 	  $(DISTDIR)/
 	rm -f $(DISTDIR)
 
-config-stamp: pre-config-stamp $(QUILT_STAMPFN) ocamlinit-stamp
+config-stamp: pre-config-stamp ocamlinit-stamp
 	dh build --before dh_auto_configure
 	./configure $(CONFIGURE_OPTS)
 	sed -i $(CONFIGURE_SED) config/Makefile
@@ -101,8 +99,6 @@ config-stamp: pre-config-stamp $(QUILT_STAMPFN) ocamlinit-stamp
 	  exit 1; \
 	fi
 	touch $@
-
-$(QUILT_STAMPFN): ocamlinit-stamp
 
 build: build-stamp
 build-stamp: config-stamp
@@ -137,7 +133,7 @@ endif
 	dh build --after dh_auto_test
 	touch $@
 
-clean: unpatch ocamlinit-clean
+clean: ocamlinit-clean
 	dh clean --before dh_auto_clean
 ifneq ($(wildcard $(CURDIR)/config/Makefile),)
 	$(MAKE) clean
@@ -248,10 +244,3 @@ binary-arch: binary-stamp
 binary-indep: binary-stamp
 
 .PHONY: build clean binary-indep binary-arch binary install build ocamlinit
-
-.PHONY: redo-patches
-redo-patches:
-	rm -f debian/patches/*
-	git format-patch -N -o debian/patches upstream...patch-queue | \
-	  sed -e 's%debian/patches/%%' > debian/patches/series
-	sed -i -e 1d debian/patches/*.patch

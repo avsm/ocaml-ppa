@@ -16,7 +16,6 @@ Build-Depends:
  tk8.5-dev,
  libncurses5-dev,
  libgdbm-dev,
- quilt,
  bzip2,
  dh-ocaml (>= 0.9)
 Standards-Version: 3.8.4
