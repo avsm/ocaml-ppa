@@ -10,16 +10,16 @@ gcc.
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/configure b/configure
-index 0327f64..1d0d767 100755
+index bdfdfdd..020efed 100755
 --- a/configure
 +++ b/configure
-@@ -1566,7 +1566,7 @@ echo "DEBUGGER=$debugger" >> Makefile
+@@ -1586,7 +1586,7 @@ echo "DEBUGGER=$debugger" >> Makefile
  echo "CC_PROFILE=$cc_profile" >> Makefile
  echo "SYSTHREAD_SUPPORT=$systhread_support" >> Makefile
  echo "PARTIALLD=$partialld" >> Makefile
--echo "PACKLD=\$(PARTIALLD) \$(NATIVECCLINKOPTS) -o " >> Makefile
-+echo "PACKLD=\$(PARTIALLD) $(echo $nativecclinkopts|sed s/-Wl,//g) -o " >> Makefile
+-echo "PACKLD=\$(PARTIALLD) \$(NATIVECCLINKOPTS) -o " \
++echo "PACKLD=\$(PARTIALLD) $(echo $nativecclinkopts|sed s/-Wl,//g) -o " \
+   | sed -e 's/ $/\\ /' >> Makefile
  echo "DLLCCCOMPOPTS=$dllccompopts" >> Makefile
  echo "IFLEXDIR=$iflexdir" >> Makefile
- echo "O=o" >> Makefile
 -- 
