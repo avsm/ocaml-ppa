@@ -115,13 +115,15 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
         | _ -> 1 ])
   ;
 
-  value test_label_eq =
-    Gram.Entry.of_parser "test_label_eq"
+  value test_label_expr_list =
+    Gram.Entry.of_parser "test_label_expr_list"
       (test 1 where rec test lev strm =
         match stream_peek_nth lev strm with
         [ Some (UIDENT _ | LIDENT _ | KEYWORD ".") ->
             test (lev + 1) strm
-        | Some (KEYWORD "=") -> ()
+        | Some (KEYWORD ("="|";"|"}")) ->
+            (* ";" and "}" occur due to record punning *)
+            ()
         | _ -> raise Stream.Failure ])
   ;
 
@@ -178,6 +180,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
   DELETE_RULE Gram meth_list: meth_decl; opt_dot_dot END;
   DELETE_RULE Gram expr: "let"; opt_rec; binding; "in"; SELF END;
   DELETE_RULE Gram expr: "let"; "module"; a_UIDENT; module_binding0; "in"; SELF END;
+  DELETE_RULE Gram expr: "let"; "open"; module_longident; "in"; SELF END;
   DELETE_RULE Gram expr: "fun"; "["; LIST0 match_case0 SEP "|"; "]" END;
   DELETE_RULE Gram expr: "if"; SELF; "then"; SELF; "else"; SELF END;
   DELETE_RULE Gram expr: "do"; do_sequence END;
@@ -284,6 +287,8 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
               | _ -> <:str_item< value $rec:r$ $bi$ >> ]
           | "let"; "module"; m = a_UIDENT; mb = module_binding0; "in"; e = expr ->
               <:str_item< let module $m$ = $mb$ in $e$ >>
+          | "let"; "open"; i = module_longident; "in"; e = expr ->
+              <:str_item< let open $id:i$ in $e$ >>
       ] ]
     ;
     seq_expr:
@@ -300,6 +305,8 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
         | "let"; "module"; m = a_UIDENT; mb = module_binding0; "in";
           e = expr LEVEL ";" ->
             <:expr< let module $m$ = $mb$ in $e$ >>
+        | "let"; "open"; i = module_longident; "in"; e = expr LEVEL ";" ->
+            <:expr< let open $id:i$ in $e$ >>
         | "function"; a = match_case ->
             <:expr< fun [ $a$ ] >>
         | "if"; e1 = SELF; "then"; e2 = expr LEVEL "top";
@@ -335,7 +342,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     expr: LEVEL "simple" (* LEFTA *)
       [ [ "false" -> <:expr< False >>
         | "true" -> <:expr< True >>
-        | "{"; test_label_eq; lel = label_expr_list; "}" ->
+        | "{"; test_label_expr_list; lel = label_expr_list; "}" ->
             <:expr< { $lel$ } >>
         | "{"; e = expr LEVEL "."; "with"; lel = label_expr_list; "}" ->
             <:expr< { ($e$) with $lel$ } >>

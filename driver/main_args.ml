@@ -258,21 +258,28 @@ let mk_vmthread f =
 
 let mk_w f =
   "-w", Arg.String f,
+  Printf.sprintf
   "<list>  Enable or disable warnings according to <list>:\n\
-  \     +<num>    enable warning <num>\n\
-  \     +<letter> enable set <letter>\n\
-  \     -<num>    disable warning <num>\n\
-  \     -<letter> disable set <letter>\n\
-  \     @<num>    enable warning <num> and treat it as an error\n\
-  \     @<letter> enable set <letter> and treat them as errors\n\
-  \     default setting is \"+a-4-6-9-27-28-29\""
+  \        +<spec>   enable warnings in <spec>\n\
+  \        -<spec>   disable warnings in <spec>\n\
+  \        @<spec>   enable warnings in <spec> and treat them as errors\n\
+  \     <spec> can be:\n\
+  \        <num>             a single warning number\n\
+  \        <num1>..<num2>    a range of consecutive warning numbers\n\
+  \        <letter>          a predefined set\n\
+  \     default setting is %S" Warnings.defaults_w
 ;;
 
 let mk_warn_error f =
   "-warn-error", Arg.String f,
+  Printf.sprintf
   "<list>  Enable or disable error status for warnings according\n\
   \     to <list>.  See option -w for the syntax of <list>.\n\
-  \     Default setting is \"-a\""
+  \     Default setting is %S" Warnings.defaults_warn_error
+;;
+
+let mk_warn_help f =
+  "-warn-help", Arg.Unit f, "  Show description of warning numbers"
 ;;
 
 let mk_where f =
@@ -401,6 +408,7 @@ module type Bytecomp_options = sig
   val _verbose : unit -> unit
   val _w : string -> unit
   val _warn_error : string -> unit
+  val _warn_help : unit -> unit
   val _where : unit -> unit
 
   val _nopervasives : unit -> unit
@@ -429,6 +437,7 @@ module type Bytetop_options = sig
   val _version : unit -> unit
   val _w : string -> unit
   val _warn_error : string -> unit
+  val _warn_help : unit -> unit
 
   val _dparsetree : unit -> unit
   val _drawlambda : unit -> unit
@@ -480,6 +489,7 @@ module type Optcomp_options = sig
   val _verbose : unit -> unit
   val _w : string -> unit
   val _warn_error : string -> unit
+  val _warn_help : unit -> unit
   val _where : unit -> unit
 
   val _nopervasives : unit -> unit
@@ -522,6 +532,7 @@ module type Opttop_options = sig
   val _version : unit -> unit
   val _w : string -> unit
   val _warn_error : string -> unit
+  val _warn_help : unit -> unit
 
   val _dparsetree : unit -> unit
   val _drawlambda : unit -> unit
@@ -596,6 +607,7 @@ struct
     mk_vmthread F._vmthread;
     mk_w F._w;
     mk_warn_error F._warn_error;
+    mk_warn_help F._warn_help;
     mk_where F._where;
 
     mk_nopervasives F._nopervasives;
@@ -627,6 +639,7 @@ struct
     mk_version F._version;
     mk_w F._w;
     mk_warn_error F._warn_error;
+    mk_warn_help F._warn_help;
 
     mk_dparsetree F._dparsetree;
     mk_drawlambda F._drawlambda;
@@ -682,6 +695,7 @@ struct
     mk_verbose F._verbose;
     mk_w F._w;
     mk_warn_error F._warn_error;
+    mk_warn_help F._warn_help;
     mk_where F._where;
 
     mk_nopervasives F._nopervasives;
@@ -724,6 +738,7 @@ module Make_opttop_options (F : Opttop_options) = struct
     mk_version F._version;
     mk_w F._w;
     mk_warn_error F._warn_error;
+    mk_warn_help F._warn_help;
 
     mk_dparsetree F._dparsetree;
     mk_drawlambda F._drawlambda;

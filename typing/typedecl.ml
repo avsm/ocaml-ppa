@@ -599,6 +599,34 @@ let compute_variance_decls env cldecls =
        {cltydef with clty_variance = variance}))
     decls cldecls
 
+(* Check multiple declarations of labels/constructors *)
+
+let check_duplicates name_sdecl_list =
+  let labels = Hashtbl.create 7 and constrs = Hashtbl.create 7 in
+  List.iter
+    (fun (name, sdecl) -> match sdecl.ptype_kind with
+      Ptype_variant cl ->
+        List.iter
+          (fun (cname, _, loc) ->
+            try
+              let name' = Hashtbl.find constrs cname in
+              Location.prerr_warning loc
+                (Warnings.Duplicate_definitions
+                   ("constructor", cname, name', name))
+            with Not_found -> Hashtbl.add constrs cname name)
+          cl
+    | Ptype_record fl ->
+        List.iter
+          (fun (cname, _, _, loc) ->
+            try
+              let name' = Hashtbl.find labels cname in
+              Location.prerr_warning loc
+                (Warnings.Duplicate_definitions ("label", cname, name', name))
+            with Not_found -> Hashtbl.add labels cname name)
+          fl
+    | Ptype_abstract -> ())
+    name_sdecl_list
+
 (* Force recursion to go through id for private types*)
 let name_recursion sdecl id decl =
   match decl with
@@ -645,6 +673,8 @@ let transl_type_decl env name_sdecl_list =
   (* Translate each declaration. *)
   let decls =
     List.map2 (transl_declaration temp_env) name_sdecl_list id_list in
+  (* Check for duplicates *)
+  check_duplicates name_sdecl_list;
   (* Build the final env. *)
   let newenv =
     List.fold_right

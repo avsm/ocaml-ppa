@@ -119,6 +119,10 @@ val open_in : string -> in_channel;;
 val open_in_bin : string -> in_channel;;
 (** Bufferized file reading in binary mode. *)
 
+val close_in : in_channel -> unit;;
+(** Close the [Pervasives.input_channel] associated with the given
+  [Scanning.in_channel]. *)
+
 val from_file : string -> in_channel;;
 (** An alias for [open_in] above. *)
 val from_file_bin : string -> in_channel;;
@@ -241,11 +245,12 @@ val bscanf : Scanning.in_channel -> ('a, 'b, 'c, 'd) scanner;;
 
     - [d]: reads an optionally signed decimal integer.
     - [i]: reads an optionally signed integer
-      (usual input formats for hexadecimal ([0x[d]+] and [0X[d]+]),
-       octal ([0o[d]+]), and binary [0b[d]+] notations are understood).
+      (usual input conventions for decimal ([0-9]+), hexadecimal
+       ([0x[0-9a-f]+] and [0X[0-9A-F]+]), octal ([0o[0-7]+]), and binary
+       ([0b[0-1]+]) notations are understood).
     - [u]: reads an unsigned decimal integer.
-    - [x] or [X]: reads an unsigned hexadecimal integer.
-    - [o]: reads an unsigned octal integer.
+    - [x] or [X]: reads an unsigned hexadecimal integer ([[0-9a-f]+] or [[0-9A-F]+]).
+    - [o]: reads an unsigned octal integer ([[0-7]+]).
     - [s]: reads a string argument that spreads as much as possible, until the
       following bounding condition holds:
       - a whitespace has been found (see {!Scanf.space}),
@@ -272,11 +277,11 @@ val bscanf : Scanning.in_channel -> ('a, 'b, 'c, 'd) scanner;;
     - [b]: reads a boolean argument (for backward compatibility; do not use
       in new programs).
     - [ld], [li], [lu], [lx], [lX], [lo]: reads an [int32] argument to
-      the format specified by the second letter (decimal, hexadecimal, etc).
+      the format specified by the second letter for regular integers.
     - [nd], [ni], [nu], [nx], [nX], [no]: reads a [nativeint] argument to
-      the format specified by the second letter.
+      the format specified by the second letter for regular integers.
     - [Ld], [Li], [Lu], [Lx], [LX], [Lo]: reads an [int64] argument to
-      the format specified by the second letter.
+      the format specified by the second letter for regular integers.
     - [\[ range \]]: reads characters that matches one of the characters
       mentioned in the range of characters [range] (or not mentioned in
       it, if the range starts with [^]). Reads a [string] that can be
@@ -296,16 +301,24 @@ val bscanf : Scanning.in_channel -> ('a, 'b, 'c, 'd) scanner;;
     - [\{ fmt %\}]: reads a format string argument.
       The format string read must have the same type as the format string
       specification [fmt].
-      For instance, ["%\{%i%\}"] reads any format string that can read a value of
-      type [int]; hence [Scanf.sscanf "fmt:\\\"number is %u\\\"" "fmt:%\{%i%\}"]
+      For instance, ["%{ %i %}"] reads any format string that can read a value of
+      type [int]; hence [Scanf.sscanf "fmt:\"number is %u\"" "fmt:%{%i%}"]
       succeeds and returns the format string ["number is %u"].
     - [\( fmt %\)]: scanning format substitution.
-      Reads a format string to replace [fmt].
+      Reads a format string to read with it instead of [fmt].
       The format string read must have the same type as the format string
-      specification [fmt].
-      For instance, ["%\( %i% \)"] reads any format string that can read a value
-      of type [int]; hence [Scanf.sscanf "\\\"%4d\\\"1234.00" "%\(%i%\)"]
-      is equivalent to [Scanf.sscanf "1234.00" "%4d"].
+      specification [fmt] that is replaces.
+      For instance, ["%( %i %)"] reads any format string that can read a value
+      of type [int].
+      Returns the format string read, and the value read using the format
+      string read.
+      Hence, [Scanf.sscanf "\"%4d\"1234.00" "%(%i%)"
+                (fun fmt i -> fmt, i)] evaluates to [("%4d", 1234)].
+      If the special flag [_] is used, the conversion discards the
+      format string read and only returns the value read with the format
+      string read.
+      Hence, [Scanf.sscanf "\"%4d\"1234.00" "%_(%i%)"] is simply
+      equivalent to [Scanf.sscanf "1234.00" "%4d"].
     - [l]: returns the number of lines read so far.
     - [n]: returns the number of characters read so far.
     - [N] or [L]: returns the number of tokens read so far.
@@ -329,7 +342,7 @@ val bscanf : Scanning.in_channel -> ('a, 'b, 'c, 'd) scanner;;
     Notes:
 
     - as mentioned above, a [%s] conversion always succeeds, even if there is
-      nothing to read in the input: it simply returns [""].
+      nothing to read in the input: in this case, it simply returns [""].
 
     - in addition to the relevant digits, ['_'] characters may appear
     inside numbers (this is reminiscent to the usual Caml lexical

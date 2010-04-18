@@ -71,6 +71,7 @@ module Options = Main_args.Make_bytetop_options (struct
   let _version () = print_version ()
   let _w s = Warnings.parse_options false s
   let _warn_error s = Warnings.parse_options true s
+  let _warn_help = Warnings.help_warnings
   let _dparsetree = set dump_parsetree
   let _drawlambda = set dump_rawlambda
   let _dlambda = set dump_lambda

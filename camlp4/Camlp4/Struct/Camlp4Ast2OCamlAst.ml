@@ -490,7 +490,11 @@ module Make (Ast : Sig.Camlp4Ast) = struct
             mkrangepat loc c1 c2
         | _ -> error loc "range pattern allowed only for characters" ]
     | PaRec loc p ->
-        mkpat loc (Ppat_record (List.map mklabpat (list_of_patt p []), Closed))
+        let ps = list_of_patt p [] in
+        let is_wildcard = fun [ <:patt< _ >> -> True | _ -> False ] in
+        let (wildcards,ps) = List.partition is_wildcard ps in
+        let is_closed = if wildcards = [] then Closed else Open in
+        mkpat loc (Ppat_record (List.map mklabpat ps, is_closed))
     | PaStr loc s ->
         mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
     | <:patt@loc< ($p1$, $p2$) >> ->
@@ -731,6 +735,8 @@ module Make (Ast : Sig.Camlp4Ast) = struct
     | ExWhi loc e1 el ->
         let e2 = ExSeq loc el in
         mkexp loc (Pexp_while (expr e1) (expr e2))
+    | <:expr@loc< let open $i$ in $e$ >> ->
+        mkexp loc (Pexp_open (long_uident i) (expr e))
     | <:expr@loc< $_$,$_$ >> -> error loc "expr, expr: not allowed here"
     | <:expr@loc< $_$;$_$ >> ->
         error loc "expr; expr: not allowed here, use do {...} or [|...|] to surround them"

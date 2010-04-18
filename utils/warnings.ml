@@ -49,6 +49,7 @@ type t =
   | Unused_var_strict of string             (* 27 *)
   | Wildcard_arg_to_constant_constr         (* 28 *)
   | Eol_in_string                           (* 29 *)
+  | Duplicate_definitions of string * string * string * string (*30 *)
 ;;
 
 (* If you remove a warning, leave a hole in the numbering.  NEVER change
@@ -87,9 +88,10 @@ let number = function
   | Unused_var_strict _ -> 27
   | Wildcard_arg_to_constant_constr -> 28
   | Eol_in_string -> 29
+  | Duplicate_definitions _ -> 30
 ;;
 
-let last_warning_number = 29;;
+let last_warning_number = 30;;
 (* Must be the max number returned by the [number] function. *)
 
 let letter = function
@@ -118,7 +120,7 @@ let letter = function
   | 'u' -> [11; 12]
   | 'v' -> [13]
   | 'w' -> []
-  | 'x' -> [14; 15; 16; 17; 18; 19; 20; 21; 22; 23; 24; 25]
+  | 'x' -> [14; 15; 16; 17; 18; 19; 20; 21; 22; 23; 24; 25; 30]
   | 'y' -> [26]
   | 'z' -> [27]
   | _ -> assert false
@@ -131,15 +133,25 @@ let is_active x = active.(number x);;
 let is_error x = error.(number x);;
 
 let parse_opt flags s =
-  let check i =
-    if i < 1 then raise (Arg.Bad "Bad warning number 0");
-    if i > last_warning_number then
-      raise (Arg.Bad "Bad warning number (too large)");
-  in
   let set i = flags.(i) <- true in
   let clear i = flags.(i) <- false in
   let set_all i = active.(i) <- true; error.(i) <- true in
   let error () = raise (Arg.Bad "Ill-formed list of warnings") in
+  let rec get_num n i =
+    if i >= String.length s then i, n
+    else match s.[i] with
+    | '0'..'9' -> get_num (10 * n + Char.code s.[i] - Char.code '0') (i + 1)
+    | _ -> i, n
+  in
+  let get_range i =
+    let i, n1 = get_num 0 i in
+    if i + 2 < String.length s && s.[i] = '.' && s.[i + 1] = '.' then
+      let i, n2 = get_num 0 (i + 2) in
+      if n2 < n1 then error ();
+      i, n1, n2
+    else
+      i, n1, n1
+  in
   let rec loop i =
     if i >= String.length s then () else
     match s.[i] with
@@ -156,7 +168,10 @@ let parse_opt flags s =
   and loop_letter_num myset i =
     if i >= String.length s then error () else
     match s.[i] with
-    | '0' .. '9' -> loop_num myset i 0
+    | '0' .. '9' ->
+        let i, n1, n2 = get_range i in
+        for n = n1 to min n2 last_warning_number do myset n done;
+        loop i
     | 'A' .. 'Z' ->
        List.iter myset (letter (Char.lowercase s.[i]));
        loop (i+1)
@@ -164,21 +179,14 @@ let parse_opt flags s =
        List.iter myset (letter s.[i]);
        loop (i+1)
     | _ -> error ()
-  and loop_num myset i n =
-    if i >= String.length s then myset n else
-    match s.[i] with
-    | '0' .. '9' ->
-       let nn = 10 * n + Char.code s.[i] - Char.code '0' in
-       check nn;
-       loop_num myset (i+1) nn
-    | _ -> myset n; loop i
   in
   loop 0
 ;;
 
 let parse_options errflag s = parse_opt (if errflag then error else active) s;;
 
-let defaults_w = "+a-4-6-9-27-28-29";;
+(* If you change these, don't forget to change them in man/ocamlc.m *)
+let defaults_w = "+a-4-6-7-9-27..29";;
 let defaults_warn_error = "-a";;
 
 let () = parse_options false defaults_w;;
@@ -249,6 +257,9 @@ let message = function
      "wildcard pattern given as argument to a constant constructor"
   | Eol_in_string ->
      "unescaped end-of-line in a string constant (non-portable code)"
+  | Duplicate_definitions (kind, cname, tc1, tc2) ->
+      Printf.sprintf "the %s %s is defined in both types %s and %s."
+        kind cname tc1 tc2
 ;;
 
 let nerrors = ref 0;;
@@ -281,3 +292,51 @@ let check_fatal () =
     raise e;
   end;
 ;;
+
+
+let descriptions =
+  [
+    1, "Suspicious-looking start-of-comment mark.";
+    2, "Suspicious-looking end-of-comment mark.";
+    3, "Deprecated syntax.";
+    4, "Fragile pattern matching: matching that will remain complete even\n\
+   \    if additional constructors are added to one of the variant types\n\
+   \    matched.";
+    5, "Partially applied function: expression whose result has function\n\
+   \    type and is ignored.";
+    6, "Label omitted in function application.";
+    7, "Some methods are overriden in the class where they are defined.";
+    8, "Partial match: missing cases in pattern-matching.";
+    9, "Missing fields in a record pattern.";
+   10, "Expression on the left-hand side of a sequence that doesn't have type\n\
+   \    \"unit\" (and that is not a function, see warning number 5).";
+   11, "Redundant case in a pattern matching (unused match case).";
+   12, "Redundant sub-pattern in a pattern-matching.";
+   13, "Override of an instance variable.";
+   14, "Illegal backslash escape in a string constant.";
+   15, "Private method made public implicitly.";
+   16, "Unerasable optional argument.";
+   17, "Undeclared virtual method.";
+   18, "Non-principal type.";
+   19, "Type without principality.";
+   20, "Unused function argument.";
+   21, "Non-returning statement.";
+   22, "Camlp4 warning.";
+   23, "Useless record \"with\" clause.";
+   24, "Bad module name: the source file name is not a valid OCaml module name.";
+   25, "Pattern-matching with all clauses guarded.  Exhaustiveness cannot be\n\
+   \    checked";
+   26, "Suspicious unused variable: unused variable that is bound with \"let\"\n\
+   \    or \"as\", and doesn't start with an underscore (\"_\") character.";
+   27, "Innocuous unused variable: unused variable that is not bound with\n\
+   \    \"let\" nor \"as\", and doesn't start with an underscore (\"_\")\n\
+   \    character.";
+   28, "Wildcard pattern given as argument to a constant constructor.";
+   29, "Unescaped end-of-line in a string constant (non-portable code).";
+   30, "Two labels or constructors of the same name are defined in two\n\
+   \    mutually recursive types.";
+  ]
+
+let help_warnings () =
+  List.iter (fun (i, s) -> Printf.printf "%3i %s\n" i s) descriptions;
+  exit 0

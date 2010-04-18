@@ -255,6 +255,12 @@ Very old (no more supported) syntax:\n\
     | e -> e ]
   ;
 
+  value rec lid_of_ident =
+    fun
+    [ <:ident< $_$ . $i$ >> -> lid_of_ident i
+    | <:ident< $lid:lid$ >> -> lid
+    | _                     -> assert False ];
+
   value module_type_app mt1 mt2 =
     match (mt1, mt2) with
     [ (<:module_type@_loc< $id:i1$ >>, <:module_type< $id:i2$ >>) ->
@@ -598,6 +604,8 @@ Very old (no more supported) syntax:\n\
             <:expr< let $rec:r$ $bi$ in $x$ >>
         | "let"; "module"; m = a_UIDENT; mb = module_binding0; "in"; e = SELF ->
             <:expr< let module $m$ = $mb$ in $e$ >>
+        | "let"; "open"; i = module_longident; "in"; e = SELF ->
+            <:expr< let open $id:i$ in $e$ >>
         | "fun"; "["; a = LIST0 match_case0 SEP "|"; "]" ->
             <:expr< fun [ $list:a$ ] >>
         | "fun"; e = fun_def -> e
@@ -754,6 +762,8 @@ Very old (no more supported) syntax:\n\
             k <:expr< let module $m$ = $mb$ in $e$ >>
         | "let"; "module"; m = a_UIDENT; mb = module_binding0; ";"; el = SELF ->
             <:expr< let module $m$ = $mb$ in $mksequence _loc el$ >>
+        | "let"; "open"; i = module_longident; "in"; e = SELF ->
+            <:expr< let open $id:i$ in $e$ >>
         | `ANTIQUOT ("list" as n) s -> <:expr< $anti:mk_anti ~c:"expr;" n s$ >>
         | e = expr; k = sequence' -> k e ] ]
     ;
@@ -819,7 +829,9 @@ Very old (no more supported) syntax:\n\
             <:rec_binding< $anti:mk_anti ~c:"ident" n s$ = $e$ >>
         | `ANTIQUOT ("list" as n) s ->
             <:rec_binding< $anti:mk_anti ~c:"rec_binding" n s$ >>
-        | i = label_longident; e = fun_binding -> <:rec_binding< $i$ = $e$ >> ] ]
+        | i = label_longident; e = fun_binding -> <:rec_binding< $i$ = $e$ >>
+        | i = label_longident ->
+            <:rec_binding< $i$ = $lid:lid_of_ident i$ >> ] ]
     ;
     fun_def:
       [ [ p = labeled_ipatt; (w, e) = fun_def_cont ->
@@ -909,6 +921,8 @@ Very old (no more supported) syntax:\n\
     ;
     label_patt_list:
       [ [ p1 = label_patt; ";"; p2 = SELF -> <:patt< $p1$ ; $p2$ >>
+        | p1 = label_patt; ";"; "_"       -> <:patt< $p1$ ; _ >>
+        | p1 = label_patt; ";"; "_"; ";"  -> <:patt< $p1$ ; _ >>
         | p1 = label_patt; ";"            -> p1
         | p1 = label_patt                 -> p1
       ] ];
@@ -919,6 +933,7 @@ Very old (no more supported) syntax:\n\
         | `ANTIQUOT ("list" as n) s ->
             <:patt< $anti:mk_anti ~c:"patt;" n s$ >>
         | i = label_longident; "="; p = patt -> <:patt< $i$ = $p$ >>
+        | i = label_longident -> <:patt< $i$ = $lid:lid_of_ident i$ >>
       ] ]
     ;
     ipatt:

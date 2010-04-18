@@ -817,9 +817,25 @@ let pp_get_all_formatter_output_functions state () =
    state.pp_output_newline, state.pp_output_spaces)
 ;;
 
+(* Default function to output new lines. *)
+let display_newline state () = state.pp_output_function "\n" 0  1;;
+
+(* Default function to output spaces. *)
+let blank_line = String.make 80 ' ';;
+let rec display_blanks state n =
+  if n > 0 then
+  if n <= 80 then state.pp_output_function blank_line 0 n else
+  begin
+    state.pp_output_function blank_line 0 80;
+    display_blanks state (n - 80)
+  end
+;;
+
 let pp_set_formatter_out_channel state os =
   state.pp_output_function <- output os;
-  state.pp_flush_function <- (fun () -> flush os)
+  state.pp_flush_function <- (fun () -> flush os);
+  state.pp_output_newline <- display_newline state;
+  state.pp_output_spaces <- display_blanks state;
 ;;
 
 (**************************************************************
@@ -872,20 +888,6 @@ let pp_make_formatter f g h i =
    pp_queue = pp_q;
   }
 ;;
-
-(* Default function to output spaces. *)
-let blank_line = String.make 80 ' ';;
-let rec display_blanks state n =
-  if n > 0 then
-  if n <= 80 then state.pp_output_function blank_line 0 n else
-  begin
-    state.pp_output_function blank_line 0 80;
-    display_blanks state (n - 80)
-  end
-;;
-
-(* Default function to output new lines. *)
-let display_newline state () = state.pp_output_function "\n" 0  1;;
 
 (* Make a formatter with default functions to output spaces and new lines. *)
 let make_formatter output flush =
@@ -1067,8 +1069,8 @@ let implode_rev s0 = function
 (* [mkprintf] is the printf-like function generator: given the
    - [to_s] flag that tells if we are printing into a string,
    - the [get_out] function that has to be called to get a [ppf] function to
-     output onto.
-   It generates a [kprintf] function that takes as arguments a [k]
+     output onto,
+   it generates a [kprintf] function that takes as arguments a [k]
    continuation function to be called at the end of formatting,
    and a printing format string to print the rest of the arguments
    according to the format string.
@@ -1309,15 +1311,6 @@ let ifprintf ppf = ikfprintf ignore ppf;;
 let printf fmt = fprintf std_formatter fmt;;
 let eprintf fmt = fprintf err_formatter fmt;;
 
-let kbprintf k b =
-  mkprintf false (fun _ -> formatter_of_buffer b) k
-;;
-
-let bprintf b =
-  let k ppf = pp_flush_queue ppf false in
-  kbprintf k b
-;;
-
 let ksprintf k =
   let b = Buffer.create 512 in
   let k ppf = k (string_out b ppf) in
@@ -1326,7 +1319,23 @@ let ksprintf k =
 
 let sprintf fmt = ksprintf (fun s -> s) fmt;;
 
-(* Obsolete alias for ksprintf. *)
+(**************************************************************
+
+  Deprecated stuff.
+
+ **************************************************************)
+
+let kbprintf k b =
+  mkprintf false (fun _ -> formatter_of_buffer b) k
+;;
+
+(* Deprecated error prone function bprintf. *)
+let bprintf b =
+  let k ppf = pp_flush_queue ppf false in
+  kbprintf k b
+;;
+
+(* Deprecated alias for ksprintf. *)
 let kprintf = ksprintf;;
 
 at_exit print_flush

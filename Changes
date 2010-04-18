@@ -30,11 +30,37 @@ Language features:
   "S with type t1 = ... and ... and type tn = ..." (S refers to a module type).
 - Local opening of modules in a subexpression.
   Syntax: "let open M in e", or "M.(e)"
+- In class definitions, method and instance variable override can now
+  be made explicit, by writing "method!", "val!" or "inherit!" in place of
+  "method", "val" and "inherit". It is an error to override an
+  undefined member (or to use overriding inheritance when nothing get
+  overriden). Additionally, these constructs disactivate respectively
+  warnings 7 (method override, code 'M') and 13 (instance variable
+  override, code 'V'). Note that, by default, warning 7 is inactive
+  and warning 13 is active.
+- "Destructive" substitution in signatures.
+  By writing "<signature> with type t := <typeconstr>" and
+  "<signature> with module M := <module-path>" one replaces "t" and "M"
+  inside the signature, removing their respective fields. Among other
+  uses, this allows to merge two signatures containing identically
+  named fields.
+
 
 Compilers and toplevel:
-- New warning (activated by the warning code 'R') to signal
-  record patterns without "; _" where some labels of the record type
-  are not listed in the pattern.
+- Warnings are now numbered and can be switched on and off individually.
+  The old system with letters referring to sets of warnings is still
+  supported.
+- New warnings:
+  + 9 (code 'R') to signal record patterns without "; _" where
+    some labels of the record type are not listed in the pattern.
+  + 28 when giving a wildcard argument to a constant constructor in
+    a pattern-matching.
+  + 29 when an end-of-line appears unescaped in a string constant.
+  + 30 when the same constructor or record field is defined twice in
+    mutually-recursive type definitions.
+* The semantics of warning 7 (code 'M', method override) have changed
+  (it now detects all overrides, not just repeated definitions inside
+  the same class body), and it is now inactive by default.
 - Better error report in case of unbound qualified identifier: if the module
   is unbound this error is reported in the first place.
 - Added option '-strict-sequence' to force left hand part of sequence to have
@@ -50,17 +76,23 @@ Standard library:
   functions (int_of_string, Int32.of_string, Int64.of_string,
   Nativeint.of_string).  The decimal string corresponding to
   max_int + 1 is no longer accepted.
-- Format: to prevent confusion when mixing Format printing functions and
-  direct low level output, values Format.stdout and Format.stderr have been
-  added.
 - Scanf: to prevent confusion when mixing Scanf scanning functions and direct
   low level input, value Scanf.stdin has been added.
+* Random: changed the algorithm to produce better randomness.  Now passes the
+  DieHard tests.
+
+Ocamlbuild:
+- Add support for native dynlink.
 
 Bug Fixes:
 - PR#4775: compiler crash on crazy types (temporary fix)
+- PR#4970: better error message for instance variables
+- PR#4988: contravariance lost with ocamlc -i
 - PR#5004: problem in Buffer.add_channel with very large lengths.
 - PR#5008: on AMD64/MSVC port, rare float corruption during GC.
 - PR#5018: wrong exception raised by Dynlink.loadfile.
+- Wrong type for Obj.add_offset.
+- Small problem with the representation of Int32, Int64, and Nativeint constants.
 
 Objective Caml 3.11.2:
 ----------------------
