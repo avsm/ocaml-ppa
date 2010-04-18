@@ -165,6 +165,7 @@ endif
 override_dh_auto_install: install-stamp
 
 install-stamp:
+ifneq (,$(findstring ocaml-mode,$(PACKAGES)))
 # Install Emacs files
 	$(MAKE) -C emacs \
 	  EMACSDIR=$(CURDIR)/debian/ocaml-mode/usr/share/emacs/site-lisp/ocaml-mode \
@@ -173,6 +174,7 @@ install-stamp:
 	  sed -i -e '1 i #!/bin/sh' emacs/ocamltags.in; \
 	fi
 	$(MAKE) -C emacs SCRIPTDIR=$(CURDIR)/debian/ocaml-mode/usr/bin install-ocamltags
+endif
 # Install OCaml
 	sed -e 's|PREFIX=\"/.*\"|PREFIX=\"$(INSTDIR)"|' < config/config.sh > config/config.debian.install.sh
 	$(MAKE) install PREFIX=$(INSTDIR)
