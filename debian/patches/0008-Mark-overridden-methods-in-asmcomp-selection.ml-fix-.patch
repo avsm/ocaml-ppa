@@ -1,0 +1,128 @@
+From: Stephane Glondu <steph@glondu.net>
+Date: Sun, 18 Apr 2010 18:30:04 +0200
+Subject: [PATCH] Mark overridden methods in asmcomp/*/selection.ml (fix FTBFS)
+
+---
+ asmcomp/alpha/selection.ml |    2 +-
+ asmcomp/arm/selection.ml   |    8 ++++----
+ asmcomp/hppa/selection.ml  |    4 ++--
+ asmcomp/ia64/selection.ml  |    2 +-
+ asmcomp/power/selection.ml |    2 +-
+ asmcomp/sparc/selection.ml |    2 +-
+ 6 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/asmcomp/alpha/selection.ml b/asmcomp/alpha/selection.ml
+index 6bea0f1..d91ec5b 100644
+--- a/asmcomp/alpha/selection.ml
++++ b/asmcomp/alpha/selection.ml
+@@ -40,7 +40,7 @@ method select_addressing = function
+   | arg ->
+       (Iindexed 0, arg)
+ 
+-method select_operation op args =
++method! select_operation op args =
+   match (op, args) with
+     (* Recognize shift-add operations *)
+     ((Caddi|Cadda),
+diff --git a/asmcomp/arm/selection.ml b/asmcomp/arm/selection.ml
+index ded233e..cdcb73f 100644
+--- a/asmcomp/arm/selection.ml
++++ b/asmcomp/arm/selection.ml
+@@ -55,7 +55,7 @@ class selector = object(self)
+ 
+ inherit Selectgen.selector_generic as super
+ 
+-method regs_for tyv =
++method !regs_for tyv =
+   (* Expand floats into pairs of integer registers *)
+   let nty = Array.length tyv in
+   let rec expand i =
+@@ -94,7 +94,7 @@ method select_shift_arith op shiftop shiftrevop args =
+   | _ ->
+       super#select_operation op args
+ 
+-method select_operation op args =
++method! select_operation op args =
+   match op with
+     Cadda | Caddi ->
+       begin match args with
+@@ -163,7 +163,7 @@ method select_operation op args =
+   (* Other operations are regular *)
+   | _ -> super#select_operation op args
+ 
+-method select_condition = function
++method! select_condition = function
+   | Cop(Ccmpf cmp, args) ->
+       (Iinttest_imm(Isigned cmp, 0),
+        Cop(Cextcall(float_comparison_function cmp,
+@@ -182,7 +182,7 @@ method select_condition = function
+    this simplifies code generation later.
+ *)
+ 
+-method insert_op_debug op dbg rs rd =
++method! insert_op_debug op dbg rs rd =
+   match op with
+   | Iintop(Imul) ->
+       self#insert_debug (Iop op) dbg rs [| rd.(0); rs.(0) |]; rd
+diff --git a/asmcomp/hppa/selection.ml b/asmcomp/hppa/selection.ml
+index a13b527..74c546b 100644
+--- a/asmcomp/hppa/selection.ml
++++ b/asmcomp/hppa/selection.ml
+@@ -45,7 +45,7 @@ method select_addressing = function
+   | arg ->
+       (Iindexed 0, arg)
+ 
+-method select_operation op args =
++method! select_operation op args =
+   match (op, args) with
+   (* Recognize shift-add operations. *)
+     ((Caddi|Cadda),
+@@ -92,7 +92,7 @@ method select_operation op args =
+ 
+ (* Deal with register constraints *)
+ 
+-method insert_op_debug op dbg rs rd =
++method! insert_op_debug op dbg rs rd =
+   match op with
+     Iintop(Idiv | Imod) -> (* handled via calls to millicode *)
+       let rs' = [|phys_reg 20; phys_reg 19|] (* %r26, %r25 *)
+diff --git a/asmcomp/ia64/selection.ml b/asmcomp/ia64/selection.ml
+index 86d2691..a6a977b 100644
+--- a/asmcomp/ia64/selection.ml
++++ b/asmcomp/ia64/selection.ml
+@@ -64,7 +64,7 @@ method is_immediate_add n = n >= -8192 && n < 8192
+ 
+ method select_addressing arg = (Iindexed, arg)
+ 
+-method select_operation op args =
++method! select_operation op args =
+   let norm_op =
+     match op with Cadda -> Caddi | Csuba -> Csubi | _ -> op in
+   let norm_args =
+diff --git a/asmcomp/power/selection.ml b/asmcomp/power/selection.ml
+index 2818c4f..d87b300 100644
+--- a/asmcomp/power/selection.ml
++++ b/asmcomp/power/selection.ml
+@@ -63,7 +63,7 @@ method select_addressing exp =
+       then (Iindexed2, Ctuple[e1; e2])
+       else (Iindexed d, Cop(Cadda, [e1; e2]))
+ 
+-method select_operation op args =
++method! select_operation op args =
+   match (op, args) with
+   (* Prevent the recognition of (x / cst) and (x % cst) when cst is not
+      a power of 2, which do not correspond to an instruction. *)
+diff --git a/asmcomp/sparc/selection.ml b/asmcomp/sparc/selection.ml
+index 1053854..737c689 100644
+--- a/asmcomp/sparc/selection.ml
++++ b/asmcomp/sparc/selection.ml
+@@ -38,7 +38,7 @@ method select_addressing = function
+   | arg ->
+       (Iindexed 0, arg)
+ 
+-method select_operation op args =
++method! select_operation op args =
+   match (op, args) with
+   (* For SPARC V7 multiplication, division and modulus are turned into
+      calls to C library routines, except if the dividend is a power of 2.
+-- 
