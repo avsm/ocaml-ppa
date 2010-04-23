@@ -165,7 +165,7 @@ endif
 override_dh_auto_install: install-stamp
 
 install-stamp:
-ifneq (,$(findstring ocaml-mode,$(PACKAGES)))
+ifneq (,$(findstring ocaml-mode,$(ALL_PACKAGES)))
 # Install Emacs files
 	$(MAKE) -C emacs \
 	  EMACSDIR=$(CURDIR)/debian/ocaml-mode/usr/share/emacs/site-lisp/ocaml-mode \
