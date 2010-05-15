@@ -640,7 +640,7 @@ module Sig =
         (** {6 Traversals} *)
         (** This class is the base class for map traversal on the Ast.
       To make a custom traversal class one just extend it like that:
-      
+
       This example swap pairs expression contents:
       open Camlp4.PreCast;
       [class swap = object
@@ -1046,6 +1046,8 @@ module Sig =
           ExVrn of loc * string
           | (* while e do { e } *)
           ExWhi of loc * expr * expr
+          | (* let open i in e *)
+          ExOpI of loc * ident * expr
           and module_type =
           | MtNil of loc
           | (* i *)
@@ -1821,6 +1823,7 @@ module Sig =
           | ExTyc of loc * expr * ctyp
           | ExVrn of loc * string
           | ExWhi of loc * expr * expr
+          | ExOpI of loc * ident * expr
           and module_type =
           | MtNil of loc
           | MtId of loc * ident
@@ -8064,6 +8067,17 @@ module Struct =
                                 meta_loc _loc x0)
                         and meta_expr _loc =
                           function
+                          | Ast.ExOpI (x0, x1, x2) ->
+                              Ast.ExApp (_loc,
+                                Ast.ExApp (_loc,
+                                  Ast.ExApp (_loc,
+                                    Ast.ExId (_loc,
+                                      Ast.IdAcc (_loc,
+                                        Ast.IdUid (_loc, "Ast"),
+                                        Ast.IdUid (_loc, "ExOpI"))),
+                                    meta_loc _loc x0),
+                                  meta_ident _loc x1),
+                                meta_expr _loc x2)
                           | Ast.ExWhi (x0, x1, x2) ->
                               Ast.ExApp (_loc,
                                 Ast.ExApp (_loc,
@@ -10103,6 +10117,17 @@ module Struct =
                                 meta_loc _loc x0)
                         and meta_expr _loc =
                           function
+                          | Ast.ExOpI (x0, x1, x2) ->
+                              Ast.PaApp (_loc,
+                                Ast.PaApp (_loc,
+                                  Ast.PaApp (_loc,
+                                    Ast.PaId (_loc,
+                                      Ast.IdAcc (_loc,
+                                        Ast.IdUid (_loc, "Ast"),
+                                        Ast.IdUid (_loc, "ExOpI"))),
+                                    meta_loc _loc x0),
+                                  meta_ident _loc x1),
+                                meta_expr _loc x2)
                           | Ast.ExWhi (x0, x1, x2) ->
                               Ast.PaApp (_loc,
                                 Ast.PaApp (_loc,
@@ -11950,6 +11975,10 @@ module Struct =
                       let _x = o#loc _x in
                       let _x_i1 = o#expr _x_i1 in
                       let _x_i2 = o#expr _x_i2 in ExWhi (_x, _x_i1, _x_i2)
+                  | ExOpI (_x, _x_i1, _x_i2) ->
+                      let _x = o#loc _x in
+                      let _x_i1 = o#ident _x_i1 in
+                      let _x_i2 = o#expr _x_i2 in ExOpI (_x, _x_i1, _x_i2)
                   
                 method ctyp : ctyp -> ctyp =
                   function
@@ -12715,6 +12744,9 @@ module Struct =
                   | ExWhi (_x, _x_i1, _x_i2) ->
                       let o = o#loc _x in
                       let o = o#expr _x_i1 in let o = o#expr _x_i2 in o
+                  | ExOpI (_x, _x_i1, _x_i2) ->
+                      let o = o#loc _x in
+                      let o = o#ident _x_i1 in let o = o#expr _x_i2 in o
                   
                 method ctyp : ctyp -> 'self_type =
                   function
@@ -13889,8 +13921,14 @@ module Struct =
                    | _ ->
                        error loc "range pattern allowed only for characters")
               | PaRec (loc, p) ->
-                  mkpat loc
-                    (Ppat_record (List.map mklabpat (list_of_patt p []), Closed))
+                  let ps = list_of_patt p [] in
+                  let is_wildcard =
+                    (function | Ast.PaAny _ -> true | _ -> false) in
+                  let (wildcards, ps) = List.partition is_wildcard ps in
+                  let is_closed = if wildcards = [] then Closed else Open
+                  in
+                    mkpat loc
+                      (Ppat_record (((List.map mklabpat ps), is_closed)))
               | PaStr (loc, s) ->
                   mkpat loc
                     (Ppat_constant
@@ -14189,6 +14227,8 @@ module Struct =
               | ExWhi (loc, e1, el) ->
                   let e2 = ExSeq (loc, el)
                   in mkexp loc (Pexp_while (expr e1, expr e2))
+              | Ast.ExOpI (loc, i, e) ->
+                  mkexp loc (Pexp_open (long_uident i, expr e))
               | Ast.ExCom (loc, _, _) ->
                   error loc "expr, expr: not allowed here"
               | Ast.ExSem (loc, _, _) ->
@@ -14539,7 +14579,8 @@ module Struct =
                   (Pcf_cstr (((ctyp t1), (ctyp t2), (mkloc loc)))) :: l
               | Ast.CrSem (_, cst1, cst2) ->
                   class_str_item cst1 (class_str_item cst2 l)
-              | CrInh (_, ce, "") -> (Pcf_inher (Fresh, class_expr ce, None)) :: l
+              | CrInh (_, ce, "") ->
+                  (Pcf_inher (Fresh, class_expr ce, None)) :: l
               | CrInh (_, ce, pb) ->
                   (Pcf_inher (Fresh, class_expr ce, Some pb)) :: l
               | CrIni (_, e) -> (Pcf_init (expr e)) :: l
@@ -14549,9 +14590,12 @@ module Struct =
                      | Ast.TyNil _ -> None
                      | t -> Some (mkpolytype (ctyp t))) in
                   let e = mkexp loc (Pexp_poly (expr e, t))
-                  in (Pcf_meth ((s, (mkprivate b), Fresh, e, (mkloc loc)))) :: l
+                  in
+                    (Pcf_meth ((s, (mkprivate b), Fresh, e, (mkloc loc)))) ::
+                      l
               | CrVal (loc, s, b, e) ->
-                  (Pcf_val ((s, (mkmutable b), Fresh, (expr e), (mkloc loc)))) :: l
+                  (Pcf_val ((s, (mkmutable b), Fresh, (expr e), (mkloc loc)))) ::
+                    l
               | CrVir (loc, s, b, t) ->
                   (Pcf_virt
                      ((s, (mkprivate b), (mkpolytype (ctyp t)), (mkloc loc)))) ::
@@ -18404,6 +18448,9 @@ module Printers =
                                  "@[<hv0>@[<2>let %a%a@]@ @[<hv2>in@ %a@]@]"
                                  o#rec_flag r o#binding bi o#reset_semi#expr
                                  e)
+                      | Ast.ExOpI (_, i, e) ->
+                          pp f "@[<2>let open %a@]@ @[<2>in@ %a@]" o#ident i
+                            o#reset_semi#expr e
                       | Ast.ExMat (_, e, a) ->
                           pp f "@[<hv0>@[<hv0>@[<2>match %a@]@ with@]%a@]"
                             o#expr e o#match_case a
@@ -18518,9 +18565,9 @@ module Printers =
                           Ast.ExFun (_, _) | Ast.ExMat (_, _, _) |
                           Ast.ExTry (_, _, _) | Ast.ExIfe (_, _, _, _) |
                           Ast.ExLet (_, _, _, _) | Ast.ExLmd (_, _, _, _) |
-                          Ast.ExAsr (_, _) | Ast.ExAsf _ | Ast.ExLaz (_, _) |
-                          Ast.ExNew (_, _) | Ast.ExObj (_, _, _) ->
-                          pp f "(%a)" o#reset#expr e
+                          Ast.ExOpI (_, _, _) | Ast.ExAsr (_, _) |
+                          Ast.ExAsf _ | Ast.ExLaz (_, _) | Ast.ExNew (_, _) |
+                          Ast.ExObj (_, _, _) -> pp f "(%a)" o#reset#expr e
                   
                 method direction_flag =
                   fun f b ->
@@ -19410,7 +19457,11 @@ module Printers =
                           pp f "@[<2>%a@ when@ %a@ ->@ %a@]" o#patt p
                             o#under_pipe#expr w o#under_pipe#expr e
                   
-                method sum_type = fun f t -> pp f "@[<hv0>[ %a ]@]" o#ctyp t
+                method sum_type =
+                  fun f ->
+                    function
+                    | Ast.TyNil _ -> pp f "[]"
+                    | t -> pp f "@[<hv0>[ %a ]@]" o#ctyp t
                   
                 method ident =
                   fun f i ->

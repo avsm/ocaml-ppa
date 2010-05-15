@@ -1225,6 +1225,22 @@ class html =
       | Module_constraint (k, tk) ->
           (* TODO: on affiche quoi ? *)
           self#html_of_module_kind b father ?modu k
+      | Module_typeof s ->
+          bs b "<code class=\"type\">module type of ";
+          bs b (self#create_fully_qualified_module_idents_links father s);
+          bs b "</code>"
+      | Module_unpack (code, mta) ->
+          bs b "<code class=\"type\">";
+          begin
+            match mta.mta_module with
+              None ->
+                bs b (self#create_fully_qualified_module_idents_links father (self#escape code))
+            | Some mt ->
+                let (html_file, _) = Naming.html_files mt.mt_name in
+                bp b " <a href=\"%s\">%s</a> " html_file (self#escape code)
+          end;
+          bs b "</code>"
+
 
     method html_of_module_parameter b father p =
       let (s_functor,s_arrow) =
@@ -1296,6 +1312,10 @@ class html =
       | Module_type_with (k, s) ->
           self#html_of_module_type_kind b father ?modu ?mt k;
           bs b "<code class=\"type\"> ";
+          bs b (self#create_fully_qualified_module_idents_links father s);
+          bs b "</code>"
+      | Module_type_typeof s ->
+          bs b "<code class=\"type\">module type of ";
           bs b (self#create_fully_qualified_module_idents_links father s);
           bs b "</code>"
 

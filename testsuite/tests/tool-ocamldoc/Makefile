@@ -6,9 +6,12 @@ run: $(CUSTOM_MODULE).cmo
 	  printf " ... testing '$$file'"; \
 	  $(OCAMLDOC) -g $(CUSTOM_MODULE).cmo -o `basename $$file ml`result $$file; \
 	  diff -q `basename $$file ml`reference `basename $$file ml`result > /dev/null && echo " => passed" || (echo " => failed" && exit 1); \
-	done
+	done;
+	@$(OCAMLDOC) -html t*.ml 2>&1 | grep -v test_types_display || true
+	@$(OCAMLDOC) -latex t*.ml 2>&1 | grep -v test_types_display || true
+
 
 clean: defaultclean
-	@rm -f *.result
+	@rm -f *.result *.html *.tex *.log *.out *.sty *.toc *.css *.aux
 
 include ../../makefiles/Makefile.common

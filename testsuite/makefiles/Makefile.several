@@ -2,18 +2,20 @@
 
 CC=$(NATIVECC) $(NATIVECCCOMPOPTS)
 FC=$(FORTAN_COMPILER)
-CMO_FILES=$(patsubst %,%.cmo,$(MODULES))
-CMX_FILES=$(patsubst %,%.cmx,$(MODULES))
-CMA_FILES=$(patsubst %,%.cma,$(LIBRARIES))
-CMXA_FILES=$(patsubst %,%.cmxa,$(LIBRARIES))
-O_FILES=$(patsubst %,%.$(O),$(C_FILES) $(F_FILES))
-ifdef C_FILES
-ADD_CFLAGS+=-custom
-endif
-ifdef F_FILES
-ADD_CFLAGS+=$(FORTRAN_LIBRARY)
-ADD_OPTFLAGS+=$(FORTRAN_LIBRARY)
-endif
+CMO_FILES=$(MODULES:=.cmo)
+CMX_FILES=$(MODULES:=.cmx)
+CMA_FILES=$(LIBRARIES:=.cma)
+CMXA_FILES=$(LIBRARIES:=.cmxa)
+O_FILES=$(C_FILES:=.o)
+
+CUSTOM_FLAG=`if [ -z "$(C_FILES)" ]; then true; else echo '-custom'; fi`
+ADD_CFLAGS+=$(CUSTOM_FLAG)
+FORTRAN_LIB=`if [ -z "$(F_FILES)" ]; then true; else echo '$(FORTRAN_LIBRARY)'; fi`
+ADD_CFLAGS+=$(FORTRAN_LIB)
+ADD_OPTFLAGS+=$(FORTRAN_LIB)
+
+check:
+	@if [ -n "$(FORTRAN_COMPILER)" -o -z "$(F_FILES)" ]; then $(MAKE) run-all; fi
 
 run-all:
 	@for file in $(C_FILES); do \

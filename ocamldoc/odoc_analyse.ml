@@ -427,6 +427,8 @@ and remove_module_elements_between_stop_in_module_kind k =
   | Odoc_module.Module_constraint (k2, mtkind) ->
       Odoc_module.Module_constraint (remove_module_elements_between_stop_in_module_kind k2,
                          remove_module_elements_between_stop_in_module_type_kind mtkind)
+  | Odoc_module.Module_typeof _ -> k
+  | Odoc_module.Module_unpack _ -> k
 
 (** Remove the module elements between the stop special comment, in the given module type kind. *)
 and remove_module_elements_between_stop_in_module_type_kind tk =
@@ -437,7 +439,7 @@ and remove_module_elements_between_stop_in_module_type_kind tk =
   | Odoc_module.Module_type_alias _ -> tk
   | Odoc_module.Module_type_with (tk2, s) ->
       Odoc_module.Module_type_with (remove_module_elements_between_stop_in_module_type_kind tk2, s)
-
+  | Odoc_module.Module_type_typeof _ -> tk
 
 (** Remove elements between the stop special comment. *)
 let remove_elements_between_stop module_list =

@@ -415,6 +415,12 @@ Very old (no more supported) syntax:\n\
           | (Ast.ExSem (_, _, _) as e) -> Ast.ExSeq (_loc, e)
           | e -> e
           
+        let rec lid_of_ident =
+          function
+          | Ast.IdAcc (_, _, i) -> lid_of_ident i
+          | Ast.IdLid (_, lid) -> lid
+          | _ -> assert false
+          
         let module_type_app mt1 mt2 =
           match (mt1, mt2) with
           | (Ast.MtId (_loc, i1), Ast.MtId (_, i2)) ->
@@ -1874,6 +1880,16 @@ Very old (no more supported) syntax:\n\
                                 (_loc : Gram.Loc.t) ->
                                 (Ast.ExFun (_loc, Ast.mcOr_of_list a) :
                                   'expr))));
+                         ([ Gram.Skeyword "let"; Gram.Skeyword "open";
+                            Gram.Snterm
+                              (Gram.Entry.obj
+                                 (module_longident :
+                                   'module_longident Gram.Entry.t));
+                            Gram.Skeyword "in"; Gram.Sself ],
+                          (Gram.Action.mk
+                             (fun (e : 'expr) _ (i : 'module_longident) _ _
+                                (_loc : Gram.Loc.t) ->
+                                (Ast.ExOpI (_loc, i, e) : 'expr))));
                          ([ Gram.Skeyword "let"; Gram.Skeyword "module";
                             Gram.Snterm
                               (Gram.Entry.obj
@@ -2671,6 +2687,16 @@ Very old (no more supported) syntax:\n\
                                        mk_anti ~c: "expr;" n s) :
                                       'sequence)
                                 | _ -> assert false)));
+                         ([ Gram.Skeyword "let"; Gram.Skeyword "open";
+                            Gram.Snterm
+                              (Gram.Entry.obj
+                                 (module_longident :
+                                   'module_longident Gram.Entry.t));
+                            Gram.Skeyword "in"; Gram.Sself ],
+                          (Gram.Action.mk
+                             (fun (e : 'sequence) _ (i : 'module_longident) _
+                                _ (_loc : Gram.Loc.t) ->
+                                (Ast.ExOpI (_loc, i, e) : 'sequence))));
                          ([ Gram.Skeyword "let"; Gram.Skeyword "module";
                             Gram.Snterm
                               (Gram.Entry.obj
@@ -3041,6 +3067,17 @@ Very old (no more supported) syntax:\n\
                    (None,
                     [ (None, None,
                        [ ([ Gram.Snterm
+                              (Gram.Entry.obj
+                                 (label_longident :
+                                   'label_longident Gram.Entry.t)) ],
+                          (Gram.Action.mk
+                             (fun (i : 'label_longident) (_loc : Gram.Loc.t)
+                                ->
+                                (Ast.RbEq (_loc, i,
+                                   Ast.ExId (_loc,
+                                     Ast.IdLid (_loc, lid_of_ident i))) :
+                                  'label_expr))));
+                         ([ Gram.Snterm
                               (Gram.Entry.obj
                                  (label_longident :
                                    'label_longident Gram.Entry.t));
@@ -3676,6 +3713,25 @@ Very old (no more supported) syntax:\n\
                          ([ Gram.Snterm
                               (Gram.Entry.obj
                                  (label_patt : 'label_patt Gram.Entry.t));
+                            Gram.Skeyword ";"; Gram.Skeyword "_";
+                            Gram.Skeyword ";" ],
+                          (Gram.Action.mk
+                             (fun _ _ _ (p1 : 'label_patt)
+                                (_loc : Gram.Loc.t) ->
+                                (Ast.PaSem (_loc, p1, Ast.PaAny _loc) :
+                                  'label_patt_list))));
+                         ([ Gram.Snterm
+                              (Gram.Entry.obj
+                                 (label_patt : 'label_patt Gram.Entry.t));
+                            Gram.Skeyword ";"; Gram.Skeyword "_" ],
+                          (Gram.Action.mk
+                             (fun _ _ (p1 : 'label_patt) (_loc : Gram.Loc.t)
+                                ->
+                                (Ast.PaSem (_loc, p1, Ast.PaAny _loc) :
+                                  'label_patt_list))));
+                         ([ Gram.Snterm
+                              (Gram.Entry.obj
+                                 (label_patt : 'label_patt Gram.Entry.t));
                             Gram.Skeyword ";"; Gram.Sself ],
                           (Gram.Action.mk
                              (fun (p2 : 'label_patt_list) _
@@ -3687,6 +3743,17 @@ Very old (no more supported) syntax:\n\
                    (None,
                     [ (None, None,
                        [ ([ Gram.Snterm
+                              (Gram.Entry.obj
+                                 (label_longident :
+                                   'label_longident Gram.Entry.t)) ],
+                          (Gram.Action.mk
+                             (fun (i : 'label_longident) (_loc : Gram.Loc.t)
+                                ->
+                                (Ast.PaEq (_loc, i,
+                                   Ast.PaId (_loc,
+                                     Ast.IdLid (_loc, lid_of_ident i))) :
+                                  'label_patt))));
+                         ([ Gram.Snterm
                               (Gram.Entry.obj
                                  (label_longident :
                                    'label_longident Gram.Entry.t));

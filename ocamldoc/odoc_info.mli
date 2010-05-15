@@ -447,6 +447,8 @@ module Module :
                         Should appear in interface files only. *)
       | Module_constraint of module_kind * module_type_kind
                      (** A module constraint by a module type. *)
+      | Module_typeof of string (** by now only the code of the module expression *)
+      | Module_unpack of string * module_type_alias (** code of the expression and module type alias *)
 
     (** Representation of a module. *)
     and t_module = Odoc_module.t_module =
@@ -479,6 +481,8 @@ module Module :
             (** Complete alias name and corresponding module type if we found it. *)
       | Module_type_with of module_type_kind * string
             (** The module type kind and the code of the with constraint. *)
+      | Module_type_typeof of string
+            (** by now only the code of the module expression *)
 
     (** Representation of a module type. *)
     and t_module_type = Odoc_module.t_module_type =
