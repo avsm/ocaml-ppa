@@ -5,4 +5,3 @@
 0005-Patch-config.sh-for-installation.patch
 0006-Install-ocamlbuild-as-a-link-on-either-.native-or-.b.patch
 0007-Set-version-number.patch
-0008-Mark-overridden-methods-in-asmcomp-selection.ml-fix-.patch

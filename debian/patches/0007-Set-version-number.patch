@@ -7,12 +7,12 @@ Subject: [PATCH] Set version number
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/VERSION b/VERSION
-index 9d186bd..1e53d7b 100644
+index 58fc0bd..af2edec 100644
 --- a/VERSION
 +++ b/VERSION
 @@ -1,4 +1,4 @@
--3.12.0+dev17 (2010-01-20)
-+3.12.0+dev17+10268
+-3.12.0+dev23 (2010-05-12)
++3.12.0+dev23+10396
  
  # The version string is the first line of this file.
  # It must be in the format described in stdlib/sys.mli

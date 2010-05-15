@@ -3,7 +3,7 @@
 PACKAGE := ocaml
 ALL_PACKAGES := $(shell dh_listpackages)
 OCAMLMAJOR := 3.12
-OCAMLMINOR := 0+dev17+10268
+OCAMLMINOR := 0+dev23+10396
 
 # Build cache (for Debian debugging)
 BUILDCACHE := $(wildcard ../ocaml.cache)
