@@ -9,7 +9,7 @@ Use for installatation a patched config.sh (created by debian/rules).
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/build/install.sh b/build/install.sh
-index 1a60a87..5a14765 100755
+index a7ab103..b42373d 100755
 --- a/build/install.sh
 +++ b/build/install.sh
 @@ -18,7 +18,7 @@ set -e
@@ -22,7 +22,7 @@ index 1a60a87..5a14765 100755
  not_installed=$PWD/_build/not_installed
  
 diff --git a/build/partial-install.sh b/build/partial-install.sh
-index 6199762..a88e668 100755
+index 56d3181..8e4fbd2 100755
 --- a/build/partial-install.sh
 +++ b/build/partial-install.sh
 @@ -22,7 +22,7 @@ set -e

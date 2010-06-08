@@ -7,7 +7,7 @@ Subject: [PATCH] Don't use rpath
  1 files changed, 5 insertions(+), 0 deletions(-)
 
 diff --git a/tools/ocamlmklib.mlp b/tools/ocamlmklib.mlp
-index 80c1d9f..b6ed47a 100644
+index 6b78a68..95f5674 100644
 --- a/tools/ocamlmklib.mlp
 +++ b/tools/ocamlmklib.mlp
 @@ -37,6 +37,11 @@ and output_c = ref ""       (* Output name for C part of library *)
