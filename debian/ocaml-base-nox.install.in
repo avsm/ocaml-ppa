@@ -11,15 +11,15 @@
      @OCamlStdlibDir@/ld.conf
      debian/ld.conf @OCamlStdlibDir@
      @OCamlStdlibDir@/dbm.cma
-OPT: @OCamlStdlibDir@/dbm.cmxs
+DYN: @OCamlStdlibDir@/dbm.cmxs
      @OCamlStdlibDir@/unix.cma
-OPT: @OCamlStdlibDir@/unix.cmxs
+DYN: @OCamlStdlibDir@/unix.cmxs
      @OCamlStdlibDir@/str.cma
-OPT: @OCamlStdlibDir@/str.cmxs
+DYN: @OCamlStdlibDir@/str.cmxs
      @OCamlStdlibDir@/bigarray.cma
-OPT: @OCamlStdlibDir@/bigarray.cmxs
+DYN: @OCamlStdlibDir@/bigarray.cmxs
      @OCamlStdlibDir@/nums.cma
-OPT: @OCamlStdlibDir@/nums.cmxs
+DYN: @OCamlStdlibDir@/nums.cmxs
      @OCamlStdlibDir@/arg.cmi
      @OCamlStdlibDir@/array.cmi
      @OCamlStdlibDir@/arrayLabels.cmi

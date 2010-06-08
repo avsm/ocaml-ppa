@@ -1,4 +1,4 @@
      @OCamlDllDir@/dlllabltk.so
      @OCamlDllDir@/dllgraphics.so
      @OCamlStdlibDir@/graphics.cma
-OPT: @OCamlStdlibDir@/graphics.cmxs
+DYN: @OCamlStdlibDir@/graphics.cmxs

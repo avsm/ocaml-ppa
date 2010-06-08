@@ -40,10 +40,17 @@ OCAMLINIT_SED := \
   -e 's%@OCamlABI@%$(OCAML_ABI)%g' \
   -e 's%@OCamlStdlibDir@%$(OCAML_STDLIB_DIR)%g' \
   -e 's%@OCamlDllDir@%$(OCAML_DLL_DIR)%g'
+
 ifeq ($(OCAML_HAVE_OCAMLOPT),yes)
   OCAMLINIT_SED += -e 's/^OPT: //' -e '/^BYTE: /d'
 else
   OCAMLINIT_SED += -e '/^OPT: /d' -e 's/^BYTE: //'
+endif
+
+ifeq ($(OCAML_NATDYNLINK),yes)
+  OCAMLINIT_SED += -e 's/^DYN: //'
+else
+  OCAMLINIT_SED += -e '/^DYN: /d'
 endif
 
 ocamlinit: ocamlinit-stamp
