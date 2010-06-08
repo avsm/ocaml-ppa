@@ -18,8 +18,6 @@ OPT: usr/bin/ocamlopt
      @OCamlStdlibDir@/stdlib.cma
      @OCamlStdlibDir@/toplevellib.cma
      @OCamlStdlibDir@/dynlink.cma
-     @OCamlStdlibDir@/addlabels
-     @OCamlStdlibDir@/scrapelabels
      @OCamlStdlibDir@/caml
      @OCamlStdlibDir@/camlheader
      @OCamlStdlibDir@/camlheader_ur
