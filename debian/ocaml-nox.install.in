@@ -10,6 +10,8 @@
      usr/bin/ocamlmktop
      usr/bin/ocamlprof
      usr/bin/ocamlyacc
+     usr/bin/ocamlobjinfo
+     @OCamlStdlibDir@/objinfo_helper
      debian/native-archs @OCamlStdlibDir@
 OPT: usr/bin/ocamlbuild.native
 OPT: usr/bin/ocamlopt

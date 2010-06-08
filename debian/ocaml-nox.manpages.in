@@ -1,6 +1,3 @@
 debian/man/ocamlmklib.1
 debian/man/ocamldumpobj.1
 debian/man/ocamlobjinfo.1
-debian/man/ocamlbyteinfo.1
-OPT: debian/man/ocamldumpapprox.1
-OPT: debian/man/ocamlplugininfo.1

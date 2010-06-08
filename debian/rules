@@ -26,14 +26,7 @@ DISTDIR = $(PACKAGE)-$(OCAML_ABI)
 SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar.bz2
 
 # Environment variable for dh_ocaml
-OCAMLBYTEINFO = boot/ocamlrun debian/ocamlbyteinfo/ocamlbyteinfo
-OCAMLPLUGININFO = debian/ocamlbyteinfo/ocamlplugininfo
-OCAMLDUMPAPPROX = boot/ocamlrun tools/dumpapprox
-OCAMLOBJINFO = boot/ocamlrun tools/objinfo
-export OCAMLBYTEINFO
-export OCAMLPLUGININFO
-export OCAMLDUMPAPPROX
-export OCAMLOBJINFO
+export OCAMLOBJINFO = OCAMLLIB=tools boot/ocamlrun tools/objinfo
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
@@ -117,23 +110,18 @@ build-stamp: config-stamp
 ifeq ($(BUILDCACHE),)
 	$(MAKE) world
 	$(MAKE) bootstrap
-	$(MAKE) -C tools objinfo dumpobj
 ifeq (,$(OCAML_OPT_ARCH))
 # As of 3.11.0, manpages are made only in `make opt.opt'
 	make -C ocamldoc manpages \
 	  OCAMLDOC_RUN="../boot/ocamlrun -I ../otherlibs/unix -I ../otherlibs/str ./ocamldoc"
-	$(MAKE) -f debian/ocamlbyteinfo/Makefile ocamlbyteinfo
 else
 	@echo "Building native compilers"
 	$(MAKE) opt opt.opt
-	$(MAKE) -C tools dumpapprox
-	$(MAKE) -f debian/ocamlbyteinfo/Makefile
 	touch opt-built-stamp
 endif
 else
 	@echo "===> WARNING: $(BUILDCACHE) detected, compilation skipped! <==="
 	rsync -a --exclude=debian --exclude=.git $(BUILDCACHE)/ .
-	rsync -a $(BUILDCACHE)/debian/ocamlbyteinfo/ debian/ocamlbyteinfo/
 	rm -f build-stamp install-stamp
 endif
 	touch $@
@@ -159,7 +147,6 @@ endif
 	fi
 # Remaining stuff
 	-rm -Rf debian/$(SRCTARBALL) debian/examples
-	$(MAKE) -f debian/ocamlbyteinfo/Makefile clean
 
 .PHONY: override_dh_auto_install
 override_dh_auto_install: install-stamp
@@ -194,16 +181,6 @@ endif
 # Install additional files not handled by dh_install
 # Beware: dh_install does not handle renamings, please pay attention
 	cp otherlibs/labltk/README debian/ocaml/usr/share/doc/ocaml/README.labltk
-	for u in dumpobj objinfo dumpapprox; do \
-	  if [ -f tools/$$u ]; then \
-	    cp tools/$$u debian/ocaml-nox/usr/bin/ocaml$$u; \
-	  fi \
-	done
-	for u in ocamlbyteinfo ocamlplugininfo; do \
-	  if [ -f debian/ocamlbyteinfo/$$u ]; then \
-	    cp debian/ocamlbyteinfo/$$u debian/ocaml-nox/usr/bin/$$u; \
-	  fi \
-	done
 	for mli in `find camlp4 -name '*.mli'` ; do \
 	  cp --parents $$mli debian/camlp4$(OCAML_STDLIB_DIR); \
 	done
