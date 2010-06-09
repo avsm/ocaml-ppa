@@ -2,7 +2,12 @@ ocaml (3.12.0~beta1-1) UNRELEASED; urgency=low
 
   [ Stéphane Glondu ]
   * New upstream beta release (Closes: #255245, #570920)
-    - add armel to native architectures
+    - add armel to native architectures; note that the Dynlink module is
+      not available in native code there: software using it should take care
+      of this new possibility
+    - {add,scrape}labels are no longer installed
+    - remove ocaml{byteinfo,plugininfo,dumpapprox}: all tools merged into
+      ocamlobjinfo; add binutils-dev to Buid-Depends
   * debian/rules: switch to dh with overrides
   * Switch source package format to 3.0 (quilt)
   * Bump version in debhelper build-dependency (Closes: #562606)
