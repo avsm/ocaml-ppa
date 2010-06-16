@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: ctype.ml 10544 2010-06-08 14:09:30Z garrigue $ *)
 
 (* Operations on core types *)
 
@@ -1057,7 +1057,7 @@ let apply env params body args =
    If the environnement has changed, memorized expansions might not
    be correct anymore, and so we flush the cache. This is safe but
    quite pessimistic: it would be enough to flush the cache when a
-   type or module definition is overriden in the environnement.
+   type or module definition is overridden in the environnement.
 *)
 let previous_env = ref Env.empty
 let string_of_kind = function Public -> "public" | Private -> "private"
@@ -1821,7 +1821,7 @@ and unify_row env row1 row2 =
     set_more row1 r2;
     List.iter
       (fun (l,f1,f2) ->
-        try unify_row_field env row1.row_fixed row2.row_fixed l f1 f2
+        try unify_row_field env row1.row_fixed row2.row_fixed more l f1 f2
         with Unify trace ->
           raise (Unify ((mkvariant [l,f1] true,
                          mkvariant [l,f2] true) :: trace)))
@@ -1830,7 +1830,7 @@ and unify_row env row1 row2 =
     log_type rm1; rm1.desc <- md1; log_type rm2; rm2.desc <- md2; raise exn
   end
 
-and unify_row_field env fixed1 fixed2 l f1 f2 =
+and unify_row_field env fixed1 fixed2 more l f1 f2 =
   let f1 = row_field_repr f1 and f2 = row_field_repr f2 in
   if f1 == f2 then () else
   match f1, f2 with
@@ -1847,13 +1847,15 @@ and unify_row_field env fixed1 fixed2 l f1 f2 =
             List.iter (unify env t1) tl;
             !e1 <> None || !e2 <> None
         end in
-      if redo then unify_row_field env fixed1 fixed2 l f1 f2 else
+      if redo then unify_row_field env fixed1 fixed2 more l f1 f2 else
       let tl1 = List.map repr tl1 and tl2 = List.map repr tl2 in
       let rec remq tl = function [] -> []
         | ty :: tl' ->
             if List.memq ty tl then remq tl tl' else ty :: remq tl tl'
       in
       let tl2' = remq tl2 tl1 and tl1' = remq tl1 tl2 in
+      (* Is this handling of levels really principal? *)
+      List.iter (update_level env (repr more).level) (tl1' @ tl2');
       let e = ref None in
       let f1' = Reither(c1 || c2, tl1', m1 || m2, e)
       and f2' = Reither(c1 || c2, tl2', m1 || m2, e) in
@@ -2289,6 +2291,7 @@ let rec eqtype rename type_pairs subst env t1 t2 =
           normalize_subst subst;
           if List.assq t1 !subst != t2 then raise (Unify [])
         with Not_found ->
+          (*if List.exists (fun (_, t) -> t == t2) !subst then raise (Unify []);*)
           subst := (t1, t2) :: !subst
         end
     | (Tconstr (p1, [], _), Tconstr (p2, [], _)) when Path.same p1 p2 ->
@@ -2309,6 +2312,7 @@ let rec eqtype rename type_pairs subst env t1 t2 =
                 normalize_subst subst;
                 if List.assq t1' !subst != t2' then raise (Unify [])
               with Not_found ->
+                (*if List.exists (fun (_, t) -> t == t2') !subst then raise (Unify []);*)
                 subst := (t1', t2') :: !subst
               end
           | (Tarrow (l1, t1, u1, _), Tarrow (l2, t2, u2, _)) when l1 = l2
@@ -2486,7 +2490,7 @@ let rec moregen_clty trace type_pairs env cty1 cty2 =
     Failure error when trace ->
       raise (Failure (CM_Class_type_mismatch (cty1, cty2)::error))
 
-let match_class_types env pat_sch subj_sch =
+let match_class_types ?(trace=true) env pat_sch subj_sch =
   let type_pairs = TypePairs.create 53 in
   let old_level = !current_level in
   current_level := generic_level - 1;
@@ -2570,7 +2574,7 @@ let match_class_types env pat_sch subj_sch =
     match error with
       [] ->
         begin try
-          moregen_clty true type_pairs env patt subj;
+          moregen_clty trace type_pairs env patt subj;
           []
         with
           Failure r -> r
@@ -2612,7 +2616,7 @@ let rec equal_clty trace type_pairs subst env cty1 cty2 =
         Vars.iter
           (fun lab (_, _, ty) ->
              let (_, _, ty') = Vars.find lab sign1.cty_vars in
-             try eqtype true type_pairs subst env ty ty' with Unify trace ->
+             try eqtype true type_pairs subst env ty' ty with Unify trace ->
                raise (Failure [CM_Val_type_mismatch
                                   (lab, expand_trace env trace)]))
           sign2.cty_vars
@@ -2624,8 +2628,6 @@ let rec equal_clty trace type_pairs subst env cty1 cty2 =
     Failure error when trace ->
       raise (Failure (CM_Class_type_mismatch (cty1, cty2)::error))
 
-(* XXX On pourrait autoriser l'instantiation du type des parametres... *)
-(* XXX Correct ? (variables de type dans parametres et corps de classe *)
 let match_class_declarations env patt_params patt_type subj_params subj_type =
   let type_pairs = TypePairs.create 53 in
   let subst = ref [] in
@@ -2712,8 +2714,14 @@ let match_class_declarations env patt_params patt_type subj_params subj_type =
             raise (Failure [CM_Type_parameter_mismatch
                                (expand_trace env trace)]))
           patt_params subj_params;
-        equal_clty false type_pairs subst env patt_type subj_type;
-        []
+        (* old code: equal_clty false type_pairs subst env patt_type subj_type; *)
+        equal_clty false type_pairs subst env
+          (Tcty_signature sign1) (Tcty_signature sign2);
+        (* Use moregeneral for class parameters, need to recheck everything to
+           keeps relationships (PR#4824) *)
+        let clty_params = List.fold_right (fun ty cty -> Tcty_fun ("*",ty,cty)) in
+        match_class_types ~trace:false env
+          (clty_params patt_params patt_type) (clty_params subj_params subj_type)
       with
         Failure r -> r
       end

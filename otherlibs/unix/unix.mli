@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: unix.mli 10450 2010-05-21 12:00:49Z doligez $ *)
 
 (** Interface to the Unix system *)
 
@@ -338,7 +338,7 @@ type stats =
     st_mtime : float;           (** Last modification time *)
     st_ctime : float;           (** Last status change time *)
   }
-(** The informations returned by the {!Unix.stat} calls. *)
+(** The information returned by the {!Unix.stat} calls. *)
 
 val stat : string -> stats
 (** Return the information for the named file. *)

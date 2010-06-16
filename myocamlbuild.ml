@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: myocamlbuild.ml 10542 2010-06-08 09:50:56Z pouillar $ *)
 
 open Ocamlbuild_plugin
 open Command
@@ -196,6 +196,8 @@ let cold_camlp4o = "camlp4o" (* The installed version *);;
 
 flag ["ocaml"; "ocamlyacc"] (A"-v");;
 
+flag ["ocaml"; "compile"; "strict_sequence"] (A"-strict-sequence");;
+
 non_dependency "otherlibs/threads/pervasives.ml" "Unix";;
 non_dependency "otherlibs/threads/pervasives.ml" "String";;
 
@@ -281,7 +283,7 @@ Pathname.define_context "toplevel" ["toplevel"; "parsing"; "typing"; "bytecomp";
 Pathname.define_context "driver" ["driver"; "asmcomp"; "bytecomp"; "typing"; "utils"; "parsing"; "stdlib"];;
 Pathname.define_context "debugger" ["bytecomp"; "utils"; "typing"; "parsing"; "toplevel"; "stdlib"];;
 Pathname.define_context "otherlibs/dynlink" ["otherlibs/dynlink"; "bytecomp"; "utils"; "typing"; "parsing"; "stdlib"];;
-Pathname.define_context "otherlibs/dynlink/nat" ["otherlibs/dynlink/nat"; "stdlib"];;
+Pathname.define_context "otherlibs/dynlink/nat" ["otherlibs/dynlink/nat"; "asmcomp"; "stdlib"];;
 Pathname.define_context "asmcomp" ["asmcomp"; "bytecomp"; "parsing"; "typing"; "utils"; "stdlib"];;
 Pathname.define_context "ocamlbuild" ["ocamlbuild"; "stdlib"; "."];;
 Pathname.define_context "lex" ["lex"; "stdlib"];;
@@ -582,6 +584,17 @@ rule "camlheader"
             A"mv"; P tmpheader; A"stdlib/camlheader"; Sh"&&";
             A"cp"; A"stdlib/camlheader"; A"stdlib/camlheader_ur"])
   end;;
+
+(* Private copy of dynlink.{ml,mli} in debugger/ *)
+copy_rule "otherlibs/dynlink/dynlink.mli -> debugger/dynlink.mli" "otherlibs/dynlink/dynlink.mli" "debugger/dynlink.mli";;
+rule "debugger/dynlink.ml"
+  ~prod: "debugger/dynlink.ml"
+  ~dep: "otherlibs/dynlink/dynlink.ml"
+  begin fun _ _ ->
+    Cmd(Sh"grep -v 'REMOVE_ME for ../../debugger/dynlink.ml' \
+           < otherlibs/dynlink/dynlink.ml >debugger/dynlink.ml")
+  end;;
+
 
 copy_rule "win32unix use some unix files" "otherlibs/unix/%" "otherlibs/win32unix/%";;
 

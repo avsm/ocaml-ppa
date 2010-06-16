@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: typeclass.ml 10422 2010-05-18 17:25:02Z frisch $ *)
 
 open Misc
 open Parsetree
@@ -30,9 +30,7 @@ type error =
   | Apply_wrong_label of label
   | Pattern_type_clash of type_expr
   | Repeated_parameter
-  | Unbound_class of Longident.t
   | Unbound_class_2 of Longident.t
-  | Unbound_class_type of Longident.t
   | Unbound_class_type_2 of Longident.t
   | Abbrev_type_clash of type_expr * type_expr * type_expr
   | Constructor_type_mismatch of string * (type_expr * type_expr) list
@@ -390,10 +388,7 @@ and class_signature env sty sign =
 and class_type env scty =
   match scty.pcty_desc with
     Pcty_constr (lid, styl) ->
-      let (path, decl) =
-        try Env.lookup_cltype lid env with Not_found ->
-          raise(Error(scty.pcty_loc, Unbound_class_type lid))
-      in
+      let (path, decl) = Typetexp.find_cltype env scty.pcty_loc lid in
       if Path.same decl.clty_path unbound_class then
         raise(Error(scty.pcty_loc, Unbound_class_type_2 lid));
       let (params, clty) =
@@ -729,10 +724,7 @@ and class_structure cl_num final val_env met_env loc (spat, str) =
 and class_expr cl_num val_env met_env scl =
   match scl.pcl_desc with
     Pcl_constr (lid, styl) ->
-      let (path, decl) =
-        try Env.lookup_class lid val_env with Not_found ->
-          raise(Error(scl.pcl_loc, Unbound_class lid))
-      in
+      let (path, decl) = Typetexp.find_class val_env scl.pcl_loc lid in
       if Path.same decl.cty_path unbound_class then
         raise(Error(scl.pcl_loc, Unbound_class_2 lid));
       let tyl = List.map
@@ -1491,14 +1483,8 @@ let report_error ppf = function
       fprintf ppf "@[%s@ %a@]"
         "This pattern cannot match self: it only matches values of type"
         Printtyp.type_expr ty
-  | Unbound_class cl ->
-      fprintf ppf "@[Unbound class@ %a@]"
-      Printtyp.longident cl
   | Unbound_class_2 cl ->
       fprintf ppf "@[The class@ %a@ is not yet completely defined@]"
-      Printtyp.longident cl
-  | Unbound_class_type cl ->
-      fprintf ppf "@[Unbound class type@ %a@]"
       Printtyp.longident cl
   | Unbound_class_type_2 cl ->
       fprintf ppf "@[The class type@ %a@ is not yet completely defined@]"

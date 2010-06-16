@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: selectgen.ml 10450 2010-05-21 12:00:49Z doligez $ *)
 
 (* Selection of pseudo-instructions, assignment of pseudo-registers,
    sequentialization. *)
@@ -380,7 +380,7 @@ method insert_move_results loc res stacksize =
   if stacksize <> 0 then self#insert(Iop(Istackoffset(-stacksize))) [||] [||];
   self#insert_moves loc res
 
-(* Add an Iop opcode. Can be overriden by processor description
+(* Add an Iop opcode. Can be overridden by processor description
    to insert moves before and after the operation, i.e. for two-address
    instructions, or instructions using dedicated registers. *)
 

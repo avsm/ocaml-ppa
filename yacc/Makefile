@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: Makefile 10448 2010-05-21 11:28:21Z doligez $
 
 # Makefile for the parser generator.
 
@@ -28,7 +28,7 @@ ocamlyacc$(EXE): $(OBJS)
 	$(CC) $(CFLAGS) $(CCLINKFLAGS) -o ocamlyacc $(OBJS)
 
 version.h : ../VERSION
-	echo "#define OCAML_VERSION \"`head -1 ../VERSION`\"" >version.h
+	echo "#define OCAML_VERSION \"`sed -e 1q ../VERSION`\"" >version.h
 
 clean:
 	rm -f *.o ocamlyacc$(EXE) *~ version.h

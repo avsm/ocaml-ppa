@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: typedecl.ml 10458 2010-05-24 06:52:16Z garrigue $ *)
 
 (**** Typing of type definitions ****)
 
@@ -28,7 +28,7 @@ type error =
   | Too_many_constructors
   | Duplicate_label of string
   | Recursive_abbrev of string
-  | Definition_mismatch of type_expr
+  | Definition_mismatch of type_expr * Includecore.type_mismatch list
   | Constraint_failed of type_expr * type_expr
   | Unconsistent_constraint of (type_expr * type_expr) list
   | Type_clash of (type_expr * type_expr) list
@@ -316,18 +316,23 @@ let check_abbrev env (_, sdecl) (id, decl) =
         Tconstr(path, args, _) ->
           begin try
             let decl' = Env.find_type path env in
-            if List.length args = List.length decl.type_params
-            && Ctype.equal env false args decl.type_params
-            && Includecore.type_declarations env id
-                decl'
-                (Subst.type_declaration (Subst.add_type id path Subst.identity)
-                                        decl)
-            then ()
-            else raise(Error(sdecl.ptype_loc, Definition_mismatch ty))
+            let err =
+              if List.length args <> List.length decl.type_params
+              then [Includecore.Arity]
+              else if not (Ctype.equal env false args decl.type_params)
+              then [Includecore.Constraint]
+              else
+                Includecore.type_declarations env id
+                  decl'
+                  (Subst.type_declaration
+                     (Subst.add_type id path Subst.identity) decl)
+            in
+            if err <> [] then
+              raise(Error(sdecl.ptype_loc, Definition_mismatch (ty, err)))
           with Not_found ->
             raise(Error(sdecl.ptype_loc, Unavailable_type_constructor path))
           end
-      | _ -> raise(Error(sdecl.ptype_loc, Definition_mismatch ty))
+      | _ -> raise(Error(sdecl.ptype_loc, Definition_mismatch (ty, [])))
       end
   | _ -> ()
 
@@ -888,18 +893,20 @@ let report_error ppf = function
   | Duplicate_constructor s ->
       fprintf ppf "Two constructors are named %s" s
   | Too_many_constructors ->
-      fprintf ppf "Too many non-constant constructors -- \
-                   maximum is %i non-constant constructors"
-        (Config.max_tag + 1)
+      fprintf ppf
+        "@[Too many non-constant constructors@ -- maximum is %i %s@]"
+        (Config.max_tag + 1) "non-constant constructors"
   | Duplicate_label s ->
       fprintf ppf "Two labels are named %s" s
   | Recursive_abbrev s ->
       fprintf ppf "The type abbreviation %s is cyclic" s
-  | Definition_mismatch ty ->
+  | Definition_mismatch (ty, errs) ->
       Printtyp.reset_and_mark_loops ty;
-      fprintf ppf
-        "The variant or record definition does not match that of type@ %a"
+      fprintf ppf "@[<v>@[<hov>%s@ %s@;<1 2>%a@]%a@]"
+        "This variant or record definition" "does not match that of type"
         Printtyp.type_expr ty
+        (Includecore.report_type_mismatch "the original" "this" "definition")
+        errs
   | Constraint_failed (ty, ty') ->
       fprintf ppf "Constraints are not satisfied in this type.@.";
       Printtyp.reset_and_mark_loops ty;

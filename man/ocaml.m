@@ -1,4 +1,4 @@
-\" $Id$
+\" $Id: ocaml.m 10444 2010-05-20 14:06:29Z doligez $
 
 .TH OCAML 1
 
@@ -134,6 +134,9 @@ accesses an array or string outside of its bounds.
 .TP
 .B \-version
 Print version string and exit.
+.TP
+.B \-vnum
+Print short version number and exit.
 .TP
 .BI \-w \ warning-list
 Enable or disable warnings according to the argument

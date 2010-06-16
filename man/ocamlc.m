@@ -1,4 +1,4 @@
-\" $Id$
+\" $Id: ocamlc.m 10450 2010-05-21 12:00:49Z doligez $
 
 .TH OCAMLC 1
 
@@ -476,7 +476,7 @@ invocations of the C compiler and linker in
 .B \-custom
 mode.  Useful to debug C library problems.
 .TP
-.B \-version
+.BR \-vnum or \-version
 Print the version number of the compiler in short form (e.g. "3.11.0"),
 then exit.
 .TP
@@ -565,7 +565,7 @@ function type and is ignored.
 \ \ \ Label omitted in function application.
 
 7
-\ \ \ Some methods are overriden in the class where they are defined.
+\ \ \ Some methods are overridden in the class where they are defined.
 
 8
 \ \ \ Partial match: missing cases in pattern-matching.

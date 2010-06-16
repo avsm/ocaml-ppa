@@ -1,4 +1,4 @@
-\" $Id$
+\" $Id: ocamlrun.m 10444 2010-05-20 14:06:29Z doligez $
 
 .TH OCAMLRUN 1
 
@@ -72,7 +72,10 @@ This is equivalent to setting
 in the OCAMLRUNPARAM environment variable (see below).
 .TP
 .B \-version
-Print version and exit.
+Print version string and exit.
+.TP
+.B \-vnum
+Print short version number and exit.
 
 .SH ENVIRONMENT VARIABLES
 

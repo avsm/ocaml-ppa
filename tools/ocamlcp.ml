@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: ocamlcp.ml 10444 2010-05-20 14:06:29Z doligez $ *)
 
 open Printf
 
@@ -81,6 +81,7 @@ module Options = Main_args.Make_bytecomp_options (struct
   let _use_runtime s = option_with_arg "-use-runtime" s
   let _v = option "-v"
   let _version = option "-version"
+  let _vnum = option "-vnum"
   let _verbose = option "-verbose"
   let _w = option_with_arg "-w"
   let _warn_error = option_with_arg "-warn-error"

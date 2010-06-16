@@ -35,3 +35,4 @@ unix.c
 dynlink.c
 signals.c
 debugger.c
+.depend.nt

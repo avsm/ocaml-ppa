@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: includeclass.ml 10541 2010-06-08 08:43:38Z garrigue $ *)
 
 (* Inclusion checks for the class language *)
 
@@ -35,6 +35,12 @@ let class_declarations env cty1 cty2 =
 
 open Format
 open Ctype
+
+(*
+let rec hide_params = function
+    Tcty_fun ("*", _, cty) -> hide_params cty
+  | cty -> cty
+*)
 
 let include_err ppf =
   function

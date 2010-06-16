@@ -10,16 +10,16 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: Makefile 10566 2010-06-16 01:32:26Z garrigue $
 
 # The main Makefile
 
 include config/Makefile
 include stdlib/StdlibModules
 
-CAMLC=boot/ocamlrun boot/ocamlc -strict-sequence -nostdlib -I boot
-CAMLOPT=boot/ocamlrun ./ocamlopt -strict-sequence -nostdlib -I stdlib -I otherlibs/dynlink
-COMPFLAGS=-warn-error A $(INCLUDES)
+CAMLC=boot/ocamlrun boot/ocamlc -nostdlib -I boot
+CAMLOPT=boot/ocamlrun ./ocamlopt -nostdlib -I stdlib -I otherlibs/dynlink
+COMPFLAGS=-strict-sequence -warn-error A $(INCLUDES)
 LINKFLAGS=
 
 CAMLYACC=boot/ocamlyacc
@@ -266,6 +266,10 @@ opt.opt: checkstack runtime core ocaml opt-core ocamlc.opt otherlibraries \
 	 ocamlbuild.byte camlp4out $(DEBUGGER) ocamldoc ocamlopt.opt \
 	 otherlibrariesopt \
 	 ocamllex.opt ocamltoolsopt.opt ocamlbuild.native camlp4opt ocamldoc.opt
+
+base.opt: checkstack runtime core ocaml opt-core ocamlc.opt otherlibraries \
+	 ocamlbuild.byte camlp4out $(DEBUGGER) ocamldoc ocamlopt.opt \
+	 otherlibrariesopt
 
 # Installation
 install:
@@ -620,10 +624,10 @@ clean::
 
 # Tools
 
-ocamltools: ocamlc ocamlyacc ocamllex
+ocamltools: ocamlc ocamlyacc ocamllex asmcomp/cmx_format.cmi
 	cd tools; $(MAKE) all
 
-ocamltoolsopt.opt: ocamlc.opt ocamlyacc ocamllex
+ocamltoolsopt.opt: ocamlc.opt ocamlyacc ocamllex asmcomp/cmx_format.cmi
 	cd tools; $(MAKE) opt.opt
 
 partialclean::

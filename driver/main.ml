@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: main.ml 10444 2010-05-20 14:06:29Z doligez $ *)
 
 open Config
 open Clflags
@@ -127,6 +127,7 @@ module Options = Main_args.Make_bytecomp_options (struct
   let _use_runtime s = use_runtime := s
   let _v = print_version_and_library
   let _version = print_version_string
+  let _vnum = print_version_string
   let _w = (Warnings.parse_options false)
   let _warn_error = (Warnings.parse_options true)
   let _warn_help = Warnings.help_warnings

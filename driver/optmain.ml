@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: optmain.ml 10444 2010-05-20 14:06:29Z doligez $ *)
 
 open Config
 open Clflags
@@ -135,6 +135,7 @@ module Options = Main_args.Make_optcomp_options (struct
   let _unsafe = set fast
   let _v () = print_version_and_library ()
   let _version () = print_version_string ()
+  let _vnum () = print_version_string ()
   let _verbose = set verbose
   let _w s = Warnings.parse_options false s
   let _warn_error s = Warnings.parse_options true s

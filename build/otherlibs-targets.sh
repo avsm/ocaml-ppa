@@ -13,7 +13,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: otherlibs-targets.sh 10443 2010-05-20 09:44:25Z doligez $
 
 OTHERLIBS_BYTE=""
 OTHERLIBS_NATIVE=""

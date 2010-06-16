@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: odoc_lexer.mll 10480 2010-05-31 11:52:13Z guesdon $ *)
 
 (** The lexer for special comments. *)
 
@@ -313,6 +313,8 @@ and elements = parse
              T_SEE
          | "since" ->
              T_SINCE
+         | "before" ->
+             T_BEFORE
          | "deprecated" ->
              T_DEPRECATED
          | "raise" ->

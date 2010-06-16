@@ -11,22 +11,22 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
+/* $Id: windbug.c 10467 2010-05-25 13:01:06Z xleroy $ */
 
-#include <windows.h>
+#include "windbug.h"
 
-int dbug = 0;
-
-void dbug_init (void)
+int debug_test (void)
 {
-  dbug = (getenv("OCAMLDBUG") != NULL);
-}
+  static int debug_init = 0;
+  static int debug = 0;
 
-void dbug_cleanup (void)
-{
-}
+#ifdef DEBUG
+  if (!debug_init)
+  {
+    debug = (getenv("OCAMLDEBUG") != NULL);
+    debug_init = 1;
+  };
+#endif 
 
-int dbug_test (void)
-{
-  return dbug;
+  return debug;
 }
