@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: Makefile.msvc 10461 2010-05-25 10:00:39Z frisch $
 
 # Configuration for Windows, Visual C++ compiler
 
@@ -70,6 +70,7 @@ CC_PROFILE=
 SYSTHREAD_SUPPORT=true
 EXTRALIBS=
 CMXS=cmxs
+NATDYNLINK=true
 
 ########## Configuration for the bytecode compiler
 

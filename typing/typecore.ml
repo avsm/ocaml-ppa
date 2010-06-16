@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: typecore.ml 10540 2010-06-08 03:20:26Z garrigue $ *)
 
 (* Typechecking for the core language *)
 
@@ -23,12 +23,7 @@ open Btype
 open Ctype
 
 type error =
-    Unbound_value of Longident.t
-  | Unbound_constructor of Longident.t
-  | Unbound_label of Longident.t
-  | Unbound_module of Longident.t
-  | Unbound_functor of Longident.t
-  | Polymorphic_label of Longident.t
+    Polymorphic_label of Longident.t
   | Constructor_arity_mismatch of Longident.t * int * int
   | Label_mismatch of Longident.t * (type_expr * type_expr) list
   | Pattern_type_clash of (type_expr * type_expr) list
@@ -44,7 +39,6 @@ type error =
   | Bad_conversion of string * int * char
   | Undefined_method of type_expr * string
   | Undefined_inherited_method of string
-  | Unbound_class of Longident.t
   | Virtual_class of Longident.t
   | Private_type of type_expr
   | Private_label of Longident.t * type_expr
@@ -305,74 +299,8 @@ let rec build_as_type env p =
   | Tpat_any | Tpat_var _ | Tpat_constant _
   | Tpat_array _ | Tpat_lazy _ -> p.pat_type
 
-(* Narrowing unbound identifier errors. *)
-let rec narrow_unbound_lid_error env lid make_error =
-  let module_is_bound mlid =
-    ignore (Env.lookup_module mlid env) in
-  match lid with
-  | Longident.Lident _ -> make_error lid
-  | Longident.Ldot (mlid, _) ->
-    begin
-      try
-        module_is_bound mlid;
-        make_error lid with
-      | Not_found -> Unbound_module mlid
-    end
-  | Longident.Lapply (flid, mlid) ->
-    begin
-      try
-        module_is_bound flid;
-        begin
-          try
-            module_is_bound mlid;
-            make_error lid with
-          | Not_found -> Unbound_module mlid
-        end with
-      | Not_found -> Unbound_functor flid
-    end
-;;
-
-let unbound_lid_error env loc lid make_error =
-  let err = narrow_unbound_lid_error env lid make_error in
-  raise (Error (loc, err))
-;;
-
-let find_type env loc lid =
-  try Env.lookup_type lid env
-  with Not_found ->
-    unbound_lid_error env loc lid
-      (fun lid ->
-       raise (Typetexp.Error (loc, Typetexp.Unbound_type_constructor lid)))
-;;
-
-let find_constructor env loc lid =
-  try
-    match lid with
-    | Longident.Ldot (Longident.Lident "*predef*", s) ->
-        Env.lookup_constructor (Longident.Lident s) Env.initial
-    | _ -> Env.lookup_constructor lid env
-  with Not_found ->
-    unbound_lid_error env loc lid
-      (fun lid -> Unbound_constructor lid)
-;;
-
-let find_label env loc lid =
-  try
-    Env.lookup_label lid env
-  with Not_found ->
-    unbound_lid_error env loc lid
-      (fun lid -> Unbound_label lid)
-;;
-
-let find_class env loc lid =
-  try Env.lookup_class lid env with
-  | Not_found ->
-      unbound_lid_error env loc lid
-        (fun lid -> Unbound_class lid)
-;;
-
 let build_or_pat env loc lid =
-  let path, decl = find_type env loc lid
+  let path, decl = Typetexp.find_type env loc lid
   in
   let tyl = List.map (fun _ -> newvar()) decl.type_params in
   let row0 =
@@ -524,7 +452,7 @@ let rec type_pat env sp =
         pat_type = newty (Ttuple(List.map (fun p -> p.pat_type) pl));
         pat_env = env }
   | Ppat_construct(lid, sarg, explicit_arity) ->
-      let constr = find_constructor env loc lid in
+      let constr = Typetexp.find_constructor env loc lid in
       let sargs =
         match sarg with
           None -> []
@@ -565,7 +493,7 @@ let rec type_pat env sp =
   | Ppat_record(lid_sp_list, closed) ->
       let ty = newvar() in
       let type_label_pat (lid, sarg) =
-        let label = find_label env loc lid in
+        let label = Typetexp.find_label env loc lid in
         begin_def ();
         let (vars, ty_arg, ty_res) = instance_label false label in
         if vars = [] then end_def ();
@@ -1074,14 +1002,22 @@ let rec type_exp env sexp =
   let loc = sexp.pexp_loc in
   match sexp.pexp_desc with
   | Pexp_ident lid ->
-      begin try
+      begin
         if !Clflags.annotations then begin
           try let (path, annot) = Env.lookup_annot lid env in
+              let rec name_of_path = function
+                | Path.Pident id -> Ident.name id
+                | Path.Pdot(p, s, pos) ->
+                    if Oprint.parenthesized_ident s then
+                      name_of_path p ^ ".( " ^ s ^ " )"
+                    else
+                      name_of_path p ^ "." ^ s
+                | Path.Papply(p1, p2) -> name_of_path p1 ^ "(" ^ name_of_path p2 ^ ")" in
               Stypes.record
-                (Stypes.An_ident (loc, Path.name path, annot))
+                (Stypes.An_ident (loc, name_of_path path, annot))
           with _ -> ()
         end;
-        let (path, desc) = Env.lookup_value lid env in
+        let (path, desc) = Typetexp.find_value env loc lid in
         re {
           exp_desc =
             begin match desc.val_kind with
@@ -1103,9 +1039,6 @@ let rec type_exp env sexp =
           exp_loc = loc;
           exp_type = instance desc.val_type;
           exp_env = env }
-      with Not_found ->
-        unbound_lid_error env loc lid
-          (fun lid -> Unbound_value lid)
       end
   | Pexp_constant cst ->
       re {
@@ -1202,31 +1135,9 @@ let rec type_exp env sexp =
                                   row_name = None});
         exp_env = env }
   | Pexp_record(lid_sexp_list, opt_sexp) ->
-      let ty = newvar() in
-      let num_fields = ref 0 in
-      let type_label_exp (lid, sarg) =
-        let label = find_label env loc lid in
-        begin_def ();
-        if !Clflags.principal then begin_def ();
-        let (vars, ty_arg, ty_res) = instance_label true label in
-        if !Clflags.principal then begin
-          end_def ();
-          generalize_structure ty_arg;
-          generalize_structure ty_res
-        end;
-        begin try
-          unify env (instance ty_res) ty
-        with Unify trace ->
-          raise(Error(loc, Label_mismatch(lid, trace)))
-        end;
-        let arg = type_argument env sarg ty_arg in
-        end_def ();
-        check_univars env (vars <> []) "field value" arg label.lbl_arg vars;
-        num_fields := Array.length label.lbl_all;
-        if label.lbl_private = Private then
-          raise(Error(loc, Private_type ty));
-        (label, {arg with exp_type = instance arg.exp_type}) in
-      let lbl_exp_list = type_label_a_list type_label_exp lid_sexp_list in
+      let ty = newvar () in
+      let lbl_exp_list =
+        type_label_a_list (type_label_exp true env loc ty) lid_sexp_list in
       let rec check_duplicates seen_pos lid_sexp lbl_exp =
         match (lid_sexp, lbl_exp) with
           ((lid, _) :: rem1, (lbl, _) :: rem2) ->
@@ -1254,7 +1165,10 @@ let rec type_exp env sexp =
             Some(type_expect env sexp ty_exp)
         | _ -> assert false
       in
-      if opt_sexp = None && List.length lid_sexp_list <> !num_fields then begin
+      let num_fields =
+        match lbl_exp_list with [] -> assert false
+        | (lbl,_)::_ -> Array.length lbl.lbl_all in
+      if opt_sexp = None && List.length lid_sexp_list <> num_fields then begin
         let present_indices =
           List.map (fun (lbl, _) -> lbl.lbl_pos) lbl_exp_list in
         let label_names = extract_label_names sexp env ty in
@@ -1267,7 +1181,7 @@ let rec type_exp env sexp =
         let missing = missing_labels 0 label_names in
         raise(Error(loc, Label_missing missing))
       end
-      else if opt_sexp <> None && List.length lid_sexp_list = !num_fields then
+      else if opt_sexp <> None && List.length lid_sexp_list = num_fields then
         Location.prerr_warning loc Warnings.Useless_record_with;
       re {
         exp_desc = Texp_record(lbl_exp_list, opt_exp);
@@ -1276,7 +1190,7 @@ let rec type_exp env sexp =
         exp_env = env }
   | Pexp_field(sarg, lid) ->
       let arg = type_exp env sarg in
-      let label = find_label env loc lid in
+      let label = Typetexp.find_label env loc lid in
       let (_, ty_arg, ty_res) = instance_label false label in
       unify_exp env arg ty_res;
       re {
@@ -1286,17 +1200,10 @@ let rec type_exp env sexp =
         exp_env = env }
   | Pexp_setfield(srecord, lid, snewval) ->
       let record = type_exp env srecord in
-      let label = find_label env loc lid in
+      let (label, newval) =
+        type_label_exp false env loc record.exp_type (lid, snewval) in
       if label.lbl_mut = Immutable then
         raise(Error(loc, Label_not_mutable lid));
-      begin_def ();
-      let (vars, ty_arg, ty_res) = instance_label true label in
-      unify_exp env record ty_res;
-      let newval = type_expect env snewval ty_arg in
-      end_def ();
-      check_univars env (vars <> []) "field value" newval label.lbl_arg vars;
-      if label.lbl_private = Private then
-        raise(Error(loc, Private_label(lid, ty_res)));
       re {
         exp_desc = Texp_setfield(record, label, newval);
         exp_loc = loc;
@@ -1533,7 +1440,7 @@ let rec type_exp env sexp =
         raise(Error(e.pexp_loc, Undefined_method (obj.exp_type, met)))
       end
   | Pexp_new cl ->
-      let (cl_path, cl_decl) = find_class env loc cl in
+      let (cl_path, cl_decl) = Typetexp.find_class env loc cl in
         begin match cl_decl.cty_new with
           None ->
             raise(Error(loc, Virtual_class cl))
@@ -1709,6 +1616,45 @@ let rec type_exp env sexp =
         exp_env = env }
   | Pexp_open (lid, e) ->
       type_exp (!type_open env sexp.pexp_loc lid) e
+
+and type_label_exp create env loc ty (lid, sarg) =
+  let label = Typetexp.find_label env sarg.pexp_loc lid in
+  begin_def ();
+  if !Clflags.principal then begin_def ();
+  let (vars, ty_arg, ty_res) = instance_label true label in
+  if !Clflags.principal then begin
+    end_def ();
+    generalize_structure ty_arg;
+    generalize_structure ty_res
+  end;
+  begin try
+    unify env (instance ty_res) ty
+  with Unify trace ->
+    raise(Error(loc , Label_mismatch(lid, trace)))
+  end;
+  if label.lbl_private = Private then
+    raise(Error(loc, if create then Private_type ty else Private_label (lid, ty)));
+  let arg =
+    let snap = if vars = [] then None else Some (Btype.snapshot ()) in
+    let arg = type_argument env sarg ty_arg in
+    end_def ();
+    try
+      check_univars env (vars <> []) "field value" arg label.lbl_arg vars;
+      arg
+    with exn when not (is_nonexpansive arg) -> try
+      (* Try to retype without propagating ty_arg, cf PR#4862 *)
+      may Btype.backtrack snap;
+      begin_def ();
+      let arg = type_exp env sarg in
+      end_def ();
+      generalize_expansive env arg.exp_type;
+      unify_exp env arg ty_arg;
+      check_univars env false "field value" arg label.lbl_arg vars;
+      arg
+    with Error (_, Less_general _) as e -> raise e
+    | _ -> raise exn    (* In case of failure return the first error *)
+  in
+  (label, {arg with exp_type = instance arg.exp_type})
 
 and type_argument env sarg ty_expected' =
   (* ty_expected' may be generic *)
@@ -1952,7 +1898,7 @@ and type_application env funct sargs =
         type_args [] [] ty ty sargs []
 
 and type_construct env loc lid sarg explicit_arity ty_expected =
-  let constr = find_constructor env loc lid in
+  let constr = Typetexp.find_constructor env loc lid in
   let sargs =
     match sarg with
       None -> []
@@ -2309,16 +2255,6 @@ open Format
 open Printtyp
 
 let report_error ppf = function
-  | Unbound_value lid ->
-      fprintf ppf "Unbound value %a" longident lid
-  | Unbound_module lid ->
-      fprintf ppf "Unbound module %a" longident lid
-  | Unbound_functor lid ->
-      fprintf ppf "Unbound functor %a" longident lid
-  | Unbound_constructor lid ->
-      fprintf ppf "Unbound constructor %a" longident lid
-  | Unbound_label lid ->
-      fprintf ppf "Unbound record field label %a" longident lid
   | Polymorphic_label lid ->
       fprintf ppf "@[The record field label %a is polymorphic.@ %s@]"
         longident lid "You cannot instantiate it in a pattern."
@@ -2393,8 +2329,6 @@ let report_error ppf = function
          It has no method %s@]" type_expr ty me
   | Undefined_inherited_method me ->
       fprintf ppf "This expression has no method %s" me
-  | Unbound_class cl ->
-      fprintf ppf "Unbound class %a" longident cl
   | Virtual_class cl ->
       fprintf ppf "Cannot instantiate the virtual class %a"
         longident cl

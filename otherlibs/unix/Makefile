@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: Makefile 10442 2010-05-20 09:40:41Z xleroy $
 
 # Makefile for the Unix interface library
 
@@ -38,7 +38,7 @@ COBJS=accept.o access.o addrofstr.o alarm.o bind.o chdir.o chmod.o \
 
 CAMLOBJS=unix.cmo unixLabels.cmo
 
-HEADERS=unixsupport.h
+HEADERS=unixsupport.h socketaddr.h
 
 include ../Makefile
 

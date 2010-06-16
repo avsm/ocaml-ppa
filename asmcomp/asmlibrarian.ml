@@ -10,13 +10,13 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: asmlibrarian.ml 10424 2010-05-19 11:29:38Z xleroy $ *)
 
 (* Build libraries of .cmx files *)
 
 open Misc
 open Config
-open Compilenv
+open Cmx_format
 
 type error =
     File_not_found of string

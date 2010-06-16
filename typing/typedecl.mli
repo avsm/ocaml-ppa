@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: typedecl.mli 10447 2010-05-21 03:36:52Z garrigue $ *)
 
 (* Typing of type definitions and primitive definitions *)
 
@@ -57,7 +57,7 @@ type error =
   | Too_many_constructors
   | Duplicate_label of string
   | Recursive_abbrev of string
-  | Definition_mismatch of type_expr
+  | Definition_mismatch of type_expr * Includecore.type_mismatch list
   | Constraint_failed of type_expr * type_expr
   | Unconsistent_constraint of (type_expr * type_expr) list
   | Type_clash of (type_expr * type_expr) list

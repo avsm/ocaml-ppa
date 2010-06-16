@@ -12,7 +12,7 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id$ */
+/* $Id: main.c 10444 2010-05-20 14:06:29Z doligez $ */
 
 #include <signal.h>
 #include <string.h>
@@ -190,6 +190,9 @@ void getargs(int argc, char **argv)
             if (!strcmp (argv[i], "-version")){
               printf ("The Objective Caml parser generator, version "
                       OCAML_VERSION "\n");
+              exit (0);
+            }else if (!strcmp (argv[i], "-vnum")){
+              printf (OCAML_VERSION "\n");
               exit (0);
             }else{
               vflag = 1;

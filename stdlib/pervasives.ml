@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: pervasives.ml 10549 2010-06-09 10:27:01Z weis $ *)
 
 (* type 'a option = None | Some of 'a *)
 
@@ -51,6 +51,7 @@ external (||) : bool -> bool -> bool = "%sequor"
 (* Integer operations *)
 
 external (~-) : int -> int = "%negint"
+external (~+) : int -> int = "%identity"
 external succ : int -> int = "%succint"
 external pred : int -> int = "%predint"
 external (+) : int -> int -> int = "%addint"
@@ -77,6 +78,7 @@ let max_int = min_int - 1
 (* Floating-point operations *)
 
 external (~-.) : float -> float = "%negfloat"
+external (~+.) : float -> float = "%identity"
 external (+.) : float -> float -> float = "%addfloat"
 external (-.) : float -> float -> float = "%subfloat"
 external ( *. ) : float -> float -> float = "%mulfloat"

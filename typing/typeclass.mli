@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: typeclass.mli 10422 2010-05-18 17:25:02Z frisch $ *)
 
 open Asttypes
 open Types
@@ -55,9 +55,7 @@ type error =
   | Apply_wrong_label of label
   | Pattern_type_clash of type_expr
   | Repeated_parameter
-  | Unbound_class of Longident.t
   | Unbound_class_2 of Longident.t
-  | Unbound_class_type of Longident.t
   | Unbound_class_type_2 of Longident.t
   | Abbrev_type_clash of type_expr * type_expr * type_expr
   | Constructor_type_mismatch of string * (type_expr * type_expr) list

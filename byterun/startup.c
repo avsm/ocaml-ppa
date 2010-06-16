@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
+/* $Id: startup.c 10444 2010-05-20 14:06:29Z doligez $ */
 
 /* Start-up code */
 
@@ -248,6 +248,9 @@ static int parse_command_line(char **argv)
     case 'v':
       if (!strcmp (argv[i], "-version")){
         printf ("The Objective Caml runtime, version " OCAML_VERSION "\n");
+        exit (0);
+      }else if (!strcmp (argv[i], "-vnum")){
+        printf (OCAML_VERSION "\n");
         exit (0);
       }else{
         caml_verb_gc = 0x001+0x004+0x008+0x010+0x020;

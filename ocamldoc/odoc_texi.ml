@@ -8,7 +8,7 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: odoc_texi.ml 10480 2010-05-31 11:52:13Z guesdon $ *)
 
 (** Generation of Texinfo documentation. *)
 
@@ -218,7 +218,7 @@ struct
     String.concat "\n"
       [ "@ifinfo" ; s ; "@end ifinfo" ; "" ]
 
-  (** [install-info] informations *)
+  (** [install-info] information *)
   let dirsection sec =
     "@dircategory " ^ (escape sec)
 
@@ -465,6 +465,11 @@ class texi =
                    Raw " " ; Raw s ] @ t @ [ Newline ])
            see_l)
 
+    method text_of_before l =
+      List.flatten
+      (List.map
+        (fun x -> linebreak :: (to_text#text_of_before [x])) l)
+
     method text_of_params params_list =
         List.concat
           (List.map
@@ -530,6 +535,7 @@ class texi =
                           self#text_of_version_opt info.i_version )
                    else [] ;
                    self#text_of_sees_opt info.i_sees ;
+                   self#text_of_before info.i_before ;
                    if is info.i_since
                    then ( linebreak ::
                           self#text_of_since_opt info.i_since )

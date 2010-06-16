@@ -11,12 +11,12 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: dynlink.ml 10471 2010-05-28 10:16:31Z frisch $ *)
 
 (* Dynamic loading of .cmo files *)
 
-open Dynlinkaux
-open Dynlinkaux.Cmo_format
+open Dynlinkaux  (* REMOVE_ME for ../../debugger/dynlink.ml *)
+open Cmo_format
 
 type linking_error =
     Undefined_global of string

@@ -9,13 +9,13 @@
 #(*                                                                     *)
 #(***********************************************************************)
 
-# $Id$
+# $Id: Makefile.nt 10472 2010-05-28 11:21:46Z garrigue $
 
 include ../config/Makefile
 
 CAMLRUN =../boot/ocamlrun
-OCAMLC   =$(CAMLRUN) ../ocamlc -warn-error A
-OCAMLOPT =$(CAMLRUN) ../ocamlopt
+OCAMLC   = ../ocamlcomp.sh
+OCAMLOPT = ../ocamlcompopt.sh
 OCAMLLEX =$(CAMLRUN) ../boot/ocamllex
 OCAMLYACC=../boot/ocamlyacc
 

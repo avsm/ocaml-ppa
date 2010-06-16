@@ -10,7 +10,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id$ *)
+;(* $Id: caml-emacs.el 6612 2004-08-20 17:04:35Z doligez $ *)
 
 ;; for caml-help.el
 (defalias 'caml-info-other-window 'info-other-window)

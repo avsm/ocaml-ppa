@@ -13,7 +13,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: configure 10490 2010-06-02 08:58:42Z xleroy $
 
 configure_options="$*"
 prefix=/usr/local
@@ -511,17 +511,14 @@ mksharedlib=''
 byteccrpath=''
 mksharedlibrpath=''
 natdynlinkopts=""
-cmxs="cmxa"
 
 if test $withsharedlibs = "yes"; then
   case "$host" in
     *-*-cygwin*)
-      cmxs="cmxs"
       mksharedlib="$flexlink"
       mkmaindll="$flexlink -maindll"
       shared_libraries_supported=true;;
     *-*-linux-gnu|*-*-linux|*-*-freebsd[3-9]*|*-*-openbsd*|*-*-netbsd*|*-*-gnu*)
-      cmxs="cmxs"
       sharedcccompopts="-fPIC"
       mksharedlib="$bytecc -shared"
       bytecclinkopts="$bytecclinkopts -Wl,-E"
@@ -613,6 +610,35 @@ fi
 if test -z "$mkmaindll"; then
   mkmaindll=$mksharedlib
 fi
+
+# Configure native dynlink
+
+natdynlink=false
+
+if test $withsharedlibs = "yes"; then
+  case "$host" in
+    *-*-cygwin*)                  natdynlink=true;;
+    i[3456]86-*-linux*)           natdynlink=true;;
+    x86_64-*-linux*)              natdynlink=true;;
+    i[3456]86-*-darwin10.*)
+      if test $arch64 == true; then
+        natdynlink=true
+      fi;;
+    i[3456]86-*-darwin[89]*)      natdynlink=true;;
+    powerpc64-*-linux*)           natdynlink=true;;
+    sparc-*-linux*)               natdynlink=true;;
+    i686-*-kfreebsd*)             natdynlink=true;;
+    x86_64-*-kfreebsd*)           natdynlink=true;;
+    i386-*-gnu0.3)                natdynlink=true;;
+  esac
+fi
+
+if test $natdynlink = "true"; then
+  cmxs="cmxs"
+else
+  cmxs="cmxa"
+fi
+
 
 # Configure the native-code compiler
 
@@ -1543,6 +1569,17 @@ else
   echo "TK_LINK=" >> Makefile
 fi
 
+# Look for BFD library
+
+if ./hasgot -i bfd.h -lbfd -ldl; then
+  echo "BFD library found."
+  echo "#define HAS_LIBBFD" >> s.h
+  echo "LIBBFD_LINK=-lbfd -ldl" >> Makefile
+else
+  echo "BFD library not found, 'objinfo' will be unable to display info on .cmxs files"
+  echo "LIBBFD_LINK=" >> Makefile
+fi
+
 # Final twiddling of compiler options to work around known bugs
 
 nativeccprofopts="$nativecccompopts"
@@ -1607,6 +1644,7 @@ echo "EXT_DLL=.so" >> Makefile
 echo "EXTRALIBS=" >> Makefile
 echo "CCOMPTYPE=cc" >> Makefile
 echo "TOOLCHAIN=cc" >> Makefile
+echo "NATDYNLINK=$natdynlink" >> Makefile
 echo "CMXS=$cmxs" >> Makefile
 echo "MKEXE=$mkexe" >> Makefile
 echo "MKDLL=$mksharedlib" >> Makefile
@@ -1655,6 +1693,7 @@ else
   echo "        options for linking....... $nativecclinkopts $cclibs"
   echo "        assembler ................ $as"
   echo "        preprocessed assembler ... $aspp"
+  echo "        native dynlink ........... $natdynlink"
   if test "$profiling" = "prof"; then
   echo "        profiling with gprof ..... supported"
   else

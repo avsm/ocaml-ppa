@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: typemod.ml 10532 2010-06-07 08:24:02Z garrigue $ *)
 
 (* Type-checking of the module language *)
 
@@ -24,9 +24,7 @@ open Typedtree
 open Format
 
 type error =
-    Unbound_module of Longident.t
-  | Unbound_modtype of Longident.t
-  | Cannot_apply of module_type
+    Cannot_apply of module_type
   | Not_included of Includemod.error list
   | Cannot_eliminate_dependency of module_type
   | Signature_expected
@@ -56,18 +54,10 @@ let extract_sig_open env loc mty =
     Tmty_signature sg -> sg
   | _ -> raise(Error(loc, Structure_expected mty))
 
-(* Lookup the type of a module path *)
-
-let type_module_path env loc lid =
-  try
-    Env.lookup_module lid env
-  with Not_found ->
-    raise(Error(loc, Unbound_module lid))
-
 (* Compute the environment after opening a module *)
 
 let type_open env loc lid =
-  let (path, mty) = type_module_path env loc lid in
+  let (path, mty) = Typetexp.find_module env loc lid in
   let sg = extract_sig_open env loc mty in
   Env.open_signature path sg env
 
@@ -147,13 +137,13 @@ let merge_constraint initial_env loc sg lid constr =
         rem
     | (Tsig_module(id, mty, rs) :: rem, [s], Pwith_module lid)
       when Ident.name id = s ->
-        let (path, mty') = type_module_path initial_env loc lid in
+        let (path, mty') = Typetexp.find_module initial_env loc lid in
         let newmty = Mtype.strengthen env mty' path in
         ignore(Includemod.modtypes env newmty mty);
         Tsig_module(id, newmty, rs) :: rem
     | (Tsig_module(id, mty, rs) :: rem, [s], Pwith_modsubst lid)
       when Ident.name id = s ->
-        let (path, mty') = type_module_path initial_env loc lid in
+        let (path, mty') = Typetexp.find_module initial_env loc lid in
         let newmty = Mtype.strengthen env mty' path in
         ignore(Includemod.modtypes env newmty mty);
         real_id := Some id;
@@ -191,7 +181,7 @@ let merge_constraint initial_env loc sg lid constr =
     | [s], Pwith_modsubst lid ->
         let id =
           match !real_id with None -> assert false | Some id -> id in
-        let (path, _) = type_module_path initial_env loc lid in
+        let (path, _) = Typetexp.find_module initial_env loc lid in
         let sub = Subst.add_module id path Subst.identity in
         Subst.signature sub sg
     | _ ->
@@ -222,12 +212,8 @@ let rec map_rec' fn decls rem =
 let rec approx_modtype env smty =
   match smty.pmty_desc with
     Pmty_ident lid ->
-      begin try
-        let (path, info) = Env.lookup_modtype lid env in
-        Tmty_ident path
-      with Not_found ->
-        raise(Error(smty.pmty_loc, Unbound_modtype lid))
-      end
+      let (path, info) = Typetexp.find_modtype env smty.pmty_loc lid in
+      Tmty_ident path
   | Pmty_signature ssg ->
       Tmty_signature(approx_sig env ssg)
   | Pmty_functor(param, sarg, sres) ->
@@ -341,11 +327,8 @@ let rec get_values = function
 (* Check and translate a module type expression *)
 
 let transl_modtype_longident loc env lid =
-  try
-    let (path, info) = Env.lookup_modtype lid env in
-    path
-  with Not_found ->
-    raise(Error(loc, Unbound_modtype lid))
+  let (path, info) = Typetexp.find_modtype env loc lid in
+  path
 
 let rec transl_modtype env smty =
   match smty.pmty_desc with
@@ -650,16 +633,17 @@ let check_recmodule_inclusion env bindings =
 
 (* Type a module value expression *)
 
-let rec type_module funct_body anchor env smod =
+let rec type_module sttn funct_body anchor env smod =
   match smod.pmod_desc with
     Pmod_ident lid ->
-      let (path, mty) = type_module_path env smod.pmod_loc lid in
+      let (path, mty) = Typetexp.find_module env smod.pmod_loc lid in
       rm { mod_desc = Tmod_ident path;
-           mod_type = Mtype.strengthen env mty path;
+           mod_type = if sttn then Mtype.strengthen env mty path else mty;
            mod_env = env;
            mod_loc = smod.pmod_loc }
   | Pmod_structure sstr ->
-      let (str, sg, finalenv) = type_structure funct_body anchor env sstr smod.pmod_loc in
+      let (str, sg, finalenv) =
+        type_structure funct_body anchor env sstr smod.pmod_loc in
       rm { mod_desc = Tmod_structure str;
            mod_type = Tmty_signature sg;
            mod_env = env;
@@ -667,14 +651,16 @@ let rec type_module funct_body anchor env smod =
   | Pmod_functor(name, smty, sbody) ->
       let mty = transl_modtype env smty in
       let (id, newenv) = Env.enter_module name mty env in
-      let body = type_module true None newenv sbody in
+      let body = type_module sttn true None newenv sbody in
       rm { mod_desc = Tmod_functor(id, mty, body);
            mod_type = Tmty_functor(id, mty, body.mod_type);
            mod_env = env;
            mod_loc = smod.pmod_loc }
   | Pmod_apply(sfunct, sarg) ->
-      let funct = type_module funct_body None env sfunct in
-      let arg = type_module funct_body None env sarg in
+      let arg = type_module true funct_body None env sarg in
+      let path = try Some (path_of_module arg) with Not_a_path -> None in
+      let funct =
+        type_module (sttn && path <> None) funct_body None env sfunct in
       begin match Mtype.scrape env funct.mod_type with
         Tmty_functor(param, mty_param, mty_res) as mty_functor ->
           let coercion =
@@ -683,17 +669,18 @@ let rec type_module funct_body anchor env smod =
             with Includemod.Error msg ->
               raise(Error(sarg.pmod_loc, Not_included msg)) in
           let mty_appl =
-            try
-              let path = path_of_module arg in
-              Subst.modtype (Subst.add_module param path Subst.identity)
-                            mty_res
-            with Not_a_path ->
-              try
-                Mtype.nondep_supertype
-                  (Env.add_module param arg.mod_type env) param mty_res
-              with Not_found ->
-                raise(Error(smod.pmod_loc,
-                            Cannot_eliminate_dependency mty_functor)) in
+            match path with
+              Some path ->
+                Subst.modtype (Subst.add_module param path Subst.identity)
+                              mty_res
+            | None ->
+                try
+                  Mtype.nondep_supertype
+                    (Env.add_module param arg.mod_type env) param mty_res
+                with Not_found ->
+                  raise(Error(smod.pmod_loc,
+                              Cannot_eliminate_dependency mty_functor))
+          in
           rm { mod_desc = Tmod_apply(funct, arg, coercion);
                mod_type = mty_appl;
                mod_env = env;
@@ -702,7 +689,7 @@ let rec type_module funct_body anchor env smod =
           raise(Error(sfunct.pmod_loc, Cannot_apply funct.mod_type))
       end
   | Pmod_constraint(sarg, smty) ->
-      let arg = type_module funct_body anchor env sarg in
+      let arg = type_module true funct_body anchor env sarg in
       let mty = transl_modtype env smty in
       let coercion =
         try
@@ -715,10 +702,12 @@ let rec type_module funct_body anchor env smod =
            mod_loc = smod.pmod_loc }
 
   | Pmod_unpack (sexp, (p, l)) ->
-      if funct_body then raise (Error (smod.pmod_loc, Not_allowed_in_functor_body));
+      if funct_body then
+        raise (Error (smod.pmod_loc, Not_allowed_in_functor_body));
       let l, mty = Typetexp.create_package_mty smod.pmod_loc env (p, l) in
       let mty = transl_modtype env mty in
-      let exp = Typecore.type_expect env sexp (Typecore.create_package_type smod.pmod_loc env (p, l)) in
+      let exp = Typecore.type_expect env sexp
+          (Typecore.create_package_type smod.pmod_loc env (p, l)) in
       rm { mod_desc = Tmod_unpack(exp, mty);
            mod_type = mty;
            mod_env = env;
@@ -792,7 +781,9 @@ and type_structure funct_body anchor env sstr scope =
          final_env)
     | {pstr_desc = Pstr_module(name, smodl); pstr_loc = loc} :: srem ->
         check "module" loc module_names name;
-        let modl = type_module funct_body (anchor_submodule name anchor) env smodl in
+        let modl =
+          type_module true funct_body (anchor_submodule name anchor) env
+            smodl in
         let mty = enrich_module_type anchor name modl.mod_type env in
         let (id, newenv) = Env.enter_module name mty env in
         let (str_rem, sig_rem, final_env) = type_struct newenv srem in
@@ -810,9 +801,11 @@ and type_structure funct_body anchor env sstr scope =
           List.map2
             (fun (id, mty) (name, smty, smodl) ->
               let modl =
-                type_module funct_body (anchor_recmodule id anchor) newenv smodl in
+                type_module true funct_body (anchor_recmodule id anchor) newenv
+                  smodl in
               let mty' =
-                enrich_module_type anchor (Ident.name id) modl.mod_type newenv in
+                enrich_module_type anchor (Ident.name id) modl.mod_type newenv
+              in
               (id, mty, modl, mty'))
            decls sbind in
         let bindings2 =
@@ -880,7 +873,7 @@ and type_structure funct_body anchor env sstr scope =
               classes [sig_rem]),
          final_env)
     | {pstr_desc = Pstr_include smodl; pstr_loc = loc} :: srem ->
-        let modl = type_module funct_body None env smodl in
+        let modl = type_module true funct_body None env smodl in
         (* Rename all identifiers bound by this signature to avoid clashes *)
         let sg = Subst.signature Subst.identity
                    (extract_sig_open env smodl.pmod_loc modl.mod_type) in
@@ -896,7 +889,7 @@ and type_structure funct_body anchor env sstr scope =
   then List.iter (function {pstr_loc = l} -> Stypes.record_phrase l) sstr;
   type_struct env sstr
 
-let type_module = type_module false None
+let type_module = type_module true false None
 let type_structure = type_structure false None
 
 (* Normalize types in a signature *)
@@ -951,7 +944,7 @@ let type_module_type_of env smod =
   let mty =
     match smod.pmod_desc with
     | Pmod_ident lid -> (* turn off strengthening in this case *)
-        let (path, mty) = type_module_path env smod.pmod_loc lid in mty
+        let (path, mty) = Typetexp.find_module env smod.pmod_loc lid in mty
     | _ -> (type_module env smod).mod_type in
   (* PR#5037: clean up inferred signature to remove duplicate specs *)
   let mty = simplify_modtype mty in
@@ -1056,9 +1049,7 @@ let package_units objfiles cmifile modulename =
 open Printtyp
 
 let report_error ppf = function
-  | Unbound_module lid -> fprintf ppf "Unbound module %a" longident lid
-  | Unbound_modtype lid -> fprintf ppf "Unbound module type %a" longident lid
-  | Cannot_apply mty ->
+    Cannot_apply mty ->
       fprintf ppf
         "@[This module is not a functor; it has type@ %a@]" modtype mty
   | Not_included errs ->

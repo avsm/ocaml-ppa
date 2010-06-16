@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
+/* $Id: bng.c 10450 2010-05-21 12:00:49Z doligez $ */
 
 #include "bng.h"
 #include "config.h"
@@ -34,7 +34,7 @@
 
 #include "bng_digit.c"
 
-/**** Operations that cannot be overriden ****/
+/**** Operations that cannot be overridden ****/
 
 /* Return number of leading zero bits in d */
 int bng_leading_zero_bits(bngdigit d)

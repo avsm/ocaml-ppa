@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: odoc_info.ml 10480 2010-05-31 11:52:13Z guesdon $ *)
 
 (** Interface for analysing documented OCaml source files and to the collected information. *)
 
@@ -72,6 +72,7 @@ type info = Odoc_types.info = {
     i_version : string option;
     i_sees : see list;
     i_since : string option;
+    i_before : (string * text) list ;
     i_deprecated : text option;
     i_params : param list;
     i_raised_exceptions : raised_exception list;

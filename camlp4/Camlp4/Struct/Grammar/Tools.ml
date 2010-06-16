@@ -19,8 +19,33 @@
 module Make (Structure : Structure.S) = struct
   open Structure;
 
-  value empty_entry ename _ _ _ =
+  value empty_entry ename _ =
     raise (Stream.Error ("entry [" ^ ename ^ "] is empty"));
+
+  value rec stream_map f = parser
+    [ [: ` x; strm :] -> [: ` (f x); stream_map f strm :]
+    | [: :] -> [: :] ];
+
+  value keep_prev_loc strm =
+    match Stream.peek strm with
+    [ None -> [: :]
+    | Some (_,init_loc) ->
+      let rec go prev_loc = parser
+        [ [: `(tok,cur_loc); strm :] -> [: `(tok,{prev_loc;cur_loc}); go cur_loc strm :]
+        | [: :] -> [: :] ]
+      in go init_loc strm ];
+
+  value drop_prev_loc strm = stream_map (fun (tok,r) -> (tok,r.cur_loc)) strm;
+
+  value get_cur_loc strm =
+    match Stream.peek strm with
+    [ Some (_,r) -> r.cur_loc
+    | None -> Loc.ghost ];
+
+  value get_prev_loc strm =
+    match Stream.peek strm with
+    [ Some (_,r) -> r.prev_loc
+    | None -> Loc.ghost ];
 
   value is_level_labelled n lev =
     match lev.lname with
@@ -51,13 +76,13 @@ module Make (Structure : Structure.S) = struct
       | (Snterm e1, Sself) -> e1.ename = entry.ename
       | (Sself, Snterm e2) -> entry.ename = e2.ename
       | (Snterml e1 l1, Snterml e2 l2) -> e1.ename = e2.ename && l1 = l2
-      | (Slist0 s1, Slist0 s2) -> eq_symbols s1 s2
-      | (Slist0sep s1 sep1, Slist0sep s2 sep2) ->
+      | (Slist0 s1, Slist0 s2) |
+        (Slist1 s1, Slist1 s2) |
+        (Sopt s1, Sopt s2) |
+        (Stry s1, Stry s2) -> eq_symbols s1 s2
+      | (Slist0sep s1 sep1, Slist0sep s2 sep2) |
+        (Slist1sep s1 sep1, Slist1sep s2 sep2) ->
           eq_symbols s1 s2 && eq_symbols sep1 sep2
-      | (Slist1 s1, Slist1 s2) -> eq_symbols s1 s2
-      | (Slist1sep s1 sep1, Slist1sep s2 sep2) ->
-          eq_symbols s1 s2 && eq_symbols sep1 sep2
-      | (Sopt s1, Sopt s2) -> eq_symbols s1 s2
       | (Stree t1, Stree t2) -> eq_trees t1 t2
       | (Stoken (_, s1), Stoken (_, s2)) -> eq_Stoken_ids s1 s2
       | _ -> s1 = s2 ]
@@ -75,13 +100,13 @@ module Make (Structure : Structure.S) = struct
     match (s1, s2) with
     [ (Snterm e1, Snterm e2) -> e1 == e2
     | (Snterml e1 l1, Snterml e2 l2) -> e1 == e2 && l1 = l2
-    | (Slist0 s1, Slist0 s2) -> eq_symbol s1 s2
-    | (Slist0sep s1 sep1, Slist0sep s2 sep2) ->
+    | (Slist0 s1, Slist0 s2) |
+      (Slist1 s1, Slist1 s2) |
+      (Sopt s1, Sopt s2) |
+      (Stry s1, Stry s2) -> eq_symbol s1 s2
+    | (Slist0sep s1 sep1, Slist0sep s2 sep2) |
+      (Slist1sep s1 sep1, Slist1sep s2 sep2) ->
         eq_symbol s1 s2 && eq_symbol sep1 sep2
-    | (Slist1 s1, Slist1 s2) -> eq_symbol s1 s2
-    | (Slist1sep s1 sep1, Slist1sep s2 sep2) ->
-        eq_symbol s1 s2 && eq_symbol sep1 sep2
-    | (Sopt s1, Sopt s2) -> eq_symbol s1 s2
     | (Stree _, Stree _) -> False
     | (Stoken (_, s1), Stoken (_, s2)) -> eq_Stoken_ids s1 s2
     | _ -> s1 = s2 ]
