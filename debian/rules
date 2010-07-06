@@ -117,6 +117,7 @@ build-stamp: config-stamp
 ifeq ($(BUILDCACHE),)
 	$(MAKE) world
 	$(MAKE) bootstrap
+	$(MAKE) -C tools dumpobj
 ifeq (,$(OCAML_OPT_ARCH))
 # As of 3.11.0, manpages are made only in `make opt.opt'
 	make -C ocamldoc manpages \
@@ -188,6 +189,11 @@ endif
 # Install additional files not handled by dh_install
 # Beware: dh_install does not handle renamings, please pay attention
 	cp otherlibs/labltk/README debian/ocaml/usr/share/doc/ocaml/README.labltk
+	for u in dumpobj; do \
+	  if [ -f tools/$$u ]; then \
+	    cp tools/$$u debian/ocaml-nox/usr/bin/ocaml$$u; \
+	  fi \
+	done
 	for mli in `find camlp4 -name '*.mli'` ; do \
 	  cp --parents $$mli debian/camlp4$(OCAML_STDLIB_DIR); \
 	done
