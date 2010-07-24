@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main_args.ml 10444 2010-05-20 14:06:29Z doligez $ *)
+(* $Id: main_args.ml 10621 2010-07-06 14:05:26Z maranget $ *)
 
 let mk_a f =
   "-a", Arg.Unit f, " Build a library"
@@ -712,6 +712,7 @@ struct
     mk_nopervasives F._nopervasives;
     mk_dparsetree F._dparsetree;
     mk_drawlambda F._drawlambda;
+    mk_dlambda F._dlambda;
     mk_dcmm F._dcmm;
     mk_dsel F._dsel;
     mk_dcombine F._dcombine;

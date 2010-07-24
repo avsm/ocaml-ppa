@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.msvc 10461 2010-05-25 10:00:39Z frisch $
+# $Id: Makefile.msvc 10622 2010-07-07 12:04:32Z frisch $
 
 # Configuration for Windows, Visual C++ compiler
 
@@ -98,7 +98,7 @@ FLEXLINK=flexlink -merge-manifest
 FLEXDIR=$(shell $(FLEXLINK) -where)
 IFLEXDIR=-I"$(FLEXDIR)"
 MKDLL=$(FLEXLINK)
-MKEXE=$(FLEXLINK) -exe
+MKEXE=$(FLEXLINK) -exe -link /STACK:16777216
 MKMAINDLL=$(FLEXLINK) -maindll
 
 ### How to build a static library

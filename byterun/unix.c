@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: unix.c 9153 2008-12-03 18:09:09Z doligez $ */
+/* $Id: unix.c 10613 2010-07-02 08:44:04Z frisch $ */
 
 /* Unix-specific stuff */
 
@@ -204,13 +204,16 @@ char * caml_dlerror(void)
 #ifndef RTLD_GLOBAL
 #define RTLD_GLOBAL 0
 #endif
+#ifndef RTLD_LOCAL
+#define RTLD_LOCAL 0
+#endif
 #ifndef RTLD_NODELETE
 #define RTLD_NODELETE 0
 #endif
 
 void * caml_dlopen(char * libname, int for_execution, int global)
 {
-  return dlopen(libname, RTLD_NOW | (global ? RTLD_GLOBAL : 0) | RTLD_NODELETE);
+  return dlopen(libname, RTLD_NOW | (global ? RTLD_GLOBAL : RTLD_LOCAL) | RTLD_NODELETE);
   /* Could use RTLD_LAZY if for_execution == 0, but needs testing */
 }
 

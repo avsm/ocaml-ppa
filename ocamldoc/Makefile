@@ -9,7 +9,7 @@
 #(*                                                                     *)
 #(***********************************************************************)
 
-# $Id: Makefile 9270 2009-05-20 11:52:42Z doligez $
+# $Id: Makefile 10584 2010-06-16 11:38:22Z guesdon $
 
 include ../config/Makefile
 
@@ -282,7 +282,7 @@ installopt_really:
 ###########
 test: dummy
 	$(MKDIR) $@
-	$(OCAMLDOC_RUN) -html -colorize-code -sort -d $@ $(INCLUDES) -dump $@/ocamldoc.odoc test.txt test2.txt odoc*.ml odoc*.mli -v
+	$(OCAMLDOC_RUN) -html -colorize-code -sort -d $@ $(INCLUDES) -dump $@/ocamldoc.odoc odoc*.ml odoc*.mli -v
 
 test_stdlib: dummy
 	$(MKDIR) $@
