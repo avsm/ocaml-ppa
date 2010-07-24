@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_text_lexer.mll 9638 2010-03-08 16:54:13Z guesdon $ *)
+(* $Id: odoc_text_lexer.mll 10584 2010-06-16 11:38:22Z guesdon $ *)
 
 (** The lexer for string to build text structures. *)
 
@@ -777,7 +777,9 @@ rule main = parse
         Char (Lexing.lexeme lexbuf)
       else
         let s = Lexing.lexeme lexbuf in
-        let tag = Odoc_misc.no_blanks s in
+        let len = String.length s in
+        (* remove this starting '{' *)
+        let tag = Odoc_misc.no_blanks (String.sub s 1 (len - 1)) in
         CUSTOM tag
     }
 
