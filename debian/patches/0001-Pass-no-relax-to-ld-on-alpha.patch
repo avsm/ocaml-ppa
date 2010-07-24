@@ -9,7 +9,7 @@ code (bug#338437)
  1 files changed, 3 insertions(+), 1 deletions(-)
 
 diff --git a/configure b/configure
-index 1a9d4b0..fb876d6 100755
+index 48b05b7..ff2de61 100755
 --- a/configure
 +++ b/configure
 @@ -284,7 +284,8 @@ case "$bytecc,$host" in
@@ -22,7 +22,7 @@ index 1a9d4b0..fb876d6 100755
    cc,mips-*-irix6*)
      # Add -n32 flag to ensure compatibility with native-code compiler
      bytecccompopts="-n32"
-@@ -732,6 +733,7 @@ case "$arch,$nativecc,$system,$host_type" in
+@@ -734,6 +735,7 @@ case "$arch,$nativecc,$system,$host_type" in
                         nativecccompopts="$gcc_warnings -DSHRINKED_GNUC";;
    *,*,rhapsody,*)      nativecccompopts="$gcc_warnings -DDARWIN_VERSION_6 $dl_defs"
                         if $arch64; then partialld="ld -r -arch ppc64"; fi;;

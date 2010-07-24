@@ -7,7 +7,7 @@ Subject: [PATCH] Put manpages in section 3o instead of 3
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/ocamldoc/Makefile b/ocamldoc/Makefile
-index 95b0f9d..978caed 100644
+index 2d8b0ea..30684ee 100644
 --- a/ocamldoc/Makefile
 +++ b/ocamldoc/Makefile
 @@ -319,7 +319,7 @@ test_texi: dummy
