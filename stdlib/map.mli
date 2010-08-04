@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: map.mli 10483 2010-05-31 12:48:13Z doligez $ *)
+(* $Id: map.mli 10632 2010-07-24 14:16:58Z garrigue $ *)
 
 (** Association tables over ordered types.
 
@@ -147,7 +147,7 @@ module type S =
      *)
 
     val max_binding: 'a t -> (key * 'a)
-    (** Same as {!Map.S.max_binding}, but returns the largest binding
+    (** Same as {!Map.S.min_binding}, but returns the largest binding
         of the given map.
         @since 3.12.0
      *)
