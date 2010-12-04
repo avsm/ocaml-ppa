@@ -1,6 +1,5 @@
 ocaml (3.12.0-1) UNRELEASED; urgency=low
 
-  [ Stéphane Glondu ]
   * New upstream release (Closes: #255245, #570920)
     - add armel to native architectures; note that the Dynlink module is
       not available in native code there: software using it should take care
@@ -16,7 +15,6 @@ ocaml (3.12.0-1) UNRELEASED; urgency=low
 
 ocaml (3.11.2-2) unstable; urgency=low
 
-  [ Ralf Treinen ]
   * debian/ocaml-mode.emacs-install: do not byte-compile camldebug.el
     and inf-caml.el for xemacs21 (Closes: #508813, LP: #464587).
 
