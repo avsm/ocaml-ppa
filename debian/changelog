@@ -1,3 +1,9 @@
+ocaml (3.11.2-3) unstable; urgency=high
+
+  * Add patch to fix ocamlopt w.r.t. binutils 2.21 (Closes: #617404)
+
+ -- Stéphane Glondu <glondu@debian.org>  Tue, 08 Mar 2011 21:32:54 +0100
+
 ocaml (3.11.2-2) unstable; urgency=low
 
   * debian/ocaml-mode.emacs-install: do not byte-compile camldebug.el
