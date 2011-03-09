@@ -1,3 +1,9 @@
+ocaml (3.11.2-4) unstable; urgency=high
+
+  * Fix FTBFS on i386 due to a bug in previous patch
+
+ -- Stéphane Glondu <glondu@debian.org>  Wed, 09 Mar 2011 07:54:58 +0100
+
 ocaml (3.11.2-3) unstable; urgency=high
 
   * Add patch to fix ocamlopt w.r.t. binutils 2.21 (Closes: #617404)
