@@ -11,8 +11,8 @@ Authors: Eric Cooper, spiralvoice
 Reviewed-by: Stéphane Glondu <steph@glondu.net>
 ---
  asmcomp/amd64/emit.mlp |   13 +++++++------
- asmcomp/i386/emit.mlp  |    4 ++--
- 2 files changed, 9 insertions(+), 8 deletions(-)
+ asmcomp/i386/emit.mlp  |    6 +++---
+ 2 files changed, 10 insertions(+), 9 deletions(-)
 
 diff --git a/asmcomp/amd64/emit.mlp b/asmcomp/amd64/emit.mlp
 index 4a3f844..525c6e6 100644
@@ -44,7 +44,7 @@ index 4a3f844..525c6e6 100644
  (* Emission of data *)
  
 diff --git a/asmcomp/i386/emit.mlp b/asmcomp/i386/emit.mlp
-index 2992f29..cb3bf82 100644
+index 2992f29..0b1252c 100644
 --- a/asmcomp/i386/emit.mlp
 +++ b/asmcomp/i386/emit.mlp
 @@ -905,12 +905,12 @@ let fundecl fundecl =
@@ -52,12 +52,13 @@ index 2992f29..cb3bf82 100644
    List.iter emit_call_gc !call_gc_sites;
    emit_call_bound_errors ();
 -  List.iter emit_float_constant !float_constants;
-   match Config.system with
+-  match Config.system with
++  begin match Config.system with
      "linux_elf" | "bsd_elf" | "gnu" ->
        `	.type	{emit_symbol fundecl.fun_name},@function\n`;
        `	.size	{emit_symbol fundecl.fun_name},.-{emit_symbol fundecl.fun_name}\n`
 -  | _ -> ()
-+  | _ -> ();
++  | _ -> () end;
 +  List.iter emit_float_constant !float_constants
  
  
