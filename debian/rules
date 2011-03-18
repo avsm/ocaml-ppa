@@ -32,6 +32,12 @@ INSTDIR = $(CURDIR)/debian/tmp/usr
 DISTDIR = $(PACKAGE)-$(OCAML_ABI)
 SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar.bz2
 
+ifneq (,$(findstring ocaml-source,$(ALL_PACKAGES)))
+  TARBALL_TARGET = debian/$(SRCTARBALL)
+else
+  TARBALL_TARGET =
+endif
+
 # Environment variable for dh_ocaml
 export OCAMLOBJINFO = OCAMLLIB=tools boot/ocamlrun tools/objinfo
 
@@ -62,7 +68,7 @@ CONFIGURE_SED := \
 %:
 	dh $@
 
-ocamlinit-stamp: debian/$(SRCTARBALL)
+ocamlinit-stamp: $(TARBALL_TARGET)
 
 # Generate ocaml-native-compilers' Architecture field.
 # Should never be called automatically.
@@ -70,7 +76,7 @@ ocamlinit-stamp: debian/$(SRCTARBALL)
 debian/control:
 	sed -e 's/@OCamlNativeArchs@/$(OCAML_NATIVE_ARCHS)/g' debian/control.in > $@
 
-pre-config-stamp: debian/$(SRCTARBALL)
+pre-config-stamp: $(TARBALL_TARGET)
 	chmod +x debian/gen_modules.pl
 # Backup upstream config.{sub,guess}, and use most up-to-date ones
 	for ext in sub guess; do \
@@ -82,13 +88,26 @@ pre-config-stamp: debian/$(SRCTARBALL)
 	done
 	touch $@
 
-debian/$(SRCTARBALL):
+ifneq (,$(TARBALL_TARGET))
+$(TARBALL_TARGET):
+# Make a copy of the current (patched) sources in debian/$(DISTDIR)
 	ln -fs . $(DISTDIR)	# beware of the symlink recursion!
-	tar --anchored -chjf $@ \
+	mkdir debian/$(DISTDIR)
+	tar --anchored -ch \
 	  --exclude=$(DISTDIR)/$(DISTDIR)	\
 	  --exclude-from=debian/ocaml-source.exclude \
-	  $(DISTDIR)/
+	  $(DISTDIR)/ | tar -C debian -x
 	rm -f $(DISTDIR)
+# Copy patches and unapply them
+	cp -a debian/patches debian/$(DISTDIR)/debian-patches
+	cd debian/$(DISTDIR) && sort -r debian-patches/series | \
+	while read u; do \
+	  patch -R -V never -p1 < debian-patches/$$u; \
+	done
+# Create the tarball and cleanup
+	tar -C debian -cjf $@ $(DISTDIR)
+	rm -Rf debian/$(DISTDIR)
+endif
 
 .PHONY: override_dh_auto_configure
 override_dh_auto_configure: config-stamp
