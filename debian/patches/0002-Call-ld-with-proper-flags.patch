@@ -1,6 +1,6 @@
 From: Stefano Zacchiroli <zack@debian.org>
 Date: Tue, 19 May 2009 17:23:34 +0200
-Subject: [PATCH] Call ld with proper flags
+Subject: Call ld with proper flags
 
 Filter linkflags passed to ld by ocamlopt -pack and -output-obj
 to remove the "-Wl," parts, which are only used when ocamlopt calls
@@ -10,10 +10,10 @@ gcc.
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/configure b/configure
-index ff2de61..2872ae8 100755
+index 2b40fc2..7a34621 100755
 --- a/configure
 +++ b/configure
-@@ -1635,7 +1635,7 @@ echo "DEBUGGER=$debugger" >> Makefile
+@@ -1632,7 +1632,7 @@ echo "DEBUGGER=$debugger" >> Makefile
  echo "CC_PROFILE=$cc_profile" >> Makefile
  echo "SYSTHREAD_SUPPORT=$systhread_support" >> Makefile
  echo "PARTIALLD=$partialld" >> Makefile

@@ -1,6 +1,6 @@
 From: Ralf Treinen <treinen@debian.org>
 Date: Tue, 19 May 2009 17:28:09 +0200
-Subject: [PATCH] Patch config.sh for installation
+Subject: Patch config.sh for installation
 
 Use for installatation a patched config.sh (created by debian/rules).
 ---
