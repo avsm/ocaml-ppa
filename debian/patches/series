@@ -5,3 +5,4 @@
 0005-Patch-config.sh-for-installation.patch
 0006-Install-ocamlbuild-as-a-link-on-either-.native-or-.b.patch
 0007-Fix-ocamlopt-w.r.t.-binutils-2.21.patch
+0008-Embed-bytecode-in-C-object-when-using-custom.patch
