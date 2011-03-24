@@ -61,6 +61,7 @@ CONFIGURE_OPTS := \
   -tklibs "-L/usr/lib -ltk8.5 -ltcl8.5"
 
 CONFIGURE_SED := \
+  -e "/LIBBFD_LINK/s%-lbfd%-Wl,-Bstatic -lbfd -Wl,-Bdynamic%" \
   -e "s%MANDIR=.*$$%MANDIR=\$$(PREFIX)/share/man%g" \
   -e "s%LIBDIR=.*$$%LIBDIR=\$$(PREFIX)/lib/ocaml%g" \
   -e "s%STUBLIBDIR=.*$$%STUBLIBDIR=\$$(PREFIX)/lib/ocaml/stublibs%g"
