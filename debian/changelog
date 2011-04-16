@@ -1,17 +1,22 @@
-ocaml (3.12.0-1) UNRELEASED; urgency=low
+ocaml (3.12.0-1) unstable; urgency=low
 
-  * New upstream release (Closes: #255245, #570920)
+  * New upstream release:
+    - add Unix.setgroups (Closes: #255245)
+    - fix bug in the num library on sparc (Closes: #570920)
     - add armel to native architectures; note that the Dynlink module is
       not available in native code there: software using it should take care
-      of this new possibility
+      of this new possibility (Closes: #347270)
     - {add,scrape}labels are no longer installed
     - remove ocaml{byteinfo,plugininfo,dumpapprox}: all tools merged into
       ocamlobjinfo; add binutils-dev to Buid-Depends
   * debian/rules: switch to dh with overrides
+  * Embed bytecode in C object when using -custom (Closes: #256900)
+  * Ask pkg-config for libx11 path (Closes: #619344)
+  * Bump debhelper compat level to 8 (Closes: #562606)
   * Switch source package format to 3.0 (quilt)
-  * Bump version in debhelper build-dependency (Closes: #562606)
+  * Bump Standards-Version to 3.9.2
 
- -- Stéphane Glondu <glondu@debian.org>  Sat, 24 Jul 2010 14:24:19 +0200
+ -- Stéphane Glondu <glondu@debian.org>  Sat, 16 Apr 2011 17:39:54 +0200
 
 ocaml (3.11.2-4) unstable; urgency=high
 

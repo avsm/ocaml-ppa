@@ -10,7 +10,7 @@ Uploaders:
  Stéphane Glondu <glondu@debian.org>,
  Mehdi Dogguy <mehdi@debian.org>
 Build-Depends:
- debhelper (>= 7.1.0~),
+ debhelper (>= 8),
  pkg-config,
  autotools-dev,
  binutils-dev,
@@ -20,7 +20,7 @@ Build-Depends:
  libgdbm-dev,
  bzip2,
  dh-ocaml (>= 1.0.0~)
-Standards-Version: 3.8.4
+Standards-Version: 3.9.2
 Vcs-Git: git://git.debian.org/git/pkg-ocaml-maint/packages/ocaml.git
 Vcs-Browser: http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git
 Homepage: http://caml.inria.fr/
