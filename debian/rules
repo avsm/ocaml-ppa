@@ -56,6 +56,7 @@ export OCAML_STDLIB_DIR
 CONFIGURE_OPTS := \
   --with-pthread -prefix /usr \
   -libdir $(OCAML_STDLIB_DIR) \
+  -x11lib "$(shell pkg-config --variable=libdir x11)" \
   -mandir /usr/share/man \
   -tkdefs "-I/usr/include/tcl8.5" \
   -tklibs "-L/usr/lib -ltk8.5 -ltcl8.5"

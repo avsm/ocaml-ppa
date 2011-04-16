@@ -11,6 +11,7 @@ Uploaders:
  Mehdi Dogguy <mehdi@debian.org>
 Build-Depends:
  debhelper (>= 7.1.0~),
+ pkg-config,
  autotools-dev,
  binutils-dev,
  tcl8.5-dev,
