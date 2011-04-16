@@ -268,7 +268,7 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends}
 Suggests: ocaml
-Description: A major mode for editing Objective Caml in Emacs
+Description: major mode for editing Objective Caml in Emacs
  Objective (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
  and a powerful module system in the style of Standard ML.
