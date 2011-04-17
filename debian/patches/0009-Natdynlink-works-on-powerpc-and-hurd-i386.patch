@@ -1,0 +1,36 @@
+From: Stephane Glondu <steph@glondu.net>
+Date: Sat, 16 Apr 2011 23:41:23 +0200
+Subject: Natdynlink works on powerpc and hurd-i386
+
+Rationale: ssreflect used to work with natdynlink on powerpc and hurd
+with ocaml 3.11.2 / coq 8.2...
+
+Note: there is no native compiler for powerpc64! This must be a
+typo...
+
+Signed-off-by: Stephane Glondu <steph@glondu.net>
+---
+ configure |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/configure b/configure
+index 7a34621..32e8d2e 100755
+--- a/configure
++++ b/configure
+@@ -619,13 +619,14 @@ if test $withsharedlibs = "yes"; then
+   case "$host" in
+     *-*-cygwin*)                  natdynlink=true;;
+     i[3456]86-*-linux*)           natdynlink=true;;
++    i[3456]86-*-gnu*)             natdynlink=true;;
+     x86_64-*-linux*)              natdynlink=true;;
+     i[3456]86-*-darwin10.*)
+       if test $arch64 == true; then
+         natdynlink=true
+       fi;;
+     i[3456]86-*-darwin[89]*)      natdynlink=true;;
+-    powerpc64-*-linux*)           natdynlink=true;;
++    powerpc-*-linux*)             natdynlink=true;;
+     sparc-*-linux*)               natdynlink=true;;
+     i686-*-kfreebsd*)             natdynlink=true;;
+     x86_64-*-kfreebsd*)           natdynlink=true;;
+-- 

@@ -1,3 +1,10 @@
+ocaml (3.12.0-3) UNRELEASED; urgency=low
+
+  * Patch configure script so that hurd-i386 is also recognized as a
+    natdynlink architecture (fixes FTBFS)
+
+ -- Stéphane Glondu <glondu@debian.org>  Sun, 17 Apr 2011 15:28:35 +0200
+
 ocaml (3.12.0-2) unstable; urgency=low
 
   * Patch configure script so that powerpc is recognized as a natdynlink
