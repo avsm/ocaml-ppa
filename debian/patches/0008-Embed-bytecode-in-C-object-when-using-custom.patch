@@ -13,7 +13,7 @@ Signed-off-by: Stephane Glondu <steph@glondu.net>
  1 files changed, 26 insertions(+), 4 deletions(-)
 
 diff --git a/bytecomp/bytelink.ml b/bytecomp/bytelink.ml
-index 4a6426d..e2f7bcd 100644
+index 4a6426d..f0311ce 100644
 --- a/bytecomp/bytelink.ml
 +++ b/bytecomp/bytelink.ml
 @@ -402,7 +402,7 @@ let output_cds_file outfile =
@@ -41,7 +41,7 @@ index 4a6426d..e2f7bcd 100644
 +  return 0; /* not reached */\n\
 +}\n"
 +    end else begin
-+      output_string outchan "\n
++      output_string outchan "\n\
  void caml_startup(char ** argv)\n\
  {\n\
    caml_startup_code(caml_code, sizeof(caml_code),\n\
@@ -59,7 +59,7 @@ index 4a6426d..e2f7bcd 100644
    Clflags.dllibs := !lib_dllibs @ !Clflags.dllibs; (* put user's DLLs first *)
    if not !Clflags.custom_runtime then
      link_bytecode tolink output_name true
-+  else if not !Clflags.make_runtime then
++  else if not !Clflags.output_c_object && not !Clflags.make_runtime then
 +    let c_file = Filename.temp_file "camlobj" ".c" in
 +    try
 +      link_bytecode_as_c tolink c_file true;
