@@ -5,7 +5,7 @@
 0005-Patch-config.sh-for-installation.patch
 0006-Install-ocamlbuild-as-a-link-on-either-.native-or-.b.patch
 0007-Fix-ocamlopt-w.r.t.-binutils-2.21.patch
-0008-Embed-bytecode-in-C-object-when-using-custom.patch
-0009-Natdynlink-works-on-powerpc-and-hurd-i386.patch
-0010-Declare-primitive-name-table-as-const-char.patch
-0011-Avoid-multiple-declarations-in-generated-.c-files-in.patch
+0008-Natdynlink-works-on-powerpc-and-hurd-i386.patch
+0009-Declare-primitive-name-table-as-const-char.patch
+0010-Avoid-multiple-declarations-in-generated-.c-files-in.patch
+0011-Embed-bytecode-in-C-object-when-using-custom.patch
