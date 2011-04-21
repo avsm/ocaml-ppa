@@ -1,3 +1,13 @@
+ocaml (3.12.0-5) unstable; urgency=low
+
+  * Fixes related to -output-obj with g++ (in debian/patches):
+    - add Declare-primitive-name-table-as-const-char
+    - add Avoid-multiple-declarations-in-generated-.c-files-in
+    - fix Embed-bytecode-in-C-object-when-using-custom: the closing
+      brace for extern "C" { ... } was missing in some cases
+
+ -- Stéphane Glondu <glondu@debian.org>  Thu, 21 Apr 2011 21:35:08 +0200
+
 ocaml (3.12.0-4) unstable; urgency=low
 
   * Bugfix in 0008-Embed-bytecode-in-C-object-when-using-custom.patch:
