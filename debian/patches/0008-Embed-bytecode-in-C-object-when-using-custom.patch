@@ -9,11 +9,11 @@ Forwarded: not-needed
 Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=256900
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
- bytecomp/bytelink.ml |   30 ++++++++++++++++++++++++++----
- 1 files changed, 26 insertions(+), 4 deletions(-)
+ bytecomp/bytelink.ml |   33 ++++++++++++++++++++++++++++-----
+ 1 files changed, 28 insertions(+), 5 deletions(-)
 
 diff --git a/bytecomp/bytelink.ml b/bytecomp/bytelink.ml
-index 4a6426d..f0311ce 100644
+index 4a6426d..e74a67d 100644
 --- a/bytecomp/bytelink.ml
 +++ b/bytecomp/bytelink.ml
 @@ -402,7 +402,7 @@ let output_cds_file outfile =
@@ -25,7 +25,7 @@ index 4a6426d..f0311ce 100644
    let outchan = open_out outfile in
    begin try
      (* The bytecode *)
-@@ -444,7 +444,18 @@ CAMLextern void caml_startup_code(\n\
+@@ -444,17 +444,30 @@ CAMLextern void caml_startup_code(\n\
      (* The table of primitives *)
      Symtable.output_primitive_table outchan;
      (* The entry point *)
@@ -45,17 +45,21 @@ index 4a6426d..f0311ce 100644
  void caml_startup(char ** argv)\n\
  {\n\
    caml_startup_code(caml_code, sizeof(caml_code),\n\
-@@ -454,7 +465,8 @@ void caml_startup(char ** argv)\n\
- }\n\
+                     caml_data, sizeof(caml_data),\n\
+                     caml_sections, sizeof(caml_sections),\n\
+                     argv);\n\
+-}\n\
++}\n"
++    end;
++    output_string outchan "\
  #ifdef __cplusplus\n\
  }\n\
 -#endif\n";
 +#endif\n"
-+    end;
      close_out outchan
    with x ->
      close_out outchan;
-@@ -501,6 +513,16 @@ let link objfiles output_name =
+@@ -501,6 +514,16 @@ let link objfiles output_name =
    Clflags.dllibs := !lib_dllibs @ !Clflags.dllibs; (* put user's DLLs first *)
    if not !Clflags.custom_runtime then
      link_bytecode tolink output_name true
@@ -72,7 +76,7 @@ index 4a6426d..f0311ce 100644
    else if not !Clflags.output_c_object then begin
      let bytecode_name = Filename.temp_file "camlcode" "" in
      let prim_name = Filename.temp_file "camlprim" ".c" in
-@@ -539,7 +561,7 @@ let link objfiles output_name =
+@@ -539,7 +562,7 @@ let link objfiles output_name =
      if Sys.file_exists c_file then raise(Error(File_exists c_file));
      let temps = ref [] in
      try
