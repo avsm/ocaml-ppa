@@ -9,11 +9,11 @@ Forwarded: not-needed
 Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=256900
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
- bytecomp/bytelink.ml |   33 ++++++++++++++++++++++++++++-----
- 1 files changed, 28 insertions(+), 5 deletions(-)
+ bytecomp/bytelink.ml |   31 +++++++++++++++++++++++++++----
+ 1 files changed, 27 insertions(+), 4 deletions(-)
 
 diff --git a/bytecomp/bytelink.ml b/bytecomp/bytelink.ml
-index 47903c4..09689be 100644
+index 47903c4..184079c 100644
 --- a/bytecomp/bytelink.ml
 +++ b/bytecomp/bytelink.ml
 @@ -415,7 +415,7 @@ let mlvalues_primitives = [
@@ -25,7 +25,7 @@ index 47903c4..09689be 100644
    let outchan = open_out outfile in
    begin try
      (* The bytecode *)
-@@ -457,17 +457,30 @@ CAMLextern void caml_startup_code(\n\
+@@ -457,14 +457,27 @@ CAMLextern void caml_startup_code(\n\
      (* The table of primitives *)
      Symtable.output_primitive_table outchan mlvalues_primitives;
      (* The entry point *)
@@ -54,11 +54,7 @@ index 47903c4..09689be 100644
 +    output_string outchan "\
  #ifdef __cplusplus\n\
  }\n\
--#endif\n";
-+#endif\n"
-     close_out outchan
-   with x ->
-     close_out outchan;
+ #endif\n";
 @@ -514,6 +527,16 @@ let link objfiles output_name =
    Clflags.dllibs := !lib_dllibs @ !Clflags.dllibs; (* put user's DLLs first *)
    if not !Clflags.custom_runtime then
