@@ -1,0 +1,14 @@
+OCaml Debian package
+====================
+
+In upstream OCaml, “ocamlc -custom” produces executables that cannot
+be stripped (more precisely, the bytecode, which is not part of the
+ELF data, is removed by strip). This Debian version is patched (and
+the patch has been rejected by upstream [1], but is available
+separately in debian/patches) so that the bytecode is embedded in the
+executable and can be stripped. The original behaviour is restored if
+the OCAML_COMPAT environment variable contains the letter “c”.
+
+[1] http://bugs.debian.org/cgi-bin/bugreport.cgi?msg=49;bug=256900
+
+ -- Stéphane Glondu <glondu@debian.org>, Tue, 24 May 2011 12:02:51 +0200
