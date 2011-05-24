@@ -9,3 +9,4 @@
 0009-Declare-primitive-name-table-as-const-char.patch
 0010-Avoid-multiple-declarations-in-generated-.c-files-in.patch
 0011-Embed-bytecode-in-C-object-when-using-custom.patch
+0012-Properly-initialize-executable-name-in-caml_startup_.patch
