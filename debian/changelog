@@ -1,3 +1,9 @@
+ocaml (3.12.0-6) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stéphane Glondu <glondu@debian.org>  Tue, 24 May 2011 12:05:08 +0200
+
 ocaml (3.12.0-5) unstable; urgency=low
 
   * Fixes related to -output-obj with g++ (in debian/patches):
