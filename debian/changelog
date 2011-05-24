@@ -1,8 +1,11 @@
 ocaml (3.12.0-6) UNRELEASED; urgency=low
 
-  * NOT RELEASED YET
+  * Provide a way to use legacy custom linking (Closes: #627761)
+  * Document Debian-specific -custom behaviour in README.Debian
+  * Properly initialize executable name in caml_startup_code
+    (Closes: #627756)
 
- -- Stéphane Glondu <glondu@debian.org>  Tue, 24 May 2011 12:05:08 +0200
+ -- Stéphane Glondu <glondu@debian.org>  Tue, 24 May 2011 14:49:53 +0200
 
 ocaml (3.12.0-5) unstable; urgency=low
 
