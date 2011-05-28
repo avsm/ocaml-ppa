@@ -1,3 +1,9 @@
+ocaml (3.12.0-7) unstable; urgency=low
+
+  * Force aligned access for double and int64 on mips*
+
+ -- Stéphane Glondu <glondu@debian.org>  Sun, 29 May 2011 00:01:26 +0200
+
 ocaml (3.12.0-6) unstable; urgency=low
 
   * Provide a way to use legacy custom linking (Closes: #627761)

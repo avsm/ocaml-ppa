@@ -1,0 +1,35 @@
+From: Stephane Glondu <steph@glondu.net>
+Date: Sat, 28 May 2011 23:55:08 +0200
+Subject: Force aligned access for double and int64 on mips*
+
+Some mips machines accept unaligned accesses, others don't. Therefore,
+do not rely on auto-detection.
+
+Signed-off-by: Stephane Glondu <steph@glondu.net>
+---
+ configure |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/configure b/configure
+index 32e8d2e..e03a4b8 100755
+--- a/configure
++++ b/configure
+@@ -434,7 +434,7 @@ esac
+ # Determine alignment constraints
+ 
+ case "$host" in
+-  sparc*-*-*|hppa*-*-*|arm*-*-*)
++  sparc*-*-*|hppa*-*-*|arm*-*-*|mips*-*-*)
+     # On Sparc V9 with certain versions of gcc, determination of double
+     # alignment is not reliable (PR#1521), hence force it.
+     # Same goes for hppa.
+@@ -467,7 +467,7 @@ esac
+ if $int64_native; then
+   case "$host" in
+     # PR#5088: autodetection is unreliable on ARM
+-    sparc*-*-*|hppa*-*-*|arm*-*-*)
++    sparc*-*-*|hppa*-*-*|arm*-*-*|mips*-*-*)
+       if test $2 = 8; then
+         echo "64-bit integers can be word-aligned."
+         echo "#undef ARCH_ALIGN_INT64" >> m.h
+-- 

@@ -10,3 +10,4 @@
 0010-Avoid-multiple-declarations-in-generated-.c-files-in.patch
 0011-Embed-bytecode-in-C-object-when-using-custom.patch
 0012-Properly-initialize-executable-name-in-caml_startup_.patch
+0013-Force-aligned-access-for-double-and-int64-on-mips.patch
