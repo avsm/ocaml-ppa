@@ -1,8 +1,8 @@
 #!/bin/sh
-# $Id: boot.sh 10443 2010-05-20 09:44:25Z doligez $
+# $Id: boot.sh 10956 2011-02-21 15:09:49Z xclerc $
 cd `dirname $0`/..
 set -ex
-TAGLINE='true: -use_stdlib'
+TAG_LINE='true: -use_stdlib'
 ./boot/ocamlrun boot/myocamlbuild.boot \
   -tag-line "$TAG_LINE" \
   boot/stdlib.cma boot/std_exit.cmo

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lambda.mli 10268 2010-04-18 09:02:40Z xleroy $ *)
+(* $Id: lambda.mli 10667 2010-09-02 13:29:21Z xclerc $ *)
 
 (* The "lambda" intermediate code *)
 
@@ -149,7 +149,7 @@ type lambda =
   | Lwhile of lambda * lambda
   | Lfor of Ident.t * lambda * lambda * direction_flag * lambda
   | Lassign of Ident.t * lambda
-  | Lsend of meth_kind * lambda * lambda * lambda list
+  | Lsend of meth_kind * lambda * lambda * lambda list * Location.t
   | Levent of lambda * lambda_event
   | Lifused of Ident.t * lambda
 

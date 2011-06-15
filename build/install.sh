@@ -12,7 +12,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: install.sh 10443 2010-05-20 09:44:25Z doligez $
+# $Id: install.sh 10856 2010-11-25 13:57:43Z xclerc $
 
 set -e
 
@@ -264,6 +264,8 @@ installbin lex/ocamllex.opt$EXE $BINDIR/ocamllex.opt$EXE
 installbin tools/ocamldep.native$EXE $BINDIR/ocamldep.opt$EXE
 
 echo "Installing some tools..."
+installbin tools/objinfo.byte$EXE $BINDIR/ocamlobjinfo$EXE
+installbin ../tools/objinfo_helper$EXE $LIBDIR/objinfo_helper$EXE
 installbin tools/ocamlcp.byte$EXE $BINDIR/ocamlcp$EXE
 installbin tools/ocamldep.byte$EXE $BINDIR/ocamldep$EXE
 installbin tools/ocamlmklib.byte$EXE $BINDIR/ocamlmklib$EXE
