@@ -1,3 +1,9 @@
+ocaml (3.12.1~rc1-1) UNRELEASED; urgency=low
+
+  * New upstream release candidate
+
+ -- Stéphane Glondu <glondu@debian.org>  Wed, 15 Jun 2011 18:19:01 +0200
+
 ocaml (3.12.0-7) unstable; urgency=low
 
   * Force aligned access for double and int64 on mips*
