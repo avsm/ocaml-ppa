@@ -4,10 +4,8 @@
 0004-Put-manpages-in-section-3o-instead-of-3.patch
 0005-Patch-config.sh-for-installation.patch
 0006-Install-ocamlbuild-as-a-link-on-either-.native-or-.b.patch
-0007-Fix-ocamlopt-w.r.t.-binutils-2.21.patch
-0008-Natdynlink-works-on-powerpc-and-hurd-i386.patch
-0009-Declare-primitive-name-table-as-const-char.patch
-0010-Avoid-multiple-declarations-in-generated-.c-files-in.patch
+0007-Natdynlink-works-on-powerpc-and-hurd-i386.patch
+0008-Declare-primitive-name-table-as-const-char.patch
+0009-Avoid-multiple-declarations-in-generated-.c-files-in.patch
+0010-Properly-initialize-executable-name-in-caml_startup_.patch
 0011-Embed-bytecode-in-C-object-when-using-custom.patch
-0012-Properly-initialize-executable-name-in-caml_startup_.patch
-0013-Force-aligned-access-for-double-and-int64-on-mips.patch

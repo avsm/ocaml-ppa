@@ -9,7 +9,7 @@ Use for installatation a patched config.sh (created by debian/rules).
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/build/install.sh b/build/install.sh
-index a7ab103..b42373d 100755
+index 2785932..e8a6c15 100755
 --- a/build/install.sh
 +++ b/build/install.sh
 @@ -18,7 +18,7 @@ set -e

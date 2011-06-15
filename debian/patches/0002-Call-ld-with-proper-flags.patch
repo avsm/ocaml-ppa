@@ -10,10 +10,10 @@ gcc.
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/configure b/configure
-index 2b40fc2..7a34621 100755
+index fa96ef8..40a78cb 100755
 --- a/configure
 +++ b/configure
-@@ -1632,7 +1632,7 @@ echo "DEBUGGER=$debugger" >> Makefile
+@@ -1639,7 +1639,7 @@ echo "DEBUGGER=$debugger" >> Makefile
  echo "CC_PROFILE=$cc_profile" >> Makefile
  echo "SYSTHREAD_SUPPORT=$systhread_support" >> Makefile
  echo "PARTIALLD=$partialld" >> Makefile

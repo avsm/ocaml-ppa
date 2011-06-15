@@ -15,7 +15,7 @@ Signed-off-by: Stephane Glondu <steph@glondu.net>
  1 files changed, 32 insertions(+), 4 deletions(-)
 
 diff --git a/bytecomp/bytelink.ml b/bytecomp/bytelink.ml
-index 47903c4..e63dd3b 100644
+index 9d62fc6..a3aee28 100644
 --- a/bytecomp/bytelink.ml
 +++ b/bytecomp/bytelink.ml
 @@ -415,7 +415,7 @@ let mlvalues_primitives = [
@@ -27,36 +27,36 @@ index 47903c4..e63dd3b 100644
    let outchan = open_out outfile in
    begin try
      (* The bytecode *)
-@@ -457,14 +457,27 @@ CAMLextern void caml_startup_code(\n\
+@@ -457,14 +457,27 @@ let link_bytecode_as_c tolink outfile =
      (* The table of primitives *)
      Symtable.output_primitive_table outchan mlvalues_primitives;
      (* The entry point *)
--    output_string outchan "\n\
+-    output_string outchan "\
 +    if with_main then begin
-+      output_string outchan "\n\
-+int main(int argc, char **argv)\n\
-+{\n\
-+  caml_startup_code(caml_code, sizeof(caml_code),\n\
-+                    caml_data, sizeof(caml_data),\n\
-+                    caml_sections, sizeof(caml_sections),\n\
-+                    argv);\n\
-+  return 0; /* not reached */\n\
-+}\n"
++      output_string outchan "\
++\nint main(int argc, char **argv)\
++\n{\
++\n  caml_startup_code(caml_code, sizeof(caml_code),\
++\n                    caml_data, sizeof(caml_data),\
++\n                    caml_sections, sizeof(caml_sections),\
++\n                    argv);\
++\n  return 0; /* not reached */\
++\n}\n"
 +    end else begin
-+      output_string outchan "\n\
- void caml_startup(char ** argv)\n\
- {\n\
-   caml_startup_code(caml_code, sizeof(caml_code),\n\
-                     caml_data, sizeof(caml_data),\n\
-                     caml_sections, sizeof(caml_sections),\n\
-                     argv);\n\
--}\n\
-+}\n"
++      output_string outchan "\
+ \nvoid caml_startup(char ** argv)\
+ \n{\
+ \n  caml_startup_code(caml_code, sizeof(caml_code),\
+ \n                    caml_data, sizeof(caml_data),\
+ \n                    caml_sections, sizeof(caml_sections),\
+ \n                    argv);\
+-\n}\
++\n}\n"
 +    end;
 +    output_string outchan "\
- #ifdef __cplusplus\n\
- }\n\
- #endif\n";
+ \n#ifdef __cplusplus\
+ \n}\
+ \n#endif\n";
 @@ -501,6 +514,11 @@ let fix_exec_name name =
        if String.contains name '.' then name else name ^ ".exe"
    | _ -> name
