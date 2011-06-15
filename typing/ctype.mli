@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ctype.mli 10541 2010-06-08 08:43:38Z garrigue $ *)
+(* $Id: ctype.mli 10669 2010-09-06 06:34:13Z garrigue $ *)
 
 (* Operations on core types *)
 
@@ -115,6 +115,7 @@ val instance_parameterized_type:
 val instance_parameterized_type_2:
         type_expr list -> type_expr list -> type_expr ->
         type_expr list * type_expr list * type_expr
+val instance_declaration: type_declaration -> type_declaration
 val instance_class:
         type_expr list -> class_type -> type_expr list * class_type
 val instance_poly:
