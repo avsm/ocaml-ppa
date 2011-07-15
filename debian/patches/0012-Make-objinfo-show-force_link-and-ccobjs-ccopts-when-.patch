@@ -43,9 +43,9 @@ index 4f467f2..89855da 100644
 -let print_general_infos name crc defines cmi cmx =
 +let print_general_infos name force_link crc defines cmi cmx =
    printf "Name: %s\n" name;
-+  match force_link with
++  (match force_link with
 +      Some flag -> printf "Force link: %s\n" (string_of_bool flag)
-+    | None -> ();
++    | None -> ());
    printf "CRC of implementation: %s\n" (Digest.to_hex crc);
    printf "Globals defined:\n";
    List.iter print_line defines;
