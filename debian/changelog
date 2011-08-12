@@ -1,6 +1,11 @@
 ocaml (3.12.1-1) UNRELEASED; urgency=low
 
+  [ Stéphane Glondu ]
   * New upstream release (Closes: #634621)
+  * ocamlopt/arm: add .type directive for code symbols (LP: #810402)
+
+  [ Mehdi Dogguy ]
+  * Make objinfo show force_link and ccobjs/ccopts when needed
 
  -- Stéphane Glondu <glondu@debian.org>  Wed, 15 Jun 2011 18:19:01 +0200
 
