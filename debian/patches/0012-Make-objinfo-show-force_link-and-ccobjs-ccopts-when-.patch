@@ -11,7 +11,7 @@ Forwarded: http://caml.inria.fr/mantis/view.php?id=5316
  1 files changed, 21 insertions(+), 4 deletions(-)
 
 diff --git a/tools/objinfo.ml b/tools/objinfo.ml
-index 4f467f2..89855da 100644
+index 4f467f2..b75b83a 100644
 --- a/tools/objinfo.ml
 +++ b/tools/objinfo.ml
 @@ -44,8 +44,12 @@ let print_name_crc (name, crc) =

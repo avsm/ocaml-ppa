@@ -14,7 +14,7 @@ Signed-off-by: Stephane Glondu <steph@glondu.net>
  1 files changed, 2 insertions(+), 1 deletions(-)
 
 diff --git a/configure b/configure
-index 40a78cb..dbad12d 100755
+index d4287ed..d6ba2e3 100755
 --- a/configure
 +++ b/configure
 @@ -620,13 +620,14 @@ if test $withsharedlibs = "yes"; then

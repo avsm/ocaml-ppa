@@ -9,7 +9,7 @@ code (bug#338437)
  1 files changed, 3 insertions(+), 1 deletions(-)
 
 diff --git a/configure b/configure
-index 37d46c2..fa96ef8 100755
+index 9be5199..236e016 100755
 --- a/configure
 +++ b/configure
 @@ -284,7 +284,8 @@ case "$bytecc,$host" in
