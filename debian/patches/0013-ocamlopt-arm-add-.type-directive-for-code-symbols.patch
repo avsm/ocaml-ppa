@@ -2,6 +2,7 @@ From: Stephane Glondu <steph@glondu.net>
 Date: Fri, 12 Aug 2011 21:13:17 +0200
 Subject: ocamlopt/arm: add .type directive for code symbols
 
+Bug: http://caml.inria.fr/mantis/view.php?id=5336
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/810402
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
