@@ -10,6 +10,9 @@ ocaml (3.12.1-1) UNRELEASED; urgency=low
   [ Jonathan Nieder ]
   * debian/control: add Breaks against versions of dh-ocaml that relied on
     the ocaml{dumpapprox,plugininfo,byteinfo} tools (Closes: #642935)
+  
+  [ Stefano Zacchiroli ]
+  * remove myself from Uploaders
 
  -- Stéphane Glondu <glondu@debian.org>  Wed, 15 Jun 2011 18:19:01 +0200
 
