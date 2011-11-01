@@ -1,0 +1,22 @@
+From: Stephane Glondu <steph@glondu.net>
+Date: Tue, 1 Nov 2011 15:28:15 +0100
+Subject: Do not add -R$dir in X11 link options on GNU/kFreeBSD
+
+Signed-off-by: Stephane Glondu <steph@glondu.net>
+---
+ configure |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/configure b/configure
+index d6ba2e3..20b4b17 100755
+--- a/configure
++++ b/configure
+@@ -1373,6 +1373,7 @@ do
+     else
+       x11_libs="-L$dir"
+       case "$host" in
++        *-kfreebsd*-gnu) x11_link="-L$dir -lX11";;
+         *-*-*bsd*) x11_link="-R$dir -L$dir -lX11";;
+         *) x11_link="-L$dir -lX11";;
+       esac
+-- 
