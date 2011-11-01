@@ -1,3 +1,9 @@
+ocaml (3.12.1-2) unstable; urgency=low
+
+  * Fix compilation on kfreebsd-any: do not add -R$dir in X11 link options
+
+ -- Stéphane Glondu <glondu@debian.org>  Tue, 01 Nov 2011 16:11:01 +0100
+
 ocaml (3.12.1-1) unstable; urgency=low
 
   [ Stéphane Glondu ]
