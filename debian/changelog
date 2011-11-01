@@ -1,4 +1,4 @@
-ocaml (3.12.1-1) UNRELEASED; urgency=low
+ocaml (3.12.1-1) unstable; urgency=low
 
   [ Stéphane Glondu ]
   * New upstream release (Closes: #634621)
@@ -10,11 +10,14 @@ ocaml (3.12.1-1) UNRELEASED; urgency=low
   [ Jonathan Nieder ]
   * debian/control: add Breaks against versions of dh-ocaml that relied on
     the ocaml{dumpapprox,plugininfo,byteinfo} tools (Closes: #642935)
-  
+
   [ Stefano Zacchiroli ]
   * remove myself from Uploaders
 
- -- Stéphane Glondu <glondu@debian.org>  Wed, 15 Jun 2011 18:19:01 +0200
+  [ Samuel Thibault ]
+  * Add support for ENOTSUP (Closes: #646372)
+
+ -- Stéphane Glondu <glondu@debian.org>  Tue, 01 Nov 2011 13:53:49 +0100
 
 ocaml (3.12.0-7) unstable; urgency=low
 
