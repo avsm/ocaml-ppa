@@ -3,6 +3,7 @@ Date: Tue, 1 Nov 2011 15:28:15 +0100
 Subject: Do not add -R$dir in X11 link options on GNU/kFreeBSD
 
 Signed-off-by: Stephane Glondu <steph@glondu.net>
+Bug: http://caml.inria.fr/mantis/view.php?id=5393
 ---
  configure |    1 +
  1 files changed, 1 insertions(+), 0 deletions(-)
