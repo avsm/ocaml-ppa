@@ -1,0 +1,49 @@
+From: Samuel Thibault <sthibault@debian.org>
+Date: Tue, 1 Nov 2011 13:48:38 +0100
+Subject: Add support for ENOTSUP
+
+On some systems such as Solaris or GNU/Hurd, ENOTSUP and EOPNOSUPP do
+not have the same value, but ocaml code only deals with EOPNOSUPP, and
+thus ocaml applications only handle the EOPNOSUPP case. The attached
+patch fixes it by making ocaml convert ENOTSUP errors into EOPNOSUPP
+errors.
+
+This patch fixes omake build on hurd-i386.
+
+Bug: http://caml.inria.fr/mantis/view.php?id=5382
+Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=646372
+Signed-off-by: Stephane Glondu <steph@glondu.net>
+---
+ otherlibs/unix/unixsupport.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
+
+diff --git a/otherlibs/unix/unixsupport.c b/otherlibs/unix/unixsupport.c
+index a471f9e..db5912e 100644
+--- a/otherlibs/unix/unixsupport.c
++++ b/otherlibs/unix/unixsupport.c
+@@ -165,7 +165,11 @@
+ #define ESOCKTNOSUPPORT (-1)
+ #endif
+ #ifndef EOPNOTSUPP
+-#define EOPNOTSUPP (-1)
++#  ifdef ENOTSUP
++#    define EOPNOTSUPP ENOTSUP
++#  else
++#    define EOPNOTSUPP (-1)
++#  endif
+ #endif
+ #ifndef EPFNOSUPPORT
+ #define EPFNOSUPPORT (-1)
+@@ -252,6 +256,11 @@ value unix_error_of_code (int errcode)
+   int errconstr;
+   value err;
+ 
++#if defined(ENOTSUP) && (EOPNOTSUPP != ENOTSUP)
++  if (errcode == ENOTSUP)
++    errcode = EOPNOTSUPP;
++#endif
++
+   errconstr =
+       cst_to_constr(errcode, error_table, sizeof(error_table)/sizeof(int), -1);
+   if (errconstr == Val_int(-1)) {
+-- 
