@@ -58,6 +58,7 @@ ocamlinit-stamp:
 	for t in $(OCAML_IN_FILES); do \
 	  sed $(OCAMLINIT_SED) $$t.in > $$t; \
 	done
+	sed -i 's@\./@@' debian/ocaml-nox.lintian-overrides
 	touch $@
 
 ocamlinit-clean:
