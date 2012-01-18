@@ -220,7 +220,6 @@ endif
 	done
 	for pkg in ocaml ocaml-nox ocaml-base; do ( \
 	  cd debian/$$pkg/usr/share/doc/$$pkg && \
-	  ln -sf ../ocaml-base-nox/Changes.gz . && \
 	  ln -sf ../ocaml-base-nox/README.gz . && \
 	  ln -sf ../ocaml-base-nox/README.Debian .; \
 	); done
