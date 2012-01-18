@@ -36,7 +36,6 @@ OPT: @OCamlStdlibDir@/libasmrun.a
 OPT: @OCamlStdlibDir@/libasmrunp.a
      @OCamlStdlibDir@/libcamlrun.a
      @OCamlStdlibDir@/libcamlrun_shared.so
-     @OCamlStdlibDir@/libmldbm.a
      @OCamlStdlibDir@/libnums.a
      @OCamlStdlibDir@/libcamlstr.a
      @OCamlStdlibDir@/libthreads.a
@@ -176,10 +175,6 @@ STD: complex.ml
 STD: complex.mli
 STD: complex.cmx
 STD: condition.mli
-STD: dbm.cmi
-STD: dbm.cmx
-STD: dbm.cmxa
-STD: dbm.mli
 STD: digest.ml
 STD: digest.mli
 STD: digest.cmx

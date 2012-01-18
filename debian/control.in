@@ -16,7 +16,6 @@ Build-Depends:
  tcl8.5-dev,
  tk8.5-dev,
  libncurses5-dev,
- libgdbm-dev,
  bzip2,
  dh-ocaml (>= 1.0.0~)
 Standards-Version: 3.9.2
@@ -40,7 +39,6 @@ Provides:
  libnums-ocaml-dev
 Suggests:
  ocaml-doc,
- libgdbm-dev,
  tuareg-mode | ocaml-mode
 Recommends:
  camlp4,

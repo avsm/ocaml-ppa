@@ -6,12 +6,9 @@
      @OCamlDllDir@/dllbigarray.so
      @OCamlDllDir@/dllthreads.so
      @OCamlDllDir@/dllvmthreads.so
-     @OCamlDllDir@/dllmldbm.so
      @OCamlDllDir@/dllnums.so
      @OCamlStdlibDir@/ld.conf
      debian/ld.conf @OCamlStdlibDir@
-     @OCamlStdlibDir@/dbm.cma
-DYN: @OCamlStdlibDir@/dbm.cmxs
      @OCamlStdlibDir@/unix.cma
 DYN: @OCamlStdlibDir@/unix.cmxs
      @OCamlStdlibDir@/str.cma
