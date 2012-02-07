@@ -9,7 +9,3 @@
 0009-Avoid-multiple-declarations-in-generated-.c-files-in.patch
 0010-Properly-initialize-executable-name-in-caml_startup_.patch
 0011-Embed-bytecode-in-C-object-when-using-custom.patch
-0012-Make-objinfo-show-force_link-and-ccobjs-ccopts-when-.patch
-0013-ocamlopt-arm-add-.type-directive-for-code-symbols.patch
-0014-Add-support-for-ENOTSUP.patch
-0015-Do-not-add-R-dir-in-X11-link-options-on-GNU-kFreeBSD.patch

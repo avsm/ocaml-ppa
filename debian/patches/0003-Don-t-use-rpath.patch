@@ -4,10 +4,10 @@ Subject: Don't use rpath
 
 ---
  tools/ocamlmklib.mlp |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ 1 file changed, 5 insertions(+)
 
 diff --git a/tools/ocamlmklib.mlp b/tools/ocamlmklib.mlp
-index 8374439..b8d9e33 100644
+index 3b31201..8846fd0 100644
 --- a/tools/ocamlmklib.mlp
 +++ b/tools/ocamlmklib.mlp
 @@ -37,6 +37,11 @@ and output_c = ref ""       (* Output name for C part of library *)

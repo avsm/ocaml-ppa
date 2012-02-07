@@ -4,13 +4,13 @@ Subject: Put manpages in section 3o instead of 3
 
 ---
  ocamldoc/Makefile |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/ocamldoc/Makefile b/ocamldoc/Makefile
-index 8f6e87c..ace934c 100644
+index d04809a..f8cb482 100644
 --- a/ocamldoc/Makefile
 +++ b/ocamldoc/Makefile
-@@ -318,7 +318,7 @@ test_texi: dummy
+@@ -333,7 +333,7 @@ test_texi: dummy
  stdlib_man/Pervasives.3o: $(STDLIB_MLIS)
  	$(MKDIR) stdlib_man
  	$(OCAMLDOC_RUN) -man -d stdlib_man $(INCLUDES) \

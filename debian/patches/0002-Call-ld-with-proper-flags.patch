@@ -7,13 +7,13 @@ to remove the "-Wl," parts, which are only used when ocamlopt calls
 gcc.
 ---
  configure |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/configure b/configure
-index 236e016..d4287ed 100755
+index c632d6d..9c1bb8c 100755
 --- a/configure
 +++ b/configure
-@@ -1643,7 +1643,7 @@ echo "DEBUGGER=$debugger" >> Makefile
+@@ -1613,7 +1613,7 @@ echo "DEBUGGER=$debugger" >> Makefile
  echo "CC_PROFILE=$cc_profile" >> Makefile
  echo "SYSTHREAD_SUPPORT=$systhread_support" >> Makefile
  echo "PARTIALLD=$partialld" >> Makefile
