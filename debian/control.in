@@ -3,14 +3,14 @@ Section: ocaml
 Priority: optional
 Maintainer: Debian OCaml Maintainers <debian-ocaml-maint@lists.debian.org>
 Uploaders:
- Stefano Zacchiroli <zack@debian.org>,
  Samuel Mimram <smimram@debian.org>,
  Sylvain Le Gall <gildor@debian.org>,
  Ralf Treinen <treinen@debian.org>,
  Stéphane Glondu <glondu@debian.org>,
  Mehdi Dogguy <mehdi@debian.org>
 Build-Depends:
- debhelper (>= 7.1.0~),
+ debhelper (>= 8),
+ pkg-config,
  autotools-dev,
  binutils-dev,
  tcl8.5-dev,
@@ -19,7 +19,7 @@ Build-Depends:
  libgdbm-dev,
  bzip2,
  dh-ocaml (>= 1.0.0~)
-Standards-Version: 3.8.4
+Standards-Version: 3.9.2
 Vcs-Git: git://git.debian.org/git/pkg-ocaml-maint/packages/ocaml.git
 Vcs-Browser: http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git
 Homepage: http://caml.inria.fr/
@@ -47,6 +47,7 @@ Recommends:
  file
 Replaces: ocaml-interp (<< 3.11.1-3)
 Breaks:
+ dh-ocaml (<< 1.0.0),
  ocaml-interp (<< 3.11.1-3),
  camlp4 (<< 3.10.0),
  camlidl (<< 1.04)
@@ -267,7 +268,7 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends}
 Suggests: ocaml
-Description: A major mode for editing Objective Caml in Emacs
+Description: major mode for editing Objective Caml in Emacs
  Objective (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
  and a powerful module system in the style of Standard ML.
