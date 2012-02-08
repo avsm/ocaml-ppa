@@ -194,6 +194,8 @@ endif
 # Install OCaml
 	sed -e 's|PREFIX=\"/.*\"|PREFIX=\"$(INSTDIR)"|' < config/config.sh > config/config.debian.install.sh
 	$(MAKE) install PREFIX=$(INSTDIR)
+# Remove empty directory
+	rmdir $(CURDIR)/debian/tmp$(OCAML_STDLIB_DIR)/ocamldoc/custom
 # To avoid erroneous dh_install warnings
 	rm -f $(INSTDIR)/share/man/man1/ocamlopt.opt.1 $(INSTDIR)/share/man/man1/ocamlc.opt.1
 # Dispatch files with dh_install
@@ -223,8 +225,6 @@ endif
 	  ln -sf ../ocaml-base-nox/README.gz . && \
 	  ln -sf ../ocaml-base-nox/README.Debian .; \
 	); done
-# Remove empty directory
-	rmdir $(CURDIR)/debian/ocaml-nox$(OCAML_STDLIB_DIR)/ocamldoc/custom
 # Remaining stuff
 	touch $@
 
