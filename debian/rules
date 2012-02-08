@@ -251,7 +251,7 @@ endif
 	 --checksum $(OCAML_ABI)
 	dh_gencontrol
 # Check that OCAML_ABI is correct
-	if [ "$(OCAML_ABI)" != "$(shell boot/ocamlrun ./ocamlc -version)" ]; then \
+	if [ "$(OCAML_ABI)" != "$(shell boot/ocamlrun ./ocamlc -version | { read a b && echo $$a; })" ]; then \
 	  echo "Please adjust OCAML_ABI in debian/rules"; \
 	  exit 2; \
 	fi
