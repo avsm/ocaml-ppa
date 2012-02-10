@@ -30,12 +30,17 @@ include debian/ocamlinit.mk
 MD5SUMSDIR = /var/lib/ocaml/md5sums
 INSTDIR = $(CURDIR)/debian/tmp/usr
 DISTDIR = $(PACKAGE)-$(OCAML_ABI)
+UPSTREAM_VERSION = $(shell dpkg-parsechangelog | awk '/^Version:/{print $$2}' | { read u; echo $${u%-*}; })
+UPSTREAM_TARBALL = ../$(PACKAGE)_$(UPSTREAM_VERSION).orig.tar.gz
 SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar.bz2
 
+TESTDIR := debian/test-build
+TESTRULES := debian/rules DEB_TEST_BUILD_PREFIX=$(CURDIR)/$(TESTDIR)
+
+ifeq (,$(DEB_TEST_BUILD_PREFIX))
 ifneq (,$(findstring ocaml-source,$(ALL_PACKAGES)))
   TARBALL_TARGET = debian/$(SRCTARBALL)
-else
-  TARBALL_TARGET =
+endif
 endif
 
 # Environment variable for dh_ocaml
@@ -54,10 +59,10 @@ export OCAML_OPT_ARCH
 export OCAML_STDLIB_DIR
 
 CONFIGURE_OPTS := \
-  --with-pthread -prefix /usr \
-  -libdir $(OCAML_STDLIB_DIR) \
+  --with-pthread -prefix $(DEB_TEST_BUILD_PREFIX)/usr \
+  -libdir $(DEB_TEST_BUILD_PREFIX)$(OCAML_STDLIB_DIR) \
   -x11lib "$(shell pkg-config --variable=libdir x11)" \
-  -mandir /usr/share/man \
+  -mandir $(DEB_TEST_BUILD_PREFIX)/usr/share/man \
   -tkdefs "-I/usr/include/tcl8.5" \
   -tklibs "-L/usr/lib -ltk8.5 -ltcl8.5"
 
@@ -68,6 +73,11 @@ CONFIGURE_SED := \
   -e "s%STUBLIBDIR=.*$$%STUBLIBDIR=\$$(PREFIX)/lib/ocaml/stublibs%g"
 
 %:
+	dh $@
+
+# Needed because there is a "build" in the upstream tarball
+.PHONY: build
+build:
 	dh $@
 
 ocamlinit-stamp: $(TARBALL_TARGET)
@@ -175,7 +185,7 @@ endif
 		sed -i 1d emacs/ocamltags.in; \
 	fi
 # Remaining stuff
-	-rm -Rf debian/$(SRCTARBALL) debian/examples
+	-rm -Rf debian/$(SRCTARBALL) debian/examples $(TESTDIR)
 
 .PHONY: override_dh_auto_install
 override_dh_auto_install: install-stamp
@@ -194,6 +204,7 @@ endif
 # Install OCaml
 	sed -e 's|PREFIX=\"/.*\"|PREFIX=\"$(INSTDIR)"|' < config/config.sh > config/config.debian.install.sh
 	$(MAKE) install PREFIX=$(INSTDIR)
+ifeq (,$(DEB_TEST_BUILD_PREFIX))
 # Remove empty directory
 	rmdir $(CURDIR)/debian/tmp$(OCAML_STDLIB_DIR)/ocamldoc/custom
 # To avoid erroneous dh_install warnings
@@ -225,6 +236,7 @@ endif
 	  ln -sf ../ocaml-base-nox/README.gz . && \
 	  ln -sf ../ocaml-base-nox/README.Debian .; \
 	); done
+endif
 # Remaining stuff
 	touch $@
 
@@ -260,3 +272,27 @@ regenerate: debian/control
 	git ls-tree --name-only -r HEAD debian \
 	  | grep -v '^debian/\(patches/\|source/local-\)' \
 	> debian/MANIFEST
+
+.PHONY: override_dh_auto_test
+override_dh_auto_test:
+ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
+# The test suite needs the just-compiled ocaml to be installed, so we
+# rebuild a version with a local prefix and install it to run the
+# tests; see:
+#   http://caml.inria.fr/mantis/view.php?id=5483
+ifeq (,$(DEB_TEST_BUILD_PREFIX))
+	rm -rf $(TESTDIR)
+	mkdir $(TESTDIR)
+	tar -C $(TESTDIR) -xf $(UPSTREAM_TARBALL)
+	tar -c --files-from=debian/MANIFEST | tar -C $(TESTDIR)/ocaml-* -x
+	cp -a debian/patches $(TESTDIR)/ocaml-*/debian
+	cd $(TESTDIR)/ocaml-* \
+	  && QUILT_PATCHES=debian/patches quilt push -a \
+	  && $(TESTRULES) build \
+	  && dh_installdirs \
+	  && $(TESTRULES) install-stamp \
+	  && cp -a debian/tmp/* .. \
+	  && cd testsuite \
+	  && make all
+endif
+endif

@@ -11,6 +11,7 @@ Uploaders:
 Build-Depends:
  debhelper (>= 8),
  pkg-config,
+ quilt,
  autotools-dev,
  binutils-dev,
  tcl8.5-dev,
