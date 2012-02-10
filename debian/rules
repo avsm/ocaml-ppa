@@ -32,7 +32,7 @@ INSTDIR = $(CURDIR)/debian/tmp/usr
 DISTDIR = $(PACKAGE)-$(OCAML_ABI)
 UPSTREAM_VERSION = $(shell dpkg-parsechangelog | awk '/^Version:/{print $$2}' | { read u; echo $${u%-*}; })
 UPSTREAM_TARBALL = ../$(PACKAGE)_$(UPSTREAM_VERSION).orig.tar.bz2
-SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar.bz2
+SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar
 
 TESTDIR := debian/test-build
 TESTRULES := debian/rules DEB_TEST_BUILD_PREFIX=$(CURDIR)/$(TESTDIR)
@@ -103,23 +103,14 @@ pre-config-stamp: $(TARBALL_TARGET)
 	touch $@
 
 ifneq (,$(TARBALL_TARGET))
-$(TARBALL_TARGET):
-# Make a copy of the current (patched) sources in debian/$(DISTDIR)
-	ln -fs . $(DISTDIR)	# beware of the symlink recursion!
+$(TARBALL_TARGET): $(UPSTREAM_TARBALL)
 	mkdir debian/$(DISTDIR)
-	tar --anchored -ch \
-	  --exclude=$(DISTDIR)/$(DISTDIR)	\
-	  --exclude-from=debian/ocaml-source.exclude \
-	  $(DISTDIR)/ | tar -C debian -x
-	rm -f $(DISTDIR)
-# Copy patches and unapply them
+# Copy upstream tarball
+	cp $< debian/$(DISTDIR)
+# Copy debian/patches
 	cp -a debian/patches debian/$(DISTDIR)/debian-patches
-	cd debian/$(DISTDIR) && sort -r debian-patches/series | \
-	while read u; do \
-	  patch -R -V never -p1 < debian-patches/$$u; \
-	done
 # Create the tarball and cleanup
-	tar -C debian -cjf $@ $(DISTDIR)
+	tar -C debian -cf $@ $(DISTDIR)
 	rm -Rf debian/$(DISTDIR)
 endif
 

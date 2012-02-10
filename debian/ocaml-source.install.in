@@ -1,1 +1,1 @@
-debian/ocaml-source-@OCamlABI@.tar.bz2 /usr/src/
+debian/ocaml-source-@OCamlABI@.tar /usr/src/
