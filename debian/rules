@@ -254,3 +254,9 @@ endif
 	  echo "Please adjust OCAML_ABI in debian/rules"; \
 	  exit 2; \
 	fi
+
+.PHONY: regenerate
+regenerate: debian/control
+	git ls-tree --name-only -r HEAD debian \
+	  | grep -v '^debian/\(patches/\|source/local-\)' \
+	> debian/MANIFEST
