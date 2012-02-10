@@ -11,6 +11,7 @@ Uploaders:
 Build-Depends:
  debhelper (>= 8),
  pkg-config,
+ quilt,
  autotools-dev,
  binutils-dev,
  tcl8.5-dev,
@@ -192,7 +193,7 @@ Description: Runtime system for OCaml bytecode executables
  you do not require any graphical capabilities for your runtime.
 
 Package: ocaml-native-compilers
-Architecture: amd64 armel hurd-i386 i386 kfreebsd-i386 kfreebsd-amd64 lpia powerpc sparc
+Architecture: amd64 armel armhf hurd-i386 i386 kfreebsd-i386 kfreebsd-amd64 lpia powerpc sparc
 Depends:
  ocaml-nox (= ${binary:Version}),
  gcc, binutils,
