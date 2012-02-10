@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: linenum.mll 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (* An auxiliary lexer for determining the line number corresponding to
    a file position, honoring the directives # linenum "filename" *)
