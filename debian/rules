@@ -273,6 +273,11 @@ regenerate: debian/control
 	  | grep -v '^debian/\(patches/\|source/local-\)' \
 	> debian/MANIFEST
 
+# Architectures where running the test suite completely makes the
+# whole build last more than one hour on buildds. Originally, because
+# some tests do not even finish on mips.
+SLOW_ARCHITECTURES := hurd-i386 mips mipsel powerpc sparc armel
+
 .PHONY: override_dh_auto_test
 override_dh_auto_test:
 ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
@@ -291,8 +296,20 @@ ifeq (,$(DEB_TEST_BUILD_PREFIX))
 	  && $(TESTRULES) build \
 	  && dh_installdirs \
 	  && $(TESTRULES) install-stamp \
-	  && cp -a debian/tmp/* .. \
-	  && cd testsuite \
+	  && cp -a debian/tmp/* ..
+# Thread tests seem to hang on buildds, but cannot reproduce elsewhere
+ifneq (,$(findstring kfreebsd,$(DEB_BUILD_ARCH)))
+	rm -rf $(TESTDIR)/ocaml-*/testsuite/tests/lib-threads
+endif
+# Tests that take too much time
+ifneq (,$(filter $(DEB_BUILD_ARCH),$(SLOW_ARCHITECTURES)))
+	for t in \
+	  misc/nucleic.ml \
+	  misc-unsafe/almabench.ml \
+	  misc-unsafe/fft.ml \
+	; do rm -rf $(TESTDIR)/ocaml-*/testsuite/tests/$$t; done
+endif
+	cd $(TESTDIR)/ocaml-*/testsuite \
 	  && make all
 endif
 endif
