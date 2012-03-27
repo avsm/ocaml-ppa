@@ -1,14 +1,14 @@
 (****************************************************************************)
 (*                                                                          *)
-(*                              Objective Caml                              *)
+(*                                   OCaml                                  *)
 (*                                                                          *)
 (*                            INRIA Rocquencourt                            *)
 (*                                                                          *)
 (*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
 (*  en Automatique.  All rights reserved.  This file is distributed under   *)
 (*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the Objective   *)
-(*  Caml source tree.                                                       *)
+(*  exception on linking described in LICENSE at the top of the OCaml       *)
+(*  source tree.                                                            *)
 (*                                                                          *)
 (****************************************************************************)
 
@@ -106,10 +106,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
           "Cannot print %S this identifier does not respect OCaml lexing rules (%s)"
           str (Lexer.Error.to_string exn)) ];
 
-  value ocaml_char =
-    fun
-    [ "'" -> "\\'"
-    | c -> c ];
+  value ocaml_char x = x;
 
   value rec get_expr_args a al =
     match a with
@@ -371,7 +368,12 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
       match Ast.list_of_ctyp t [] with
       [ [] -> ()
       | ts ->
-          pp f "@[<hv0>| %a@]" (list o#ctyp "@ | ") ts ];
+          pp f "@[<hv0>| %a@]" (list o#constructor_declaration "@ | ") ts ];
+
+    method private constructor_declaration f t =
+      match t with
+      [ <:ctyp< $t1$ : $t2$ -> $t3$ >> -> pp f "@[<2>%a :@ @[<2>%a@ ->@ %a@]@]" o#ctyp t1 o#constructor_type t2 o#ctyp t3
+      | t -> o#ctyp f t ];
 
     method string f = pp f "%s";
     method quoted_string f = pp f "%S";
@@ -554,7 +556,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     | <:expr< $int64:s$ >> -> o#numeric f s "L"
     | <:expr< $int32:s$ >> -> o#numeric f s "l"
     | <:expr< $flo:s$ >> -> o#numeric f s ""
-    | <:expr< $chr:s$ >> -> pp f "'%s'" (ocaml_char s)
+    | <:expr< $chr:s$ >> -> pp f "'%s'" s
     | <:expr< $id:i$ >> -> o#var_ident f i
     | <:expr< { $b$ } >> ->
         pp f "@[<hv0>@[<hv2>{%a@]@ }@]" o#record_binding b
@@ -654,6 +656,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     | <:patt< $id:i$ >> -> o#var_ident f i
     | <:patt< $anti:s$ >> -> o#anti f s
     | <:patt< _ >> -> pp f "_"
+    | <:patt< ( module $m$ ) >> -> pp f "(module %s)" m
     | <:patt< ( $tup:p$ ) >> -> pp f "@[<1>(%a)@]" o#patt3 p
     | <:patt< { $p$ } >> -> pp f "@[<hv2>{@ %a@]@ }" o#patt p
     | <:patt< $str:s$ >> -> pp f "\"%s\"" s
@@ -663,7 +666,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     | <:patt< $int32:s$ >> -> o#numeric f s "l"
     | <:patt< $int:s$ >> -> o#numeric f s ""
     | <:patt< $flo:s$ >> -> o#numeric f s ""
-    | <:patt< $chr:s$ >> -> pp f "'%s'" (ocaml_char s)
+    | <:patt< $chr:s$ >> -> pp f "'%s'" s
     | <:patt< ~ $s$ >> -> pp f "~%s" s
     | <:patt< ` $uid:s$ >> -> pp f "`%a" o#var s
     | <:patt< # $i$ >> -> pp f "@[<2>#%a@]" o#ident i
@@ -695,6 +698,8 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     [ <:ctyp< $id:i$ >> -> o#ident f i
     | <:ctyp< $anti:s$ >> -> o#anti f s
     | <:ctyp< _ >> -> pp f "_"
+    | Ast.TyAnP _ -> pp f "+_"
+    | Ast.TyAnM _ -> pp f "-_"
     | <:ctyp< ~ $s$ : $t$ >> -> pp f "@[<2>%s:@ %a@]" s o#simple_ctyp t
     | <:ctyp< ? $s$ : $t$ >> -> pp f "@[<2>?%s:@ %a@]" s o#simple_ctyp t
     | <:ctyp< < > >> -> pp f "< >"
@@ -758,6 +763,9 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     | <:ctyp< ! $t1$ . $t2$ >> ->
         let (a, al) = get_ctyp_args t1 [] in
         pp f "@[<2>%a.@ %a@]" (list o#ctyp "@ ") [a::al] o#ctyp t2
+    | Ast.TyTypePol (_,t1,t2) ->
+        let (a, al) = get_ctyp_args t1 [] in
+        pp f "@[<2>type %a.@ %a@]" (list o#ctyp "@ ") [a::al] o#ctyp t2
     | <:ctyp< private $t$ >> -> pp f "@[private@ %a@]" o#simple_ctyp t
     | t -> o#simple_ctyp f t ];
 
@@ -878,7 +886,8 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     let () = o#node f mt Ast.loc_of_module_type in
     match mt with
     [ <:module_type<>> -> assert False
-    | <:module_type< module type of $me$ >> -> pp f "@[<2>module type of@ %a@]" o#module_expr me
+    | <:module_type< module type of $me$ >> ->
+        pp f "@[<2>module type of@ %a@]" o#module_expr me
     | <:module_type< $id:i$ >> -> o#ident f i
     | <:module_type< $anti:s$ >> -> o#anti f s
     | <:module_type< functor ( $s$ : $mt1$ ) -> $mt2$ >> ->
@@ -939,7 +948,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
     let () = o#node f ce Ast.loc_of_class_expr in
     match ce with
     [ <:class_expr< $ce$ $e$ >> ->
-          pp f "@[<2>%a@ %a@]" o#class_expr ce o#expr e
+          pp f "@[<2>%a@ %a@]" o#class_expr ce o#apply_expr e
     | <:class_expr< $id:i$ >> ->
           pp f "@[<2>%a@]" o#ident i
     | <:class_expr< $id:i$ [ $t$ ] >> ->

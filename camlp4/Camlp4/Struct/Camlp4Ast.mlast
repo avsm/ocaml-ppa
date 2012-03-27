@@ -1,14 +1,14 @@
 (****************************************************************************)
 (*                                                                          *)
-(*                              Objective Caml                              *)
+(*                                   OCaml                                  *)
 (*                                                                          *)
 (*                            INRIA Rocquencourt                            *)
 (*                                                                          *)
 (*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
 (*  en Automatique.  All rights reserved.  This file is distributed under   *)
 (*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the Objective   *)
-(*  Caml source tree.                                                       *)
+(*  exception on linking described in LICENSE at the top of the OCaml       *)
+(*  source tree.                                                            *)
 (*                                                                          *)
 (****************************************************************************)
 
@@ -123,6 +123,7 @@ module Make (Loc : Sig.Loc)
     | <:patt< ~ $_$ : $p$ >> -> is_irrefut_patt p
     | <:patt< lazy $p$ >> -> is_irrefut_patt p
     | <:patt< $id:_$ >> -> False (* here one need to know the arity of constructors *)
+    | <:patt< (module $_$) >> -> True
     | <:patt< `$_$ >> | <:patt< $str:_$ >> | <:patt< $_$ .. $_$ >> |
       <:patt< $flo:_$ >> | <:patt< $nativeint:_$ >> | <:patt< $int64:_$ >> |
       <:patt< $int32:_$ >> | <:patt< $int:_$ >> | <:patt< $chr:_$ >> |

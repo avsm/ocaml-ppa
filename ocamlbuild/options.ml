@@ -22,7 +22,7 @@ open Format
 open Command
 
 let entry = ref None
-let build_dir = ref "_build"
+let build_dir = ref (Filename.concat (Sys.getcwd ()) "_build")
 let include_dirs = ref []
 let exclude_dirs = ref []
 let nothing_should_be_rebuilt = ref false
@@ -50,8 +50,8 @@ let mk_virtual_solvers =
       if sys_file_exists !dir then
         let long = filename_concat !dir cmd in
         let long_opt = long ^ ".opt" in
-        if sys_file_exists long_opt then A long_opt
-        else if sys_file_exists long then A long
+        if file_or_exe_exists long_opt then A long_opt
+        else if file_or_exe_exists long then A long
         else try let _ = search_in_path opt in a_opt
         with Not_found -> a_cmd
       else
@@ -126,7 +126,12 @@ let add_to' rxs x =
   else
     ()
 let set_cmd rcmd = String (fun s -> rcmd := Sh s)
-let set_build_dir s = make_links := false; build_dir := s
+let set_build_dir s =
+  make_links := false;
+  if Filename.is_relative s then
+    build_dir := Filename.concat (Sys.getcwd ()) s
+  else
+    build_dir := s
 let spec = ref (
   Arg.align
   [

@@ -1,6 +1,6 @@
 #########################################################################
 #                                                                       #
-#                            Objective Caml                             #
+#                                 OCaml                                 #
 #                                                                       #
 #            Xavier Leroy, projet Cristal, INRIA Rocquencourt           #
 #                                                                       #
@@ -31,6 +31,9 @@ CAMLRUN=byterun/ocamlrun
 SHELL=/bin/sh
 MKDIR=mkdir -p
 
+CAMLP4OUT=$(CAMLP4:=out)
+CAMLP4OPT=$(CAMLP4:=opt)
+
 INCLUDES=-I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver \
 	 -I toplevel
 
@@ -40,11 +43,11 @@ UTILS=utils/misc.cmo utils/tbl.cmo utils/config.cmo \
 
 OPTUTILS=$(UTILS)
 
-PARSING=parsing/linenum.cmo parsing/location.cmo parsing/longident.cmo \
+PARSING=parsing/location.cmo parsing/longident.cmo \
   parsing/syntaxerr.cmo parsing/parser.cmo \
   parsing/lexer.cmo parsing/parse.cmo parsing/printast.cmo
 
-TYPING=typing/unused_var.cmo typing/ident.cmo typing/path.cmo \
+TYPING=typing/ident.cmo typing/path.cmo \
   typing/primitive.cmo typing/types.cmo \
   typing/btype.cmo typing/oprint.cmo \
   typing/subst.cmo typing/predef.cmo \
@@ -52,8 +55,8 @@ TYPING=typing/unused_var.cmo typing/ident.cmo typing/path.cmo \
   typing/typedtree.cmo typing/ctype.cmo \
   typing/printtyp.cmo typing/includeclass.cmo \
   typing/mtype.cmo typing/includecore.cmo \
-  typing/includemod.cmo typing/parmatch.cmo \
-  typing/typetexp.cmo typing/stypes.cmo typing/typecore.cmo \
+  typing/includemod.cmo typing/typetexp.cmo typing/parmatch.cmo \
+  typing/stypes.cmo typing/typecore.cmo \
   typing/typedecl.cmo typing/typeclass.cmo \
   typing/typemod.cmo
 
@@ -71,7 +74,7 @@ BYTECOMP=bytecomp/meta.cmo bytecomp/instruct.cmo bytecomp/bytegen.cmo \
 ASMCOMP=asmcomp/arch.cmo asmcomp/debuginfo.cmo \
   asmcomp/cmm.cmo asmcomp/printcmm.cmo \
   asmcomp/reg.cmo asmcomp/mach.cmo asmcomp/proc.cmo \
-  asmcomp/clambda.cmo asmcomp/compilenv.cmo \
+  asmcomp/clambda.cmo asmcomp/printclambda.cmo asmcomp/compilenv.cmo \
   asmcomp/closure.cmo asmcomp/cmmgen.cmo \
   asmcomp/printmach.cmo asmcomp/selectgen.cmo asmcomp/selection.cmo \
   asmcomp/comballoc.cmo asmcomp/liveness.cmo \
@@ -113,6 +116,7 @@ OPTOBJS=$(OPTUTILS) $(PARSING) $(TYPING) $(COMP) $(ASMCOMP) $(OPTDRIVER)
 EXPUNGEOBJS=utils/misc.cmo utils/tbl.cmo \
   utils/config.cmo utils/clflags.cmo \
   typing/ident.cmo typing/path.cmo typing/types.cmo typing/btype.cmo \
+  utils/warnings.cmo parsing/location.cmo \
   typing/predef.cmo bytecomp/runtimedef.cmo bytecomp/bytesections.cmo \
   bytecomp/dll.cmo bytecomp/meta.cmo bytecomp/symtable.cmo toplevel/expunge.cmo
 
@@ -130,7 +134,7 @@ defaultentry:
 
 # Recompile the system using the bootstrap compiler
 all: runtime ocamlc ocamllex ocamlyacc ocamltools library ocaml \
-  otherlibraries ocamlbuild.byte camlp4out $(DEBUGGER) ocamldoc
+  otherlibraries ocamlbuild.byte $(CAMLP4OUT) $(DEBUGGER) ocamldoc
 
 # Compile everything the first time
 world:
@@ -141,6 +145,7 @@ world:
 world.opt:
 	$(MAKE) coldstart
 	$(MAKE) opt.opt
+	$(MAKE) ocamltoolsopt
 
 # Hard bootstrap how-to:
 # (only necessary in some cases, for example if you remove some primitive)
@@ -259,16 +264,17 @@ opt:
 	$(MAKE) ocamlopt
 	$(MAKE) libraryopt
 	$(MAKE) otherlibrariesopt
+	$(MAKE) ocamltoolsopt
 	$(MAKE) ocamlbuildlib.native
 
 # Native-code versions of the tools
 opt.opt: checkstack runtime core ocaml opt-core ocamlc.opt otherlibraries \
-	 ocamlbuild.byte camlp4out $(DEBUGGER) ocamldoc ocamlopt.opt \
-	 otherlibrariesopt \
-	 ocamllex.opt ocamltoolsopt.opt ocamlbuild.native camlp4opt ocamldoc.opt
+	 $(DEBUGGER) ocamldoc ocamlbuild.byte $(CAMLP4OUT) \
+	 ocamlopt.opt otherlibrariesopt ocamllex.opt ocamltoolsopt.opt \
+	 ocamldoc.opt ocamlbuild.native $(CAMLP4OPT)
 
 base.opt: checkstack runtime core ocaml opt-core ocamlc.opt otherlibraries \
-	 ocamlbuild.byte camlp4out $(DEBUGGER) ocamldoc ocamlopt.opt \
+	 ocamlbuild.byte $(CAMLP4OUT) $(DEBUGGER) ocamldoc ocamlopt.opt \
 	 otherlibrariesopt
 
 # Installation
@@ -278,8 +284,9 @@ install:
 	if test -d $(STUBLIBDIR); then : ; else $(MKDIR) $(STUBLIBDIR); fi
 	if test -d $(MANDIR)/man$(MANEXT); then : ; \
 	  else $(MKDIR) $(MANDIR)/man$(MANEXT); fi
+	cp VERSION $(LIBDIR)/
 	cd $(LIBDIR); rm -f dllbigarray.so dlllabltk.so dllnums.so \
-	  dllthreads.so dllunix.so dllgraphics.so dllmldbm.so dllstr.so \
+	  dllthreads.so dllunix.so dllgraphics.so dllstr.so \
 	  dlltkanim.so
 	cd byterun; $(MAKE) install
 	cp ocamlc $(BINDIR)/ocamlc$(EXE)
@@ -320,6 +327,7 @@ installopt:
 	  then cp ocamlopt.opt $(BINDIR)/ocamlopt.opt$(EXE); else :; fi
 	if test -f lex/ocamllex.opt; \
 	  then cp lex/ocamllex.opt $(BINDIR)/ocamllex.opt$(EXE); else :; fi
+	cd tools; $(MAKE) installopt
 
 clean:: partialclean
 
@@ -382,6 +390,7 @@ utils/config.ml: utils/config.mlp config/Makefile
 	    -e 's|%%BYTECCLIBS%%|$(BYTECCLIBS)|' \
 	    -e 's|%%NATIVECCLIBS%%|$(NATIVECCLIBS)|' \
 	    -e 's|%%RANLIBCMD%%|$(RANLIBCMD)|' \
+	    -e 's|%%ARCMD%%|$(ARCMD)|' \
 	    -e 's|%%CC_PROFILE%%|$(CC_PROFILE)|' \
 	    -e 's|%%ARCH%%|$(ARCH)|' \
 	    -e 's|%%MODEL%%|$(MODEL)|' \
@@ -392,6 +401,7 @@ utils/config.ml: utils/config.mlp config/Makefile
 	    -e 's|%%EXT_DLL%%|.so|' \
 	    -e 's|%%SYSTHREAD_SUPPORT%%|$(SYSTHREAD_SUPPORT)|' \
 	    -e 's|%%ASM%%|$(ASM)|' \
+	    -e 's|%%ASM_CFI_SUPPORTED%%|$(ASM_CFI_SUPPORTED)|' \
 	    -e 's|%%MKDLL%%|$(MKDLL)|' \
 	    -e 's|%%MKEXE%%|$(MKEXE)|' \
 	    -e 's|%%MKMAINDLL%%|$(MKMAINDLL)|' \
@@ -422,16 +432,6 @@ partialclean::
 	rm -f parsing/lexer.ml
 
 beforedepend:: parsing/lexer.ml
-
-# The auxiliary lexer for counting line numbers
-
-parsing/linenum.ml: parsing/linenum.mll
-	$(CAMLLEX) parsing/linenum.mll
-
-partialclean::
-	rm -f parsing/linenum.ml
-
-beforedepend:: parsing/linenum.ml
 
 # The bytecode compiler compiled with the native-code compiler
 
@@ -627,6 +627,9 @@ clean::
 ocamltools: ocamlc ocamlyacc ocamllex asmcomp/cmx_format.cmi
 	cd tools; $(MAKE) all
 
+ocamltoolsopt: ocamlopt
+	cd tools; $(MAKE) opt
+
 ocamltoolsopt.opt: ocamlc.opt ocamlyacc ocamllex asmcomp/cmx_format.cmi
 	cd tools; $(MAKE) opt.opt
 
@@ -686,7 +689,7 @@ alldepend::
 
 # Camlp4
 
-camlp4out: ocamlc otherlibraries ocamlbuild-mixed-boot ocamlbuild.byte
+camlp4out: ocamlc ocamlbuild.byte
 	./build/camlp4-byte-only.sh
 
 camlp4opt: ocamlopt otherlibrariesopt ocamlbuild-mixed-boot ocamlbuild.native
@@ -694,19 +697,20 @@ camlp4opt: ocamlopt otherlibrariesopt ocamlbuild-mixed-boot ocamlbuild.native
 
 # Ocamlbuild
 
-ocamlbuild.byte: ocamlc otherlibraries ocamlbuild-mixed-boot
+ocamlbuild.byte: ocamlc ocamlbuild-mixed-boot
 	./build/ocamlbuild-byte-only.sh
 
-ocamlbuild.native: ocamlopt otherlibrariesopt ocamlbuild-mixed-boot
+ocamlbuild.native: ocamlopt ocamlbuild-mixed-boot
 	./build/ocamlbuild-native-only.sh
-ocamlbuildlib.native: ocamlopt otherlibrariesopt ocamlbuild-mixed-boot
+ocamlbuildlib.native: ocamlopt ocamlbuild-mixed-boot
 	./build/ocamlbuildlib-native-only.sh
 
-ocamlbuild-mixed-boot: ocamlc otherlibraries
+ocamlbuild-mixed-boot: ocamlc
 	./build/mixed-boot.sh
+	touch ocamlbuild-mixed-boot
 
 partialclean::
-	rm -rf _build
+	rm -rf _build ocamlbuild-mixed-boot
 
 # Check that the stack limit is reasonable.
 
@@ -716,6 +720,11 @@ checkstack:
 	  else :; \
 	fi
 	@rm -f tools/checkstack
+
+# Make clean in the test suite
+
+clean::
+	cd testsuite; $(MAKE) clean
 
 # Make MacOS X package
 
@@ -762,8 +771,8 @@ distclean:
 .PHONY: coreboot defaultentry depend distclean install installopt
 .PHONY: library library-cross libraryopt ocamlbuild-mixed-boot
 .PHONY: ocamlbuild.byte ocamlbuild.native ocamldebugger ocamldoc
-.PHONY: ocamldoc.opt ocamllex ocamllex.opt ocamltools ocamltools.opt
-.PHONY: ocamlyacc opt-core opt opt.opt otherlibraries
+.PHONY: ocamldoc.opt ocamllex ocamllex.opt ocamltools ocamltoolsopt
+.PHONY: ocamltoolsopt.opt ocamlyacc opt-core opt opt.opt otherlibraries
 .PHONY: otherlibrariesopt package-macosx promote promote-cross
 .PHONY: restore runtime runtimeopt makeruntimeopt world world.opt
 

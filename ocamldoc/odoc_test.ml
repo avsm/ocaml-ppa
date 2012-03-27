@@ -22,9 +22,12 @@ type test_kind =
 
 let p = Format.fprintf
 
-class string_gen =
+module Generator (G : Odoc_gen.Base) =
+struct
+  class string_gen =
   object(self)
     inherit Odoc_info.Scan.scanner
+
 
     val mutable test_kinds = []
     val mutable fmt = Format.str_formatter
@@ -88,7 +91,7 @@ class string_gen =
       true
 
     method generate (module_list: Odoc_info.Module.t_module list) =
-      let oc = open_out !Odoc_info.Args.out_file in
+      let oc = open_out !Odoc_info.Global.out_file in
       fmt <- Format.formatter_of_out_channel oc;
       (
        try
@@ -106,7 +109,15 @@ class string_gen =
       close_out oc
   end
 
+  class generator =
+    let g = new string_gen in
+    object
+      inherit G.generator as base
 
-let my_generator = new string_gen
-let _ = Odoc_info.Args.set_doc_generator
-    (Some (my_generator :> Odoc_info.Args.doc_generator))
+      method generate l =
+        base#generate l;
+        g#generate l
+    end
+end;;
+
+let _ = Odoc_args.extend_base_generator (module Generator : Odoc_gen.Base_functor);;

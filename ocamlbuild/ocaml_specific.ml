@@ -434,7 +434,7 @@ let () =
     (* tags package(X), predicate(X) and syntax(X) *)
     List.iter begin fun tags ->
       pflag tags "package" (fun pkg -> S [A "-package"; A pkg]);
-      pflag tags "predicate" (fun pkg -> S [A "-predicate"; A pkg]);
+      pflag tags "predicate" (fun pkg -> S [A "-predicates"; A pkg]);
       pflag tags "syntax" (fun pkg -> S [A "-syntax"; A pkg])
     end all_tags
   end else begin
@@ -527,7 +527,9 @@ flag ["ocaml"; "compile"; "thread"] (A "-thread");;
 if not !Options.use_ocamlfind then begin
   flag ["ocaml"; "doc"; "thread"] (S[A"-I"; A"+threads"]);
   flag ["ocaml"; "link"; "thread"; "native"; "program"] (S[A "threads.cmxa"; A "-thread"]);
-  flag ["ocaml"; "link"; "thread"; "byte"; "program"] (S[A "threads.cma"; A "-thread"])
+  flag ["ocaml"; "link"; "thread"; "byte"; "program"] (S[A "threads.cma"; A "-thread"]);
+  flag ["ocaml"; "link"; "thread"; "native"; "toplevel"] (S[A "threads.cmxa"; A "-thread"]);
+  flag ["ocaml"; "link"; "thread"; "byte"; "toplevel"] (S[A "threads.cma"; A "-thread"])
 end else begin
   flag ["ocaml"; "link"; "thread"; "program"] (A "-thread")
 end;;

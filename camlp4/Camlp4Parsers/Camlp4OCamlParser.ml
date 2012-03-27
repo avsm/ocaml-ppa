@@ -1,15 +1,15 @@
 open Camlp4;                                        (* -*- camlp4r -*- *)
 (****************************************************************************)
 (*                                                                          *)
-(*                              Objective Caml                              *)
+(*                                   OCaml                                  *)
 (*                                                                          *)
 (*                            INRIA Rocquencourt                            *)
 (*                                                                          *)
 (*  Copyright 2002-2006 Institut National de Recherche en Informatique et   *)
 (*  en Automatique.  All rights reserved.  This file is distributed under   *)
 (*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the Objective   *)
-(*  Caml source tree.                                                       *)
+(*  exception on linking described in LICENSE at the top of the OCaml       *)
+(*  source tree.                                                            *)
 (*                                                                          *)
 (****************************************************************************)
 
@@ -158,6 +158,7 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
   DELETE_RULE Gram expr: SELF; ":="; SELF; dummy END;
   DELETE_RULE Gram expr: "~"; a_LIDENT; ":"; SELF END;
   DELETE_RULE Gram expr: "?"; a_LIDENT; ":"; SELF END;
+  DELETE_RULE Gram constructor_declarations: a_UIDENT; ":"; ctyp END;
   (* Some other DELETE_RULE are after the grammar *)
 
   value clear = Gram.Entry.clear;
@@ -384,6 +385,9 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
         | "[|"; pl = sem_patt; "|]" -> <:patt< [| $pl$ |] >>
         | "{"; pl = label_patt_list; "}" -> <:patt< { $pl$ } >>
         | "("; ")" -> <:patt< () >>
+        | "("; "module"; m = a_UIDENT; ")" -> <:patt< (module $m$) >>
+        | "("; "module"; m = a_UIDENT; ":"; pt = package_type; ")" ->
+            <:patt< ((module $m$) : (module $pt$)) >>
         | "("; p = patt; ":"; t = ctyp; ")" -> <:patt< ($p$ : $t$) >>
         | "("; p = patt; ")" -> <:patt< $p$ >>
         | "_" -> <:patt< _ >>
@@ -427,8 +431,8 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
       ] ]
     ;
     package_type_cstr:
-      [ [ "type"; i = a_LIDENT; "="; ty = ctyp ->
-            <:with_constr< type $lid:i$ = $ty$ >>
+      [ [ "type"; i = ident; "="; ty = ctyp ->
+            <:with_constr< type $id:i$ = $ty$ >>
       ] ]
     ;
     package_type_cstrs:
@@ -538,6 +542,15 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
         | t = ctyp LEVEL "ctyp1" -> t
       ] ]
     ;
+    constructor_declarations:
+      [ [ s = a_UIDENT; ":"; t = constructor_arg_list ; "->" ; ret = ctyp ->
+            <:ctyp< $uid:s$ : ($t$ -> $ret$) >>
+        | s = a_UIDENT; ":"; ret = constructor_arg_list ->
+           match Ast.list_of_ctyp ret [] with
+               [ [c] -> <:ctyp< $uid:s$ : $c$ >>
+               | _ -> raise (Stream.Error "invalid generalized constructor type") ]
+        ] ]
+    ;
     semi:
       [ [ ";;" -> () | -> () ] ]
     ;
@@ -559,17 +572,35 @@ module Make (Syntax : Sig.Camlp4Syntax) = struct
         | t = type_parameter -> fun acc -> <:ctyp< $acc$ $t$ >>
       ] ]
     ;
+
+    optional_type_parameter:
+      [ [ `ANTIQUOT (""|"typ"|"anti" as n) s -> <:ctyp< $anti:mk_anti n s$ >>
+        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | "+"; "_" -> Ast.TyAnP _loc 
+        | "+"; "'"; i = a_ident -> <:ctyp< +'$lid:i$ >>
+        | "-"; "_" -> Ast.TyAnM _loc
+        | "-"; "'"; i = a_ident -> <:ctyp< -'$lid:i$ >>
+        | "_" -> Ast.TyAny _loc
+        | "'"; i = a_ident -> <:ctyp< '$lid:i$ >>
+
+ ] ]
+    ;
+
     type_ident_and_parameters:
-      [ [ "("; tpl = LIST1 type_parameter SEP ","; ")"; i = a_LIDENT -> (i, tpl)
-        | t = type_parameter; i = a_LIDENT -> (i, [t])
+      [ [ "("; tpl = LIST1 optional_type_parameter SEP ","; ")"; i = a_LIDENT -> (i, tpl)
+        | t = optional_type_parameter; i = a_LIDENT -> (i, [t])
         | i = a_LIDENT -> (i, [])
       ] ]
     ;
     type_kind:
       [ [ "private"; tk = type_kind -> <:ctyp< private $tk$ >>
-        | t = TRY [OPT "|"; t = constructor_declarations;
-                   test_not_dot_nor_lparen -> t] ->
-            <:ctyp< [ $t$ ] >>
+        | (x, t) = TRY [x = OPT "|"; t = constructor_declarations;
+                        test_not_dot_nor_lparen -> (x, t)] ->
+            (* If there is no "|" and [t] is an antiquotation,
+               then it is not a sum type. *)
+            match (x, t) with
+            [ (None, Ast.TyAnt _) -> t
+            | _ -> <:ctyp< [ $t$ ] >> ]
         | t = TRY ctyp -> <:ctyp< $t$ >>
         | t = TRY ctyp; "="; "private"; tk = type_kind ->
             <:ctyp< $t$ == private $tk$ >>

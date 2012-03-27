@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*             Damien Doligez, projet Para, INRIA Rocquencourt         */
 /*                                                                     */
@@ -255,6 +255,8 @@ void caml_free_for_heap (char *mem)
    caller.  All other blocks must have the color [caml_allocation_color(m)].
    The caller must update [caml_allocated_words] if applicable.
    Return value: 0 if no error; -1 in case of error.
+
+   See also: caml_compact_heap, which duplicates most of this function.
 */
 int caml_add_to_heap (char *m)
 {
@@ -353,7 +355,7 @@ void caml_shrink_heap (char *chunk)
 {
   char **cp;
 
-  /* Never deallocate the first block, because caml_heap_start is both the
+  /* Never deallocate the first chunk, because caml_heap_start is both the
      first block and the base address for page numbers, and we don't
      want to shift the page table, it's too messy (see above).
      It will never happen anyway, because of the way compaction works.
