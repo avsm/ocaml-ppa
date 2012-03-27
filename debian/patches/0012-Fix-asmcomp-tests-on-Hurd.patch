@@ -1,0 +1,25 @@
+From: Pino Toscano <pino@debian.org>
+Date: Tue, 27 Mar 2012 11:41:02 +0200
+Subject: Fix asmcomp tests on Hurd
+
+Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=661716
+Author: Pino Toscano <pino@debian.org>
+Signed-off-by: Stephane Glondu <steph@glondu.net>
+---
+ testsuite/tests/asmcomp/i386.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testsuite/tests/asmcomp/i386.S b/testsuite/tests/asmcomp/i386.S
+index fc75b1f..cb78db8 100644
+--- a/testsuite/tests/asmcomp/i386.S
++++ b/testsuite/tests/asmcomp/i386.S
+@@ -15,7 +15,7 @@
+ /* Linux with ELF binaries does not prefix identifiers with _.
+    Linux with a.out binaries, FreeBSD, and NextStep do. */
+ 
+-#ifdef SYS_linux_elf
++#if defined(SYS_linux_elf) || defined(SYS_gnu)
+ #define G(x) x
+ #define FUNCTION_ALIGN 16
+ #else
+-- 
