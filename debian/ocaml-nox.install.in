@@ -15,6 +15,7 @@
      debian/native-archs @OCamlStdlibDir@
 OPT: usr/bin/ocamlbuild.native
 OPT: usr/bin/ocamlopt
+OPT: usr/bin/ocamloptp
      @OCamlStdlibDir@/stdlib.cma
      @OCamlStdlibDir@/toplevellib.cma
      @OCamlStdlibDir@/dynlink.cma
@@ -124,6 +125,7 @@ OPT: @OCamlStdlibDir@/libthreadsnat.a
      usr/share/man/man3/Weak.Make.3o
      usr/share/man/man3/Weak.S.3o
 OPT: usr/share/man/man1/ocamlopt.1
+OPT: usr/share/man/man1/ocamloptp.1
      usr/share/man/man1/ocamlprof.1
      usr/share/man/man1/ocamlc.1
      usr/share/man/man1/ocamldep.1
@@ -254,6 +256,7 @@ STD: printf.mli
 STD: printf.cmx
 STD: profiling.cmi
 STD: profiling.cmo
+STD: profiling.cmx
 STD: queue.ml
 STD: queue.mli
 STD: queue.cmx
