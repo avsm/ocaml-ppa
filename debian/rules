@@ -207,15 +207,18 @@ endif
 ifeq (,$(DEB_TEST_BUILD_PREFIX))
 # Remove empty directory
 	rmdir $(CURDIR)/debian/tmp$(OCAML_STDLIB_DIR)/ocamldoc/custom
-# To avoid erroneous dh_install warnings
-	rm -f $(INSTDIR)/share/man/man1/ocamlopt.opt.1 $(INSTDIR)/share/man/man1/ocamlc.opt.1
+# Remove uninstalled files
+	rm -f \
+	  $(INSTDIR)/share/man/man1/ocamlopt.opt.1 \
+	  $(INSTDIR)/share/man/man1/ocamlc.opt.1 \
+	  $(INSTDIR)/bin/camlp4boot
 # Dispatch files with dh_install
 	cd debian && \
 	for u in ocaml ocaml-nox; do \
 	  DESTDIR=tmp ./gen_modules.pl $$u.install > $$u.install.new; \
 	  mv $$u.install.new $$u.install; \
 	done
-	if ! dh_install --list-missing; then \
+	if ! dh_install --fail-missing; then \
 	  echo "===> dh_install has failed <==="; \
 	  find debian/tmp; \
 	  exit 1; \
