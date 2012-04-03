@@ -55,7 +55,6 @@ OPT: @OCamlStdlibDir@/libthreadsnat.a
      usr/share/man/man3/CamlinternalLazy.3o
      usr/share/man/man3/CamlinternalMod.3o
      usr/share/man/man3/CamlinternalOO.3o
-     usr/share/man/man3/Char.3o
      usr/share/man/man3/Complex.3o
      usr/share/man/man3/Digest.3o
      usr/share/man/man3/Filename.3o
@@ -65,10 +64,12 @@ OPT: @OCamlStdlibDir@/libthreadsnat.a
      usr/share/man/man3/Hashtbl.3o
      usr/share/man/man3/Hashtbl.HashedType.3o
      usr/share/man/man3/Hashtbl.Make.3o
+     usr/share/man/man3/Hashtbl.MakeSeeded.3o
      usr/share/man/man3/Hashtbl.S.3o
+     usr/share/man/man3/Hashtbl.SeededHashedType.3o
+     usr/share/man/man3/Hashtbl.SeededS.3o
      usr/share/man/man3/Int32.3o
      usr/share/man/man3/Int64.3o
-     usr/share/man/man3/Lazy.3o
      usr/share/man/man3/Lexing.3o
      usr/share/man/man3/List.3o
      usr/share/man/man3/ListLabels.3o
@@ -81,7 +82,10 @@ OPT: @OCamlStdlibDir@/libthreadsnat.a
      usr/share/man/man3/MoreLabels.Hashtbl.3o
      usr/share/man/man3/MoreLabels.Hashtbl.HashedType.3o
      usr/share/man/man3/MoreLabels.Hashtbl.Make.3o
+     usr/share/man/man3/MoreLabels.Hashtbl.MakeSeeded.3o
      usr/share/man/man3/MoreLabels.Hashtbl.S.3o
+     usr/share/man/man3/MoreLabels.Hashtbl.SeededHashedType.3o
+     usr/share/man/man3/MoreLabels.Hashtbl.SeededS.3o
      usr/share/man/man3/MoreLabels.Map.3o
      usr/share/man/man3/MoreLabels.Map.Make.3o
      usr/share/man/man3/MoreLabels.Map.OrderedType.3o
@@ -104,7 +108,6 @@ OPT: @OCamlStdlibDir@/libthreadsnat.a
      usr/share/man/man3/Random.State.3o
      usr/share/man/man3/Scanf.3o
      usr/share/man/man3/Scanf.Scanning.3o
-     usr/share/man/man3/Set.3o
      usr/share/man/man3/Set.Make.3o
      usr/share/man/man3/Set.OrderedType.3o
      usr/share/man/man3/Set.S.3o
@@ -116,7 +119,6 @@ OPT: @OCamlStdlibDir@/libthreadsnat.a
      usr/share/man/man3/StdLabels.String.3o
      usr/share/man/man3/Str.3o
      usr/share/man/man3/Stream.3o
-     usr/share/man/man3/String.3o
      usr/share/man/man3/StringLabels.3o
      usr/share/man/man3/Sys.3o
      usr/share/man/man3/Unix.3o
