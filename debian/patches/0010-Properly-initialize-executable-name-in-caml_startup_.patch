@@ -2,6 +2,7 @@ From: Stephane Glondu <steph@glondu.net>
 Date: Tue, 24 May 2011 12:16:20 +0200
 Subject: Properly initialize executable name in caml_startup_code
 
+Bug: http://caml.inria.fr/mantis/view.php?id=5279
 Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=627756
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---

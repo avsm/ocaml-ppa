@@ -8,6 +8,7 @@ with ocaml 3.11.2 / coq 8.2...
 Note: there is no native compiler for powerpc64! This must be a
 typo...
 
+Bug: http://caml.inria.fr/mantis/view.php?id=5255
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
  configure |    3 ++-

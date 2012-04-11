@@ -10,6 +10,7 @@ There are probably better implementations (in particular, in this one,
 care must be taken when changing the list of primitives available in
 mlvalues.h), but this is a small and (not too) intrusive patch.
 
+Bug: http://caml.inria.fr/mantis/view.php?id=5254
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
  bytecomp/bytelink.ml  |   17 +++++++++++++++--

@@ -4,6 +4,7 @@ Subject: Declare primitive name table as const char *
 
 This avoids lots of warnings when compiling with g++...
 
+Bug: http://caml.inria.fr/mantis/view.php?id=5131
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
  bytecomp/symtable.ml |    2 +-
