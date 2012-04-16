@@ -27,6 +27,7 @@ Homepage: http://caml.inria.fr/
 Package: ocaml-nox
 Architecture: any
 Depends:
+ ocaml-base-nox,
  ${shlibs:Depends},
  ${misc:Depends},
  ${ocaml:Depends},
@@ -100,6 +101,7 @@ Description: Pre Processor Pretty Printer for OCaml
 Package: camlp4-extra
 Architecture: any
 Depends:
+ camlp4,
  ${shlibs:Depends},
  ${misc:Depends},
  ${ocaml:Depends},
@@ -123,6 +125,7 @@ Description: Pre Processor Pretty Printer for OCaml - extras
 Package: ocaml
 Architecture: any
 Depends:
+ ocaml-base-nox,
  ${shlibs:Depends},
  ${misc:Depends},
  ${ocaml:Depends},
@@ -178,6 +181,7 @@ Description: Runtime system for OCaml bytecode executables (no X)
 Package: ocaml-base
 Architecture: any
 Depends:
+ ocaml-base-nox,
  ${shlibs:Depends},
  ${misc:Depends},
  ${ocaml:Depends}
