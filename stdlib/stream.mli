@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                             Ocaml                                   *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*        Daniel de Rauglaudre, projet Cristal, INRIA Rocquencourt     *)
 (*                                                                     *)
@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stream.mli 7164 2005-10-25 18:34:07Z doligez $ *)
+(* $Id$ *)
 
 (** Streams and parsers. *)
 
@@ -27,12 +27,7 @@ exception Error of string
    accepted, but one of the following components is rejected. *)
 
 
-(** {6 Stream builders}
-
-   Warning: these functions create streams with fast access; it is illegal
-   to mix them with streams built with [[< >]]; would raise [Failure]
-   when accessing such mixed streams.
-*)
+(** {6 Stream builders} *)
 
 val from : (int -> 'a option) -> 'a t
 (** [Stream.from f] returns a stream built from the function [f].
@@ -90,7 +85,7 @@ val npeek : int -> 'a t -> 'a list
 
 (**/**)
 
-(** {6 For system use only, not for the casual user} *)
+(* The following is for system use only. Do not call directly. *)
 
 val iapp : 'a t -> 'a t -> 'a t
 val icons : 'a -> 'a t -> 'a t

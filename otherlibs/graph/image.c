@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: image.c 6171 2004-03-24 15:02:06Z starynke $ */
+/* $Id$ */
 
 #include "libgraph.h"
 #include "image.h"
@@ -30,7 +30,8 @@ static struct custom_operations image_ops = {
   custom_compare_default,
   custom_hash_default,
   custom_serialize_default,
-  custom_deserialize_default
+  custom_deserialize_default,
+  custom_compare_ext_default
 };
 
 #define Max_image_mem 2000000
@@ -104,4 +105,4 @@ value caml_gr_draw_image(value im, value vx, value vy)
   return Val_unit;
 }
 
-/* eof $Id: image.c 6171 2004-03-24 15:02:06Z starynke $ */
+/* eof $Id$ */

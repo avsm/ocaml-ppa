@@ -1,6 +1,6 @@
 ;*********************************************************************
 ;*                                                                   *
-;*                          Objective Caml                           *
+;*                               OCaml                               *
 ;*                                                                   *
 ;*           Xavier Leroy, projet Cristal, INRIA Rocquencourt        *
 ;*                                                                   *
@@ -10,7 +10,7 @@
 ;*                                                                   *
 ;*********************************************************************
 
-; $Id: hppa.S 10713 2010-10-08 11:53:19Z doligez $
+; $Id$
 ; Must be preprocessed by cpp
 
 #ifdef SYS_hpux

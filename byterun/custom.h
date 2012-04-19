@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*         Manuel Serrano and Xavier Leroy, INRIA Rocquencourt         */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: custom.h 11037 2011-05-12 14:34:05Z xleroy $ */
+/* $Id$ */
 
 #ifndef CAML_CUSTOM_H
 #define CAML_CUSTOM_H
@@ -43,6 +43,11 @@ struct custom_operations {
 
 #define Custom_ops_val(v) (*((struct custom_operations **) (v)))
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 CAMLextern value caml_alloc_custom(struct custom_operations * ops,
                                    uintnat size, /*size in bytes*/
                                    mlsize_t mem, /*resources consumed*/
@@ -60,5 +65,9 @@ extern struct custom_operations *
 
 extern void caml_init_custom_operations(void);
 /* </private> */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CAML_CUSTOM_H */

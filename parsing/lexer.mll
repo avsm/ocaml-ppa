@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexer.mll 10250 2010-04-08 03:58:41Z garrigue $ *)
+(* $Id$ *)
 
 (* The lexer definition *)
 
@@ -416,7 +416,7 @@ and comment = parse
   | "*)"
       { match !comment_start_loc with
         | [] -> assert false
-        | [x] -> comment_start_loc := [];
+        | [_] -> comment_start_loc := [];
         | _ :: l -> comment_start_loc := l;
                     comment lexbuf;
        }

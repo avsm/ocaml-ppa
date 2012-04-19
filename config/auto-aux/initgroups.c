@@ -1,6 +1,8 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
+/*                                                                     */
+/*  Contributed by Stephane Glondu <steph@glondu.net>                  */
 /*                                                                     */
 /*  Copyright 2009 Institut National de Recherche en Informatique et   */
 /*  en Automatique.  All rights reserved.  This file is distributed    */
@@ -9,9 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* Contributed by Stephane Glondu <steph@glondu.net> */
-
-/* $Id: initgroups.c 9220 2009-04-01 16:50:10Z xleroy $ */
+/* $Id$ */
 
 #include <errno.h>
 

@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*          Damien Doligez, projet Moscova, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: optmain.mli 2740 2000-01-07 16:03:04Z doligez $ *)
+(* $Id$ *)
 
 (*
   this "empty" file is here to speed up garbage collection in ocamlopt.opt

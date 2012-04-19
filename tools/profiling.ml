@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*      Damien Doligez and Francois Rouaix, INRIA Rocquencourt         *)
 (*   Ported to Caml Special Light by John Malecki and Xavier Leroy     *)
@@ -12,7 +12,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: profiling.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (* Run-time library for profiled programs *)
 

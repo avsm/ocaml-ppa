@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: reloadgen.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (* Insert load/stores for pseudoregs that got assigned to stack locations. *)
 
@@ -134,7 +134,8 @@ method fundecl f =
   redo_regalloc <- false;
   let new_body = self#reload f.fun_body in
   ({fun_name = f.fun_name; fun_args = f.fun_args;
-    fun_body = new_body; fun_fast = f.fun_fast},
+    fun_body = new_body; fun_fast = f.fun_fast;
+    fun_dbg  = f.fun_dbg},
    redo_regalloc)
 
 end

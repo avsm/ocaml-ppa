@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,12 +10,12 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bytepackager.mli 4367 2002-02-08 16:55:44Z xleroy $ *)
+(* $Id$ *)
 
 (* "Package" a set of .cmo files into one .cmo file having the
    original compilation units as sub-modules. *)
 
-val package_files: string list -> string -> unit
+val package_files: Format.formatter -> string list -> string -> unit
 
 type error =
     Forward_reference of string * Ident.t

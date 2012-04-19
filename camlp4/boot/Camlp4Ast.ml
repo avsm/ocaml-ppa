@@ -1,14 +1,14 @@
 (****************************************************************************)
 (*                                                                          *)
-(*                              Objective Caml                              *)
+(*                                   OCaml                                  *)
 (*                                                                          *)
 (*                            INRIA Rocquencourt                            *)
 (*                                                                          *)
 (*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
 (*  en Automatique.  All rights reserved.  This file is distributed under   *)
 (*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the Objective   *)
-(*  Caml source tree.                                                       *)
+(*  exception on linking described in LICENSE at the top of the OCaml       *)
+(*  source tree.                                                            *)
 (*                                                                          *)
 (****************************************************************************)
 (* Authors:
@@ -108,12 +108,12 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
       | Ast.PaLab _ _ p -> is_irrefut_patt p
       | Ast.PaLaz _ p -> is_irrefut_patt p
       | Ast.PaId _ _ -> False
-      | (* here one need to know the arity of constructors *)
-          Ast.PaVrn _ _ | Ast.PaStr _ _ | Ast.PaRng _ _ _ | Ast.PaFlo _ _ |
-            Ast.PaNativeInt _ _ | Ast.PaInt64 _ _ | Ast.PaInt32 _ _ |
-            Ast.PaInt _ _ | Ast.PaChr _ _ | Ast.PaTyp _ _ | Ast.PaArr _ _ |
-            Ast.PaAnt _ _
-          -> False ];
+      | (* here one need to know the arity of constructors *) Ast.PaMod _ _
+          -> True
+      | Ast.PaVrn _ _ | Ast.PaStr _ _ | Ast.PaRng _ _ _ | Ast.PaFlo _ _ |
+          Ast.PaNativeInt _ _ | Ast.PaInt64 _ _ | Ast.PaInt32 _ _ |
+          Ast.PaInt _ _ | Ast.PaChr _ _ | Ast.PaTyp _ _ | Ast.PaArr _ _ |
+          Ast.PaAnt _ _ -> False ];
     value rec is_constructor =
       fun
       [ Ast.IdAcc _ _ i -> is_constructor i
@@ -471,10 +471,11 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
             value meta_loc = meta_loc_expr;
             module Expr =
               struct
-                value meta_string _loc s = Ast.ExStr _loc s;
+                value meta_string _loc s =
+                  Ast.ExStr _loc (safe_string_escaped s);
                 value meta_int _loc s = Ast.ExInt _loc s;
                 value meta_float _loc s = Ast.ExFlo _loc s;
-                value meta_char _loc s = Ast.ExChr _loc s;
+                value meta_char _loc s = Ast.ExChr _loc (String.escaped s);
                 value meta_bool _loc =
                   fun
                   [ False -> Ast.ExId _loc (Ast.IdUid _loc "False")
@@ -1042,6 +1043,18 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
                                  (Ast.IdUid _loc "TyVrn")))
                            (meta_loc _loc x0))
                         (meta_string _loc x1)
+                  | Ast.TyAnM x0 ->
+                      Ast.ExApp _loc
+                        (Ast.ExId _loc
+                           (Ast.IdAcc _loc (Ast.IdUid _loc "Ast")
+                              (Ast.IdUid _loc "TyAnM")))
+                        (meta_loc _loc x0)
+                  | Ast.TyAnP x0 ->
+                      Ast.ExApp _loc
+                        (Ast.ExId _loc
+                           (Ast.IdAcc _loc (Ast.IdUid _loc "Ast")
+                              (Ast.IdUid _loc "TyAnP")))
+                        (meta_loc _loc x0)
                   | Ast.TyQuM x0 x1 ->
                       Ast.ExApp _loc
                         (Ast.ExApp _loc
@@ -1066,6 +1079,16 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
                                  (Ast.IdUid _loc "TyQuo")))
                            (meta_loc _loc x0))
                         (meta_string _loc x1)
+                  | Ast.TyTypePol x0 x1 x2 ->
+                      Ast.ExApp _loc
+                        (Ast.ExApp _loc
+                           (Ast.ExApp _loc
+                              (Ast.ExId _loc
+                                 (Ast.IdAcc _loc (Ast.IdUid _loc "Ast")
+                                    (Ast.IdUid _loc "TyTypePol")))
+                              (meta_loc _loc x0))
+                           (meta_ctyp _loc x1))
+                        (meta_ctyp _loc x2)
                   | Ast.TyPol x0 x1 x2 ->
                       Ast.ExApp _loc
                         (Ast.ExApp _loc
@@ -1910,7 +1933,15 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
                            (Ast.IdUid _loc "OvOverride")) ]
                 and meta_patt _loc =
                   fun
-                  [ Ast.PaLaz x0 x1 ->
+                  [ Ast.PaMod x0 x1 ->
+                      Ast.ExApp _loc
+                        (Ast.ExApp _loc
+                           (Ast.ExId _loc
+                              (Ast.IdAcc _loc (Ast.IdUid _loc "Ast")
+                                 (Ast.IdUid _loc "PaMod")))
+                           (meta_loc _loc x0))
+                        (meta_string _loc x1)
+                  | Ast.PaLaz x0 x1 ->
                       Ast.ExApp _loc
                         (Ast.ExApp _loc
                            (Ast.ExId _loc
@@ -3118,6 +3149,18 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
                                  (Ast.IdUid _loc "TyVrn")))
                            (meta_loc _loc x0))
                         (meta_string _loc x1)
+                  | Ast.TyAnM x0 ->
+                      Ast.PaApp _loc
+                        (Ast.PaId _loc
+                           (Ast.IdAcc _loc (Ast.IdUid _loc "Ast")
+                              (Ast.IdUid _loc "TyAnM")))
+                        (meta_loc _loc x0)
+                  | Ast.TyAnP x0 ->
+                      Ast.PaApp _loc
+                        (Ast.PaId _loc
+                           (Ast.IdAcc _loc (Ast.IdUid _loc "Ast")
+                              (Ast.IdUid _loc "TyAnP")))
+                        (meta_loc _loc x0)
                   | Ast.TyQuM x0 x1 ->
                       Ast.PaApp _loc
                         (Ast.PaApp _loc
@@ -3142,6 +3185,16 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
                                  (Ast.IdUid _loc "TyQuo")))
                            (meta_loc _loc x0))
                         (meta_string _loc x1)
+                  | Ast.TyTypePol x0 x1 x2 ->
+                      Ast.PaApp _loc
+                        (Ast.PaApp _loc
+                           (Ast.PaApp _loc
+                              (Ast.PaId _loc
+                                 (Ast.IdAcc _loc (Ast.IdUid _loc "Ast")
+                                    (Ast.IdUid _loc "TyTypePol")))
+                              (meta_loc _loc x0))
+                           (meta_ctyp _loc x1))
+                        (meta_ctyp _loc x2)
                   | Ast.TyPol x0 x1 x2 ->
                       Ast.PaApp _loc
                         (Ast.PaApp _loc
@@ -3986,7 +4039,15 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
                            (Ast.IdUid _loc "OvOverride")) ]
                 and meta_patt _loc =
                   fun
-                  [ Ast.PaLaz x0 x1 ->
+                  [ Ast.PaMod x0 x1 ->
+                      Ast.PaApp _loc
+                        (Ast.PaApp _loc
+                           (Ast.PaId _loc
+                              (Ast.IdAcc _loc (Ast.IdUid _loc "Ast")
+                                 (Ast.IdUid _loc "PaMod")))
+                           (meta_loc _loc x0))
+                        (meta_string _loc x1)
+                  | Ast.PaLaz x0 x1 ->
                       Ast.PaApp _loc
                         (Ast.PaApp _loc
                            (Ast.PaId _loc
@@ -4888,7 +4949,10 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
               let _x = o#loc _x in
               let _x_i1 = o#string _x_i1 in PaVrn _x _x_i1
           | PaLaz _x _x_i1 ->
-              let _x = o#loc _x in let _x_i1 = o#patt _x_i1 in PaLaz _x _x_i1 ];
+              let _x = o#loc _x in let _x_i1 = o#patt _x_i1 in PaLaz _x _x_i1
+          | PaMod _x _x_i1 ->
+              let _x = o#loc _x in
+              let _x_i1 = o#string _x_i1 in PaMod _x _x_i1 ];
         method override_flag : override_flag -> override_flag =
           fun
           [ OvOverride -> OvOverride
@@ -4971,7 +5035,20 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
               let _x = o#loc _x in
               let _x_i1 = o#string _x_i1 in MbAnt _x _x_i1 ];
         method meta_option :
-          ! 'a 'a_out.
+          ! (****************************************************************************)
+            (*                                                                          *)
+            (*                                   OCaml                                  *)
+            (*                                                                          *)
+            (*                            INRIA Rocquencourt                            *)
+            (*                                                                          *)
+            (*  Copyright  2007   Institut National de Recherche  en  Informatique et   *)
+            (*  en Automatique.  All rights reserved.  This file is distributed under   *)
+            (*  the terms of the GNU Library General Public License, with the special   *)
+            (*  exception on linking described in LICENSE at the top of the OCaml       *)
+            (*  source tree.                                                            *)
+            (*                                                                          *)
+            (****************************************************************************)
+            'a 'a_out.
             ('self_type -> 'a -> 'a_out) ->
               meta_option 'a -> meta_option 'a_out =
           fun _f_a ->
@@ -5242,6 +5319,10 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
               let _x = o#loc _x in
               let _x_i1 = o#ctyp _x_i1 in
               let _x_i2 = o#ctyp _x_i2 in TyPol _x _x_i1 _x_i2
+          | TyTypePol _x _x_i1 _x_i2 ->
+              let _x = o#loc _x in
+              let _x_i1 = o#ctyp _x_i1 in
+              let _x_i2 = o#ctyp _x_i2 in TyTypePol _x _x_i1 _x_i2
           | TyQuo _x _x_i1 ->
               let _x = o#loc _x in
               let _x_i1 = o#string _x_i1 in TyQuo _x _x_i1
@@ -5251,6 +5332,8 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
           | TyQuM _x _x_i1 ->
               let _x = o#loc _x in
               let _x_i1 = o#string _x_i1 in TyQuM _x _x_i1
+          | TyAnP _x -> let _x = o#loc _x in TyAnP _x
+          | TyAnM _x -> let _x = o#loc _x in TyAnM _x
           | TyVrn _x _x_i1 ->
               let _x = o#loc _x in
               let _x_i1 = o#string _x_i1 in TyVrn _x _x_i1
@@ -5672,7 +5755,8 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
               let o = o#patt _x_i1 in let o = o#ctyp _x_i2 in o
           | PaTyp _x _x_i1 -> let o = o#loc _x in let o = o#ident _x_i1 in o
           | PaVrn _x _x_i1 -> let o = o#loc _x in let o = o#string _x_i1 in o
-          | PaLaz _x _x_i1 -> let o = o#loc _x in let o = o#patt _x_i1 in o ];
+          | PaLaz _x _x_i1 -> let o = o#loc _x in let o = o#patt _x_i1 in o
+          | PaMod _x _x_i1 -> let o = o#loc _x in let o = o#string _x_i1 in o ];
         method override_flag : override_flag -> 'self_type =
           fun
           [ OvOverride -> o
@@ -5929,9 +6013,14 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
           | TyPol _x _x_i1 _x_i2 ->
               let o = o#loc _x in
               let o = o#ctyp _x_i1 in let o = o#ctyp _x_i2 in o
+          | TyTypePol _x _x_i1 _x_i2 ->
+              let o = o#loc _x in
+              let o = o#ctyp _x_i1 in let o = o#ctyp _x_i2 in o
           | TyQuo _x _x_i1 -> let o = o#loc _x in let o = o#string _x_i1 in o
           | TyQuP _x _x_i1 -> let o = o#loc _x in let o = o#string _x_i1 in o
           | TyQuM _x _x_i1 -> let o = o#loc _x in let o = o#string _x_i1 in o
+          | TyAnP _x -> let o = o#loc _x in o
+          | TyAnM _x -> let o = o#loc _x in o
           | TyVrn _x _x_i1 -> let o = o#loc _x in let o = o#string _x_i1 in o
           | TyRec _x _x_i1 -> let o = o#loc _x in let o = o#ctyp _x_i1 in o
           | TyCol _x _x_i1 _x_i2 ->

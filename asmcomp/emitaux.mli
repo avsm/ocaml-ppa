@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emitaux.mli 9540 2010-01-20 16:26:46Z doligez $ *)
+(* $Id$ *)
 
 (* Common functions for emitting assembly code *)
 
@@ -28,6 +28,8 @@ val emit_bytes_directive: string -> string -> unit
 val emit_float64_directive: string -> string -> unit
 val emit_float64_split_directive: string -> string -> unit
 val emit_float32_directive: string -> string -> unit
+
+val emit_debug_info: Debuginfo.t -> unit
 
 type frame_descr =
   { fd_lbl: int;                        (* Return address *)
@@ -50,3 +52,7 @@ type emit_frame_actions =
 val emit_frames: emit_frame_actions -> unit
 
 val is_generic_function: string -> bool
+
+val cfi_startproc : unit -> unit
+val cfi_endproc : unit -> unit
+val cfi_adjust_cfa_offset : int -> unit

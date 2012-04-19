@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Pierre Weis && Damien Doligez, INRIA Rocquencourt        *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: warnings.ml 10450 2010-05-21 12:00:49Z doligez $ *)
+(* $Id$ *)
 
 (* When you change this, you need to update the documentation:
    - man/ocamlc.m   in ocaml
@@ -50,6 +50,14 @@ type t =
   | Wildcard_arg_to_constant_constr         (* 28 *)
   | Eol_in_string                           (* 29 *)
   | Duplicate_definitions of string * string * string * string (*30 *)
+  | Multiple_definition of string * string * string (* 31 *)
+  | Unused_value_declaration of string      (* 32 *)
+  | Unused_open of string                   (* 33 *)
+  | Unused_type_declaration of string       (* 34 *)
+  | Unused_for_index of string              (* 35 *)
+  | Unused_ancestor of string               (* 36 *)
+  | Unused_constructor of string * bool * bool  (* 37 *)
+  | Unused_exception of string * bool       (* 38 *)
 ;;
 
 (* If you remove a warning, leave a hole in the numbering.  NEVER change
@@ -89,9 +97,17 @@ let number = function
   | Wildcard_arg_to_constant_constr -> 28
   | Eol_in_string -> 29
   | Duplicate_definitions _ -> 30
+  | Multiple_definition _ -> 31
+  | Unused_value_declaration _ -> 32
+  | Unused_open _ -> 33
+  | Unused_type_declaration _ -> 34
+  | Unused_for_index _ -> 35
+  | Unused_ancestor _ -> 36
+  | Unused_constructor _ -> 37
+  | Unused_exception _ -> 38
 ;;
 
-let last_warning_number = 30;;
+let last_warning_number = 38;;
 (* Must be the max number returned by the [number] function. *)
 
 let letter = function
@@ -107,7 +123,7 @@ let letter = function
   | 'h' -> []
   | 'i' -> []
   | 'j' -> []
-  | 'k' -> []
+  | 'k' -> [32; 33; 34; 35; 36; 37; 38]
   | 'l' -> [6]
   | 'm' -> [7]
   | 'n' -> []
@@ -186,7 +202,7 @@ let parse_opt flags s =
 let parse_options errflag s = parse_opt (if errflag then error else active) s;;
 
 (* If you change these, don't forget to change them in man/ocamlc.m *)
-let defaults_w = "+a-4-6-7-9-27..29";;
+let defaults_w = "+a-4-6-7-9-27-29-32..38";;
 let defaults_warn_error = "-a";;
 
 let () = parse_options false defaults_w;;
@@ -219,7 +235,7 @@ let message = function
        Here is an example of a value that is not matched:\n" ^ s
   | Non_closed_record_pattern s ->
       "the following labels are not bound in this record pattern:\n" ^ s ^
-      "\nEither bind these labels explicitly or add `; _' to the pattern."
+      "\nEither bind these labels explicitly or add '; _' to the pattern."
   | Statement_type ->
       "this expression should have type unit."
   | Unused_match -> "this match case is unused."
@@ -246,8 +262,8 @@ let message = function
       "this statement never returns (or has an unsound type.)"
   | Camlp4 s -> s
   | Useless_record_with ->
-      "this record is defined by a `with' expression,\n\
-       but no fields are borrowed from the original."
+      "all the fields are explicitly listed in this record:\n\
+       the 'with' clause is useless."
   | Bad_module_name (modname) ->
       "bad source file name: \"" ^ modname ^ "\" is not a valid module name."
   | All_clauses_guarded ->
@@ -260,6 +276,30 @@ let message = function
   | Duplicate_definitions (kind, cname, tc1, tc2) ->
       Printf.sprintf "the %s %s is defined in both types %s and %s."
         kind cname tc1 tc2
+  | Multiple_definition(modname, file1, file2) ->
+      Printf.sprintf
+        "files %s and %s both define a module named %s"
+        file1 file2 modname
+  | Unused_value_declaration v -> "unused value " ^ v ^ "."
+  | Unused_open s -> "unused open " ^ s ^ "."
+  | Unused_type_declaration s -> "unused type " ^ s ^ "."
+  | Unused_for_index s -> "unused for-loop index " ^ s ^ "."
+  | Unused_ancestor s -> "unused ancestor variable " ^ s ^ "."
+  | Unused_constructor (s, false, false) -> "unused constructor " ^ s ^ "."
+  | Unused_constructor (s, true, _) ->
+      "constructor " ^ s ^
+      " is never used to build values.\n\
+        (However, this constructor appears in patterns.)"
+  | Unused_constructor (s, false, true) ->
+      "constructor " ^ s ^
+      " is never used to build values.\n\
+        Its type is exported as a private type."
+  | Unused_exception (s, false) ->
+      "unused exception constructor " ^ s ^ "."
+  | Unused_exception (s, true) ->
+      "exception constructor " ^ s ^
+      " is never raised or used to build values.\n\
+        (However, this constructor appears in patterns.)"
 ;;
 
 let nerrors = ref 0;;
@@ -293,7 +333,6 @@ let check_fatal () =
   end;
 ;;
 
-
 let descriptions =
   [
     1, "Suspicious-looking start-of-comment mark.";
@@ -305,14 +344,14 @@ let descriptions =
     5, "Partially applied function: expression whose result has function\n\
    \    type and is ignored.";
     6, "Label omitted in function application.";
-    7, "Some methods are overridden in the class where they are defined.";
+    7, "Method overridden.";
     8, "Partial match: missing cases in pattern-matching.";
     9, "Missing fields in a record pattern.";
    10, "Expression on the left-hand side of a sequence that doesn't have type\n\
    \    \"unit\" (and that is not a function, see warning number 5).";
    11, "Redundant case in a pattern matching (unused match case).";
    12, "Redundant sub-pattern in a pattern-matching.";
-   13, "Override of an instance variable.";
+   13, "Instance variable overridden.";
    14, "Illegal backslash escape in a string constant.";
    15, "Private method made public implicitly.";
    16, "Unerasable optional argument.";
@@ -323,11 +362,13 @@ let descriptions =
    21, "Non-returning statement.";
    22, "Camlp4 warning.";
    23, "Useless record \"with\" clause.";
-   24, "Bad module name: the source file name is not a valid OCaml module name.";
+   24, "Bad module name: the source file name is not a valid OCaml module \
+        name.";
    25, "Pattern-matching with all clauses guarded.  Exhaustiveness cannot be\n\
-   \    checked";
-   26, "Suspicious unused variable: unused variable that is bound with \"let\"\n\
-   \    or \"as\", and doesn't start with an underscore (\"_\") character.";
+   \    checked.";
+   26, "Suspicious unused variable: unused variable that is bound\n\
+   \    with \"let\" or \"as\", and doesn't start with an underscore (\"_\")\n\
+   \    character.";
    27, "Innocuous unused variable: unused variable that is not bound with\n\
    \    \"let\" nor \"as\", and doesn't start with an underscore (\"_\")\n\
    \    character.";
@@ -335,8 +376,30 @@ let descriptions =
    29, "Unescaped end-of-line in a string constant (non-portable code).";
    30, "Two labels or constructors of the same name are defined in two\n\
    \    mutually recursive types.";
+   31, "A module is linked twice in the same executable.";
+   32, "Unused value declaration.";
+   33, "Unused open statement.";
+   34, "Unused type declaration.";
+   35, "Unused for-loop index.";
+   36, "Unused ancestor variable.";
+   37, "Unused constructor.";
+   38, "Unused exception constructor.";
   ]
+;;
 
 let help_warnings () =
   List.iter (fun (i, s) -> Printf.printf "%3i %s\n" i s) descriptions;
+  print_endline "  A All warnings.";
+  for i = Char.code 'b' to Char.code 'z' do
+    let c = Char.chr i in
+    match letter c with
+    | [] -> ()
+    | [n] ->
+        Printf.printf "  %c Synonym for warning %i.\n" (Char.uppercase c) n
+    | l ->
+        Printf.printf "  %c Set of warnings %s.\n"
+          (Char.uppercase c)
+          (String.concat ", " (List.map string_of_int l))
+  done;
   exit 0
+;;

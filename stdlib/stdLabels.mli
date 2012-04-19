@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*               Jacques Garrigue, Kyoto University RIMS               *)
 (*                                                                     *)
@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stdLabels.mli 6694 2004-11-25 00:06:06Z doligez $ *)
+(* $Id$ *)
 
 (** Standard labeled libraries.
 
@@ -117,6 +117,7 @@ module String :
         unit
     val concat : sep:string -> string list -> string
     val iter : f:(char -> unit) -> string -> unit
+    val trim : string -> string
     val escaped : string -> string
     val index : string -> char -> int
     val rindex : string -> char -> int

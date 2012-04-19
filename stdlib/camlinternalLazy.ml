@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Damien Doligez, projet Para, INRIA Rocquencourt          *)
 (*                                                                     *)
@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: camlinternalLazy.ml 8974 2008-08-01 16:57:10Z mauny $ *)
+(* $Id$ *)
 
 (* Internals of forcing lazy values. *)
 

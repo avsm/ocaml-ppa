@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lambda.mli 10667 2010-09-02 13:29:21Z xclerc $ *)
+(* $Id$ *)
 
 (* The "lambda" intermediate code *)
 
@@ -19,6 +19,8 @@ open Asttypes
 type primitive =
     Pidentity
   | Pignore
+  | Prevapply of Location.t
+  | Pdirapply of Location.t
     (* Globals *)
   | Pgetglobal of Ident.t
   | Psetglobal of Ident.t

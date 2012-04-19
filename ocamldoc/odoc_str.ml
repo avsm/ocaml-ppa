@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_str.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (** The functions to get a string from different kinds of elements (types, modules, ...). *)
 
@@ -31,7 +31,7 @@ let rec is_arrow_type t =
   | Types.Tlink t2 | Types.Tsubst t2 -> is_arrow_type t2
   | Types.Ttuple _
   | Types.Tconstr _
-  | Types.Tvar | Types.Tunivar | Types.Tobject _ | Types.Tpoly _
+  | Types.Tvar _ | Types.Tunivar _ | Types.Tobject _ | Types.Tpoly _
   | Types.Tfield _ | Types.Tnil | Types.Tvariant _ | Types.Tpackage _ -> false
 
 let raw_string_of_type_list sep type_list =
@@ -43,7 +43,7 @@ let raw_string_of_type_list sep type_list =
     | Types.Tlink t2 | Types.Tsubst t2 -> need_parent t2
     | Types.Tconstr _ ->
         false
-    | Types.Tvar | Types.Tunivar | Types.Tobject _ | Types.Tpoly _
+    | Types.Tvar _ | Types.Tunivar _ | Types.Tobject _ | Types.Tpoly _
     | Types.Tfield _ | Types.Tnil | Types.Tvariant _ | Types.Tpackage _ -> false
   in
   let print_one_type variance t =
@@ -183,11 +183,20 @@ let string_of_type t =
          (List.map
             (fun cons ->
               "  | "^cons.M.vc_name^
-              (match cons.M.vc_args with
-                [] -> ""
-              | l ->
-                  " of "^(String.concat " * "
-                            (List.map (fun t -> "("^(Odoc_print.string_of_type_expr t)^")") l))
+              (match cons.M.vc_args,cons.M.vc_ret with
+              | [], None -> ""
+              | l, None ->
+                  " of " ^
+                  (String.concat " * "
+                     (List.map
+                        (fun t -> "("^Odoc_print.string_of_type_expr t^")") l))
+              | [], Some r -> " : " ^ Odoc_print.string_of_type_expr r
+              | l, Some r ->
+                  " : " ^
+                  (String.concat " * "
+                     (List.map
+                        (fun t -> "("^Odoc_print.string_of_type_expr t^")") l))
+                  ^ " -> " ^ Odoc_print.string_of_type_expr r
               )^
               (match cons.M.vc_text with
                 None ->
@@ -205,7 +214,8 @@ let string_of_type t =
          (List.map
             (fun record ->
               "   "^(if record.M.rf_mutable then "mutable " else "")^
-              record.M.rf_name^" : "^(Odoc_print.string_of_type_expr record.M.rf_type)^";"^
+              record.M.rf_name^" : "^
+              (Odoc_print.string_of_type_expr record.M.rf_type)^";"^
               (match record.M.rf_text with
                 None ->
                   ""
@@ -274,4 +284,4 @@ let string_of_method m =
     None -> ""
   | Some i -> Odoc_misc.string_of_info i)
 
-(* eof $Id: odoc_str.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* eof $Id$ *)

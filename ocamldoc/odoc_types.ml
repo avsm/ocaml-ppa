@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_types.ml 10867 2010-11-29 12:49:46Z xclerc $ *)
+(* $Id$ *)
 
 type ref_kind =
     RK_module
@@ -22,6 +22,8 @@ type ref_kind =
   | RK_attribute
   | RK_method
   | RK_section of text
+  | RK_recfield
+  | RK_const
 
 and text_element =
   | Raw of string

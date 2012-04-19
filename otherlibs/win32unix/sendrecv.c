@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*  Xavier Leroy and Pascal Cuoq, projet Cristal, INRIA Rocquencourt   */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: sendrecv.c 7697 2006-10-18 08:26:54Z xleroy $ */
+/* $Id$ */
 
 #include <mlvalues.h>
 #include <alloc.h>
@@ -132,9 +132,7 @@ value unix_sendto_native(value sock, value buff, value ofs, value len, value fla
   return Val_int(ret);
 }
 
-CAMLprim value unix_sendto(argv, argc)
-     value * argv;
-     int argc;
+CAMLprim value unix_sendto(value * argv, int argc)
 {
   return unix_sendto_native
            (argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);

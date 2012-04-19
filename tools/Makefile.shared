@@ -1,6 +1,6 @@
 #########################################################################
 #                                                                       #
-#                            Objective Caml                             #
+#                                 OCaml                                 #
 #                                                                       #
 #            Xavier Leroy, projet Cristal, INRIA Rocquencourt           #
 #                                                                       #
@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.shared 10718 2010-10-15 15:36:55Z doligez $
+# $Id$
 
 include ../config/Makefile
 
@@ -23,7 +23,7 @@ INCLUDES=-I ../utils -I ../parsing -I ../typing -I ../bytecomp -I ../asmcomp \
 COMPFLAGS= -warn-error A $(INCLUDES)
 LINKFLAGS=$(INCLUDES)
 
-all: ocamldep ocamlprof ocamlcp ocamlmktop ocamlmklib dumpobj objinfo
+all: ocamldep ocamlprof ocamlcp ocamloptp ocamlmktop ocamlmklib dumpobj objinfo
 # scrapelabels addlabels
 
 .PHONY: all
@@ -35,7 +35,7 @@ opt.opt: ocamldep.opt
 
 CAMLDEP_OBJ=depend.cmo ocamldep.cmo
 CAMLDEP_IMPORTS=misc.cmo config.cmo clflags.cmo terminfo.cmo \
-  linenum.cmo warnings.cmo location.cmo longident.cmo \
+  warnings.cmo location.cmo longident.cmo \
   syntaxerr.cmo parser.cmo lexer.cmo parse.cmo
 
 ocamldep: depend.cmi $(CAMLDEP_OBJ)
@@ -60,7 +60,7 @@ install::
 
 CSLPROF=ocamlprof.cmo
 CSLPROF_IMPORTS=misc.cmo config.cmo clflags.cmo terminfo.cmo \
-  linenum.cmo warnings.cmo location.cmo longident.cmo \
+  warnings.cmo location.cmo longident.cmo \
   syntaxerr.cmo parser.cmo lexer.cmo parse.cmo
 
 ocamlprof: $(CSLPROF) profiling.cmo
@@ -69,16 +69,26 @@ ocamlprof: $(CSLPROF) profiling.cmo
 ocamlcp: ocamlcp.cmo
 	$(CAMLC) $(LINKFLAGS) -o ocamlcp warnings.cmo main_args.cmo ocamlcp.cmo
 
+ocamloptp: ocamloptp.cmo
+	$(CAMLC) $(LINKFLAGS) -o ocamloptp warnings.cmo main_args.cmo \
+	         ocamloptp.cmo
+
+opt:: profiling.cmx
+
 install::
 	cp ocamlprof $(BINDIR)/ocamlprof$(EXE)
 	cp ocamlcp $(BINDIR)/ocamlcp$(EXE)
+	cp ocamloptp $(BINDIR)/ocamloptp$(EXE)
 	cp profiling.cmi profiling.cmo $(LIBDIR)
 
+installopt::
+	cp profiling.cmx profiling.o $(LIBDIR)
+
 clean::
-	rm -f ocamlprof ocamlcp
+	rm -f ocamlprof ocamlcp ocamloptp
 
 
-# To help building mixed-mode libraries (Caml + C)
+# To help building mixed-mode libraries (OCaml + C)
 
 ocamlmklib: myocamlbuild_config.cmo ocamlmklib.cmo
 	$(CAMLC) $(LINKFLAGS) -o ocamlmklib myocamlbuild_config.cmo \
@@ -114,19 +124,11 @@ beforedepend:: ocamlmklib.ml
 clean::
 	rm -f ocamlmklib.ml
 
-# To make custom toplevels (see Makefile/Makefile.nt)
-
-install::
-	cp ocamlmktop $(BINDIR)/   # no $(EXE) here, ocamlmktop is a script
-
-clean::
-	rm -f ocamlmktop
-
 
 # Converter olabl/ocaml 2.99 to ocaml 3
 
 OCAML299TO3= lexer299.cmo ocaml299to3.cmo
-LIBRARY3= misc.cmo warnings.cmo linenum.cmo location.cmo
+LIBRARY3= misc.cmo warnings.cmo location.cmo
 
 ocaml299to3: $(OCAML299TO3)
 	$(CAMLC) $(LINKFLAGS) -o ocaml299to3 $(LIBRARY3) $(OCAML299TO3)
@@ -159,7 +161,7 @@ clean::
 # Insert labels following an interface file (upgrade 3.02 to 3.03)
 
 ADDLABELS_IMPORTS=misc.cmo config.cmo clflags.cmo terminfo.cmo \
-  linenum.cmo warnings.cmo location.cmo longident.cmo \
+  warnings.cmo location.cmo longident.cmo \
   syntaxerr.cmo parser.cmo lexer.cmo parse.cmo
 
 addlabels: addlabels.cmo

@@ -1,14 +1,15 @@
 (***********************************************************************)
-(*                           OCamldoc                                  *)
+(*                             OCamldoc                                *)
 (*                                                                     *)
 (*      Olivier Andrieu, base sur du code de Maxence Guesdon           *)
 (*                                                                     *)
 (*  Copyright 2001 Institut National de Recherche en Informatique et   *)
 (*  en Automatique.  All rights reserved.  This file is distributed    *)
 (*  under the terms of the Q Public License version 1.0.               *)
+(*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_texi.ml 10480 2010-05-31 11:52:13Z guesdon $ *)
+(* $Id$ *)
 
 (** Generation of Texinfo documentation. *)
 
@@ -19,6 +20,12 @@ open Type
 open Exception
 open Class
 open Module
+
+let esc_8bits = ref false
+
+let info_section = ref "OCaml"
+
+let info_entry = ref []
 
 (** {2 Some small helper functions} *)
 
@@ -140,7 +147,7 @@ struct
     (Str.regexp "}", "@}") ;
     (Str.regexp "\\.\\.\\.", "@dots{}") ;
   ] @
-    (if !Args.esc_8bits
+    (if !esc_8bits
     then [
     (Str.regexp "à", "@`a") ;
     (Str.regexp "â", "@^a") ;
@@ -381,6 +388,9 @@ class text =
 
 exception Aliased_node
 
+module Generator =
+struct
+
 (** This class is used to create objects which can generate a simple
     Texinfo documentation. *)
 class texi =
@@ -413,7 +423,7 @@ class texi =
 
     method index (ind : indices) ent =
       Verbatim
-        (if !Args.with_index
+        (if !Global.with_index
         then (assert(List.mem ind indices_to_build) ;
               String.concat ""
                 [ "@" ; indices ind ; "index " ;
@@ -630,9 +640,13 @@ class texi =
           Printf.sprintf "(%s) "
             (String.concat ", " (List.map f l))
 
-    method string_of_type_args = function
-      | [] -> ""
-      | args -> " of " ^ (Odoc_info.string_of_type_list " * " args)
+    method string_of_type_args (args:Types.type_expr list) (ret:Types.type_expr option) = 
+      match args, ret with
+      | [], None -> ""
+      | args, None -> " of " ^ (Odoc_info.string_of_type_list " * " args)
+      | [], Some r -> " : " ^ (Odoc_info.string_of_type_expr r)
+      | args, Some r -> " : " ^ (Odoc_info.string_of_type_list " * " args) ^ 
+	                        " -> " ^ (Odoc_info.string_of_type_expr r)
 
     (** Return Texinfo code for a type. *)
     method texi_of_type ty =
@@ -658,11 +672,13 @@ class texi =
                   (List.map
                      (fun constr ->
                        (Raw ("  | " ^ constr.vc_name)) ::
-                       (Raw (self#string_of_type_args constr.vc_args)) ::
+                       (Raw (self#string_of_type_args
+                               constr.vc_args constr.vc_ret)) ::
                        (match constr.vc_text with
                        | None -> [ Newline ]
                        | Some t ->
-                           ((Raw (indent 5 "\n(* ")) :: (self#soft_fix_linebreaks 8 t)) @
+                           (Raw (indent 5 "\n(* ") ::
+                            self#soft_fix_linebreaks 8 t) @
                            [ Raw " *)" ; Newline ]
                        ) ) l ) )
            | Type_record l ->
@@ -694,7 +710,7 @@ class texi =
         [ self#fixedblock
             ( [ Newline ; minus ; Raw "exception " ;
                 Raw (Name.simple e.ex_name) ;
-                Raw (self#string_of_type_args e.ex_args) ] @
+                Raw (self#string_of_type_args e.ex_args None) ] @
               (match e.ex_alias with
               | None -> []
               | Some ea -> [ Raw " = " ; Raw
@@ -1055,7 +1071,7 @@ class texi =
 
     (** Writes the header of the TeXinfo document. *)
     method generate_texi_header chan texi_filename m_list =
-      let title = match !Args.title with
+      let title = match !Global.title with
       | None -> ""
       | Some s -> self#escape s in
       let filename =
@@ -1080,18 +1096,18 @@ class texi =
                "@settitle " ^ title ;
                "@c %**end of header" ; ] ;
 
-             (if !Args.with_index then
+             (if !Global.with_index then
                List.map
                  (fun ind ->
                    "@defcodeindex " ^ (indices ind))
                  indices_to_build
              else []) ;
 
-             [ Texi.dirsection !Args.info_section ] ;
+             [ Texi.dirsection !info_section ] ;
 
              Texi.direntry
-               (if !Args.info_entry <> []
-               then !Args.info_entry
+               (if !info_entry <> []
+               then !info_entry
                else [ Printf.sprintf "* %s: (%s)."
                         title
                         (Filename.chop_suffix filename ".info") ]) ;
@@ -1108,7 +1124,7 @@ class texi =
 
       (* insert the intro file *)
       begin
-        match !Odoc_info.Args.intro_file with
+        match !Odoc_info.Global.intro_file with
         | None when title <> "" ->
             puts_nl chan "@ifinfo" ;
             puts_nl chan ("Documentation for " ^ title) ;
@@ -1125,7 +1141,7 @@ class texi =
       (* write a top menu *)
       Texi.generate_menu chan
         ((List.map (fun m -> `Module m) m_list) @
-         (if !Args.with_index then
+         (if !Global.with_index then
            let indices_names_to_build = List.map indices indices_to_build in
            List.rev
              (List.fold_left
@@ -1142,7 +1158,7 @@ class texi =
     (** Writes the trailer of the TeXinfo document. *)
     method generate_texi_trailer chan =
       nl chan ;
-      if !Args.with_index
+      if !Global.with_index
       then
         let indices_names_to_build = List.map indices indices_to_build in
         List.iter (puts_nl chan)
@@ -1155,7 +1171,7 @@ class texi =
                          "@printindex " ^ shortname ; ]
                   else [])
                 indices_names )) ;
-      if !Args.with_toc
+      if !Global.with_toc
       then puts_nl chan "@contents" ;
       puts_nl chan "@bye"
 
@@ -1203,25 +1219,25 @@ class texi =
 
 
     (** Generate the Texinfo file from a module list,
-       in the {!Odoc_info.Args.out_file} file. *)
+       in the {!Odoc_info.Global.out_file} file. *)
     method generate module_list =
       Hashtbl.clear node_tbl ;
       let filename =
-        if !Args.out_file = Odoc_messages.default_out_file
+        if !Global.out_file = Odoc_messages.default_out_file
         then "ocamldoc.texi"
-        else !Args.out_file in
-      if !Args.with_index
+        else !Global.out_file in
+      if !Global.with_index
       then List.iter self#scan_for_index
           (List.map (fun m -> `Module m) module_list) ;
       try
         let chanout = open_out
-            (Filename.concat !Args.target_dir filename) in
-        if !Args.with_header
+            (Filename.concat !Global.target_dir filename) in
+        if !Global.with_header
         then self#generate_texi_header chanout filename module_list ;
         List.iter
           (self#generate_for_module chanout)
           module_list ;
-        if !Args.with_trailer
+        if !Global.with_trailer
         then self#generate_texi_trailer chanout ;
         close_out chanout
       with
@@ -1230,3 +1246,6 @@ class texi =
           prerr_endline s ;
           incr Odoc_info.errors
   end
+end
+
+module type Texi_generator = module type of Generator

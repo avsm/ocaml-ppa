@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: loadprinter.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (* Loading and installation of user-defined printer functions *)
 
@@ -106,7 +106,7 @@ let match_printer_type desc typename =
   let ty_arg = Ctype.newvar() in
   Ctype.unify Env.empty
     (Ctype.newconstr printer_type [ty_arg])
-    (Ctype.instance desc.val_type);
+    (Ctype.instance Env.empty desc.val_type);
   Ctype.end_def();
   Ctype.generalize ty_arg;
   ty_arg

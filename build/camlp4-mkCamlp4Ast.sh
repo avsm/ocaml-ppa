@@ -1,5 +1,18 @@
 #!/bin/sh
-# $Id: camlp4-mkCamlp4Ast.sh 11040 2011-05-13 08:37:04Z doligez $
+
+#########################################################################
+#                                                                       #
+#                                 OCaml                                 #
+#                                                                       #
+#       Nicolas Pouillard, projet Gallium, INRIA Rocquencourt           #
+#                                                                       #
+#   Copyright 2010 Institut National de Recherche en Informatique et    #
+#   en Automatique.  All rights reserved.  This file is distributed     #
+#   under the terms of the Q Public License version 1.0.                #
+#                                                                       #
+#########################################################################
+
+# $Id$
 set -e
 cd `dirname $0`/..
 

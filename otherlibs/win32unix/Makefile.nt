@@ -1,6 +1,6 @@
 #########################################################################
 #                                                                       #
-#                            Objective Caml                             #
+#                                 OCaml                                 #
 #                                                                       #
 #            Xavier Leroy, projet Cristal, INRIA Rocquencourt           #
 #                                                                       #
@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt 10442 2010-05-20 09:40:41Z xleroy $
+# $Id$
 
 # Files in this directory
 WIN_FILES = accept.c bind.c channels.c close.c \
@@ -21,7 +21,7 @@ WIN_FILES = accept.c bind.c channels.c close.c \
   mkdir.c open.c pipe.c read.c rename.c \
   select.c sendrecv.c \
   shutdown.c sleep.c socket.c sockopt.c startup.c stat.c \
-  system.c unixsupport.c windir.c winwait.c write.c \
+  system.c times.c unixsupport.c windir.c winwait.c write.c \
   winlist.c winworker.c windbug.c
 
 # Files from the ../unix directory

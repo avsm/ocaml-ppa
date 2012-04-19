@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_info.ml 10480 2010-05-31 11:52:13Z guesdon $ *)
+(* $Id$ *)
 
 (** Interface for analysing documented OCaml source files and to the collected information. *)
 
@@ -24,6 +24,8 @@ type ref_kind = Odoc_types.ref_kind =
   | RK_attribute
   | RK_method
   | RK_section of text
+  | RK_recfield
+  | RK_const
 
 and text_element = Odoc_types.text_element =
   | Raw of string
@@ -104,11 +106,11 @@ let analyse_files
     ?(no_stop=false)
     ?(init=[])
     files =
-  Odoc_args.merge_options := merge_options;
-  Odoc_args.include_dirs := include_dirs;
-  Odoc_args.classic := not labels;
-  Odoc_args.sort_modules := sort_modules;
-  Odoc_args.no_stop := no_stop;
+  Odoc_global.merge_options := merge_options;
+  Odoc_global.include_dirs := include_dirs;
+  Odoc_global.classic := not labels;
+  Odoc_global.sort_modules := sort_modules;
+  Odoc_global.no_stop := no_stop;
   Odoc_analyse.analyse_files ~init: init files
 
 let dump_modules = Odoc_analyse.dump_modules
@@ -168,15 +170,15 @@ let is_optional = Odoc_misc.is_optional
 let label_name = Odoc_misc.label_name
 
 let use_hidden_modules n =
-  Odoc_name.hide_given_modules !Odoc_args.hidden_modules n
+  Odoc_name.hide_given_modules !Odoc_global.hidden_modules n
 
 let verbose s =
-  if !Odoc_args.verbose then
+  if !Odoc_global.verbose then
     (print_string s ; print_newline ())
   else
     ()
 
-let warning s = Odoc_messages.pwarning s
+let warning s = Odoc_global.pwarning s
 let print_warnings = Odoc_config.print_warnings
 
 let errors = Odoc_global.errors
@@ -213,12 +215,12 @@ let info_string_of_info i =
    | Some t -> p b "%s" (escape_arobas (text_string_of_text t))
   );
   List.iter
-    (fun s -> p b "\n@author %s" (escape_arobas s))
+    (fun s -> p b "\n@@author %s" (escape_arobas s))
     i.i_authors;
   (
    match i.i_version with
      None -> ()
-   | Some s -> p b "\n@version %s" (escape_arobas s)
+   | Some s -> p b "\n@@version %s" (escape_arobas s)
   );
   (
    (* TODO: escape characters ? *)
@@ -229,7 +231,7 @@ let info_string_of_info i =
    in
    List.iter
      (fun (sref, t) ->
-       p b "\n@see %s %s"
+       p b "\n@@see %s %s"
          (escape_arobas (f_see_ref sref))
          (escape_arobas (text_string_of_text t))
      )
@@ -238,25 +240,25 @@ let info_string_of_info i =
   (
    match i.i_since with
      None -> ()
-   | Some s -> p b "\n@since %s" (escape_arobas s)
+   | Some s -> p b "\n@@since %s" (escape_arobas s)
   );
   (
    match i.i_deprecated with
      None -> ()
    | Some t ->
-       p b "\n@deprecated %s"
+       p b "\n@@deprecated %s"
          (escape_arobas (text_string_of_text t))
   );
   List.iter
     (fun (s, t) ->
-      p b "\n@param %s %s"
+      p b "\n@@param %s %s"
         (escape_arobas s)
         (escape_arobas (text_string_of_text t))
     )
     i.i_params;
   List.iter
     (fun (s, t) ->
-      p b "\n@raise %s %s"
+      p b "\n@@raise %s %s"
         (escape_arobas s)
         (escape_arobas (text_string_of_text t))
     )
@@ -265,12 +267,12 @@ let info_string_of_info i =
    match i.i_return_value with
      None -> ()
    | Some t ->
-       p b "\n@return %s"
+       p b "\n@@return %s"
          (escape_arobas (text_string_of_text t))
   );
   List.iter
     (fun (s, t) ->
-      p b "\n@%s %s" s
+      p b "\n@@%s %s" s
         (escape_arobas (text_string_of_text t))
     )
     i.i_custom;
@@ -293,6 +295,8 @@ module Search =
         | Res_attribute of Value.t_attribute
         | Res_method of Value.t_method
         | Res_section of string * text
+        | Res_recfield of Type.t_type * Type.record_field
+        | Res_const of Type.t_type * Type.variant_constructor
 
     type search_result = result_element list
 
@@ -320,4 +324,4 @@ module Dep =
     let deps_of_types = Odoc_dep.deps_of_types
   end
 
-module Args = Odoc_args
+module Global = Odoc_global

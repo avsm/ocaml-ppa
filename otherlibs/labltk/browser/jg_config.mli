@@ -1,6 +1,6 @@
 (*************************************************************************)
 (*                                                                       *)
-(*                Objective Caml LablTk library                          *)
+(*                         OCaml LablTk library                          *)
 (*                                                                       *)
 (*            Jacques Garrigue, Kyoto University RIMS                    *)
 (*                                                                       *)
@@ -12,6 +12,6 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: jg_config.mli 4144 2001-12-07 13:41:02Z xleroy $ *)
+(* $Id$ *)
 
 val init: unit -> unit

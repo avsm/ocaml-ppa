@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*         Xavier Leroy and Damien Doligez, INRIA Rocquencourt         */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: config.h 10787 2010-11-10 15:47:34Z doligez $ */
+/* $Id$ */
 
 #ifndef CAML_CONFIG_H
 #define CAML_CONFIG_H

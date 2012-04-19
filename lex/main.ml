@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml 10444 2010-05-20 14:06:29Z doligez $ *)
+(* $Id$ *)
 
 (* The lexer generator. Command-line parsing. *)
 
@@ -24,7 +24,7 @@ let output_name = ref None
 let usage = "usage: ocamlex [options] sourcefile"
 
 let print_version_string () =
-  print_string "The Objective Caml lexer generator, version ";
+  print_string "The OCaml lexer generator, version ";
   print_string Sys.ocaml_version ; print_newline();
   exit 0
 

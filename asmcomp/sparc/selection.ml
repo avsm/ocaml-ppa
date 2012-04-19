@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml 10296 2010-04-22 12:51:06Z xleroy $ *)
+(* $Id$ *)
 
 (* Instruction selection for the Sparc processor *)
 
@@ -26,7 +26,7 @@ inherit Selectgen.selector_generic as super
 
 method is_immediate n = (n <= 4095) && (n >= -4096)
 
-method select_addressing = function
+method select_addressing chunk = function
     Cconst_symbol s ->
       (Ibased(s, 0), Ctuple [])
   | Cop(Cadda, [Cconst_symbol s; Cconst_int n]) ->

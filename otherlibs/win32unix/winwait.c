@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*   Pascal Cuoq and Xavier Leroy, projet Cristal, INRIA Rocquencourt  */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: winwait.c 8768 2008-01-11 16:13:18Z doligez $ */
+/* $Id$ */
 
 #include <windows.h>
 #include <mlvalues.h>

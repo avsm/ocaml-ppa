@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: liveness.ml 7812 2007-01-29 12:11:18Z xleroy $ *)
+(* $Id$ *)
 
 (* Liveness analysis.
    Annotate mach code with the set of regs live at each point. *)

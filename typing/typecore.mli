@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typecore.mli 10417 2010-05-18 16:46:46Z frisch $ *)
+(* $Id$ *)
 
 (* Type inference for the core language *)
 
@@ -51,12 +51,14 @@ val type_exp:
 val type_approx:
         Env.t -> Parsetree.expression -> type_expr
 val type_argument:
-        Env.t -> Parsetree.expression -> type_expr -> Typedtree.expression
+        Env.t -> Parsetree.expression ->
+        type_expr -> type_expr -> Typedtree.expression
 
 val option_some: Typedtree.expression -> Typedtree.expression
 val option_none: type_expr -> Location.t -> Typedtree.expression
 val extract_option_type: Env.t -> type_expr -> type_expr
 val iter_pattern: (Typedtree.pattern -> unit) -> Typedtree.pattern -> unit
+val generalizable: int -> type_expr -> bool
 val reset_delayed_checks: unit -> unit
 val force_delayed_checks: unit -> unit
 
@@ -96,6 +98,11 @@ type error =
   | Not_a_variant_type of Longident.t
   | Incoherent_label_order
   | Less_general of string * (type_expr * type_expr) list
+  | Modules_not_allowed
+  | Cannot_infer_signature
+  | Not_a_packed_module of type_expr
+  | Recursive_local_constraint of (type_expr * type_expr) list
+  | Unexpected_existential
 
 exception Error of Location.t * error
 
@@ -109,5 +116,8 @@ val type_open: (Env.t -> Location.t -> Longident.t -> Env.t) ref
 val type_object:
   (Env.t -> Location.t -> Parsetree.class_structure ->
    Typedtree.class_structure * class_signature * string list) ref
+val type_package:
+  (Env.t -> Parsetree.module_expr -> Path.t -> Longident.t list -> type_expr list ->
+   Typedtree.module_expr * type_expr list) ref
 
 val create_package_type: Location.t -> Env.t -> Parsetree.package_type -> type_expr

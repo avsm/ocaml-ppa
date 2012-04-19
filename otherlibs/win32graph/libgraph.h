@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*            Jacob Navia, after Xavier Leroy                          */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: libgraph.h 6553 2004-07-13 12:25:21Z xleroy $ */
+/* $Id$ */
 
 #include <stdio.h>
 #include <windows.h>
@@ -43,8 +43,8 @@ extern int bits_per_pixel;
 #define DEFAULT_SCREEN_WIDTH 1024
 #define DEFAULT_SCREEN_HEIGHT 768
 #define BORDER_WIDTH 2
-#define WINDOW_NAME "Caml graphics"
-#define ICON_NAME "Caml graphics"
+#define WINDOW_NAME "OCaml graphics"
+#define ICON_NAME "OCaml graphics"
 #define SIZE_QUEUE 256
 
 void gr_fail(char *fmt, char *arg);

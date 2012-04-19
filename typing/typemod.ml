@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typemod.ml 10706 2010-10-07 02:22:19Z garrigue $ *)
+(* $Id$ *)
 
 (* Type-checking of the module language *)
 
@@ -39,6 +39,9 @@ type error =
   | Interface_not_compiled of string
   | Not_allowed_in_functor_body
   | With_need_typeconstr
+  | Not_a_packed_module of type_expr
+  | Incomplete_packed_module of type_expr
+  | Scoping_pack of Longident.t * type_expr
 
 exception Error of Location.t * error
 
@@ -59,7 +62,7 @@ let extract_sig_open env loc mty =
 let type_open env loc lid =
   let (path, mty) = Typetexp.find_module env loc lid in
   let sg = extract_sig_open env loc mty in
-  Env.open_signature path sg env
+  Env.open_signature ~loc path sg env
 
 (* Record a module type *)
 let rm node =
@@ -119,7 +122,9 @@ let merge_constraint initial_env loc sg lid constr =
             type_manifest = None;
             type_variance =
               List.map (fun (c,n) -> (not n, not c, not c))
-              sdecl.ptype_variance }
+              sdecl.ptype_variance;
+            type_loc = Location.none;
+	    type_newtype_level = None }
         and id_row = Ident.create (s^"#row") in
         let initial_env = Env.add_type id_row decl_row initial_env in
         let newdecl = Typedecl.transl_with_constraint
@@ -178,7 +183,8 @@ let merge_constraint initial_env loc sg lid constr =
                 List.map
                   (function {ptyp_desc=Ptyp_var s} -> s | _ -> raise Exit)
                   stl in
-              if params <> sdecl.ptype_params then raise Exit;
+              if List.map (fun x -> Some x) params <> sdecl.ptype_params
+	      then raise Exit;
               lid
           | _ -> raise Exit
           with Exit -> raise (Error (sdecl.ptype_loc, With_need_typeconstr))
@@ -375,8 +381,8 @@ and transl_signature env sg =
     | item :: srem ->
         match item.psig_desc with
         | Psig_value(name, sdesc) ->
-            let desc = Typedecl.transl_value_decl env sdesc in
-            let (id, newenv) = Env.enter_value name desc env in
+            let desc = Typedecl.transl_value_decl env item.psig_loc sdesc in
+            let (id, newenv) = Env.enter_value ~check:(fun s -> Warnings.Unused_value_declaration s) name desc env in
             let rem = transl_sig newenv srem in
             if List.exists (Ident.equal id) (get_values rem) then rem
             else Tsig_value(id, desc) :: rem
@@ -388,7 +394,7 @@ and transl_signature env sg =
             let rem = transl_sig newenv srem in
             map_rec' (fun rs (id, info) -> Tsig_type(id, info, rs)) decls rem
         | Psig_exception(name, sarg) ->
-            let arg = Typedecl.transl_exception env sarg in
+            let arg = Typedecl.transl_exception env item.psig_loc sarg in
             let (id, newenv) = Env.enter_exception name arg env in
             let rem = transl_sig newenv srem in
             Tsig_exception(id, arg) :: rem
@@ -455,7 +461,7 @@ and transl_signature env sg =
                      Tsig_type(i', d', rs);
                      Tsig_type(i'', d'', rs)])
                  classes [rem])
-    in transl_sig env sg
+    in transl_sig (Env.in_signature env) sg
 
 and transl_modtype_info env sinfo =
   match sinfo with
@@ -642,6 +648,51 @@ let check_recmodule_inclusion env bindings =
     end
   in check_incl true (List.length bindings) env Subst.identity
 
+(* Helper for unpack *)
+
+let rec package_constraints env loc mty constrs =
+  if constrs = [] then mty
+  else let sg = extract_sig env loc mty in
+  let sg' =
+    List.map
+      (function
+        | Tsig_type (id, ({type_params=[]} as td), rs) when List.mem_assoc [Ident.name id] constrs ->
+            let ty = List.assoc [Ident.name id] constrs in
+            Tsig_type (id, {td with type_manifest = Some ty}, rs)
+        | Tsig_module (id, mty, rs) ->
+            let rec aux = function
+              | (m :: ((_ :: _) as l), t) :: rest when m = Ident.name id -> (l, t) :: aux rest
+              | _ :: rest -> aux rest
+              | [] -> []
+            in
+            Tsig_module (id, package_constraints env loc mty (aux constrs), rs)
+        | item -> item
+      )
+      sg
+  in
+  Tmty_signature sg'
+
+let modtype_of_package env loc p nl tl =
+  try match Env.find_modtype p env with
+  | Tmodtype_manifest mty when nl <> [] ->
+      package_constraints env loc mty (List.combine (List.map Longident.flatten nl) tl)
+  | _ ->
+      if nl = [] then Tmty_ident p
+      else raise(Error(loc, Signature_expected))
+  with Not_found ->
+    raise(Typetexp.Error(loc, Typetexp.Unbound_modtype (Ctype.lid_of_path p)))
+
+let wrap_constraint env arg mty =
+  let coercion =
+    try
+      Includemod.modtypes env arg.mod_type mty
+    with Includemod.Error msg ->
+      raise(Error(arg.mod_loc, Not_included msg)) in
+  { mod_desc = Tmod_constraint(arg, mty, coercion);
+    mod_type = mty;
+    mod_env = env;
+    mod_loc = arg.mod_loc }
+
 (* Type a module value expression *)
 
 let rec type_module sttn funct_body anchor env smod =
@@ -702,23 +753,35 @@ let rec type_module sttn funct_body anchor env smod =
   | Pmod_constraint(sarg, smty) ->
       let arg = type_module true funct_body anchor env sarg in
       let mty = transl_modtype env smty in
-      let coercion =
-        try
-          Includemod.modtypes env arg.mod_type mty
-        with Includemod.Error msg ->
-          raise(Error(sarg.pmod_loc, Not_included msg)) in
-      rm { mod_desc = Tmod_constraint(arg, mty, coercion);
-           mod_type = mty;
-           mod_env = env;
-           mod_loc = smod.pmod_loc }
+      rm {(wrap_constraint env arg mty) with mod_loc = smod.pmod_loc}
 
-  | Pmod_unpack (sexp, (p, l)) ->
+  | Pmod_unpack sexp ->
       if funct_body then
         raise (Error (smod.pmod_loc, Not_allowed_in_functor_body));
-      let l, mty = Typetexp.create_package_mty smod.pmod_loc env (p, l) in
-      let mty = transl_modtype env mty in
-      let exp = Typecore.type_expect env sexp
-          (Typecore.create_package_type smod.pmod_loc env (p, l)) in
+      if !Clflags.principal then Ctype.begin_def ();
+      let exp = Typecore.type_exp env sexp in
+      if !Clflags.principal then begin
+        Ctype.end_def ();
+        Ctype.generalize_structure exp.exp_type
+      end;
+      let mty =
+        match Ctype.expand_head env exp.exp_type with
+          {desc = Tpackage (p, nl, tl)} ->
+            if List.exists (fun t -> Ctype.free_variables t <> []) tl then
+              raise (Error (smod.pmod_loc,
+                            Incomplete_packed_module exp.exp_type));
+            if !Clflags.principal &&
+              not (Typecore.generalizable (Btype.generic_level-1) exp.exp_type)
+            then
+              Location.prerr_warning smod.pmod_loc
+                (Warnings.Not_principal "this module unpacking");
+            modtype_of_package env smod.pmod_loc p nl tl
+        | {desc = Tvar _} ->
+            raise (Typecore.Error
+                     (smod.pmod_loc, Typecore.Cannot_infer_signature))
+        | _ ->
+            raise (Error (smod.pmod_loc, Not_a_packed_module exp.exp_type))
+      in
       rm { mod_desc = Tmod_unpack(exp, mty);
            mod_type = mty;
            mod_env = env;
@@ -753,14 +816,16 @@ and type_structure funct_body anchor env sstr scope =
           Typecore.type_binding env rec_flag sdefs scope in
         let (str_rem, sig_rem, final_env) = type_struct newenv srem in
         let bound_idents = let_bound_idents defs in
+        (* Note: Env.find_value does not trigger the value_used event. Values
+           will be marked as being used during the signature inclusion test. *)
         let make_sig_value id =
           Tsig_value(id, Env.find_value (Pident id) newenv) in
         (Tstr_value(rec_flag, defs) :: str_rem,
          map_end make_sig_value bound_idents sig_rem,
          final_env)
-    | {pstr_desc = Pstr_primitive(name, sdesc)} :: srem ->
-        let desc = Typedecl.transl_value_decl env sdesc in
-        let (id, newenv) = Env.enter_value name desc env in
+    | {pstr_desc = Pstr_primitive(name, sdesc); pstr_loc = loc} :: srem ->
+        let desc = Typedecl.transl_value_decl env loc sdesc in
+        let (id, newenv) = Env.enter_value ~check:(fun s -> Warnings.Unused_value_declaration s) name desc env in
         let (str_rem, sig_rem, final_env) = type_struct newenv srem in
         (Tstr_primitive(id, desc) :: str_rem,
          Tsig_value(id, desc) :: sig_rem,
@@ -776,8 +841,8 @@ and type_structure funct_body anchor env sstr scope =
         (Tstr_type decls :: str_rem,
          map_rec' (fun rs (id, info) -> Tsig_type(id, info, rs)) decls sig_rem,
          final_env)
-    | {pstr_desc = Pstr_exception(name, sarg)} :: srem ->
-        let arg = Typedecl.transl_exception env sarg in
+    | {pstr_desc = Pstr_exception(name, sarg); pstr_loc = loc} :: srem ->
+        let arg = Typedecl.transl_exception env loc sarg in
         let (id, newenv) = Env.enter_exception name arg env in
         let (str_rem, sig_rem, final_env) = type_struct newenv srem in
         (Tstr_exception(id, arg) :: str_rem,
@@ -964,12 +1029,56 @@ let type_module_type_of env smod =
     raise(Error(smod.pmod_loc, Non_generalizable_module mty));
   mty
 
+(* For Typecore *)
+
+let rec get_manifest_types = function
+    [] -> []
+  | Tsig_type (id, {type_params=[]; type_manifest=Some ty}, _) :: rem ->
+      (Ident.name id, ty) :: get_manifest_types rem
+  | _ :: rem -> get_manifest_types rem
+
+let type_package env m p nl tl =
+  (* Same as Pexp_letmodule *)
+  (* remember original level *)
+  let lv = Ctype.get_current_level () in
+  Ctype.begin_def ();
+  Ident.set_current_time lv;
+  let context = Typetexp.narrow () in
+  let modl = type_module env m in
+  Ctype.init_def(Ident.current_time());
+  Typetexp.widen context;
+  let (mp, env) =
+    match modl.mod_desc with
+      Tmod_ident mp -> (mp, env)
+    | _ ->
+      let (id, new_env) = Env.enter_module "%M" modl.mod_type env in
+      (Pident id, new_env)
+  in
+  let rec mkpath mp = function
+    | Lident name -> Pdot(mp, name, nopos)
+    | Ldot (m, name) -> Pdot(mkpath mp m, name, nopos)
+    | _ -> assert false
+  in
+  let tl' =
+    List.map (fun name -> Ctype.newconstr (mkpath mp name) []) nl in
+  (* go back to original level *)
+  Ctype.end_def ();
+  if nl = [] then (wrap_constraint env modl (Tmty_ident p), []) else
+  let mty = modtype_of_package env modl.mod_loc p nl tl' in
+  List.iter2
+    (fun n ty ->
+      try Ctype.unify env ty (Ctype.newvar ())
+      with Ctype.Unify _ -> raise (Error(m.pmod_loc, Scoping_pack (n,ty))))
+    nl tl';
+  (wrap_constraint env modl mty, tl')
+
 (* Fill in the forward declarations *)
 let () =
   Typecore.type_module := type_module;
   Typetexp.transl_modtype_longident := transl_modtype_longident;
   Typetexp.transl_modtype := transl_modtype;
   Typecore.type_open := type_open;
+  Typecore.type_package := type_package;
   type_module_type_of_fwd := type_module_type_of
 
 (* Typecheck an implementation file *)
@@ -978,7 +1087,6 @@ let type_implementation sourcefile outputprefix modulename initial_env ast =
   Typecore.reset_delayed_checks ();
   let (str, sg, finalenv) = type_structure initial_env ast Location.none in
   let simple_sg = simplify_signature sg in
-  Typecore.force_delayed_checks ();
   if !Clflags.print_types then begin
     fprintf std_formatter "%a@." Printtyp.signature simple_sg;
     (str, Tcoerce_none)   (* result is ignored by Compile.implementation *)
@@ -993,6 +1101,10 @@ let type_implementation sourcefile outputprefix modulename initial_env ast =
           raise(Error(Location.none, Interface_not_compiled sourceintf)) in
       let dclsig = Env.read_signature modulename intf_file in
       let coercion = Includemod.compunit sourcefile sg intf_file dclsig in
+      Typecore.force_delayed_checks ();
+      (* It is important to run these checks after the inclusion test above,
+         so that value declarations which are not used internally but exported
+         are not reported as being unused. *)
       (str, coercion)
     end else begin
       check_nongen_schemes finalenv str;
@@ -1000,6 +1112,11 @@ let type_implementation sourcefile outputprefix modulename initial_env ast =
       let coercion =
         Includemod.compunit sourcefile sg
                             "(inferred signature)" simple_sg in
+      Typecore.force_delayed_checks ();
+      (* See comment above. Here the target signature contains all
+         the value being exported. We can still capture unused
+         declarations like "let x = true;; let x = 1;;", because in this
+         case, the inferred signature contains only the last declaration. *)
       if not !Clflags.dont_write_files then
         Env.save_signature simple_sg modulename (outputprefix ^ ".cmi");
       (str, coercion)
@@ -1106,14 +1223,29 @@ let report_error ppf = function
            contains type variables that cannot be generalized@]" modtype mty
   | Implementation_is_required intf_name ->
       fprintf ppf
-        "@[The interface %s@ declares values, not just types.@ \
-           An implementation must be provided.@]" intf_name
+        "@[The interface %a@ declares values, not just types.@ \
+           An implementation must be provided.@]"
+        Location.print_filename intf_name
   | Interface_not_compiled intf_name ->
       fprintf ppf
-        "@[Could not find the .cmi file for interface@ %s.@]" intf_name
+        "@[Could not find the .cmi file for interface@ %a.@]"
+        Location.print_filename intf_name
   | Not_allowed_in_functor_body ->
       fprintf ppf
         "This kind of expression is not allowed within the body of a functor."
   | With_need_typeconstr ->
       fprintf ppf
         "Only type constructors with identical parameters can be substituted."
+  | Not_a_packed_module ty ->
+      fprintf ppf
+        "This expression is not a packed module. It has type@ %a"
+        type_expr ty
+  | Incomplete_packed_module ty ->
+      fprintf ppf
+        "The type of this packed module contains variables:@ %a"
+        type_expr ty
+  | Scoping_pack (lid, ty) ->
+      fprintf ppf
+        "The type %a in this module cannot be exported.@ " longident lid;
+      fprintf ppf
+        "Its type contains local dependencies:@ %a" type_expr ty

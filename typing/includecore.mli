@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: includecore.mli 10455 2010-05-21 15:13:47Z garrigue $ *)
+(* $Id$ *)
 
 (* Inclusion checks for the core language *)
 
@@ -36,8 +36,8 @@ type type_mismatch =
 val value_descriptions:
     Env.t -> value_description -> value_description -> module_coercion
 val type_declarations:
-    Env.t -> Ident.t ->
-    type_declaration -> type_declaration -> type_mismatch list
+    Env.t -> string ->
+    type_declaration -> Ident.t -> type_declaration -> type_mismatch list
 val exception_declarations:
     Env.t -> exception_declaration -> exception_declaration -> bool
 (*

@@ -1,9 +1,9 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*      Damien Doligez and Francois Rouaix, INRIA Rocquencourt         *)
-(*   Ported to Objective Caml by John Malecki and Xavier Leroy         *)
+(*   Ported to OCaml by John Malecki and Xavier Leroy                  *)
 (*                                                                     *)
 (*  Copyright 1996 Institut National de Recherche en Informatique et   *)
 (*  en Automatique.  All rights reserved.  This file is distributed    *)
@@ -12,7 +12,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: profiling.mli 6824 2005-03-24 17:20:54Z doligez $ *)
+(* $Id$ *)
 
 (* Run-time library for profiled programs *)
 

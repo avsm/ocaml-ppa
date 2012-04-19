@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asmgen.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (* From lambda to assembly code *)
 
@@ -135,4 +135,5 @@ let compile_implementation ?toplevel prefixname ppf (size, lam) =
 
 let report_error ppf = function
   | Assembler_error file ->
-      fprintf ppf "Assembler error, input left in file %s" file
+      fprintf ppf "Assembler error, input left in file %a"
+        Location.print_filename file

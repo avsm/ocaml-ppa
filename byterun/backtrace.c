@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: backtrace.c 9547 2010-01-22 12:48:24Z doligez $ */
+/* $Id$ */
 
 /* Stack backtrace for uncaught exceptions */
 
@@ -118,7 +118,7 @@ void caml_stash_backtrace(value exn, code_t pc, value * sp)
 }
 
 /* Read the debugging info contained in the current bytecode executable.
-   Return a Caml array of Caml lists of debug_event records in "events",
+   Return an OCaml array of OCaml lists of debug_event records in "events",
    or Val_false on failure. */
 
 #ifndef O_BINARY
@@ -274,7 +274,7 @@ CAMLexport void caml_print_exception_backtrace(void)
   }
 }
 
-/* Convert the backtrace to a data structure usable from Caml */
+/* Convert the backtrace to a data structure usable from OCaml */
 
 CAMLprim value caml_get_exception_backtrace(value unit)
 {

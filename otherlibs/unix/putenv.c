@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: putenv.c 6824 2005-03-24 17:20:54Z doligez $ */
+/* $Id$ */
 
 #include <stdlib.h>
 #include <string.h>
@@ -28,13 +28,16 @@ CAMLprim value unix_putenv(value name, value val)
 {
   mlsize_t namelen = string_length(name);
   mlsize_t vallen = string_length(val);
-  char * s = (char *) stat_alloc(namelen + 1 + vallen + 1);
+  char * s = (char *) caml_stat_alloc(namelen + 1 + vallen + 1);
 
   memmove (s, String_val(name), namelen);
   s[namelen] = '=';
   memmove (s + namelen + 1, String_val(val), vallen);
   s[namelen + 1 + vallen] = 0;
-  if (putenv(s) == -1) uerror("putenv", name);
+  if (putenv(s) == -1) {
+    caml_stat_free(s);
+    uerror("putenv", name);
+  }
   return Val_unit;
 }
 

@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*  Pierre Weis and Xavier Leroy, projet Cristal, INRIA Rocquencourt   *)
 (*                                                                     *)
@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: buffer.mli 10457 2010-05-21 18:30:12Z doligez $ *)
+(* $Id$ *)
 
 (** Extensible string buffers.
 

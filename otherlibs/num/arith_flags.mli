@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*    Valerie Menissier-Morain, projet Cristal, INRIA Rocquencourt     *)
 (*                                                                     *)
@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arith_flags.mli 4144 2001-12-07 13:41:02Z xleroy $ *)
+(* $Id$ *)
 
 val error_when_null_denominator_flag : bool ref
 val normalize_ratio_flag : bool ref

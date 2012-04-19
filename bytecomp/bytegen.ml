@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bytegen.ml 10667 2010-09-02 13:29:21Z xclerc $ *)
+(* $Id$ *)
 
 (*  bytegen.ml : translation of lambda terms to lists of instructions. *)
 
@@ -524,6 +524,10 @@ let rec comp_expr env exp sz cont =
       comp_expr env arg sz cont
   | Lprim(Pignore, [arg]) ->
       comp_expr env arg sz (add_const_unit cont)
+  | Lprim(Pdirapply loc, [func;arg])
+  | Lprim(Prevapply loc, [arg;func]) ->
+      let exp = Lapply(func, [arg], loc) in
+      comp_expr env exp sz cont
   | Lprim(Pnot, [arg]) ->
       let newcont =
         match cont with

@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: split.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (* Renaming of registers at reload points to split live ranges. *)
 
@@ -207,4 +207,5 @@ let fundecl f =
   { fun_name = f.fun_name;
     fun_args = new_args;
     fun_body = new_body;
-    fun_fast = f.fun_fast }
+    fun_fast = f.fun_fast;
+    fun_dbg  = f.fun_dbg }

@@ -1,6 +1,6 @@
 #########################################################################
 #                                                                       #
-#                            Objective Caml                             #
+#                                 OCaml                                 #
 #                                                                       #
 #            Xavier Leroy, projet Cristal, INRIA Rocquencourt           #
 #                                                                       #
@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt 10325 2010-04-28 12:00:27Z xleroy $
+# $Id$
 
 include ../config/Makefile
 
@@ -53,6 +53,9 @@ amd64nt.obj: amd64nt.asm
 
 i386.o: i386.S
 	$(CC) -c -DSYS_$(SYSTEM) i386.S
+
+amd64.o: amd64.S
+	$(CC) -c -DSYS_$(SYSTEM) amd64.S
 
 install:
 	cp libasmrun.$(A) $(LIBDIR)

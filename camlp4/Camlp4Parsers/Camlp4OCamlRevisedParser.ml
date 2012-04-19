@@ -1,15 +1,15 @@
 open Camlp4;                                        (* -*- camlp4r -*- *)
 (****************************************************************************)
 (*                                                                          *)
-(*                              Objective Caml                              *)
+(*                                   OCaml                                  *)
 (*                                                                          *)
 (*                            INRIA Rocquencourt                            *)
 (*                                                                          *)
 (*  Copyright 2002-2006 Institut National de Recherche en Informatique et   *)
 (*  en Automatique.  All rights reserved.  This file is distributed under   *)
 (*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the Objective   *)
-(*  Caml source tree.                                                       *)
+(*  exception on linking described in LICENSE at the top of the OCaml       *)
+(*  source tree.                                                            *)
 (*                                                                          *)
 (****************************************************************************)
 
@@ -303,6 +303,15 @@ New syntax:\
   value stopped_at _loc =
     Some (Loc.move_line 1 _loc) (* FIXME be more precise *);
 
+  value rec generalized_type_of_type =
+    fun
+    [ <:ctyp< $t1$ -> $t2$ >> ->
+        let (tl, rt) = generalized_type_of_type t2 in
+        ([t1 :: tl], rt)
+    | t ->
+        ([], t) ]
+  ;
+
   value symbolchar =
     let list =
       ['$'; '!'; '%'; '&'; '*'; '+'; '-'; '.'; '/'; ':'; '<'; '='; '>'; '?';
@@ -361,7 +370,7 @@ New syntax:\
     parser
     [ [: `((KEYWORD "(", _) as tok); xs :] ->
         match xs with parser
-        [ [: `(KEYWORD ("mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i), _loc);
+        [ [: `(KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i), _loc);
              `(KEYWORD ")", _); xs :] ->
                 [: `(LIDENT i, _loc); infix_kwds_filter xs :]
         | [: xs :] ->
@@ -521,7 +530,8 @@ New syntax:\
         | i = module_longident_with_app -> <:module_type< $id:i$ >>
         | "'"; i = a_ident -> <:module_type< ' $i$ >>
         | "("; mt = SELF; ")" -> <:module_type< $mt$ >>
-        | "module"; "type"; "of"; me = module_expr -> <:module_type< module type of $me$ >> ] ]
+        | "module"; "type"; "of"; me = module_expr ->
+            <:module_type< module type of $me$ >> ] ]
     ;
     sig_item:
       [ "top"
@@ -782,9 +792,9 @@ New syntax:\
       [ RIGHTA
         [ TRY ["("; "type"]; i = a_LIDENT; ")"; e = SELF ->
             <:expr< fun (type $i$) -> $e$ >>
-        | p = TRY labeled_ipatt; e = SELF ->
+        | bi = TRY cvalue_binding -> bi
+        | p = labeled_ipatt; e = SELF ->
             <:expr< fun $p$ -> $e$ >>
-        | bi = cvalue_binding -> bi
       ] ]
     ;
     match_case:
@@ -891,6 +901,9 @@ New syntax:\
         | "[|"; pl = sem_patt; "|]" -> <:patt< [| $pl$ |] >>
         | "{"; pl = label_patt_list; "}" -> <:patt< { $pl$ } >>
         | "("; ")" -> <:patt< () >>
+        | "("; "module"; m = a_UIDENT; ")" -> <:patt< (module $m$) >>
+        | "("; "module"; m = a_UIDENT; ":"; pt = package_type; ")" ->
+            <:patt< ((module $m$) : (module $pt$)) >>
         | "("; p = SELF; ")" -> p
         | "("; p = SELF; ":"; t = ctyp; ")" -> <:patt< ($p$ : $t$) >>
         | "("; p = SELF; "as"; p2 = SELF; ")" -> <:patt< ($p$ as $p2$) >>
@@ -959,6 +972,9 @@ New syntax:\
             <:patt< ($tup:<:patt< $anti:mk_anti ~c:"patt" n s$ >>$) >>
         | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.patt_tag
         | "("; ")" -> <:patt< () >>
+        | "("; "module"; m = a_UIDENT; ")" -> <:patt< (module $m$) >>
+        | "("; "module"; m = a_UIDENT; ":"; pt = package_type; ")" ->
+            <:patt< ((module $m$) : (module $pt$)) >>
         | "("; p = SELF; ")" -> p
         | "("; p = SELF; ":"; t = ctyp; ")" -> <:patt< ($p$ : $t$) >>
         | "("; p = SELF; "as"; p2 = SELF; ")" -> <:patt< ($p$ as $p2$) >>
@@ -977,6 +993,8 @@ New syntax:\
     ;
     label_ipatt_list:
       [ [ p1 = label_ipatt; ";"; p2 = SELF -> <:patt< $p1$ ; $p2$ >>
+        | p1 = label_ipatt; ";"; "_"       -> <:patt< $p1$ ; _ >>
+        | p1 = label_ipatt; ";"; "_"; ";"  -> <:patt< $p1$ ; _ >>
         | p1 = label_ipatt; ";"            -> p1
         | p1 = label_ipatt                 -> p1
       ] ];
@@ -1010,7 +1028,7 @@ New syntax:\
       [ [ t = ctyp -> t ] ]
     ;
     type_ident_and_parameters:
-      [ [ i = a_LIDENT; tpl = LIST0 type_parameter -> (i, tpl) ] ]
+      [ [ i = a_LIDENT; tpl = LIST0 optional_type_parameter -> (i, tpl) ] ]
     ;
     type_longident_and_parameters:
       [ [ i = type_longident; tpl = type_parameters -> tpl <:ctyp< $id:i$ >>
@@ -1023,6 +1041,7 @@ New syntax:\
         | -> fun t -> t
       ] ]
     ;
+
     type_parameter:
       [ [ `ANTIQUOT (""|"typ"|"anti" as n) s -> <:ctyp< $anti:mk_anti n s$ >>
         | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
@@ -1030,6 +1049,20 @@ New syntax:\
         | "+"; "'"; i = a_ident -> <:ctyp< +'$lid:i$ >>
         | "-"; "'"; i = a_ident -> <:ctyp< -'$lid:i$ >> ] ]
     ;
+    optional_type_parameter:
+      [ [ `ANTIQUOT (""|"typ"|"anti" as n) s -> <:ctyp< $anti:mk_anti n s$ >>
+        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | "'"; i = a_ident -> <:ctyp< '$lid:i$ >>
+        | "+"; "'"; i = a_ident -> <:ctyp< +'$lid:i$ >>
+        | "-"; "'"; i = a_ident -> <:ctyp< -'$lid:i$ >>
+        | "+"; "_" -> Ast.TyAnP _loc 
+        | "-"; "_" -> Ast.TyAnM _loc
+        | "_" -> Ast.TyAny _loc
+
+ ] ]
+    ;
+
+
     ctyp:
       [ "==" LEFTA
         [ t1 = SELF; "=="; t2 = SELF -> <:ctyp< $t1$ == $t2$ >> ]
@@ -1111,8 +1144,11 @@ New syntax:\
             <:ctyp< $t1$ | $t2$ >>
         | s = a_UIDENT; "of"; t = constructor_arg_list ->
             <:ctyp< $uid:s$ of $t$ >>
+        | s = a_UIDENT; ":"; t = ctyp ->
+            let (tl, rt) = generalized_type_of_type t in
+            <:ctyp< $uid:s$ : ($Ast.tyAnd_of_list tl$ -> $rt$) >>
         | s = a_UIDENT ->
-            <:ctyp< $uid:s$ >>
+	  <:ctyp< $uid:s$ >>
       ] ]
     ;
     constructor_declaration:
@@ -1364,6 +1400,9 @@ New syntax:\
     ;
     cvalue_binding:
       [ [ "="; e = expr -> e
+        | ":"; "type"; t1 = unquoted_typevars; "." ; t2 = ctyp ; "="; e = expr -> 
+	let u = Ast.TyTypePol _loc t1 t2 in
+	<:expr< ($e$ : $u$) >>
         | ":"; t = poly_type; "="; e = expr -> <:expr< ($e$ : $t$) >>
         | ":"; t = poly_type; ":>"; t2 = ctyp; "="; e = expr ->
             match t with
@@ -1484,6 +1523,16 @@ New syntax:\
         | "'"; i = a_ident -> <:ctyp< '$lid:i$ >>
       ] ]
     ;
+    unquoted_typevars:
+      [ LEFTA
+        [ t1 = SELF; t2 = SELF -> <:ctyp< $t1$ $t2$ >>
+        | `ANTIQUOT (""|"typ" as n) s ->
+            <:ctyp< $anti:mk_anti ~c:"ctyp" n s$ >>
+        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | i = a_ident -> <:ctyp< $lid:i$ >>
+      ] ]
+    ;
+
     row_field:
       [ [ `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $anti:mk_anti ~c:"ctyp" n s$ >>
@@ -1741,13 +1790,19 @@ New syntax:\
     ;
     str_item_quot:
       [ [ "#"; n = a_LIDENT; dp = opt_expr -> <:str_item< # $n$ $dp$ >>
-        | st1 = str_item; semi; st2 = SELF -> <:str_item< $st1$; $st2$ >>
+        | st1 = str_item; semi; st2 = SELF ->
+            match st2 with
+            [ <:str_item<>> -> st1
+            | _ -> <:str_item< $st1$; $st2$ >> ]
         | st = str_item -> st
         | -> <:str_item<>> ] ]
     ;
     sig_item_quot:
       [ [ "#"; n = a_LIDENT; dp = opt_expr -> <:sig_item< # $n$ $dp$ >>
-        | sg1 = sig_item; semi; sg2 = SELF -> <:sig_item< $sg1$; $sg2$ >>
+        | sg1 = sig_item; semi; sg2 = SELF ->
+            match sg2 with
+            [ <:sig_item<>> -> sg1
+            | _ -> <:sig_item< $sg1$; $sg2$ >> ]
         | sg = sig_item -> sg
         | -> <:sig_item<>> ] ]
     ;
@@ -1832,12 +1887,17 @@ New syntax:\
     ;
     class_str_item_quot:
       [ [ x1 = class_str_item; semi; x2 = SELF ->
-          <:class_str_item< $x1$; $x2$ >>
+          match x2 with
+          [ <:class_str_item<>> -> x1
+          | _ -> <:class_str_item< $x1$; $x2$ >> ]
         | x = class_str_item -> x
         | -> <:class_str_item<>> ] ]
     ;
     class_sig_item_quot:
-      [ [ x1 = class_sig_item; semi; x2 = SELF -> <:class_sig_item< $x1$; $x2$ >>
+      [ [ x1 = class_sig_item; semi; x2 = SELF ->
+          match x2 with
+          [ <:class_sig_item<>> -> x1
+          | _ -> <:class_sig_item< $x1$; $x2$ >> ]
         | x = class_sig_item -> x
         | -> <:class_sig_item<>> ] ]
     ;

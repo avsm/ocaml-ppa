@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: cmm.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 type machtype_component =
     Addr
@@ -108,7 +108,8 @@ type fundecl =
   { fun_name: string;
     fun_args: (Ident.t * machtype) list;
     fun_body: expression;
-    fun_fast: bool }
+    fun_fast: bool;
+    fun_dbg : Debuginfo.t; }
 
 type data_item =
     Cdefine_symbol of string

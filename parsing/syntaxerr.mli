@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: syntaxerr.mli 9316 2009-07-15 14:06:37Z xleroy $ *)
+(* $Id$ *)
 
 (* Auxiliary type for reporting syntax errors *)
 
@@ -19,6 +19,7 @@ open Format
 type error =
     Unclosed of Location.t * string * Location.t * string
   | Applicative_path of Location.t
+  | Variable_in_scope of Location.t * string
   | Other of Location.t
 
 exception Error of error

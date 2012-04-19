@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*  Xavier Leroy and Pascal Cuoq, projet Cristal, INRIA Rocquencourt   */
 /*                                                                     */
@@ -11,29 +11,34 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: open.c 8768 2008-01-11 16:13:18Z doligez $ */
+/* $Id$ */
 
 #include <mlvalues.h>
 #include <alloc.h>
 #include "unixsupport.h"
 #include <fcntl.h>
 
-static int open_access_flags[12] = {
+static int open_access_flags[13] = {
   GENERIC_READ, GENERIC_WRITE, GENERIC_READ|GENERIC_WRITE,
-  0, 0, 0, 0, 0, 0, 0, 0, 0
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-static int open_create_flags[12] = {
-  0, 0, 0, 0, 0, O_CREAT, O_TRUNC, O_EXCL, 0, 0, 0, 0
+static int open_create_flags[13] = {
+  0, 0, 0, 0, 0, O_CREAT, O_TRUNC, O_EXCL, 0, 0, 0, 0, 0
+};
+
+static int open_share_flags[13] = {
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, FILE_SHARE_DELETE
 };
 
 CAMLprim value unix_open(value path, value flags, value perm)
 {
-  int fileaccess, createflags, fileattrib, filecreate;
+  int fileaccess, createflags, fileattrib, filecreate, sharemode;
   SECURITY_ATTRIBUTES attr;
   HANDLE h;
 
   fileaccess = convert_flag_list(flags, open_access_flags);
+  sharemode = FILE_SHARE_READ | FILE_SHARE_WRITE | convert_flag_list(flags, open_share_flags);
 
   createflags = convert_flag_list(flags, open_create_flags);
   if ((createflags & (O_CREAT | O_EXCL)) == (O_CREAT | O_EXCL))
@@ -57,7 +62,7 @@ CAMLprim value unix_open(value path, value flags, value perm)
   attr.bInheritHandle = TRUE;
 
   h = CreateFile(String_val(path), fileaccess,
-                 FILE_SHARE_READ | FILE_SHARE_WRITE, &attr,
+                 sharemode, &attr,
                  filecreate, fileattrib, NULL);
   if (h == INVALID_HANDLE_VALUE) {
     win32_maperr(GetLastError());

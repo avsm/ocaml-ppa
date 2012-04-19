@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                         Objective Caml                              *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*  Xavier Leroy and Pascal Cuoq, projet Cristal, INRIA Rocquencourt   *)
 (*                                                                     *)
@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: thread.mli 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (** Lightweight threads for Posix [1003.1c] and Win32. *)
 

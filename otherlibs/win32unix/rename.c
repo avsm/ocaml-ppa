@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*  Contributed by Tracy Camp, PolyServe Inc., <campt@polyserve.com>   */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: rename.c 9547 2010-01-22 12:48:24Z doligez $ */
+/* $Id$ */
 
 #include <stdio.h>
 #include <mlvalues.h>

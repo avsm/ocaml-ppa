@@ -1,6 +1,6 @@
 #########################################################################
 #                                                                       #
-#                            Objective Caml                             #
+#                                 OCaml                                 #
 #                                                                       #
 #            Xavier Leroy, projet Cristal, INRIA Rocquencourt           #
 #                                                                       #
@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 8616 2007-11-22 22:14:43Z doligez $
+# $Id$
 
 include Makefile.shared
 
@@ -19,3 +19,9 @@ include Makefile.shared
 ocamlmktop: ocamlmktop.tpl ../config/Makefile
 	sed -e 's|%%BINDIR%%|$(BINDIR)|' ocamlmktop.tpl > ocamlmktop
 	chmod +x ocamlmktop
+
+install::
+	cp ocamlmktop $(BINDIR)
+
+clean::
+	rm -f ocamlmktop

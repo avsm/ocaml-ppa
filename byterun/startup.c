@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*         Xavier Leroy and Damien Doligez, INRIA Rocquencourt         */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: startup.c 10668 2010-09-03 16:31:32Z doligez $ */
+/* $Id$ */
 
 /* Start-up code */
 
@@ -216,7 +216,7 @@ static char * read_section(int fd, struct exec_trailer *trail, char *name)
 Algorithm:
   1-  If argument 0 is a valid byte-code file that does not start with #!,
       then we are in case 3 and we pass the same command line to the
-      Objective Caml program.
+      OCaml program.
   2-  In all other cases, we parse the command line as:
         (whatever) [options] bytecode args...
       and we strip "(whatever) [options]" from the command line.
@@ -247,7 +247,7 @@ static int parse_command_line(char **argv)
 #endif
     case 'v':
       if (!strcmp (argv[i], "-version")){
-        printf ("The Objective Caml runtime, version " OCAML_VERSION "\n");
+        printf ("The OCaml runtime, version " OCAML_VERSION "\n");
         exit (0);
       }else if (!strcmp (argv[i], "-vnum")){
         printf (OCAML_VERSION "\n");
@@ -370,12 +370,12 @@ CAMLexport void caml_main(char **argv)
     fd = caml_attempt_open(&exe_name, &trail, 1);
     switch(fd) {
     case FILE_NOT_FOUND:
-      caml_fatal_error_arg("Fatal error: cannot find file %s\n", argv[pos]);
+      caml_fatal_error_arg("Fatal error: cannot find file '%s'\n", argv[pos]);
       break;
     case BAD_BYTECODE:
       caml_fatal_error_arg(
-        "Fatal error: the file %s is not a bytecode executable file\n",
-        argv[pos]);
+        "Fatal error: the file '%s' is not a bytecode executable file\n",
+        exe_name);
       break;
     }
   }

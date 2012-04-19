@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arch.ml 5303 2002-11-29 15:03:08Z xleroy $ *)
+(* $Id$ *)
 
 (* Specific operations for the Sparc processor *)
 
@@ -46,6 +46,10 @@ let big_endian = true
 let size_addr = 4
 let size_int = 4
 let size_float = 8
+
+(* Behavior of division *)
+
+let division_crashes_on_overflow = false
 
 (* Operations on addressing modes *)
 

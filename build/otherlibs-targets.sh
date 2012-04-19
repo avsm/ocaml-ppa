@@ -2,7 +2,7 @@
 
 #########################################################################
 #                                                                       #
-#                            Objective Caml                             #
+#                                 OCaml                                 #
 #                                                                       #
 #         Nicolas Pouillard, projet Gallium, INRIA Rocquencourt         #
 #                                                                       #
@@ -12,7 +12,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: otherlibs-targets.sh 11041 2011-05-13 08:40:05Z doligez $
+# $Id$
 
 OTHERLIBS_BYTE=""
 OTHERLIBS_NATIVE=""

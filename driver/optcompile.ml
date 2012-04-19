@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: optcompile.ml 9153 2008-12-03 18:09:09Z doligez $ *)
+(* $Id$ *)
 
 (* The batch compiler *)
 
@@ -119,12 +119,10 @@ let implementation ppf sourcefile outputprefix =
     if !Clflags.print_types then ignore(
       Pparse.file ppf inputfile Parse.implementation ast_impl_magic_number
       ++ print_if ppf Clflags.dump_parsetree Printast.implementation
-      ++ Unused_var.warn ppf
       ++ Typemod.type_implementation sourcefile outputprefix modulename env)
     else begin
       Pparse.file ppf inputfile Parse.implementation ast_impl_magic_number
       ++ print_if ppf Clflags.dump_parsetree Printast.implementation
-      ++ Unused_var.warn ppf
       ++ Typemod.type_implementation sourcefile outputprefix modulename env
       ++ Translmod.transl_store_implementation modulename
       +++ print_if ppf Clflags.dump_rawlambda Printlambda.lambda

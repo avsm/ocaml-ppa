@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml 10296 2010-04-22 12:51:06Z xleroy $ *)
+(* $Id$ *)
 
 (* Instruction selection for the Power PC processor *)
 
@@ -52,7 +52,7 @@ inherit Selectgen.selector_generic as super
 
 method is_immediate n = (n <= 32767) && (n >= -32768)
 
-method select_addressing exp =
+method select_addressing chunk exp =
   match select_addr exp with
     (Asymbol s, d) ->
       (Ibased(s, d), Ctuple [])

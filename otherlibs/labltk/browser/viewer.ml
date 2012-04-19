@@ -1,6 +1,6 @@
 (*************************************************************************)
 (*                                                                       *)
-(*                Objective Caml LablTk library                          *)
+(*                         OCaml LablTk library                          *)
 (*                                                                       *)
 (*            Jacques Garrigue, Kyoto University RIMS                    *)
 (*                                                                       *)
@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: viewer.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 open StdLabels
 open Tk
@@ -74,7 +74,7 @@ let view_symbol ~kind ~env ?path id =
         Tconstr (cpath, _, _) ->
         if Path.same cpath Predef.path_exn then
           view_signature ~title:(string_of_longident id) ~env ?path
-            [Tsig_exception (Ident.create name, cd.cstr_args)]
+            [Tsig_exception (Ident.create name, {exn_loc = Location.none; exn_args = cd.cstr_args})]
         else
           view_type_decl cpath ~env
       | _ -> ()

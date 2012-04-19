@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*       Nicolas Pouillard, projet Gallium, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: myocamlbuild.ml 10941 2011-02-08 14:07:47Z xclerc $ *)
+(* $Id$ *)
 
 open Ocamlbuild_plugin
 open Command
@@ -289,7 +289,7 @@ Pathname.define_context "ocamlbuild" ["ocamlbuild"; "stdlib"; "."];;
 Pathname.define_context "lex" ["lex"; "stdlib"];;
 
 List.iter (fun x -> let x = "otherlibs"/x in Pathname.define_context x [x; "stdlib"])
-  ["bigarray"; "dbm"; "graph"; "num"; "str"; "systhreads"; "unix"; "win32graph"; "win32unix"];;
+  ["bigarray"; "graph"; "num"; "str"; "systhreads"; "unix"; "win32graph"; "win32unix"];;
 
 (* The bootstrap standard library *)
 copy_rule "The bootstrap standard library" "stdlib/%" "boot/%";;
@@ -407,8 +407,6 @@ flag ["c"; "compile"; "otherlibs_bigarray"] (S[A"-I"; P"../otherlibs/bigarray"])
 flag [(* "ocaml" or "c"; *) "ocamlmklib"; "otherlibs_graph"] (S[Sh C.x11_link]);;
 flag ["c"; "compile"; "otherlibs_graph"] (S[Sh C.x11_includes; A"-I../otherlibs/graph"]);;
 flag ["c"; "compile"; "otherlibs_win32graph"] (A"-I../otherlibs/win32graph");;
-flag ["c"; "compile"; "otherlibs_dbm"] (Sh C.dbm_includes);;
-flag [(* "ocaml" oc "c"; *) "ocamlmklib"; "otherlibs_dbm"] (S[A"-oc"; A"otherlibs/dbm/mldbm"; Sh C.dbm_link]);;
 flag ["ocaml"; "ocamlmklib"; "otherlibs_threads"] (S[A"-oc"; A"otherlibs/threads/vmthreads"]);;
 flag ["c"; "compile"; "otherlibs_num"] begin
   S[A("-DBNG_ARCH_"^C.bng_arch);
@@ -676,7 +674,6 @@ let special_modules =
 let camlp4_import_list =
     ["utils/misc.ml";
      "utils/terminfo.ml";
-     "parsing/linenum.ml";
      "utils/warnings.ml";
      "parsing/location.ml";
      "parsing/longident.ml";
@@ -1049,7 +1046,7 @@ rule "labltk"
   ~prod:"otherlibs/labltk/lib/labltk"
   begin fun _ _ ->
     Echo(["#!/bin/sh\n";
-          Printf.sprintf "exec %s -I %s $*\n" (labltk_installdir/"labltktop") labltk_installdir],
+          Printf.sprintf "exec %s -I %s \"$@\"\n" (labltk_installdir/"labltktop") labltk_installdir],
          "otherlibs/labltk/lib/labltk")
   end;;
 

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_text.ml 9638 2010-03-08 16:54:13Z guesdon $ *)
+(* $Id$ *)
 
 exception Text_syntax of int * int * string (* line, char, string *)
 
@@ -133,6 +133,8 @@ module Texter =
                    | RK_attribute -> "attribute"
                    | RK_method -> "method"
                    | RK_section _ -> "section"
+                   | RK_recfield -> "recfield"
+                   | RK_const -> "const"
                  in
                  s^":"
             )

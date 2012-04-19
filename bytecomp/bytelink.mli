@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,13 +10,13 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bytelink.mli 7422 2006-05-11 15:50:53Z xleroy $ *)
+(* $Id$ *)
 
 (* Link .cmo files and produce a bytecode executable. *)
 
-val link: string list -> string -> unit
+val link : Format.formatter -> string list -> string -> unit
 
-val check_consistency: string -> Cmo_format.compilation_unit -> unit
+val check_consistency: Format.formatter -> string -> Cmo_format.compilation_unit -> unit
 
 val extract_crc_interfaces: unit -> (string * Digest.t) list
 

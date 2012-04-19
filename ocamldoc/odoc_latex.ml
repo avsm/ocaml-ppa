@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_latex.ml 10355 2010-05-03 15:06:17Z guesdon $ *)
+(* $Id$ *)
 
 (** Generation of LaTeX documentation. *)
 
@@ -22,6 +22,29 @@ open Type
 open Exception
 open Class
 open Module
+
+
+
+let separate_files = ref false
+
+let latex_titles = ref [
+  1, "section" ;
+  2, "subsection" ;
+  3, "subsubsection" ;
+  4, "paragraph" ;
+  5, "subparagraph" ;
+]
+
+let latex_value_prefix = ref Odoc_messages.default_latex_value_prefix
+let latex_type_prefix = ref Odoc_messages.default_latex_type_prefix
+let latex_type_elt_prefix = ref Odoc_messages.default_latex_type_elt_prefix
+let latex_exception_prefix = ref Odoc_messages.default_latex_exception_prefix
+let latex_module_prefix = ref Odoc_messages.default_latex_module_prefix
+let latex_module_type_prefix = ref Odoc_messages.default_latex_module_type_prefix
+let latex_class_prefix = ref Odoc_messages.default_latex_class_prefix
+let latex_class_type_prefix = ref Odoc_messages.default_latex_class_type_prefix
+let latex_attribute_prefix = ref Odoc_messages.default_latex_attribute_prefix
+let latex_method_prefix = ref Odoc_messages.default_latex_method_prefix
 
 let new_buf () = Buffer.create 1024
 let new_fmt () =
@@ -60,81 +83,91 @@ class text =
        and with the given latex code. *)
     method section_style level s =
       try
-        let sec = List.assoc level !Args.latex_titles in
+        let sec = List.assoc level !latex_titles in
         "\\"^sec^"{"^s^"}\n"
       with Not_found -> s
 
-    (** Associations of strings to subsitute in latex code. *)
-    val mutable subst_strings = [
-      ("MAXENCE"^"ZZZ", "\\$");
-      ("MAXENCE"^"YYY", "\\&");
-      ("MAXENCE"^"XXX", "{\\textbackslash}") ;
-      ("à", "\\`a") ;
-      ("â", "\\^a") ;
-      ("é", "\\'e") ;
-      ("è", "\\`e") ;
-      ("ê", "\\^e") ;
-      ("ë", "\\\"e") ;
-      ("ç", "\\c{c}") ;
-      ("ô", "\\^o") ;
-      ("ö", "\\\"o") ;
-      ("î", "\\^i") ;
-      ("ï", "\\\"i") ;
-      ("ù", "\\`u") ;
-      ("û", "\\^u") ;
-      ("%", "\\%") ;
-      ("_", "\\_");
-      ("\\.\\.\\.", "$\\ldots$");
-      ("~", "\\~{}");
-      ("#", "\\verb`#`");
-      ("}", "\\}");
-      ("{", "\\{");
-      ("&", "\\&");
-      (">", "$>$");
-      ("<", "$<$");
-      ("=", "$=$");
-      (">=", "$\\geq$");
-      ("<=", "$\\leq$");
-      ("->", "$\\rightarrow$") ;
-      ("<-", "$\\leftarrow$");
-      ("|", "\\textbar ");
-      ("\\^", "\\textasciicircum ") ;
-      ("\\.\\.\\.", "$\\ldots$");
-      ("\\\\", "MAXENCE"^"XXX") ;
-      ("&", "MAXENCE"^"YYY") ;
-      ("\\$", "MAXENCE"^"ZZZ");
-    ]
-
-    val mutable subst_strings_simple =
+    (** Associations of strings to substitute in latex code. *)
+    val subst_strings = List.map (fun (x, y) -> (Str.regexp x, y))
       [
-        ("MAXENCE"^"XXX", "{\\textbackslash}") ;
-        "}", "\\}" ;
-        "{", "\\{" ;
-        ("\\\\", "MAXENCE"^"XXX") ;
+        "\001", "\001\002";
+        "\\\\", "\001b";
+
+        "{", "\\\\{";
+        "}", "\\\\}";
+        "\\$", "\\\\$";
+        "\\^", "{\\\\textasciicircum}";
+        "Ã ", "\\\\`a";
+        "Ã¢", "\\\\^a";
+        "Ã©", "\\\\'e";
+        "Ã¨", "\\\\`e";
+        "Ãª", "\\\\^e";
+        "Ã«", "\\\\\"e";
+        "Ã§", "\\\\c{c}";
+        "Ã´", "\\\\^o";
+        "Ã¶", "\\\\\"o";
+        "Ã®", "\\\\^i";
+        "Ã¯", "\\\\\"i";
+        "Ã¹", "\\\\`u";
+        "Ã»", "\\\\^u";
+        "%", "\\\\%";
+        "_", "\\\\_";
+        "~", "\\\\~{}";
+        "#", "{\\char35}";
+        "->", "$\\\\rightarrow$";
+        "<-", "$\\\\leftarrow$";
+        ">=", "$\\\\geq$";
+        "<=", "$\\\\leq$";
+        ">", "$>$";
+        "<", "$<$";
+        "=", "$=$";
+        "|", "{\\\\textbar}";
+        "\\.\\.\\.", "$\\\\ldots$";
+        "&", "\\\\&";
+
+        "\001b", "{\\\\char92}";
+        "\001\002", "\001";
       ]
 
-    val mutable subst_strings_code = [
-      ("MAXENCE"^"ZZZ", "\\$");
-      ("MAXENCE"^"YYY", "\\&");
-      ("MAXENCE"^"XXX", "{\\textbackslash}") ;
-      ("%", "\\%") ;
-      ("_", "\\_");
-      ("~", "\\~{}");
-      ("#", "\\verb`#`");
-      ("}", "\\}");
-      ("{", "\\{");
-      ("&", "\\&");
-      ("\\^", "\\textasciicircum ") ;
-      ("&", "MAXENCE"^"YYY") ;
-      ("\\$", "MAXENCE"^"ZZZ") ;
-      ("\\\\", "MAXENCE"^"XXX") ;
-     ]
+    val subst_strings_simple = List.map (fun (x, y) -> (Str.regexp x, y))
+      [
+        "\001", "\001\002";
+        "\\\\", "\001b";
+        "{", "\001l";
+
+        "}", "{\\\\char125}";
+        "'", "{\\\\textquotesingle}";
+        "`", "{\\\\textasciigrave}";
+
+        "\001b", "{\\\\char92}";
+        "\001l", "{\\\\char123}";
+        "\001\002", "\001";
+      ]
+
+    val subst_strings_code = List.map (fun (x, y) -> (Str.regexp x, y))
+      [
+        "\001", "\001\002";
+        "\\\\", "\001b";
+        "{", "\001l";
+
+        "}", "{\\\\char125}";
+        "'", "{\\\\textquotesingle}";
+        "`", "{\\\\textasciigrave}";
+        "%", "\\\\%";
+        "_", "\\\\_";
+        "~", "{\\\\char126}";
+        "#", "{\\\\char35}";
+        "&", "\\\\&";
+        "\\$", "\\\\$";
+        "\\^", "{\\\\char94}";
+
+        "\001b", "{\\\\char92}";
+        "\001l", "{\\\\char123}";
+        "\001\002", "\001";
+      ]
 
     method subst l s =
-      List.fold_right
-        (fun (s, s2) -> fun acc -> Str.global_replace (Str.regexp s) s2 acc)
-        l
-        s
+      List.fold_left (fun acc (re, st) -> Str.global_replace re st acc) s l
 
     (** Escape the strings which would clash with LaTeX syntax. *)
     method escape s = self#subst subst_strings s
@@ -182,31 +215,37 @@ class text =
       Buffer.contents buf
 
     (** Make a correct label from a value name. *)
-    method value_label ?no_ name = !Args.latex_value_prefix^(self#label ?no_ name)
+    method value_label ?no_ name = !latex_value_prefix^(self#label ?no_ name)
 
     (** Make a correct label from an attribute name. *)
-    method attribute_label ?no_ name = !Args.latex_attribute_prefix^(self#label ?no_ name)
+    method attribute_label ?no_ name = !latex_attribute_prefix^(self#label ?no_ name)
 
     (** Make a correct label from a method name. *)
-    method method_label ?no_ name = !Args.latex_method_prefix^(self#label ?no_ name)
+    method method_label ?no_ name = !latex_method_prefix^(self#label ?no_ name)
 
     (** Make a correct label from a class name. *)
-    method class_label ?no_ name = !Args.latex_class_prefix^(self#label ?no_ name)
+    method class_label ?no_ name = !latex_class_prefix^(self#label ?no_ name)
 
     (** Make a correct label from a class type name. *)
-    method class_type_label ?no_ name = !Args.latex_class_type_prefix^(self#label ?no_ name)
+    method class_type_label ?no_ name = !latex_class_type_prefix^(self#label ?no_ name)
 
     (** Make a correct label from a module name. *)
-    method module_label ?no_ name = !Args.latex_module_prefix^(self#label ?no_ name)
+    method module_label ?no_ name = !latex_module_prefix^(self#label ?no_ name)
 
     (** Make a correct label from a module type name. *)
-    method module_type_label ?no_ name = !Args.latex_module_type_prefix^(self#label ?no_ name)
+    method module_type_label ?no_ name = !latex_module_type_prefix^(self#label ?no_ name)
 
     (** Make a correct label from an exception name. *)
-    method exception_label ?no_ name = !Args.latex_exception_prefix^(self#label ?no_ name)
+    method exception_label ?no_ name = !latex_exception_prefix^(self#label ?no_ name)
 
     (** Make a correct label from a type name. *)
-    method type_label ?no_ name = !Args.latex_type_prefix^(self#label ?no_ name)
+    method type_label ?no_ name = !latex_type_prefix^(self#label ?no_ name)
+
+    (** Make a correct label from a record field. *)
+    method recfield_label ?no_ name = !latex_type_elt_prefix^(self#label ?no_ name)
+
+    (** Make a correct label from a variant constructor. *)
+    method const_label ?no_ name = !latex_type_elt_prefix^(self#label ?no_ name)
 
     (** Return latex code for the label of a given label. *)
     method make_label label = "\\label{"^label^"}"
@@ -269,9 +308,9 @@ class text =
       ps fmt "\n\\end{ocamldoccode}\n"
 
     method latex_of_Verbatim fmt s =
-      ps fmt "\\begin{verbatim}";
+      ps fmt "\n\\begin{verbatim}\n";
       ps fmt s;
-      ps fmt "\\end{verbatim}"
+      ps fmt "\n\\end{verbatim}\n"
 
     method latex_of_Bold fmt t =
       ps fmt "{\\bf ";
@@ -377,6 +416,8 @@ class text =
             | Odoc_info.RK_attribute -> self#attribute_label
             | Odoc_info.RK_method -> self#method_label
             | Odoc_info.RK_section _ -> assert false
+            | Odoc_info.RK_recfield -> self#recfield_label
+            | Odoc_info.RK_const -> self#const_label
           in
           let text =
             match text_opt with
@@ -413,6 +454,8 @@ class virtual info =
         (self#text_of_info ~block info_opt)
   end
 
+module Generator =
+struct
 (** This class is used to create objects which can generate a simple LaTeX documentation. *)
 class latex =
   object (self)
@@ -517,12 +560,22 @@ class latex =
                     let s_cons =
                       p fmt2 "@[<h 6>  | %s" constr.vc_name;
                       (
-                       match constr.vc_args with
-                         [] -> ()
-                       | l ->
+                       match constr.vc_args, constr.vc_ret with
+                         [], None -> ()
+                       | l, None ->
                            p fmt2 " %s@ %s"
                              "of"
                              (self#normal_type_list ~par: false mod_name " * " l)
+                       | [], Some r ->
+                           p fmt2 " %s@ %s"
+                             ":"
+                             (self#normal_type mod_name r)
+                       | l, Some r ->
+                           p fmt2 " %s@ %s@ %s@ %s"
+                             ":"
+                             (self#normal_type_list ~par: false mod_name " * " l)
+			     "->"
+                             (self#normal_type mod_name r)
                       );
                       flush2 ()
                     in
@@ -650,7 +703,7 @@ class latex =
           self#latex_of_module_kind fmt father k2;
           self#latex_of_text fmt [Code ")"]
       | Module_with (k, s) ->
-          (* TODO: à modifier quand Module_with sera plus détaillé *)
+          (* TODO: Ã  modifier quand Module_with sera plus dÃ©taillÃ© *)
           self#latex_of_module_type_kind fmt father k;
           self#latex_of_text fmt
             [ Code " ";
@@ -679,7 +732,7 @@ class latex =
           self#latex_of_text fmt [Latex "\\end{ocamldocobjectend}\n"]
 
       | Class_apply capp ->
-          (* TODO: afficher le type final à partir du typedtree *)
+          (* TODO: afficher le type final Ã  partir du typedtree *)
           self#latex_of_text fmt [Raw "class application not handled yet"]
 
       | Class_constr cco ->
@@ -1078,11 +1131,12 @@ class latex =
       ps fmt "\\documentclass[11pt]{article} \n";
       ps fmt "\\usepackage[latin1]{inputenc} \n";
       ps fmt "\\usepackage[T1]{fontenc} \n";
+      ps fmt "\\usepackage{textcomp}\n";
       ps fmt "\\usepackage{fullpage} \n";
       ps fmt "\\usepackage{url} \n";
       ps fmt "\\usepackage{ocamldoc}\n";
       (
-       match !Args.title with
+       match !Global.title with
          None -> ()
        | Some s ->
            ps fmt "\\title{";
@@ -1090,15 +1144,15 @@ class latex =
            ps fmt "}\n"
       );
       ps fmt "\\begin{document}\n";
-      (match !Args.title with
+      (match !Global.title with
         None -> () |
         Some _ -> ps fmt "\\maketitle\n"
       );
-      if !Args.with_toc then ps fmt "\\tableofcontents\n";
+      if !Global.with_toc then ps fmt "\\tableofcontents\n";
       (
        let info = Odoc_info.apply_opt
            (Odoc_info.info_of_comment_file module_list)
-           !Odoc_info.Args.intro_file
+           !Odoc_info.Global.intro_file
        in
        (match info with None -> () | Some _ -> ps fmt "\\vspace{0.2cm}");
        self#latex_of_info fmt info;
@@ -1109,7 +1163,7 @@ class latex =
     (** Generate the LaTeX style file, if it does not exists. *)
     method generate_style_file =
       try
-        let dir = Filename.dirname !Args.out_file in
+        let dir = Filename.dirname !Global.out_file in
         let file = Filename.concat dir "ocamldoc.sty" in
         if Sys.file_exists file then
           Odoc_info.verbose (Odoc_messages.file_exists_dont_generate file)
@@ -1126,12 +1180,12 @@ class latex =
           prerr_endline s ;
           incr Odoc_info.errors ;
 
-    (** Generate the LaTeX file from a module list, in the {!Odoc_info.Args.out_file} file. *)
+    (** Generate the LaTeX file from a module list, in the {!Odoc_info.Global.out_file} file. *)
     method generate module_list =
       self#generate_style_file ;
-      let main_file = !Args.out_file in
+      let main_file = !Global.out_file in
       let dir = Filename.dirname main_file in
-      if !Args.separate_files then
+      if !separate_files then
         (
          let f m =
            try
@@ -1154,16 +1208,16 @@ class latex =
       try
         let chanout = open_out main_file in
         let fmt = Format.formatter_of_out_channel chanout in
-        if !Args.with_header then self#latex_header fmt module_list;
+        if !Global.with_header then self#latex_header fmt module_list;
         List.iter
           (fun m ->
-            if !Args.separate_files then
+            if !separate_files then
               ps fmt ("\\input{"^((Name.simple m.m_name))^".tex}\n")
             else
               self#generate_for_top_module fmt m
           )
           module_list ;
-        if !Args.with_trailer then ps fmt "\\end{document}";
+        if !Global.with_trailer then ps fmt "\\end{document}";
         Format.pp_print_flush fmt ();
         close_out chanout
       with
@@ -1172,3 +1226,6 @@ class latex =
           prerr_endline s ;
           incr Odoc_info.errors
   end
+end
+
+module type Latex_generator = module type of Generator

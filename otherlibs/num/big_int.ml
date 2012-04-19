@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*    Valerie Menissier-Morain, projet Cristal, INRIA Rocquencourt     *)
 (*                                                                     *)
@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: big_int.ml 10649 2010-08-18 13:22:48Z doligez $ *)
+(* $Id$ *)
 
 open Int_misc
 open Nat

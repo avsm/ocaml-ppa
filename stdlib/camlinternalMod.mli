@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*         Xavier Leroy, projet Cristal, INRIA Rocquencourt            *)
 (*                                                                     *)
@@ -11,7 +11,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: camlinternalMod.mli 6586 2004-08-12 12:57:00Z xleroy $ *)
+(* $Id$ *)
+
+(** Run-time support for recursive modules.
+    All functions in this module are for system use only, not for the
+    casual user. *)
 
 type shape =
   | Function

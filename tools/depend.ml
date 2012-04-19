@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: depend.ml 10263 2010-04-17 14:45:12Z garrigue $ *)
+(* $Id$ *)
 
 open Format
 open Location
@@ -75,7 +75,7 @@ let add_type_declaration bv td =
   let rec add_tkind = function
     Ptype_abstract -> ()
   | Ptype_variant cstrs ->
-      List.iter (fun (c, args, _) -> List.iter (add_type bv) args) cstrs
+      List.iter (fun (c, args, rty, _) -> List.iter (add_type bv) args; Misc.may (add_type bv) rty) cstrs
   | Ptype_record lbls ->
       List.iter (fun (l, mut, ty, _) -> add_type bv ty) lbls in
   add_tkind td.ptype_kind
@@ -118,6 +118,7 @@ let rec add_pattern bv pat =
   | Ppat_variant(_, op) -> add_opt add_pattern bv op
   | Ppat_type (li) -> add bv li
   | Ppat_lazy p -> add_pattern bv p
+  | Ppat_unpack _ -> ()
 
 let rec add_expr bv exp =
   match exp.pexp_desc with
@@ -163,7 +164,7 @@ let rec add_expr bv exp =
   | Pexp_object (pat, fieldl) ->
       add_pattern bv pat; List.iter (add_class_field bv) fieldl
   | Pexp_newtype (_, e) -> add_expr bv e
-  | Pexp_pack (m, pt) -> add_package_type bv pt; add_module bv m
+  | Pexp_pack m -> add_module bv m
   | Pexp_open (m, e) -> addmodule bv m; add_expr bv e
 and add_pat_expr_list bv pel =
   List.iter (fun (p, e) -> add_pattern bv p; add_expr bv e) pel
@@ -228,8 +229,7 @@ and add_module bv modl =
       add_module bv mod1; add_module bv mod2
   | Pmod_constraint(modl, mty) ->
       add_module bv modl; add_modtype bv mty
-  | Pmod_unpack(e, pt) ->
-      add_package_type bv pt;
+  | Pmod_unpack(e) ->
       add_expr bv e
 
 and add_structure bv item_list =
@@ -299,7 +299,6 @@ and add_class_field bv = function
   | Pcf_virt(_, _, ty, _) -> add_type bv ty
   | Pcf_meth(_, _, _, e, _) -> add_expr bv e
   | Pcf_cstr(ty1, ty2, _) -> add_type bv ty1; add_type bv ty2
-  | Pcf_let(_, pel, _) -> add_pat_expr_list bv pel
   | Pcf_init e -> add_expr bv e
 
 and add_class_declaration bv decl =

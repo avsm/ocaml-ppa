@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -11,9 +11,9 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: callback.ml 6044 2003-12-31 14:20:40Z doligez $ *)
+(* $Id$ *)
 
-(* Registering Caml values with the C runtime for later callbacks *)
+(* Registering OCaml values with the C runtime for later callbacks *)
 
 external register_named_value : string -> Obj.t -> unit
                               = "caml_register_named_value"

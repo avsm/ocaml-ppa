@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: translcore.mli 8232 2007-05-16 08:21:41Z doligez $ *)
+(* $Id$ *)
 
 (* Translation from typed abstract syntax to lambda terms,
    for the core language *)
@@ -37,6 +37,7 @@ type error =
     Illegal_letrec_pat
   | Illegal_letrec_expr
   | Free_super_var
+  | Unknown_builtin_primitive of string
 
 exception Error of Location.t * error
 

@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                 MLTk, Tcl/Tk interface of Objective Caml            *)
+(*                 MLTk, Tcl/Tk interface of OCaml                     *)
 (*                                                                     *)
 (*    Francois Rouaix, Francois Pessaux, Jun Furuse and Pierre Weis    *)
 (*               projet Cristal, INRIA Rocquencourt                    *)
@@ -10,13 +10,13 @@
 (*  en Automatique and Kyoto University.  All rights reserved.         *)
 (*  This file is distributed under the terms of the GNU Library        *)
 (*  General Public License, with the special exception on linking      *)
-(*  described in file LICENSE found in the Objective Caml source tree. *)
+(*  described in file LICENSE found in the OCaml source tree.          *)
 (*                                                                     *)
 (***********************************************************************)
 open Camltk
 open Widget
 
-let version = "$Id: frx_widget.ml 9547 2010-01-22 12:48:24Z doligez $"
+let version = "$Id$"
 (* Make a window (toplevel widget) resizeable *)
 let resizeable t =
   update_idletasks(); (* wait until layout is computed *)

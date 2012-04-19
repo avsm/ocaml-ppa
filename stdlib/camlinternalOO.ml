@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*         Jerome Vouillon, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -11,15 +11,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: camlinternalOO.ml 8768 2008-01-11 16:13:18Z doligez $ *)
+(* $Id$ *)
 
 open Obj
 
 (**** Object representation ****)
 
 let last_id = ref 0
-let new_id () =
-  let id = !last_id in incr last_id; id
+let () = Callback.register "CamlinternalOO.last_id" last_id
 
 let set_id o id =
   let id0 = !id in

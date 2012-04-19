@@ -1,8 +1,9 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*  Developed by Jacob Navia, based on code by J-M Geffroy and X Leroy */
+/*                                                                     */
 /*  Copyright 2001 Institut National de Recherche en Informatique et   */
 /*  en Automatique.  All rights reserved.  This file is distributed    */
 /*  under the terms of the GNU Library General Public License, with    */
@@ -10,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: open.c 9547 2010-01-22 12:48:24Z doligez $ */
+/* $Id$ */
 
 #include <fcntl.h>
 #include <signal.h>
@@ -237,7 +238,7 @@ static DWORD WINAPI gr_open_graph_internal(value arg)
   caml_gr_init_event_queue();
 
   /* The global data structures are now correctly initialized.
-     Restart the Caml main thread. */
+     Restart the OCaml main thread. */
   open_graph_errmsg = NULL;
   SetEvent(open_graph_event);
 

@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*  Contributed by Tracy Camp, PolyServe Inc., <campt@polyserve.com>   */
 /*  Further improvements by Reed Wilson                                */
@@ -13,7 +13,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: lockf.c 9153 2008-12-03 18:09:09Z doligez $ */
+/* $Id$ */
 
 #include <errno.h>
 #include <fcntl.h>

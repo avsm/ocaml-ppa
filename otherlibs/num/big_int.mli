@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*    Valerie Menissier-Morain, projet Cristal, INRIA Rocquencourt     *)
 (*                                                                     *)
@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: big_int.mli 10327 2010-04-29 13:53:01Z xleroy $ *)
+(* $Id$ *)
 
 (** Operations on arbitrary-precision integers.
 

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_types.mli 10867 2010-11-29 12:49:46Z xclerc $ *)
+(* $Id$ *)
 
 (** Types for the information collected in comments. *)
 
@@ -25,6 +25,8 @@ type ref_kind =
   | RK_attribute
   | RK_method
   | RK_section of text
+  | RK_recfield
+  | RK_const
 
 and text_element =
   | Raw of string (** Raw text. *)

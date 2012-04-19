@@ -1,6 +1,6 @@
 ;(***********************************************************************)
 ;(*                                                                     *)
-;(*                           Objective Caml                            *)
+;(*                                OCaml                                *)
 ;(*                                                                     *)
 ;(*                Jacques Garrigue and Ian T Zimmerman                 *)
 ;(*                                                                     *)
@@ -10,7 +10,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id: caml-font-old.el 9547 2010-01-22 12:48:24Z doligez $ *)
+;(* $Id$ *)
 
 ;; useful colors
 
@@ -55,7 +55,7 @@
 ; The same definition is in caml.el:
 ; we don't know in which order they will be loaded.
 (defvar caml-quote-char "'"
-  "*Quote for character constants. \"'\" for Objective Caml, \"`\" for Caml-Light.")
+  "*Quote for character constants. \"'\" for OCaml, \"`\" for Caml-Light.")
 
 (defconst caml-font-lock-keywords
   (list

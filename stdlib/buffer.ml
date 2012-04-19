@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*   Pierre Weis and Xavier Leroy, projet Cristal, INRIA Rocquencourt  *)
 (*                                                                     *)
@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: buffer.ml 10216 2010-03-28 08:16:45Z xleroy $ *)
+(* $Id$ *)
 
 (* Extensible buffers *)
 

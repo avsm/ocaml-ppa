@@ -1,6 +1,6 @@
 #########################################################################
 #                                                                       #
-#                            Objective Caml                             #
+#                                 OCaml                                 #
 #                                                                       #
 #   Nicolas Pouillard, Berke Durak, projet Gallium, INRIA Rocquencourt  #
 #                                                                       #
@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 10286 2010-04-20 15:38:58Z doligez $
+# $Id$
 
 .PHONY: all byte native profile debug ppcache doc
 

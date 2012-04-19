@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*        Daniel de Rauglaudre, projet Cristal, INRIA Rocquencourt     *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pparse.ml 6415 2004-06-16 16:58:46Z doligez $ *)
+(* $Id$ *)
 
 open Format
 
@@ -51,15 +51,14 @@ let file ppf inputfile parse_fun ast_magic =
   let ic = open_in_bin inputfile in
   let is_ast_file =
     try
-      let buffer = String.create (String.length ast_magic) in
-      really_input ic buffer 0 (String.length ast_magic);
+      let buffer = Misc.input_bytes ic (String.length ast_magic) in
       if buffer = ast_magic then true
       else if String.sub buffer 0 9 = String.sub ast_magic 0 9 then
         raise Outdated_version
       else false
     with
       Outdated_version ->
-        Misc.fatal_error "Ocaml and preprocessor have incompatible versions"
+        Misc.fatal_error "OCaml and preprocessor have incompatible versions"
     | _ -> false
   in
   let ast =

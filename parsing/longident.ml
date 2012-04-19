@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: longident.ml 9324 2009-08-27 08:19:08Z xleroy $ *)
+(* $Id$ *)
 
 type t =
     Lident of string
@@ -20,14 +20,14 @@ type t =
 let rec flat accu = function
     Lident s -> s :: accu
   | Ldot(lid, s) -> flat (s :: accu) lid
-  | Lapply(l1, l2) -> Misc.fatal_error "Longident.flat"
+  | Lapply(_, _) -> Misc.fatal_error "Longident.flat"
 
 let flatten lid = flat [] lid
 
 let last = function
     Lident s -> s
-  | Ldot(lid, s) -> s
-  | Lapply(l1, l2) -> Misc.fatal_error "Longident.last"
+  | Ldot(_, s) -> s
+  | Lapply(_, _) -> Misc.fatal_error "Longident.last"
 
 let rec split_at_dots s pos =
   try

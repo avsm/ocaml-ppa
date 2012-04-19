@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: headernt.c 7829 2007-02-07 10:31:36Z ertai $ */
+/* $Id$ */
 
 #define STRICT
 #define WIN32_LEAN_AND_MEAN
@@ -26,7 +26,7 @@
 #pragma comment(lib , "kernel32")
 #endif
 
-char * default_runtime_name = "ocamlrun";
+char * default_runtime_name = RUNTIME_NAME;
 
 static
 #if _MSC_VER >= 1200

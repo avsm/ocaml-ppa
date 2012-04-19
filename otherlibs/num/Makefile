@@ -1,6 +1,6 @@
 #########################################################################
 #                                                                       #
-#                            Objective Caml                             #
+#                                 OCaml                                 #
 #                                                                       #
 #            Xavier Leroy, projet Cristal, INRIA Rocquencourt           #
 #                                                                       #
@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 9623 2010-02-09 14:17:20Z doligez $
+# $Id$
 
 # Makefile for the "num" (exact rational arithmetic) library
 
@@ -28,7 +28,7 @@ clean::
 	rm -f *~
 
 bng.$(O): bng.h bng_digit.c \
-       bng_alpha.c bng_amd64.c bng_ia32.c bng_mips.c bng_ppc.c bng_sparc.c
+       bng_amd64.c bng_ia32.c bng_ppc.c bng_sparc.c
 
 depend:
 	gcc -MM $(CFLAGS) *.c > .depend

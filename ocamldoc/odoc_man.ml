@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_man.ml 10480 2010-05-31 11:52:13Z guesdon $ *)
+(* $Id$ *)
 
 (** The man pages generator. *)
 open Odoc_info
@@ -20,6 +20,11 @@ open Exception
 open Class
 open Module
 open Search
+
+let man_suffix = ref Odoc_messages.default_man_suffix
+let man_section = ref Odoc_messages.default_man_section
+
+let man_mini = ref false
 
 let new_buf () = Buffer.create 1024
 let bp = Printf.bprintf
@@ -202,6 +207,9 @@ class virtual info =
           self#man_of_custom b info.M.i_custom
   end
 
+module Generator =
+struct
+
 (** This class is used to create objects which can generate a simple html documentation. *)
 class man =
   let re_slash = Str.regexp_string "/" in
@@ -210,7 +218,7 @@ class man =
 
     (** Get a file name from a complete name. *)
     method file_name name =
-      let s = Printf.sprintf "%s.%s" name !Args.man_suffix in
+      let s = Printf.sprintf "%s.%s" name !man_suffix in
       Str.global_replace re_slash "slash" s
 
     (** Escape special sequences of characters in a string. *)
@@ -229,7 +237,7 @@ class man =
 
     (** Open a file for output. Add the target directory.*)
     method open_out file =
-      let f = Filename.concat !Args.target_dir file in
+      let f = Filename.concat !Global.target_dir file in
       open_out f
 
     (** Print groff string for a text, without correction of blanks. *)
@@ -453,19 +461,45 @@ class man =
             (fun constr ->
               bs b ("| "^constr.vc_name);
               (
-               match constr.vc_args, constr.vc_text with
-                 [], None -> bs b "\n "
-               | [], (Some t) ->
+               match constr.vc_args, constr.vc_text,constr.vc_ret with
+               | [], None, None -> bs b "\n "
+               | [], (Some t), None ->
                    bs b "  (* ";
                    self#man_of_text b t;
                    bs b " *)\n "
-               | l, None ->
+               | l, None, None ->
                    bs b "\n.B of ";
                    self#man_of_type_expr_list ~par: false b father " * " l;
                    bs b " "
-               | l, (Some t) ->
+               | l, (Some t), None ->
                    bs b "\n.B of ";
                    self#man_of_type_expr_list ~par: false b father " * " l;
+                   bs b ".I \"  \"\n";
+                   bs b "(* ";
+                   self#man_of_text b t;
+                   bs b " *)\n "
+               | [], None, Some r ->
+                   bs b "\n.B : ";
+                   self#man_of_type_expr b father r;
+                   bs b " "
+               | [], (Some t), Some r ->
+                   bs b "\n.B : ";
+                   self#man_of_type_expr b father r;
+                   bs b ".I \"  \"\n";
+                   bs b "(* ";
+                   self#man_of_text b t;
+                   bs b " *)\n "
+               | l, None, Some r ->
+                   bs b "\n.B : ";
+                   self#man_of_type_expr_list ~par: false b father " * " l;
+		   bs b ".B -> ";
+                   self#man_of_type_expr b father r;
+                   bs b " "
+               | l, (Some t), Some r ->
+                   bs b "\n.B of ";
+                   self#man_of_type_expr_list ~par: false b father " * " l;
+		   bs b ".B -> ";
+                   self#man_of_type_expr b father r;
                    bs b ".I \"  \"\n";
                    bs b "(* ";
                    self#man_of_text b t;
@@ -693,10 +727,10 @@ class man =
         let chanout = self#open_out file in
         let b = new_buf () in
         bs b (".TH \""^cl.cl_name^"\" ");
-        bs b !Odoc_args.man_section ;
+        bs b !man_section ;
         bs b (" "^(Odoc_misc.string_of_date ~hour: false date)^" ");
         bs b "OCamldoc ";
-        bs b ("\""^(match !Args.title with Some t -> t | None -> "")^"\"\n");
+        bs b ("\""^(match !Global.title with Some t -> t | None -> "")^"\"\n");
 
         let abstract =
           match cl.cl_info with
@@ -752,10 +786,10 @@ class man =
         let chanout = self#open_out file in
         let b = new_buf () in
         bs b (".TH \""^ct.clt_name^"\" ");
-        bs b !Odoc_args.man_section ;
+        bs b !man_section ;
         bs b (" "^(Odoc_misc.string_of_date ~hour: false date)^" ");
         bs b "OCamldoc ";
-        bs b ("\""^(match !Args.title with Some t -> t | None -> "")^"\"\n");
+        bs b ("\""^(match !Global.title with Some t -> t | None -> "")^"\"\n");
 
         let abstract =
           match ct.clt_info with
@@ -809,10 +843,10 @@ class man =
         let chanout = self#open_out file in
         let b = new_buf () in
         bs b (".TH \""^mt.mt_name^"\" ");
-        bs b !Odoc_args.man_section ;
+        bs b !man_section ;
         bs b (" "^(Odoc_misc.string_of_date ~hour: false date)^" ");
         bs b "OCamldoc ";
-        bs b ("\""^(match !Args.title with Some t -> t | None -> "")^"\"\n");
+        bs b ("\""^(match !Global.title with Some t -> t | None -> "")^"\"\n");
 
         let abstract =
           match mt.mt_info with
@@ -887,10 +921,10 @@ class man =
         let chanout = self#open_out file in
         let b = new_buf () in
         bs b (".TH \""^m.m_name^"\" ");
-        bs b !Odoc_args.man_section ;
+        bs b !man_section ;
         bs b (" "^(Odoc_misc.string_of_date ~hour: false date)^" ");
         bs b "OCamldoc ";
-        bs b ("\""^(match !Args.title with Some t -> t | None -> "")^"\"\n");
+        bs b ("\""^(match !Global.title with Some t -> t | None -> "")^"\"\n");
 
         let abstract =
           match m.m_info with
@@ -965,6 +999,8 @@ class man =
         | Res_attribute a -> Name.simple a.att_value.val_name
         | Res_method m -> Name.simple m.met_value.val_name
         | Res_section _ -> assert false
+        | Res_recfield (_,f) -> f.rf_name
+        | Res_const (_,f) -> f.vc_name
       in
       let all_items_pre = Odoc_info.Search.search_by_name module_list (Str.regexp ".*")  in
       let all_items = List.filter
@@ -1006,6 +1042,8 @@ class man =
           | Res_attribute a -> a.att_value.val_name
           | Res_method m -> m.met_value.val_name
           | Res_section (s,_) -> s
+          | Res_recfield (_,f) -> f.rf_name
+          | Res_const (_,f) -> f.vc_name
          )
      in
      let date = Unix.time () in
@@ -1014,10 +1052,10 @@ class man =
         let chanout = self#open_out file in
         let b = new_buf () in
         bs b (".TH \""^name^"\" ");
-        bs b !Odoc_args.man_section ;
+        bs b !man_section ;
         bs b (" "^(Odoc_misc.string_of_date ~hour: false date)^" ");
         bs b "OCamldoc ";
-        bs b ("\""^(match !Args.title with Some t -> t | None -> "")^"\"\n");
+        bs b ("\""^(match !Global.title with Some t -> t | None -> "")^"\"\n");
         bs b ".SH NAME\n";
         bs b (name^" \\- all "^name^" elements\n\n");
 
@@ -1069,10 +1107,13 @@ class man =
         | [Res_class cl] -> self#generate_for_class cl
         | [Res_class_type ct] -> self#generate_for_class_type ct
         | l ->
-            if !Args.man_mini then
+            if !man_mini then
               ()
             else
               self#generate_for_group l
       in
       List.iter f groups
   end
+end
+
+module type Man_generator = module type of Generator

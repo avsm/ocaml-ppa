@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arch.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (* Specific operations for the PowerPC processor *)
 
@@ -45,6 +45,10 @@ let ppc64 =
 let size_addr = if ppc64 then 8 else 4
 let size_int = size_addr
 let size_float = 8
+
+(* Behavior of division *)
+
+let division_crashes_on_overflow = false
 
 (* Operations on addressing modes *)
 

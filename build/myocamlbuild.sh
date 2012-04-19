@@ -2,7 +2,7 @@
 
 #########################################################################
 #                                                                       #
-#                            Objective Caml                             #
+#                                 OCaml                                 #
 #                                                                       #
 #   Nicolas Pouillard, Berke Durak, projet Gallium, INRIA Rocquencourt  #
 #                                                                       #
@@ -12,7 +12,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: myocamlbuild.sh 10449 2010-05-21 11:48:35Z doligez $
+# $Id$
 
 cd `dirname $0`/..
 set -xe

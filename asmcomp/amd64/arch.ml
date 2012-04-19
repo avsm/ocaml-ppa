@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arch.ml 7784 2007-01-01 13:07:35Z xleroy $ *)
+(* $Id$ *)
 
 (* Machine-specific command-line options *)
 
@@ -50,6 +50,10 @@ let big_endian = false
 let size_addr = 8
 let size_int = 8
 let size_float = 8
+
+(* Behavior of division *)
+
+let division_crashes_on_overflow = true
 
 (* Operations on addressing modes *)
 

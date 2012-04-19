@@ -1,17 +1,16 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*          Damien Doligez, projet Moscova, INRIA Rocquencourt         */
 /*                                                                     */
 /*  Copyright 2002 Institut National de Recherche en Informatique et   */
 /*  en Automatique.  All rights reserved.  This file is distributed    */
-/*  under the terms of the GNU Library General Public License, with    */
-/*  the special exception on linking described in file ../../LICENSE.  */
+/*  under the terms of the Q Public License version 1.0.               */
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: checkstack.c 9625 2010-02-09 14:48:28Z weis $ */
+/* $Id$ */
 
 #include <stdio.h>
 #include <stdlib.h>

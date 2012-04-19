@@ -1,6 +1,6 @@
 #########################################################################
 #                                                                       #
-#                            Objective Caml                             #
+#                                 OCaml                                 #
 #                                                                       #
 #            Xavier Leroy, projet Cristal, INRIA Rocquencourt           #
 #                                                                       #
@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt 8485 2007-11-07 10:14:21Z frisch $
+# $Id$
 
 include Makefile.shared
 
@@ -21,3 +21,9 @@ OCAMLMKTOP_IMPORTS=misc.cmo config.cmo clflags.cmo ccomp.cmo
 
 ocamlmktop: $(OCAMLMKTOP)
 	$(CAMLC) $(LINKFLAGS) -o ocamlmktop $(OCAMLMKTOP_IMPORTS) $(OCAMLMKTOP)
+
+install::
+	cp ocamlmktop $(BINDIR)/ocamlmktop$(EXE)
+
+clean::
+	rm -f ocamlmktop$(EXE)

@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: string.ml 11043 2011-05-16 15:00:33Z doligez $ *)
+(* $Id$ *)
 
 (* String operations *)
 
@@ -60,6 +60,9 @@ let blit s1 ofs1 s2 ofs2 len =
 let iter f a =
   for i = 0 to length a - 1 do f(unsafe_get a i) done
 
+let iteri f a =
+  for i = 0 to length a - 1 do f i (unsafe_get a i) done
+
 let concat sep l =
   match l with
     [] -> ""
@@ -81,6 +84,27 @@ let concat sep l =
 external is_printable: char -> bool = "caml_is_printable"
 external char_code: char -> int = "%identity"
 external char_chr: int -> char = "%identity"
+
+let is_space = function
+  | ' ' | '\012' | '\n' | '\r' | '\t' -> true
+  | _ -> false
+
+let trim s =
+  let len = length s in
+  let i = ref 0 in
+  while !i < len && is_space (unsafe_get s !i) do
+    incr i
+  done;
+  let j = ref (len - 1) in
+  while !j >= !i && is_space (unsafe_get s !j) do
+    decr j
+  done;
+  if !i = 0 && !j = len - 1 then
+    s
+  else if !j >= !i then
+    sub s !i (!j - !i + 1)
+  else
+    ""
 
 let escaped s =
   let n = ref 0 in

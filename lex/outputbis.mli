@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Luc Maranget projet Moscova INRIA Rocquencourt           *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: outputbis.mli 5323 2002-12-09 10:44:46Z maranget $ *)
+(* $Id$ *)
 val output_lexdef :
   string ->
   in_channel ->

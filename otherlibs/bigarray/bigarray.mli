@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*         Manuel Serrano and Xavier Leroy, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -11,20 +11,20 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bigarray.mli 9153 2008-12-03 18:09:09Z doligez $ *)
+(* $Id$ *)
 
 (** Large, multi-dimensional, numerical arrays.
 
    This module implements multi-dimensional arrays of integers and
    floating-point numbers, thereafter referred to as ``big arrays''.
    The implementation allows efficient sharing of large numerical
-   arrays between Caml code and C or Fortran numerical libraries.
+   arrays between OCaml code and C or Fortran numerical libraries.
 
    Concerning the naming conventions, users of this module are encouraged
    to do [open Bigarray] in their source, then refer to array types and
    operations via short dot notation, e.g. [Array1.t] or [Array2.sub].
 
-   Big arrays support all the Caml ad-hoc polymorphic operations:
+   Big arrays support all the OCaml ad-hoc polymorphic operations:
    - comparisons ([=], [<>], [<=], etc, as well as {!Pervasives.compare});
    - hashing (module [Hash]);
    - and structured input-output ({!Pervasives.output_value}
@@ -47,7 +47,7 @@
    ({!Bigarray.int8_signed_elt} or {!Bigarray.int8_unsigned_elt}),
 - 16-bit integers (signed or unsigned)
    ({!Bigarray.int16_signed_elt} or {!Bigarray.int16_unsigned_elt}),
-- Caml integers (signed, 31 bits on 32-bit architectures,
+- OCaml integers (signed, 31 bits on 32-bit architectures,
    63 bits on 64-bit architectures) ({!Bigarray.int_elt}),
 - 32-bit signed integer ({!Bigarray.int32_elt}),
 - 64-bit signed integers ({!Bigarray.int64_elt}),
@@ -72,20 +72,20 @@ type int64_elt
 type nativeint_elt
 
 type ('a, 'b) kind
-(** To each element kind is associated a Caml type, which is
-   the type of Caml values that can be stored in the big array
+(** To each element kind is associated an OCaml type, which is
+   the type of OCaml values that can be stored in the big array
    or read back from it.  This type is not necessarily the same
    as the type of the array elements proper: for instance,
    a big array whose elements are of kind [float32_elt] contains
    32-bit single precision floats, but reading or writing one of
-   its elements from Caml uses the Caml type [float], which is
+   its elements from OCaml uses the OCaml type [float], which is
    64-bit double precision floats.
 
    The abstract type [('a, 'b) kind] captures this association
-   of a Caml type ['a] for values read or written in the big array,
+   of an OCaml type ['a] for values read or written in the big array,
    and of an element kind ['b] which represents the actual contents
    of the big array.  The following predefined values of type
-   [kind] list all possible associations of Caml types with
+   [kind] list all possible associations of OCaml types with
    element kinds: *)
 
 val float32 : (float, float32_elt) kind
@@ -127,12 +127,12 @@ val nativeint : (nativeint, nativeint_elt) kind
 val char : (char, int8_unsigned_elt) kind
 (** As shown by the types of the values above,
    big arrays of kind [float32_elt] and [float64_elt] are
-   accessed using the Caml type [float].  Big arrays of complex kinds
-   [complex32_elt], [complex64_elt] are accessed with the Caml type
+   accessed using the OCaml type [float].  Big arrays of complex kinds
+   [complex32_elt], [complex64_elt] are accessed with the OCaml type
    {!Complex.t}.  Big arrays of
-   integer kinds are accessed using the smallest Caml integer
+   integer kinds are accessed using the smallest OCaml integer
    type large enough to represent the array elements:
-   [int] for 8- and 16-bit integer bigarrays, as well as Caml-integer
+   [int] for 8- and 16-bit integer bigarrays, as well as OCaml-integer
    bigarrays; [int32] for 32-bit integer bigarrays; [int64]
    for 64-bit integer bigarrays; and [nativeint] for
    platform-native integer bigarrays.  Finally, big arrays of
@@ -195,7 +195,7 @@ module Genarray :
 
      The three type parameters to [Genarray.t] identify the array element
      kind and layout, as follows:
-     - the first parameter, ['a], is the Caml type for accessing array
+     - the first parameter, ['a], is the OCaml type for accessing array
        elements ([float], [int], [int32], [int64], [nativeint]);
      - the second parameter, ['b], is the actual kind of array elements
        ([float32_elt], [float64_elt], [int8_signed_elt], [int8_unsigned_elt],
@@ -206,7 +206,7 @@ module Genarray :
      For instance, [(float, float32_elt, fortran_layout) Genarray.t]
      is the type of generic big arrays containing 32-bit floats
      in Fortran layout; reads and writes in this array use the
-     Caml type [float]. *)
+     OCaml type [float]. *)
 
   external create: ('a, 'b) kind -> 'c layout -> int array -> ('a, 'b, 'c) t
     = "caml_ba_create"
@@ -418,9 +418,35 @@ module Genarray :
      than the big array, only the initial portion of the file is
      mapped to the big array.  If the file is smaller than the big
      array, the file is automatically grown to the size of the big array.
-     This requires write permissions on [fd]. *)
+     This requires write permissions on [fd].
 
-  end
+     Array accesses are bounds-checked, but the bounds are determined by
+     the initial call to [map_file]. Therefore, you should make sure no
+     other process modifies the mapped file while you're accessing it,
+     or a SIGBUS signal may be raised. This happens, for instance, if the
+     file is shrinked. *)
+
+  val release: ('a, 'b, 'c) t -> unit
+  (** Release the resources associated with the given big array,
+     then set all of its dimensions to 0, causing subsequent accesses
+     to the big array to fail.  This releasing of resources is performed
+     automatically by the garbage collector when the big array is no longer
+     referenced by the program.  However, memory behavior of the program
+     can be improved by releasing the resources explicitly via
+     [Genarray.release] as soon as the big array is no longer useful.
+
+     If the big array was created with [Genarray.create], the memory
+     space occupied by its data is freed.  If the big array was
+     created with [Genarray.map_file], updates performed on the array
+     are flushed to the file (if the mapping is shared), then the
+     mapping is removed, freeing the corresponding virtual memory
+     space.  If several views on the big array data were created
+     using [Genarray.sub_*] or [Genarray.slice_*], data release occurs
+     when the last not-yet-released view is released.  Multiple calls
+     to [Genarray.release] on the same big array are safe: the second
+     and subsequent calls have no effect. *)
+
+end
 
 (** {6 One-dimensional arrays} *)
 
@@ -434,7 +460,7 @@ module Genarray :
 module Array1 : sig
   type ('a, 'b, 'c) t
   (** The type of one-dimensional big arrays whose elements have
-     Caml type ['a], representation kind ['b], and memory layout ['c]. *)
+     OCaml type ['a], representation kind ['b], and memory layout ['c]. *)
 
   val create: ('a, 'b) kind -> 'c layout -> int -> ('a, 'b, 'c) t
   (** [Array1.create kind layout dim] returns a new bigarray of
@@ -490,16 +516,20 @@ module Array1 : sig
   (** Memory mapping of a file as a one-dimensional big array.
      See {!Bigarray.Genarray.map_file} for more details. *)
 
+  val release: ('a, 'b, 'c) t -> unit
+  (** Explicit release of the resources associated with the big array.
+     See {!Bigarray.Genarray.release} for more details. *)
+
   external unsafe_get: ('a, 'b, 'c) t -> int -> 'a = "%caml_ba_unsafe_ref_1"
   (** Like {!Bigarray.Array1.get}, but bounds checking is not always performed.
       Use with caution and only when the program logic guarantees that
-      the access is within bounds. *)
+      the access is within bounds and the big array has not been released. *)
 
   external unsafe_set: ('a, 'b, 'c) t -> int -> 'a -> unit
                      = "%caml_ba_unsafe_set_1"
   (** Like {!Bigarray.Array1.set}, but bounds checking is not always performed.
       Use with caution and only when the program logic guarantees that
-      the access is within bounds. *)
+      the access is within bounds and the big array has not been released. *)
 
 end
 
@@ -513,7 +543,7 @@ module Array2 :
   sig
   type ('a, 'b, 'c) t
   (** The type of two-dimensional big arrays whose elements have
-     Caml type ['a], representation kind ['b], and memory layout ['c]. *)
+     OCaml type ['a], representation kind ['b], and memory layout ['c]. *)
 
   val create: ('a, 'b) kind ->  'c layout -> int -> int -> ('a, 'b, 'c) t
   (** [Array2.create kind layout dim1 dim2] returns a new bigarray of
@@ -595,15 +625,21 @@ module Array2 :
   (** Memory mapping of a file as a two-dimensional big array.
      See {!Bigarray.Genarray.map_file} for more details. *)
 
+  val release: ('a, 'b, 'c) t -> unit
+  (** Explicit release of the resources associated with the big array.
+     See {!Bigarray.Genarray.release} for more details. *)
+
   external unsafe_get: ('a, 'b, 'c) t -> int -> int -> 'a
                      = "%caml_ba_unsafe_ref_2"
-  (** Like {!Bigarray.Array2.get}, but bounds checking is not always
-      performed. *)
+  (** Like {!Bigarray.Array2.get}, but bounds checking is not always performed.
+      Use with caution and only when the program logic guarantees that
+      the access is within bounds and the big array has not been released. *)
 
   external unsafe_set: ('a, 'b, 'c) t -> int -> int -> 'a -> unit
                      = "%caml_ba_unsafe_set_2"
-  (** Like {!Bigarray.Array2.set}, but bounds checking is not always
-      performed. *)
+  (** Like {!Bigarray.Array2.set}, but bounds checking is not always performed.
+      Use with caution and only when the program logic guarantees that
+      the access is within bounds and the big array has not been released. *)
 
 end
 
@@ -616,7 +652,7 @@ module Array3 :
   sig
   type ('a, 'b, 'c) t
   (** The type of three-dimensional big arrays whose elements have
-     Caml type ['a], representation kind ['b], and memory layout ['c]. *)
+     OCaml type ['a], representation kind ['b], and memory layout ['c]. *)
 
   val create: ('a, 'b) kind -> 'c layout -> int -> int -> int -> ('a, 'b, 'c) t
   (** [Array3.create kind layout dim1 dim2 dim3] returns a new bigarray of
@@ -723,15 +759,21 @@ module Array3 :
   (** Memory mapping of a file as a three-dimensional big array.
      See {!Bigarray.Genarray.map_file} for more details. *)
 
+  val release: ('a, 'b, 'c) t -> unit
+  (** Explicit release of the resources associated with the big array.
+     See {!Bigarray.Genarray.release} for more details. *)
+
   external unsafe_get: ('a, 'b, 'c) t -> int -> int -> int -> 'a
                      = "%caml_ba_unsafe_ref_3"
-  (** Like {!Bigarray.Array3.get}, but bounds checking is not always
-      performed. *)
+  (** Like {!Bigarray.Array3.get}, but bounds checking is not always performed.
+      Use with caution and only when the program logic guarantees that
+      the access is within bounds and the big array has not been released. *)
 
   external unsafe_set: ('a, 'b, 'c) t -> int -> int -> int -> 'a -> unit
                      = "%caml_ba_unsafe_set_3"
-  (** Like {!Bigarray.Array3.set}, but bounds checking is not always
-      performed. *)
+  (** Like {!Bigarray.Array3.set}, but bounds checking is not always performed.
+      Use with caution and only when the program logic guarantees that
+      the access is within bounds and the big array has not been released. *)
 
 end
 

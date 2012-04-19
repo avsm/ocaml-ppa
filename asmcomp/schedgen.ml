@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: schedgen.ml 10450 2010-05-21 12:00:49Z doligez $ *)
+(* $Id$ *)
 
 (* Instruction scheduling *)
 
@@ -349,7 +349,8 @@ method schedule_fundecl f =
     clear_code_dag();
     { fun_name = f.fun_name;
       fun_body = new_body;
-      fun_fast = f.fun_fast }
+      fun_fast = f.fun_fast;
+      fun_dbg  = f.fun_dbg }
   end else
     f
 

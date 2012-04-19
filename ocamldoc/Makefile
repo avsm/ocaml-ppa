@@ -1,5 +1,5 @@
 #(***********************************************************************)
-#(*                            OCamldoc                                 *)
+#(*                             OCamldoc                                *)
 #(*                                                                     *)
 #(*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
 #(*                                                                     *)
@@ -9,7 +9,7 @@
 #(*                                                                     *)
 #(***********************************************************************)
 
-# $Id: Makefile 11020 2011-05-02 13:14:14Z guesdon $
+# $Id$
 
 include ../config/Makefile
 
@@ -47,6 +47,11 @@ INSTALL_CMIS=$(INSTALL_MLIS:.mli=.cmi)
 
 ODOC_TEST=odoc_test.cmo
 
+GENERATORS_CMOS= \
+	generators/odoc_todo.cmo \
+	generators/odoc_literate.cmo
+GENERATORS_CMXS=$(GENERATORS_CMOS:.cmo=.cmxs)
+
 
 # Compilation
 #############
@@ -72,8 +77,8 @@ COMPFLAGS=$(INCLUDES) -warn-error A
 LINKFLAGS=$(INCLUDES) -nostdlib
 
 CMOFILES= odoc_config.cmo \
-	odoc_global.cmo\
 	odoc_messages.cmo\
+	odoc_global.cmo\
 	odoc_types.cmo\
 	odoc_misc.cmo\
 	odoc_text_parser.cmo\
@@ -88,7 +93,6 @@ CMOFILES= odoc_config.cmo \
 	odoc_module.cmo\
 	odoc_print.cmo \
 	odoc_str.cmo\
-	odoc_args.cmo\
 	odoc_comments_global.cmo\
 	odoc_parser.cmo\
 	odoc_lexer.cmo\
@@ -121,6 +125,8 @@ EXECMOFILES=$(CMOFILES) \
 	odoc_latex.cmo \
 	odoc_texi.cmo \
 	odoc_dot.cmo \
+	odoc_gen.cmo \
+	odoc_args.cmo\
 	odoc.cmo
 
 EXECMXFILES= $(EXECMOFILES:.cmo=.cmx)
@@ -140,7 +146,6 @@ OCAMLCMOFILES=$(OCAMLSRCDIR)/parsing/printast.cmo \
 	$(OCAMLSRCDIR)/utils/warnings.cmo \
 	$(OCAMLSRCDIR)/utils/ccomp.cmo \
 	$(OCAMLSRCDIR)/utils/consistbl.cmo \
-	$(OCAMLSRCDIR)/parsing/linenum.cmo\
 	$(OCAMLSRCDIR)/parsing/location.cmo\
 	$(OCAMLSRCDIR)/parsing/longident.cmo \
 	$(OCAMLSRCDIR)/parsing/syntaxerr.cmo \
@@ -188,14 +193,17 @@ STDLIB_MLIS=../stdlib/*.mli \
 	../otherlibs/bigarray/bigarray.mli \
 	../otherlibs/num/num.mli
 
-all: exe lib manpages
+all: exe lib generators manpages
 
 exe: $(OCAMLDOC)
 lib: $(OCAMLDOC_LIBCMA) $(OCAMLDOC_LIBCMI) $(ODOC_TEST)
+generators: $(GENERATORS_CMOS)
 
-opt.opt: exeopt libopt
+opt.opt: exeopt libopt generatorsopt
 exeopt: $(OCAMLDOC_OPT)
 libopt: $(OCAMLDOC_LIBCMXA) $(OCAMLDOC_LIBCMI)
+generatorsopt: $(GENERATORS_CMXS)
+
 debug:
 	make OCAMLPP=""
 
@@ -235,7 +243,7 @@ odoc_see_lexer.ml: odoc_see_lexer.mll
 # generic rules :
 #################
 
-.SUFFIXES: .mll .mly .ml .mli .cmo .cmi .cmx
+.SUFFIXES: .mll .mly .ml .mli .cmo .cmi .cmx .cmxs
 
 .ml.cmo:
 	$(OCAMLC) $(OCAMLPP) $(COMPFLAGS) -c $<
@@ -245,6 +253,9 @@ odoc_see_lexer.ml: odoc_see_lexer.mll
 
 .ml.cmx:
 	$(OCAMLOPT) $(OCAMLPP) $(COMPFLAGS) -c $<
+
+.ml.cmxs:
+	$(OCAMLOPT) -shared -o $@ $(OCAMLPP) $(COMPFLAGS) $<
 
 .mll.ml:
 	$(OCAMLLEX) $<
@@ -282,6 +293,10 @@ installopt_really:
 test: dummy
 	$(MKDIR) $@
 	$(OCAMLDOC_RUN) -html -colorize-code -sort -d $@ $(INCLUDES) -dump $@/ocamldoc.odoc odoc*.ml odoc*.mli -v
+	$(MKDIR) $@-custom
+	$(OCAMLDOC_RUN) -colorize-code -sort -d $@-custom $(INCLUDES) \
+	-g generators/odoc_literate.cmo -g generators/odoc_todo.cmo \
+	-load $@/ocamldoc.odoc -v
 
 test_stdlib: dummy
 	$(MKDIR) $@
@@ -339,6 +354,7 @@ clean:: dummy
 	@rm -f odoc_lexer.ml odoc_text_lexer.ml odoc_see_lexer.ml odoc_ocamlhtml.ml
 	@rm -f odoc_parser.ml odoc_parser.mli odoc_text_parser.ml odoc_text_parser.mli
 	@rm -rf stdlib_man
+	@rm -f generators/*.cm[aiox] generators/*.[ao] generators/*.cmx[as]
 
 depend::
 	$(OCAMLYACC) odoc_text_parser.mly

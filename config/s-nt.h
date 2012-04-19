@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: s-nt.h 4933 2002-06-18 13:01:53Z xleroy $ */
+/* $Id$ */
 
 /* Operating system dependencies, Intel x86 processors, Windows NT */
 
@@ -27,3 +27,4 @@
 #define HAS_MKTIME
 #define HAS_PUTENV
 #define HAS_LOCALE
+#define HAS_BROKEN_PRINTF

@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: instruct.ml 9270 2009-05-20 11:52:42Z doligez $ *)
+(* $Id$ *)
 
 open Lambda
 
@@ -107,5 +107,5 @@ let immed_min = -0x40000000
 and immed_max = 0x3FFFFFFF
 
 (* Actually the abstract machine accomodates -0x80000000 to 0x7FFFFFFF,
-   but these numbers overflow the Caml type int if the compiler runs on
+   but these numbers overflow the OCaml type int if the compiler runs on
    a 32-bit processor. *)

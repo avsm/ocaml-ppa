@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_misc.ml 9638 2010-03-08 16:54:13Z guesdon $ *)
+(* $Id$ *)
 
 let no_blanks s =
   let len = String.length s in
@@ -334,7 +334,7 @@ let rec get_before_dot s =
     let len = String.length s in
     let n = String.index s '.' in
     if n + 1 >= len then
-      (* le point est le dernier caractère *)
+      (* le point est le dernier caractÃ¨re *)
       (true, s, "")
     else
       match s.[n+1] with
@@ -478,8 +478,8 @@ let remove_option typ =
     match t with
     | Types.Tconstr(path, [ty], _) when Path.same path Predef.path_option -> ty.Types.desc
     | Types.Tconstr _
-    | Types.Tvar
-    | Types.Tunivar
+    | Types.Tvar _
+    | Types.Tunivar _
     | Types.Tpoly _
     | Types.Tarrow _
     | Types.Ttuple _

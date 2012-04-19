@@ -1,6 +1,6 @@
 /***********************************************************************/
 /*                                                                     */
-/*                           Objective Caml                            */
+/*                                OCaml                                */
 /*                                                                     */
 /*             Damien Doligez, projet Para, INRIA Rocquencourt         */
 /*                                                                     */
@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: freelist.c 9153 2008-12-03 18:09:09Z doligez $ */
+/* $Id$ */
 
 #define FREELIST_DEBUG 0
 #if FREELIST_DEBUG

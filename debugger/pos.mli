@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*          Damien Doligez, projet Moscova, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,6 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: pos.mli 5966 2003-11-21 16:10:57Z doligez $ *)
+(* $Id$ *)
 
 val get_desc : Instruct.debug_event -> string;;

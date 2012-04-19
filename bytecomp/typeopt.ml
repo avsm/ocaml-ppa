@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typeopt.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (* Auxiliaries for type-based optimizations, e.g. array kinds *)
 
@@ -37,9 +37,9 @@ let maybe_pointer exp =
       not (Path.same p Predef.path_char) &&
       begin try
         match Env.find_type p exp.exp_env with
-          {type_kind = Type_variant []} -> true (* type exn *)
+        | {type_kind = Type_variant []} -> true (* type exn *)
         | {type_kind = Type_variant cstrs} ->
-            List.exists (fun (name, args) -> args <> []) cstrs
+            List.exists (fun (name, args,_) -> args <> []) cstrs
         | _ -> true
       with Not_found -> true
         (* This can happen due to e.g. missing -I options,
@@ -50,7 +50,7 @@ let maybe_pointer exp =
 
 let array_element_kind env ty =
   match scrape env ty with
-  | Tvar | Tunivar ->
+  | Tvar _ | Tunivar _ ->
       Pgenarray
   | Tconstr(p, args, abbrev) ->
       if Path.same p Predef.path_int || Path.same p Predef.path_char then
@@ -69,7 +69,7 @@ let array_element_kind env ty =
             {type_kind = Type_abstract} ->
               Pgenarray
           | {type_kind = Type_variant cstrs}
-            when List.for_all (fun (name, args) -> args = []) cstrs ->
+            when List.for_all (fun (name, args,_) -> args = []) cstrs ->
               Pintarray
           | {type_kind = _} ->
               Paddrarray

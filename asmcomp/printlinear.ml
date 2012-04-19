@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printlinear.ml 7812 2007-01-29 12:11:18Z xleroy $ *)
+(* $Id$ *)
 
 (* Pretty-printing of linearized machine code *)
 
@@ -74,4 +74,9 @@ let rec all_instr ppf i =
   | _ -> fprintf ppf "%a@,%a" instr i all_instr i.next
 
 let fundecl ppf f =
-  fprintf ppf "@[<v 2>%s:@,%a@]" f.fun_name all_instr f.fun_body
+  let dbg =
+    if Debuginfo.is_none f.fun_dbg then
+      ""
+    else
+      " " ^ Debuginfo.to_string f.fun_dbg in
+  fprintf ppf "@[<v 2>%s:%s@,%a@]" f.fun_name dbg all_instr f.fun_body

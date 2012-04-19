@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: unix.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (* An alternate implementation of the Unix module from ../unix
    which is safe in conjunction with bytecode threads. *)
@@ -192,6 +192,7 @@ type open_flag =
   | O_DSYNC
   | O_SYNC
   | O_RSYNC
+  | O_SHARE_DELETE
 
 type file_perm = int
 

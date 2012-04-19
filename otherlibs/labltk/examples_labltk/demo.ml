@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                 MLTk, Tcl/Tk interface of Objective Caml            *)
+(*                 MLTk, Tcl/Tk interface of OCaml                     *)
 (*                                                                     *)
 (*    Francois Rouaix, Francois Pessaux, Jun Furuse and Pierre Weis    *)
 (*               projet Cristal, INRIA Rocquencourt                    *)
@@ -10,11 +10,11 @@
 (*  en Automatique and Kyoto University.  All rights reserved.         *)
 (*  This file is distributed under the terms of the GNU Library        *)
 (*  General Public License, with the special exception on linking      *)
-(*  described in file LICENSE found in the Objective Caml source tree. *)
+(*  described in file LICENSE found in the OCaml source tree.          *)
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: demo.ml 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (* Some CamlTk4 Demonstration by JPF *)
 

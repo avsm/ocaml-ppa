@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_comments.ml 10480 2010-05-31 11:52:13Z guesdon $ *)
+(* $Id$ *)
 
 (** Analysis of comments. *)
 
@@ -38,7 +38,7 @@ module Info_retriever =
       | Odoc_text.Text_syntax (l, c, s) ->
           raise (Failure (Odoc_messages.text_parse_error l c s))
       | _ ->
-          raise (Failure ("Erreur inconnue lors du parse de see : "^s))
+          raise (Failure ("Unknown error while parsing @see tag: "^s))
 
     let retrieve_info fun_lex file (s : string) =
       try

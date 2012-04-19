@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*              LablTk, Tcl/Tk interface of Objective Caml             *)
+(*                 MLTk, Tcl/Tk interface of OCaml                     *)
 (*                                                                     *)
 (*         Jacques Garrigue, Nagoya University Mathematics Dept.       *)
 (*                                                                     *)
@@ -8,11 +8,11 @@
 (*  en Automatique and Kyoto University.  All rights reserved.         *)
 (*  This file is distributed under the terms of the GNU Library        *)
 (*  General Public License, with the special exception on linking      *)
-(*  described in file LICENSE found in the Objective Caml source tree. *)
+(*  described in file LICENSE found in the OCaml source tree.          *)
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tkthread.mli 9547 2010-01-22 12:48:24Z doligez $ *)
+(* $Id$ *)
 
 (* Helper functions for using LablTk with threads.
    To use, add tkthread.cmo or tkthread.cmx to your command line *)

@@ -1,6 +1,6 @@
 (***********************************************************************)
 (*                                                                     *)
-(*                           Objective Caml                            *)
+(*                                OCaml                                *)
 (*                                                                     *)
 (*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
 (*                                                                     *)
@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tbl.mli 10285 2010-04-20 14:11:28Z xleroy $ *)
+(* $Id$ *)
 
 (* Association tables from any ordered type to any type.
    We use the generic ordering to compare keys. *)
