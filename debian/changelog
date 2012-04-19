@@ -1,3 +1,9 @@
+ocaml (4.00.0~~dev15+12379-1) UNRELEASED; urgency=low
+
+  * New upstream snapshot
+
+ -- Stéphane Glondu <glondu@debian.org>  Thu, 19 Apr 2012 08:32:46 +0200
+
 ocaml (3.12.1-2) unstable; urgency=low
 
   * Fix compilation on kfreebsd-any: do not add -R$dir in X11 link options
