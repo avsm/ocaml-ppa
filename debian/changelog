@@ -1,4 +1,4 @@
-ocaml (4.00.0~~dev15+12379-1) UNRELEASED; urgency=low
+ocaml (4.00.0~~dev15+12379-1) experimental; urgency=low
 
   * New upstream snapshot, based on the 4.00 upstream branch
     - partially revert r12328 to avoid FTBFS
@@ -13,7 +13,7 @@ ocaml (4.00.0~~dev15+12379-1) UNRELEASED; urgency=low
     - fix asmcomp tests on Hurd (Closes: #661716)
     - fix "embedded" test broken by our -custom behaviour
 
- -- Stéphane Glondu <glondu@debian.org>  Thu, 19 Apr 2012 08:32:46 +0200
+ -- Stéphane Glondu <glondu@debian.org>  Thu, 19 Apr 2012 09:04:28 +0200
 
 ocaml (3.12.1-2) unstable; urgency=low
 
