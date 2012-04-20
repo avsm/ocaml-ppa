@@ -214,6 +214,13 @@ ifeq (,$(DEB_TEST_BUILD_PREFIX))
 	  $(INSTDIR)/share/man/man1/ocamlopt.opt.1 \
 	  $(INSTDIR)/share/man/man1/ocamlc.opt.1 \
 	  $(INSTDIR)/bin/camlp4boot
+ifeq ($(OCAML_HAVE_OCAMLOPT),no)
+# Remove files that make no sense without ocamlopt
+	rm -f \
+	  $(INSTDIR)/share/man/man1/ocamloptp.1 \
+	  $(INSTDIR)/share/man/man1/ocamlopt.1 \
+	  $(INSTDIR)/bin/ocamloptp
+endif
 # Dispatch files with dh_install
 	cd debian && \
 	for u in ocaml ocaml-nox; do \
