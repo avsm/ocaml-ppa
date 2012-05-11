@@ -17,7 +17,9 @@
 ;; If package-dir does not exist, the #PACKAGE# package must have
 ;; removed but not purged, and we should skip the setup.
   (when (file-directory-p package-dir)
-    (debian-pkg-add-load-path-item package-dir)
+    (if (fboundp 'debian-pkg-add-load-path-item)
+	(debian-pkg-add-load-path-item package-dir)
+      (setq load-path (cons package-dir load-path)))
     (setq auto-mode-alist
           (cons '("\\.ml[iylp]?\\'" . caml-mode) auto-mode-alist))
     (autoload 'caml-mode "caml" "Major mode for editing Caml code." t)

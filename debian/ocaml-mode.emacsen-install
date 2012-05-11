@@ -51,7 +51,9 @@ for f in ${FILES} ; do
 done
 
 cat << EOF > path.el
-(debian-pkg-add-load-path-item ".")
+(if (fboundp 'debian-pkg-add-load-path-item)
+    (debian-pkg-add-load-path-item ".")
+  (setq load-path (cons "." load-path)))
 (setq byte-compile-warnings nil)
 EOF
 ${FLAVOR} ${FLAGS} ${FILES}
