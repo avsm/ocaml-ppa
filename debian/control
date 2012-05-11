@@ -263,6 +263,8 @@ Description: OCaml interpreter and standard libraries
 
 Package: ocaml-mode
 Architecture: all
+Pre-Depends:
+ emacsen-common (>= 1.4.14)
 Depends:
  emacs23 | emacsen,
  ${shlibs:Depends},

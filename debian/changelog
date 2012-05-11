@@ -1,3 +1,14 @@
+ocaml (3.12.1-3) UNRELEASED; urgency=low
+
+  * Fixes in startup and install files of ocaml-mode:
+    - symlink *el files into elc dir (Closes: #452340)
+    - use debian-pkg-add-load-path-item in emacsen-startup and emacsen-install
+      (Closes: 671559)
+    - compile el files with site-file enabled
+    - use debian-emacs-flavor in emacsen-startup (see #662163)
+
+ -- Hendrik Tews <hendrik@askra.de>  Fri, 11 May 2012 00:00:35 +0200
+
 ocaml (3.12.1-2) unstable; urgency=low
 
   * Fix compilation on kfreebsd-any: do not add -R$dir in X11 link options
