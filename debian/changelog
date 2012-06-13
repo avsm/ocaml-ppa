@@ -1,8 +1,13 @@
-ocaml (4.00.0~beta2-1) UNRELEASED; urgency=low
+ocaml (4.00.0~beta2-1) experimental; urgency=low
 
   * New upstream beta release
+    - the layout of the ocaml-compiler-libs binary package has changed
+      significantly as a result of upstream installing +compiler-libs by
+      itself; toplevel libraries have been moved there
+  * Change the layout of the ocaml-source binary package
+  * Merge changes from version 3.12.1-3
 
- -- Stéphane Glondu <glondu@debian.org>  Wed, 13 Jun 2012 10:07:21 +0200
+ -- Stéphane Glondu <glondu@debian.org>  Wed, 13 Jun 2012 22:38:41 +0200
 
 ocaml (4.00.0~~dev15+12379-1) experimental; urgency=low
 
