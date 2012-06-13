@@ -9,10 +9,10 @@ code (bug#338437)
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/configure b/configure
-index 4ed6ce1..c632d6d 100755
+index 72f4240..cbb6491 100755
 --- a/configure
 +++ b/configure
-@@ -298,7 +298,8 @@ case "$bytecc,$host" in
+@@ -299,7 +299,8 @@ case "$bytecc,$host" in
    gcc,alpha*-*-linux*)
      if cc="$bytecc" sh ./hasgot -mieee; then
        bytecccompopts="-mieee $bytecccompopts";
@@ -22,7 +22,7 @@ index 4ed6ce1..c632d6d 100755
    cc,mips-*-irix6*)
      # Add -n32 flag to ensure compatibility with native-code compiler
      bytecccompopts="-n32"
-@@ -731,6 +732,7 @@ case "$arch,$nativecc,$system,$host_type" in
+@@ -733,6 +734,7 @@ case "$arch,$nativecc,$system,$host_type" in
                         nativecccompopts="$gcc_warnings -DSHRINKED_GNUC";;
    *,*,rhapsody,*)      nativecccompopts="$gcc_warnings -DDARWIN_VERSION_6 $dl_defs"
                         if $arch64; then partialld="ld -r -arch ppc64"; fi;;

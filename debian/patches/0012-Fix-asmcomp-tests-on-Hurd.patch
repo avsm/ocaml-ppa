@@ -10,7 +10,7 @@ Signed-off-by: Stephane Glondu <steph@glondu.net>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/testsuite/tests/asmcomp/i386.S b/testsuite/tests/asmcomp/i386.S
-index fc75b1f..cb78db8 100644
+index fdda4de..54e37a6 100644
 --- a/testsuite/tests/asmcomp/i386.S
 +++ b/testsuite/tests/asmcomp/i386.S
 @@ -15,7 +15,7 @@

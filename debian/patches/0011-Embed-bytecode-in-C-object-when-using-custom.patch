@@ -16,7 +16,7 @@ Signed-off-by: Stephane Glondu <steph@glondu.net>
  2 files changed, 35 insertions(+), 4 deletions(-)
 
 diff --git a/bytecomp/bytelink.ml b/bytecomp/bytelink.ml
-index 8f797a1..1de0a79 100644
+index bb14de6..ec02825 100644
 --- a/bytecomp/bytelink.ml
 +++ b/bytecomp/bytelink.ml
 @@ -423,7 +423,7 @@ let mlvalues_primitives = [
@@ -58,7 +58,7 @@ index 8f797a1..1de0a79 100644
  \n#ifdef __cplusplus\
  \n}\
  \n#endif\n";
-@@ -510,6 +523,11 @@ let fix_exec_name name =
+@@ -511,6 +524,11 @@ let fix_exec_name name =
        if String.contains name '.' then name else name ^ ".exe"
    | _ -> name
  
@@ -70,7 +70,7 @@ index 8f797a1..1de0a79 100644
  (* Main entry point (build a custom runtime if needed) *)
  
  let link ppf objfiles output_name =
-@@ -523,6 +541,16 @@ let link ppf objfiles output_name =
+@@ -524,6 +542,16 @@ let link ppf objfiles output_name =
    Clflags.dllibs := !lib_dllibs @ !Clflags.dllibs; (* put user's DLLs first *)
    if not !Clflags.custom_runtime then
      link_bytecode ppf tolink output_name true
@@ -87,7 +87,7 @@ index 8f797a1..1de0a79 100644
    else if not !Clflags.output_c_object then begin
      let bytecode_name = Filename.temp_file "camlcode" "" in
      let prim_name = Filename.temp_file "camlprim" ".c" in
-@@ -565,7 +593,7 @@ let link ppf objfiles output_name =
+@@ -566,7 +594,7 @@ let link ppf objfiles output_name =
      if Sys.file_exists c_file then raise(Error(File_exists c_file));
      let temps = ref [] in
      try

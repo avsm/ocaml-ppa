@@ -11,7 +11,7 @@ Signed-off-by: Stephane Glondu <steph@glondu.net>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/bytecomp/symtable.ml b/bytecomp/symtable.ml
-index 4e5f147..0785316 100644
+index 872a4bb..60c884e 100644
 --- a/bytecomp/symtable.ml
 +++ b/bytecomp/symtable.ml
 @@ -126,7 +126,7 @@ let output_primitive_table outchan =

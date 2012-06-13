@@ -10,4 +10,3 @@
 0010-Properly-initialize-executable-name-in-caml_startup_.patch
 0011-Embed-bytecode-in-C-object-when-using-custom.patch
 0012-Fix-asmcomp-tests-on-Hurd.patch
-0013-Revert-recent-changes-in-otherlibs-graph-.depends.patch
