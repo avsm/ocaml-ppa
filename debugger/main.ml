@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: main.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 open Input_handling
 open Question
@@ -222,6 +222,11 @@ let main () =
   | Env.Error e ->
       eprintf "Debugger [version %s] environment error:@ @[@;" Config.version;
       Env.report_error err_formatter e;
+      eprintf "@]@.";
+      exit 2
+  | Cmi_format.Error e ->
+      eprintf "Debugger [version %s] environment error:@ @[@;" Config.version;
+      Cmi_format.report_error err_formatter e;
       eprintf "@]@.";
       exit 2
 

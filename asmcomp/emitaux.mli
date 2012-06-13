@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: emitaux.mli 12448 2012-05-12 09:49:40Z xleroy $ *)
 
 (* Common functions for emitting assembly code *)
 
@@ -29,6 +29,7 @@ val emit_float64_directive: string -> string -> unit
 val emit_float64_split_directive: string -> string -> unit
 val emit_float32_directive: string -> string -> unit
 
+val reset_debug_info: unit -> unit
 val emit_debug_info: Debuginfo.t -> unit
 
 type frame_descr =

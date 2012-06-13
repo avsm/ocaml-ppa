@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: odoc_value.ml 11210 2011-09-22 09:05:42Z garrigue $ *)
 
 (** Representation and manipulation of values, class attributes and class methods. *)
 

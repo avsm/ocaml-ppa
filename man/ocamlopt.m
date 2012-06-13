@@ -10,7 +10,7 @@
 .\"*                                                                     *
 .\"***********************************************************************
 .\"
-.\" $Id$
+.\" $Id: ocamlopt.m 12428 2012-05-03 17:01:27Z doligez $
 .\"
 .TH OCAMLOPT 1
 
@@ -151,7 +151,7 @@ If
 options are passed on the command
 line, these options are stored in the resulting .cmxa library.  Then,
 linking with this library automatically adds back the
-\BR \-cclib \ and \ \-ccopt
+.BR \-cclib \ and \ \-ccopt
 options as if they had been provided on the
 command line, unless the
 .B \-noautolink

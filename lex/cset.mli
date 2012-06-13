@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: cset.mli 11156 2011-07-27 14:17:02Z doligez $ *)
 
 (* Set of characters encoded as list of intervals *)
 

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: typeopt.ml 11210 2011-09-22 09:05:42Z garrigue $ *)
 
 (* Auxiliaries for type-based optimizations, e.g. array kinds *)
 

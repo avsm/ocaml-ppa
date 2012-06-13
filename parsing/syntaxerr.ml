@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: syntaxerr.ml 12256 2012-03-23 02:16:44Z garrigue $ *)
 
 (* Auxiliary type for reporting syntax errors *)
 

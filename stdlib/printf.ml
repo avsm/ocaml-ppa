@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: printf.ml 12014 2012-01-11 15:22:51Z doligez $ *)
 
 external format_float: string -> float -> string
   = "caml_format_float"

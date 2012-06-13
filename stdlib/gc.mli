@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: gc.mli 12339 2012-04-11 03:51:09Z frisch $ *)
 
 (** Memory management control and statistics; finalised values. *)
 

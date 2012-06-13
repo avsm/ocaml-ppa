@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: asttypes.mli 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 (* Auxiliary a.s.t. types used by parsetree and typedtree. *)
 
@@ -38,3 +38,8 @@ type override_flag = Override | Fresh
 type closed_flag = Closed | Open
 
 type label = string
+
+type 'a loc = 'a Location.loc = {
+  txt : 'a;
+  loc : Location.t;
+}

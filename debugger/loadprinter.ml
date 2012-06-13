@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: loadprinter.ml 11284 2011-11-24 09:02:48Z garrigue $ *)
 
 (* Loading and installation of user-defined printer functions *)
 

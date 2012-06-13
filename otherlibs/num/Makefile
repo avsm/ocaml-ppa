@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: Makefile 11886 2011-12-18 09:52:52Z xleroy $
 
 # Makefile for the "num" (exact rational arithmetic) library
 

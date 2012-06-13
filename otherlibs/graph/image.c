@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
+/* $Id: image.c 11156 2011-07-27 14:17:02Z doligez $ */
 
 #include "libgraph.h"
 #include "image.h"
@@ -105,4 +105,4 @@ value caml_gr_draw_image(value im, value vx, value vy)
   return Val_unit;
 }
 
-/* eof $Id$ */
+/* eof $Id: image.c 11156 2011-07-27 14:17:02Z doligez $ */

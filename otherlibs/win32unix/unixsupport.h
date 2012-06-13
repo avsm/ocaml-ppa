@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
+/* $Id: unixsupport.h 12488 2012-05-28 11:31:30Z frisch $ */
 
 #define WIN32_LEAN_AND_MEAN
 #include <wtypes.h>
@@ -59,4 +59,4 @@ extern value unix_freeze_buffer (value);
 /* Blocking or nonblocking.  By default a filedescr is in blocking state */
 #define FLAGS_FD_IS_BLOCKING (1<<0)
 
-#define UNIX_BUFFER_SIZE 16384
+#define UNIX_BUFFER_SIZE 65536

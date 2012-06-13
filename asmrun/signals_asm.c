@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
+/* $Id: signals_asm.c 12159 2012-02-17 10:12:09Z xleroy $ */
 
 /* Signal handling, code specific to the native-code compiler */
 

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: translmod.mli 11156 2011-07-27 14:17:02Z doligez $ *)
 
 (* Translation from typed abstract syntax to lambda terms,
    for the module language *)

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: maps.ml 11156 2011-07-27 14:17:02Z doligez $ *)
 
 module IntMap = Map.Make(struct type t = int let compare x y = x-y end)
 

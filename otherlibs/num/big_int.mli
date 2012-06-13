@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: big_int.mli 11156 2011-07-27 14:17:02Z doligez $ *)
 
 (** Operations on arbitrary-precision integers.
 

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
+/* $Id: s-nt.h 12030 2012-01-16 10:23:51Z frisch $ */
 
 /* Operating system dependencies, Intel x86 processors, Windows NT */
 

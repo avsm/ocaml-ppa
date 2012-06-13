@@ -10,7 +10,7 @@
 |*                                                                     *
 |***********************************************************************
 
-| $Id$
+| $Id: m68k.S 11156 2011-07-27 14:17:02Z doligez $
 
 | call_gen_code is used with the following types:
 |       unit -> int

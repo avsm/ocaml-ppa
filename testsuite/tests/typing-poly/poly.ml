@@ -1,4 +1,4 @@
-(* $Id$ *)
+(* $Id: poly.ml 12534 2012-06-01 05:24:38Z garrigue $ *)
 (*
    Polymorphic methods are now available in the main branch.
    Enjoy.
@@ -651,3 +651,7 @@ type t = { foo : int }
 let {foo} = (raise Exit : t);;
 type s = A of int
 let (A x) = (raise Exit : s);;
+
+(* PR#5224 *)
+
+type 'x t = < f : 'y. 'y t >;;

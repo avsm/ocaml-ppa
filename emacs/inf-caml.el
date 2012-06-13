@@ -10,7 +10,7 @@
 ;(*                                                                     *)
 ;(***********************************************************************)
 
-;(* $Id$ *)
+;(* $Id: inf-caml.el 12149 2012-02-10 16:15:24Z doligez $ *)
 
 ;;; inf-caml.el --- run the OCaml toplevel in an Emacs buffer
 

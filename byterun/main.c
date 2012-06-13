@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
+/* $Id: main.c 11156 2011-07-27 14:17:02Z doligez $ */
 
 /* Main entry point (can be overridden by a user-provided main()
    function that calls caml_main() later). */

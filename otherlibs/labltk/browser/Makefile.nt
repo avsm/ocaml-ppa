@@ -12,7 +12,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: Makefile.nt 11156 2011-07-27 14:17:02Z doligez $
 
 OTHERSLIB=-I $(OTHERS)/win32unix -I $(OTHERS)/str -I $(OTHERS)/systhreads
 

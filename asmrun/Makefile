@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: Makefile 12477 2012-05-24 16:17:19Z xleroy $
 
 include ../config/Makefile
 
@@ -26,7 +26,8 @@ COBJS=startup.o main.o fail.o roots.o globroots.o signals.o signals_asm.o \
   misc.o freelist.o major_gc.o minor_gc.o memory.o alloc.o compare.o ints.o \
   floats.o str.o array.o io.o extern.o intern.o hash.o sys.o parsing.o \
   gc_ctrl.o terminfo.o md5.o obj.o lexing.o printexc.o callback.o weak.o \
-  compact.o finalise.o custom.o unix.o backtrace.o natdynlink.o debugger.o
+  compact.o finalise.o custom.o unix.o backtrace.o natdynlink.o debugger.o \
+  meta.o dynlink.o
 
 ASMOBJS=$(ARCH).o
 

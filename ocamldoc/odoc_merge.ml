@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: odoc_merge.ml 11123 2011-07-20 09:17:07Z doligez $ *)
 
 (** Merge of information from [.ml] and [.mli] for a module.*)
 

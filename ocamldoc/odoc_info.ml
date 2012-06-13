@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: odoc_info.ml 12435 2012-05-07 10:31:18Z guesdon $ *)
 
 (** Interface for analysing documented OCaml source files and to the collected information. *)
 
@@ -83,8 +83,8 @@ type info = Odoc_types.info = {
   }
 
 type location = Odoc_types.location = {
-    loc_impl : (string * int) option ;
-    loc_inter : (string * int) option ;
+    loc_impl : Location.t option ;
+    loc_inter : Location.t option ;
   }
 
 let dummy_loc = { loc_impl = None ; loc_inter = None }

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: optmain.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 open Config
 open Clflags
@@ -104,6 +104,7 @@ module Options = Main_args.Make_optcomp_options (struct
   let _a = set make_archive
   let _absname = set Location.absname
   let _annot = set annotations
+  let _binannot = set binary_annotations
   let _c = set compile_only
   let _cc s = c_compiler := Some s
   let _cclib s = ccobjs := Misc.rev_split_words s @ !ccobjs

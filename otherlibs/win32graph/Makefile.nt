@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: Makefile.nt 11156 2011-07-27 14:17:02Z doligez $
 
 LIBNAME=graphics
 COBJS=open.$(O) draw.$(O) events.$(O) dib.$(O)

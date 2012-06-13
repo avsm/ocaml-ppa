@@ -12,7 +12,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: tkthread.ml 11156 2011-07-27 14:17:02Z doligez $ *)
 
 let jobs : (unit -> unit) Queue.t = Queue.create ()
 let m = Mutex.create ()

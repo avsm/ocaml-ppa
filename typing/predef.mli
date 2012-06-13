@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: predef.mli 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 (* Predefined type constructors (with special typing rules in typecore) *)
 
@@ -63,3 +63,4 @@ val build_initial_env:
 (* To initialize linker tables *)
 
 val builtin_values: (string * Ident.t) list
+val builtin_idents: (string * Ident.t) list

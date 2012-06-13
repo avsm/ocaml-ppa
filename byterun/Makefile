@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: Makefile 12567 2012-06-04 17:01:09Z doligez $
 
 include Makefile.common
 
@@ -32,7 +32,7 @@ ocamlrun$(EXE): libcamlrun.a prims.o
 		  prims.o libcamlrun.a $(BYTECCLIBS)
 
 ocamlrund$(EXE): libcamlrund.a prims.o
-	$(MKEXE) -g $(BYTECCLINKOPTS) -o ocamlrund$(EXE) \
+	$(MKEXE) $(MKEXEDEBUGFLAG) $(BYTECCLINKOPTS) -o ocamlrund$(EXE) \
 		  prims.o libcamlrund.a $(BYTECCLIBS)
 
 libcamlrun.a: $(OBJS)

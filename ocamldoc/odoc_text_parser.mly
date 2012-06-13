@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: odoc_text_parser.mly 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 open Odoc_types
 
@@ -82,8 +82,9 @@ let print_DEBUG s = print_string s; print_newline ()
 %token <string> Char
 
 /* Start Symbols */
-%start main
+%start main located_element_list
 %type <Odoc_types.text> main
+%type <(int * int * Odoc_types.text_element) list> located_element_list
 
 %%
 main:
@@ -99,6 +100,16 @@ text_element_list:
   text_element { [ $1 ] }
 | text_element text_element_list { $1 :: $2 }
 ;
+
+located_element_list:
+  located_element { [ $1 ] }
+| located_element located_element_list { $1 :: $2 }
+;
+
+located_element:
+  text_element { Parsing.symbol_start (), Parsing.symbol_end (), $1}
+;
+
 
 ele_ref_kind:
   ELE_REF { None }
