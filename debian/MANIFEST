@@ -31,7 +31,6 @@ debian/ocaml-base-nox.postinst.in
 debian/ocaml-base-nox.prerm.in
 debian/ocaml-base.dirs.in
 debian/ocaml-base.install.in
-debian/ocaml-compiler-libs.dirs.in
 debian/ocaml-compiler-libs.install.in
 debian/ocaml-interp.install.in
 debian/ocaml-interp.menu
