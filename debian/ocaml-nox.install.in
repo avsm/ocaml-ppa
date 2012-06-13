@@ -17,7 +17,6 @@ OPT: usr/bin/ocamlbuild.native
 OPT: usr/bin/ocamlopt
 OPT: usr/bin/ocamloptp
      @OCamlStdlibDir@/stdlib.cma
-     @OCamlStdlibDir@/toplevellib.cma
      @OCamlStdlibDir@/dynlink.cma
 DYN: @OCamlStdlibDir@/dynlink.cmx
 DYN: @OCamlStdlibDir@/dynlink.cmxa
@@ -242,8 +241,6 @@ STD: obj.cmx
 STD: oo.ml
 STD: oo.mli
 STD: oo.cmx
-STD: outcometree.cmi
-STD: outcometree.mli
 STD: parsing.ml
 STD: parsing.mli
 STD: parsing.cmx
@@ -303,7 +300,6 @@ STD: sys.mli
 STD: sys.cmx
 STD: thread.mli
 STD: threadUnix.mli
-STD: topstart.cmo
 STD: unix.cmx
 STD: unix.cmxa
 STD: unix.mli

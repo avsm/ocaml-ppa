@@ -232,6 +232,7 @@ Description: Sources for Objective Caml
 Package: ocaml-interp
 Architecture: any
 Depends:
+ ocaml-compiler-libs (= ${binary:Version}),
  ${ocaml:Depends},
  ${shlibs:Depends},
  ${misc:Depends}

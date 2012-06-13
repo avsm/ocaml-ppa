@@ -61,9 +61,6 @@ DYN: @OCamlStdlibDir@/nums.cmxs
      @OCamlStdlibDir@/stringLabels.cmi
      @OCamlStdlibDir@/sys.cmi
      @OCamlStdlibDir@/weak.cmi
-     @OCamlStdlibDir@/toploop.cmi
-     @OCamlStdlibDir@/topdirs.cmi
-     @OCamlStdlibDir@/topmain.cmi
      @OCamlStdlibDir@/unix.cmi
      @OCamlStdlibDir@/unixLabels.cmi
      @OCamlStdlibDir@/str.cmi
