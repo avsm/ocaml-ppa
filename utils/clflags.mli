@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: clflags.mli 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 val objfiles : string list ref
 val ccobjs : string list ref
@@ -31,6 +31,7 @@ val classic : bool ref
 val nopervasives : bool ref
 val preprocessor : string option ref
 val annotations : bool ref
+val binary_annotations : bool ref
 val use_threads : bool ref
 val use_vmthreads : bool ref
 val noassert : bool ref
@@ -80,3 +81,4 @@ val std_include_dir : unit -> string list
 val shared : bool ref
 val dlcode : bool ref
 val runtime_variant : string ref
+

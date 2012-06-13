@@ -9,7 +9,7 @@
 #(*                                                                     *)
 #(***********************************************************************)
 
-# $Id$
+# $Id: Makefile 12511 2012-05-30 13:29:48Z lefessan $
 
 include ../config/Makefile
 
@@ -158,6 +158,7 @@ OCAMLCMOFILES=$(OCAMLSRCDIR)/parsing/printast.cmo \
 	$(OCAMLSRCDIR)/typing/predef.cmo \
 	$(OCAMLSRCDIR)/typing/datarepr.cmo \
 	$(OCAMLSRCDIR)/typing/subst.cmo \
+	$(OCAMLSRCDIR)/typing/cmi_format.cmo \
 	$(OCAMLSRCDIR)/typing/env.cmo \
 	$(OCAMLSRCDIR)/typing/ctype.cmo \
 	$(OCAMLSRCDIR)/typing/primitive.cmo \
@@ -168,6 +169,7 @@ OCAMLCMOFILES=$(OCAMLSRCDIR)/parsing/printast.cmo \
 	$(OCAMLSRCDIR)/typing/typedtree.cmo \
 	$(OCAMLSRCDIR)/typing/parmatch.cmo \
 	$(OCAMLSRCDIR)/typing/stypes.cmo \
+	$(OCAMLSRCDIR)/typing/cmt_format.cmo \
 	$(OCAMLSRCDIR)/typing/typecore.cmo \
 	$(OCAMLSRCDIR)/typing/includeclass.cmo \
 	$(OCAMLSRCDIR)/typing/typedecl.cmo \
@@ -210,7 +212,7 @@ debug:
 $(OCAMLDOC): $(EXECMOFILES)
 	$(OCAMLC) -o $@ -linkall unix.cma str.cma dynlink.cma $(LINKFLAGS) $(OCAMLCMOFILES) $(EXECMOFILES)
 $(OCAMLDOC_OPT): $(EXECMXFILES)
-	$(OCAMLOPT) -o $@ unix.cmxa str.cmxa dynlink.cmxa $(LINKFLAGS) $(OCAMLCMXFILES) $(EXECMXFILES)
+	$(OCAMLOPT) -o $@ -linkall unix.cmxa str.cmxa dynlink.cmxa $(LINKFLAGS) $(OCAMLCMXFILES) $(EXECMXFILES)
 
 $(OCAMLDOC_LIBCMA): $(LIBCMOFILES)
 	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(OCAMLCMOFILES) $(LIBCMOFILES)
@@ -304,6 +306,13 @@ test_stdlib: dummy
 	../stdlib/pervasives.ml ../stdlib/*.mli \
 	../otherlibs/unix/unix.mli \
 	../otherlibs/str/str.mli
+
+test_stdlib_code: dummy
+	$(MKDIR) $@
+	$(OCAMLDOC_RUN) -html -colorize-code -sort -d $@ $(INCLUDES) -dump $@/stdlib.odoc -keep-code \
+	`ls ../stdlib/*.ml | grep -v Labels` \
+	../otherlibs/unix/unix.ml \
+	../otherlibs/str/str.ml
 
 test_framed: dummy
 	$(MKDIR) $@

@@ -1,4 +1,4 @@
-(* $Id$ *)
+(* $Id: mixin2.ml 11123 2011-07-20 09:17:07Z doligez $ *)
 
 (* Full fledge version, using objects to structure code *)
 

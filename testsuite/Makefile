@@ -1,4 +1,4 @@
-# $Id$
+# $Id: Makefile 11135 2011-07-21 07:13:25Z xclerc $
 
 BASEDIR=${PWD}
 NO_PRINT=`($(MAKE) empty --no-print-directory > /dev/null 2>&1) && echo '--no-print-directory' || echo ''`

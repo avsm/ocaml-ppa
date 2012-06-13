@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: unixLabels.mli 11307 2011-12-13 17:59:10Z frisch $ *)
 
 (** Interface to the Unix system.
    To use as replacement to default {!Unix} module,

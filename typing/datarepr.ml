@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: datarepr.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 (* Compute constructor and label descriptions from type declarations,
    determining their representation. *)
@@ -111,7 +111,7 @@ let label_descrs ty_res lbls repres priv =
       [] -> []
     | (name, mut_flag, ty_arg) :: rest ->
         let lbl =
-          { lbl_name = name;
+          { lbl_name = Ident.name name;
             lbl_res = ty_res;
             lbl_arg = ty_arg;
             lbl_mut = mut_flag;

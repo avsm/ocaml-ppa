@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: odoc_types.mli 12435 2012-05-07 10:31:18Z guesdon $ *)
 
 (** Types for the information collected in comments. *)
 
@@ -96,8 +96,8 @@ val dummy_info : info
 
 (** Location of elements in implementation and interface files. *)
 type location = {
-    loc_impl : (string * int) option ; (** implementation file name and position *)
-    loc_inter : (string * int) option ; (** interface file name and position *)
+    loc_impl : Location.t option ; (** implementation location *)
+    loc_inter : Location.t option ; (** interface location *)
   }
 
 (** A dummy location. *)

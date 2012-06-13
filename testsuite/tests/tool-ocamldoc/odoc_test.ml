@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: odoc_test.ml 12354 2012-04-13 13:49:23Z doligez $ *)
 
 (** Custom generator to perform test on ocamldoc. *)
 

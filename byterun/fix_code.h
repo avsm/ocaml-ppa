@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
+/* $Id: fix_code.h 12227 2012-03-13 14:44:48Z xleroy $ */
 
 /* Handling of blocks of bytecode (endianness switch, threading). */
 

@@ -10,11 +10,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: ident.mli 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 (* Identifiers (unique names) *)
 
-type t
+type t = { stamp: int; name: string; mutable flags: int }
 
 val create: string -> t
 val create_persistent: string -> t

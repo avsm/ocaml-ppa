@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id$ *)
+(* $Id: editor.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 open StdLabels
 open Tk
@@ -618,7 +618,7 @@ class editor ~top ~menus = object (self)
               (try Filename.chop_extension basename with _ -> basename) in
           let env =
             Env.add_module (Ident.create modname)
-              (Types.Tmty_signature txt.signature)
+              (Types.Mty_signature txt.signature)
               Env.initial
           in Viewer.view_defined (Longident.Lident modname) ~env ~show_all:true
       end;

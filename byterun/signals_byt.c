@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
+/* $Id: signals_byt.c 11156 2011-07-27 14:17:02Z doligez $ */
 
 /* Signal handling, code specific to the bytecode interpreter */
 

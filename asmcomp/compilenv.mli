@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: compilenv.mli 12210 2012-03-08 19:52:03Z doligez $ *)
 
 (* Compilation environments for compilation units *)
 

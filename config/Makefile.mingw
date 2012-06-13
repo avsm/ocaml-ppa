@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: Makefile.mingw 12461 2012-05-15 14:18:16Z frisch $
 
 # Configuration for Windows, Mingw compiler
 
@@ -72,7 +72,6 @@ ASM=$(TOOLPREF)as
 ASPP=gcc
 ASPPPROFFLAGS=
 PROFILING=noprof
-RUNTIMED=noruntimed
 DYNLINKOPTS=
 DEBUGGER=ocamldebugger
 CC_PROFILE=

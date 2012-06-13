@@ -12,7 +12,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: make-package-macosx 11156 2011-07-27 14:17:02Z doligez $
 
 cd package-macosx
 rm -rf ocaml.pkg ocaml-rw.dmg

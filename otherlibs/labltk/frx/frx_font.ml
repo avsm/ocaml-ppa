@@ -16,7 +16,7 @@
 open Camltk
 open Widget
 
-let version = "$Id$"
+let version = "$Id: frx_font.ml 11156 2011-07-27 14:17:02Z doligez $"
 
 (*
  * Finding fonts. Inspired by code in Ical by Sanjay Ghemawat.

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: myocamlbuild.ml 12032 2012-01-17 21:47:36Z lefessan $ *)
 
 open Ocamlbuild_plugin
 open Command

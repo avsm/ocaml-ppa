@@ -10,13 +10,14 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: main_args.mli 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 module type Bytecomp_options =
   sig
     val _a : unit -> unit
     val _absname : unit -> unit
     val _annot : unit -> unit
+    val _binannot : unit -> unit
     val _c : unit -> unit
     val _cc : string -> unit
     val _cclib : string -> unit
@@ -105,6 +106,7 @@ module type Optcomp_options = sig
   val _a : unit -> unit
   val _absname : unit -> unit
   val _annot : unit -> unit
+  val _binannot : unit -> unit
   val _c : unit -> unit
   val _cc : string -> unit
   val _cclib : string -> unit

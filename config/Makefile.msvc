@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id$
+# $Id: Makefile.msvc 12461 2012-05-15 14:18:16Z frisch $
 
 # Configuration for Windows, Visual C++ compiler
 
@@ -72,6 +72,7 @@ EXTRALIBS=
 CMXS=cmxs
 NATDYNLINK=true
 RUNTIMED=noruntimed
+ASM_CFI_SUPPORTED=false
 
 ########## Configuration for the bytecode compiler
 

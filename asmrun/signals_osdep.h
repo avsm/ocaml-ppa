@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
+/* $Id: signals_osdep.h 12124 2012-02-04 10:15:24Z bmeurer $ */
 
 /* Processor- and OS-dependent signal interface */
 

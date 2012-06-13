@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: consistbl.mli 11156 2011-07-27 14:17:02Z doligez $ *)
 
 (* Consistency tables: for checking consistency of module CRCs *)
 

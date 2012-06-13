@@ -1,4 +1,4 @@
-(* file $Id$ *)
+(* file $Id: lib.ml 11123 2011-07-20 09:17:07Z doligez $ *)
 
 external raise : exn -> 'a = "%raise"
 
@@ -43,4 +43,4 @@ external weak_get: 'a weak_t -> int -> 'a option = "caml_weak_get";;
 
 let x = 42;;
 
-(* eof $Id$ *)
+(* eof $Id: lib.ml 11123 2011-07-20 09:17:07Z doligez $ *)

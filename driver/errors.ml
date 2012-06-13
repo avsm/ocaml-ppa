@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: errors.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 (* WARNING: if you change something in this file, you must look at
    opterrors.ml and ocamldoc/odoc_analyse.ml
@@ -34,6 +34,9 @@ let report_error ppf exn =
   | Env.Error err ->
       Location.print_error_cur_file ppf;
       Env.report_error ppf err
+  | Cmi_format.Error err ->
+      Location.print_error_cur_file ppf;
+      Cmi_format.report_error ppf err
   | Ctype.Tags(l, l') ->
       Location.print_error_cur_file ppf;
       fprintf ppf

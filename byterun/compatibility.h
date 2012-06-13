@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
+/* $Id: compatibility.h 11156 2011-07-27 14:17:02Z doligez $ */
 
 /* definitions for compatibility with old identifiers */
 

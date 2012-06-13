@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: support.ml 11156 2011-07-27 14:17:02Z doligez $ *)
 
 (* Parsing results of Tcl *)
 (* List.split a string according to char_sep predicate *)

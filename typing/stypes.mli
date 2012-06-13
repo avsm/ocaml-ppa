@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: stypes.mli 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 (* Recording and dumping (partial) type information *)
 
@@ -29,7 +29,7 @@ type annotation =
 
 val record : annotation -> unit;;
 val record_phrase : Location.t -> unit;;
-val dump : string -> unit;;
+val dump : string option -> unit;;
 
 val get_location : annotation -> Location.t;;
 val get_info : unit -> annotation list;;

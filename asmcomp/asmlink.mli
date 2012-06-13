@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: asmlink.mli 12058 2012-01-20 14:23:34Z frisch $ *)
 
 (* Link a set of .cmx/.o files and produce an executable or a plugin *)
 

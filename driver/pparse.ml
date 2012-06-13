@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: pparse.ml 12387 2012-04-20 15:33:56Z doligez $ *)
 
 open Format
 
@@ -22,7 +22,7 @@ let preprocess sourcefile =
   match !Clflags.preprocessor with
     None -> sourcefile
   | Some pp ->
-      let tmpfile = Filename.temp_file "camlpp" "" in
+      let tmpfile = Filename.temp_file "ocamlpp" "" in
       let comm = Printf.sprintf "%s %s > %s"
                                 pp (Filename.quote sourcefile) tmpfile
       in

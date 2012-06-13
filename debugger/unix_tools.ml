@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: unix_tools.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 (****************** Tools for Unix *************************************)
 
@@ -58,6 +58,7 @@ let report_error = function
 (* Return the full path if found. *)
 (* Raise `Not_found' otherwise. *)
 let search_in_path name =
+  Printf.fprintf Pervasives.stderr "search_in_path [%s]\n%!" name;
   let check name =
     try access name [X_OK]; name with Unix_error _ -> raise Not_found
   in

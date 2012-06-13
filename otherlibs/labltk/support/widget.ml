@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: widget.ml 11156 2011-07-27 14:17:02Z doligez $ *)
 
 (* Hack to permit having the different data type with the same name
    [widget] for CamlTk and LablTk. *)

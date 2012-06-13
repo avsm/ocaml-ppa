@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: pervasives.mli 12416 2012-05-02 14:39:52Z doligez $ *)
 
 (** The initially opened module.
 
@@ -508,7 +508,9 @@ val ( @ ) : 'a list -> 'a list -> 'a list
 (** List concatenation. *)
 
 
-(** {6 Input/output} *)
+(** {6 Input/output}
+    Note: all input/output functions can raise [Sys_error] when the system
+    calls they invoke fail. *)
 
 type in_channel
 (** The type of input channel. *)

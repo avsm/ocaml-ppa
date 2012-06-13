@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: odoc_module.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 (** Representation and manipulation of modules and module types. *)
 
@@ -238,7 +238,7 @@ let rec module_elements ?(trans=true) m =
         module_elements ~trans: trans
           { m_name = "" ;
             m_info = None ;
-            m_type = Types.Tmty_signature [] ;
+            m_type = Types.Mty_signature [] ;
             m_is_interface = false ; m_file = "" ; m_kind = k ;
             m_loc = Odoc_types.dummy_loc ;
             m_top_deps = [] ;

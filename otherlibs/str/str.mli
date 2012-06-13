@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id$ *)
+(* $Id: str.mli 11156 2011-07-27 14:17:02Z doligez $ *)
 
 (** Regular expressions and high-level string processing *)
 
