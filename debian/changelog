@@ -21,6 +21,24 @@ ocaml (4.00.0~~dev15+12379-1) experimental; urgency=low
 
  -- Stéphane Glondu <glondu@debian.org>  Thu, 19 Apr 2012 09:04:28 +0200
 
+ocaml (3.12.1-3) unstable; urgency=low
+
+  [ Hendrik Tews ]
+  * Fixes in startup and install files of ocaml-mode:
+    - symlink *el files into elc dir (Closes: #452340)
+    - use debian-pkg-add-load-path-item in emacsen-startup and emacsen-install
+      (Closes: 671559)
+    - compile el files with site-file enabled
+    - use debian-emacs-flavor in emacsen-startup (see #662163)
+
+  [ Stéphane Glondu ]
+  * Fix debian/watch so that refman is not reported as a new version
+  * Add some explicit dependencies to avoid spurious Lintian warnings
+    about broken symlinks
+  * Remove duplicate upstream changelog
+
+ -- Stéphane Glondu <glondu@debian.org>  Mon, 14 May 2012 07:52:40 +0200
+
 ocaml (3.12.1-2) unstable; urgency=low
 
   * Fix compilation on kfreebsd-any: do not add -R$dir in X11 link options
