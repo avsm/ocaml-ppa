@@ -1,3 +1,9 @@
+ocaml (4.00.0~beta2-1) UNRELEASED; urgency=low
+
+  * New upstream beta release
+
+ -- Stéphane Glondu <glondu@debian.org>  Wed, 13 Jun 2012 10:07:21 +0200
+
 ocaml (4.00.0~~dev15+12379-1) experimental; urgency=low
 
   * New upstream snapshot, based on the 4.00 upstream branch
