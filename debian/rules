@@ -31,7 +31,7 @@ MD5SUMSDIR = /var/lib/ocaml/md5sums
 INSTDIR = $(CURDIR)/debian/tmp/usr
 DISTDIR = $(PACKAGE)-$(OCAML_ABI)
 UPSTREAM_VERSION = $(shell dpkg-parsechangelog | awk '/^Version:/{print $$2}' | { read u; echo $${u%-*}; })
-UPSTREAM_TARBALL = ../$(PACKAGE)_$(UPSTREAM_VERSION).orig.tar.gz
+UPSTREAM_TARBALL = ../$(PACKAGE)_$(UPSTREAM_VERSION).orig.tar.bz2
 SRCTARBALL = $(PACKAGE)-source-$(OCAML_ABI).tar.bz2
 
 TESTDIR := debian/test-build
@@ -98,6 +98,8 @@ pre-config-stamp: $(TARBALL_TARGET)
 	    cp -f /usr/share/misc/config.$$ext config/gnu/config.$$ext; \
 	  fi; \
 	done
+# Create empty directory present in upstream tarball
+	mkdir -p compilerlibs
 	touch $@
 
 ifneq (,$(TARBALL_TARGET))
