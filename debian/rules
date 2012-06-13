@@ -309,6 +309,8 @@ ifeq (,$(DEB_TEST_BUILD_PREFIX))
 	  && dh_installdirs \
 	  && $(TESTRULES) install-stamp \
 	  && cp -a debian/tmp/* ..
+# Broken test (see http://caml.inria.fr/mantis/view.php?id=5648)
+	rm -f $(TESTDIR)/ocaml-*/testsuite/tests/lib-threads/test4.ml
 # Thread tests seem to hang on buildds, but cannot reproduce elsewhere
 ifneq (,$(findstring kfreebsd,$(DEB_BUILD_ARCH)))
 	rm -rf $(TESTDIR)/ocaml-*/testsuite/tests/lib-threads
