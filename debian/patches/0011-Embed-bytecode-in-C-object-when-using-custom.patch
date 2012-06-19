@@ -1,5 +1,5 @@
 From: Stephane Glondu <steph@glondu.net>
-Date: Sun, 17 Aug 2008 17:10:03 +0200
+Date: Tue, 19 Jun 2012 09:57:08 +0200
 Subject: Embed bytecode in C object when using -custom
 
 This patch fixes non-strippability of bytecode executables linked with
@@ -11,9 +11,10 @@ Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=256900
 Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=627761
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
- bytecomp/bytelink.ml              |   36 ++++++++++++++++++++++++++++++++----
- testsuite/tests/embedded/Makefile |    3 +++
- 2 files changed, 35 insertions(+), 4 deletions(-)
+ bytecomp/bytelink.ml                 |   36 ++++++++++++++++++++++++++++++----
+ testsuite/tests/embedded/Makefile    |    3 +++
+ testsuite/tests/lib-marshal/Makefile |    3 +++
+ 3 files changed, 38 insertions(+), 4 deletions(-)
 
 diff --git a/bytecomp/bytelink.ml b/bytecomp/bytelink.ml
 index bb14de6..ec02825 100644
@@ -109,4 +110,17 @@ index ed33143..0d1e4ca 100644
  default: compile run
  
  compile:
+diff --git a/testsuite/tests/lib-marshal/Makefile b/testsuite/tests/lib-marshal/Makefile
+index 1f78273..4878507 100644
+--- a/testsuite/tests/lib-marshal/Makefile
++++ b/testsuite/tests/lib-marshal/Makefile
+@@ -3,5 +3,8 @@ BASEDIR=../..
+ MAIN_MODULE=intext
+ C_FILES=intextaux
+ 
++# This test relies on the upstream behaviour of -custom
++export OCAML_COMPAT=c
++
+ include $(BASEDIR)/makefiles/Makefile.one
+ include $(BASEDIR)/makefiles/Makefile.common
 -- 
