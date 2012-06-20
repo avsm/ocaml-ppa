@@ -9,7 +9,7 @@
 0009-Avoid-multiple-declarations-in-generated-.c-files-in.patch
 0010-Properly-initialize-executable-name-in-caml_startup_.patch
 0011-Embed-bytecode-in-C-object-when-using-custom.patch
-0012-Fix-asmcomp-tests-on-Hurd.patch
+0012-Fix-symbol-mangling-in-asmcomp-tests-on-i386-and-spa.patch
 0013-Fix-testsuite-on-bytecode-architectures.patch
 0014-ocamlopt-fix-on-powerpc.patch
 0015-Move-power.o-rule-in-asmcomp-test-after-definition-o.patch
