@@ -2,6 +2,8 @@ From: Stephane Glondu <steph@glondu.net>
 Date: Wed, 20 Jun 2012 13:50:25 +0200
 Subject: Fix testsuite on bytecode architectures
 
+Bug: http://caml.inria.fr/mantis/view.php?id=5661
+
 ---
  testsuite/makefiles/Makefile.one     |    3 ++-
  testsuite/tests/lib-scanf-2/Makefile |    3 ++-

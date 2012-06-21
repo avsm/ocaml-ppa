@@ -4,6 +4,7 @@ Subject: Fix symbol mangling in asmcomp tests on *-i386 and sparc
 
 Based on a patch by Pino Toscano <pino@debian.org>.
 
+Bug: http://caml.inria.fr/mantis/view.php?id=5661
 Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=661716
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
