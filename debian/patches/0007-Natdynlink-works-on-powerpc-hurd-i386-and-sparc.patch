@@ -1,21 +1,21 @@
 From: Stephane Glondu <steph@glondu.net>
-Date: Sat, 16 Apr 2011 23:41:23 +0200
-Subject: Natdynlink works on powerpc and hurd-i386
+Date: Thu, 21 Jun 2012 13:35:22 +0200
+Subject: Natdynlink works on powerpc, hurd-i386 and sparc
 
-Rationale: ssreflect used to work with natdynlink on powerpc and hurd
-with ocaml 3.11.2 / coq 8.2...
+Rationale: ssreflect used to work with natdynlink there with ocaml
+3.11.2 / coq 8.2...
 
-Note: there is no native compiler for powerpc64! This must be a
-typo...
+Note: on my test machine for sparc (64-bit kernel, 32-bit userland),
+$host is sparc64-unknown-linux-gnu.
 
 Bug: http://caml.inria.fr/mantis/view.php?id=5255
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
- configure |    2 ++
- 1 file changed, 2 insertions(+)
+ configure |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/configure b/configure
-index afca5b0..e1d32dd 100755
+index afca5b0..663eae1 100755
 --- a/configure
 +++ b/configure
 @@ -630,6 +630,7 @@ if test $withsharedlibs = "yes"; then
@@ -26,12 +26,15 @@ index afca5b0..e1d32dd 100755
      x86_64-*-linux*)              natdynlink=true;;
      i[3456]86-*-darwin[89].*)     natdynlink=true;;
      i[3456]86-*-darwin*)
-@@ -638,6 +639,7 @@ if test $withsharedlibs = "yes"; then
+@@ -637,8 +638,8 @@ if test $withsharedlibs = "yes"; then
+         natdynlink=true
        fi;;
      x86_64-*-darwin*)             natdynlink=true;;
-     powerpc64-*-linux*)           natdynlink=true;;
-+    powerpc-*-linux*)             natdynlink=true;;
-     sparc-*-linux*)               natdynlink=true;;
+-    powerpc64-*-linux*)           natdynlink=true;;
+-    sparc-*-linux*)               natdynlink=true;;
++    powerpc*-*-linux*)            natdynlink=true;;
++    sparc*-*-linux*)              natdynlink=true;;
      i686-*-kfreebsd*)             natdynlink=true;;
      x86_64-*-kfreebsd*)           natdynlink=true;;
+     i[345]86-*-freebsd*)          natdynlink=true;;
 -- 
