@@ -1,6 +1,22 @@
+ocaml (4.00.0~beta2-2) experimental; urgency=low
+
+  * Fix natdynlink detection on sparc
+  * Cherry-pick an upstream fix in native compilation on powerpc
+  * Fixes in the test suite:
+    - use legacy -custom for lib-marshal test
+    - some tests were still triggering ocamlopt even on bytecode
+    - fix asmcomp tests on powerpc
+    - fix symbol mangling in asmcomp tests on kfreebsd-i386 and sparc
+  * Bump Standards-Version to 3.9.3
+
+ -- Stéphane Glondu <glondu@debian.org>  Thu, 21 Jun 2012 16:42:25 +0200
+
 ocaml (4.00.0~beta2-1) experimental; urgency=low
 
   * New upstream beta release
+    - new "R" parameter in OCAMLRUNPARAMS to enable automatic
+      randomization of the generic hash function (Closes: #659149,
+      CVE-2012-0839)
     - the layout of the ocaml-compiler-libs binary package has changed
       significantly as a result of upstream installing +compiler-libs by
       itself; toplevel libraries have been moved there
