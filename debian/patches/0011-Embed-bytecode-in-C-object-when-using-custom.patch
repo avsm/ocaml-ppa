@@ -3,19 +3,20 @@ Date: Sun, 17 Aug 2008 17:10:03 +0200
 Subject: Embed bytecode in C object when using -custom
 
 This patch fixes non-strippability of bytecode executables linked with
-custom runtime. Having "c" in OCAML_COMPAT environment variable
-restores the original behaviour.
+custom runtime. The new behaviour is enabled when OCAML_CUSTOM_EMBED
+is set to "y", or when DEB_HOST_ARCH is non-empty.
 
 Forwarded: not-needed
 Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=256900
 Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=627761
+Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=678577
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
- bytecomp/bytelink.ml |   36 ++++++++++++++++++++++++++++++++----
- 1 files changed, 32 insertions(+), 4 deletions(-)
+ bytecomp/bytelink.ml |   42 ++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 38 insertions(+), 4 deletions(-)
 
 diff --git a/bytecomp/bytelink.ml b/bytecomp/bytelink.ml
-index 9d62fc6..a3aee28 100644
+index 9d62fc6..c6d558f 100644
 --- a/bytecomp/bytelink.ml
 +++ b/bytecomp/bytelink.ml
 @@ -415,7 +415,7 @@ let mlvalues_primitives = [
@@ -57,23 +58,29 @@ index 9d62fc6..a3aee28 100644
  \n#ifdef __cplusplus\
  \n}\
  \n#endif\n";
-@@ -501,6 +514,11 @@ let fix_exec_name name =
+@@ -501,6 +514,17 @@ let fix_exec_name name =
        if String.contains name '.' then name else name ^ ".exe"
    | _ -> name
  
-+(* Legacy custom behaviour (Debian-specific) *)
++(* Debian-specific -custom behaviour:
++   - if DEB_HOST_ARCH is non-empty, it is activated by default
++   - can be enabled/disabled by setting OCAML_CUSTOM_EMBED to y/n
++*)
 +
-+let legacy_custom =
-+  try String.contains (Sys.getenv "OCAML_COMPAT") 'c' with Not_found -> false
++let custom_embed =
++  try Sys.getenv "OCAML_CUSTOM_EMBED" = "y"
++  with Not_found ->
++    try Sys.getenv "DEB_HOST_ARCH" <> ""
++    with Not_found -> false
 +
  (* Main entry point (build a custom runtime if needed) *)
  
  let link objfiles output_name =
-@@ -514,6 +532,16 @@ let link objfiles output_name =
+@@ -514,6 +538,16 @@ let link objfiles output_name =
    Clflags.dllibs := !lib_dllibs @ !Clflags.dllibs; (* put user's DLLs first *)
    if not !Clflags.custom_runtime then
      link_bytecode tolink output_name true
-+  else if not legacy_custom && not !Clflags.output_c_object && not !Clflags.make_runtime then
++  else if custom_embed && not !Clflags.output_c_object && not !Clflags.make_runtime then
 +    let c_file = Filename.temp_file "camlobj" ".c" in
 +    try
 +      link_bytecode_as_c tolink c_file true;
@@ -86,7 +93,7 @@ index 9d62fc6..a3aee28 100644
    else if not !Clflags.output_c_object then begin
      let bytecode_name = Filename.temp_file "camlcode" "" in
      let prim_name = Filename.temp_file "camlprim" ".c" in
-@@ -552,7 +580,7 @@ let link objfiles output_name =
+@@ -552,7 +586,7 @@ let link objfiles output_name =
      if Sys.file_exists c_file then raise(Error(File_exists c_file));
      let temps = ref [] in
      try
