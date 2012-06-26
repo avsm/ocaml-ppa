@@ -8,7 +8,7 @@ Subject: Make objinfo show force_link and ccobjs/ccopts when needed
 Forwarded: http://caml.inria.fr/mantis/view.php?id=5316
 ---
  tools/objinfo.ml |   25 +++++++++++++++++++++----
- 1 files changed, 21 insertions(+), 4 deletions(-)
+ 1 file changed, 21 insertions(+), 4 deletions(-)
 
 diff --git a/tools/objinfo.ml b/tools/objinfo.ml
 index 4f467f2..b75b83a 100644

@@ -12,7 +12,7 @@ Bug: http://caml.inria.fr/mantis/view.php?id=5255
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
  configure |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/configure b/configure
 index d4287ed..d6ba2e3 100755

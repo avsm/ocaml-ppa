@@ -6,7 +6,7 @@ Signed-off-by: Stephane Glondu <steph@glondu.net>
 Bug: http://caml.inria.fr/mantis/view.php?id=5393
 ---
  configure |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ 1 file changed, 1 insertion(+)
 
 diff --git a/configure b/configure
 index d6ba2e3..20b4b17 100755

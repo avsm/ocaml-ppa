@@ -7,7 +7,7 @@ Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=627756
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
  byterun/startup.c |   11 ++++++++++-
- 1 files changed, 10 insertions(+), 1 deletions(-)
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/byterun/startup.c b/byterun/startup.c
 index db273b2..780cb1e 100644

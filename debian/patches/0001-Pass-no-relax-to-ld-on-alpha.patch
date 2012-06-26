@@ -6,7 +6,7 @@ Pass the --no-relax option to ld to fix a segfault in initialization
 code (bug#338437)
 ---
  configure |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/configure b/configure
 index 9be5199..236e016 100755

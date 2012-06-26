@@ -8,7 +8,7 @@ Bug: http://caml.inria.fr/mantis/view.php?id=5131
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
  bytecomp/symtable.ml |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/bytecomp/symtable.ml b/bytecomp/symtable.ml
 index d6ecc94..37def29 100644

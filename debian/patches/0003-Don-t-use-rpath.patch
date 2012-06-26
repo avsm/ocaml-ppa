@@ -4,7 +4,7 @@ Subject: Don't use rpath
 
 ---
  tools/ocamlmklib.mlp |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ 1 file changed, 5 insertions(+)
 
 diff --git a/tools/ocamlmklib.mlp b/tools/ocamlmklib.mlp
 index 8374439..b8d9e33 100644

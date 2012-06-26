@@ -4,7 +4,7 @@ Subject: Install ocamlbuild as a link on either .native or .byte
 
 ---
  build/partial-install.sh |   17 ++++++++++++++++-
- 1 files changed, 16 insertions(+), 1 deletions(-)
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/build/partial-install.sh b/build/partial-install.sh
 index 8e4fbd2..ca66bc1 100755
