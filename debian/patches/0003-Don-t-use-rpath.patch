@@ -7,10 +7,10 @@ Subject: Don't use rpath
  1 file changed, 5 insertions(+)
 
 diff --git a/tools/ocamlmklib.mlp b/tools/ocamlmklib.mlp
-index f114b13..d3f359d 100644
+index b6c236e..b491fdd 100644
 --- a/tools/ocamlmklib.mlp
 +++ b/tools/ocamlmklib.mlp
-@@ -37,6 +37,11 @@ and output_c = ref ""       (* Output name for C part of library *)
+@@ -38,6 +38,11 @@ and output_c = ref ""       (* Output name for C part of library *)
  and rpath = ref []          (* rpath options *)
  and verbose = ref false
  

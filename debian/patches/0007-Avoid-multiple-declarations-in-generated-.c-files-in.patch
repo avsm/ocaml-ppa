@@ -61,7 +61,7 @@ index f40e425..bb14de6 100644
          #ifdef __cplusplus\n\
          }\n\
 diff --git a/bytecomp/symtable.ml b/bytecomp/symtable.ml
-index 60c884e..08af10f 100644
+index 7ab4bfd..3f4495e 100644
 --- a/bytecomp/symtable.ml
 +++ b/bytecomp/symtable.ml
 @@ -115,15 +115,17 @@ let output_primitive_names outchan =
