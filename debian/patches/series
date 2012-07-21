@@ -13,3 +13,4 @@
 0013-Fix-testsuite-on-bytecode-architectures.patch
 0014-ocamlopt-fix-on-powerpc.patch
 0015-Move-power.o-rule-in-asmcomp-test-after-definition-o.patch
+0016-Fix-i18n-bug-in-thread-tests.patch

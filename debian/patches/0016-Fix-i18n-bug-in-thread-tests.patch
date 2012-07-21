@@ -1,0 +1,59 @@
+From: Stephane Glondu <steph@glondu.net>
+Date: Sat, 21 Jul 2012 13:42:31 +0200
+Subject: Fix i18n bug in thread tests
+
+Suggested by Damien Doligez.
+
+Bug: http://caml.inria.fr/mantis/view.php?id=5648
+---
+ testsuite/tests/lib-threads/test1.checker    |    2 +-
+ testsuite/tests/lib-threads/test4.checker    |    2 +-
+ testsuite/tests/lib-threads/test5.checker    |    2 +-
+ testsuite/tests/lib-threads/test6.checker    |    2 +-
+ testsuite/tests/lib-threads/testA.checker    |    2 +-
+ testsuite/tests/lib-threads/testexit.checker |    2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/testsuite/tests/lib-threads/test1.checker b/testsuite/tests/lib-threads/test1.checker
+index cbfe7ce..1d10457 100644
+--- a/testsuite/tests/lib-threads/test1.checker
++++ b/testsuite/tests/lib-threads/test1.checker
+@@ -1 +1 @@
+-sort test1.result | diff -q test1.reference -
++LC_ALL=C sort test1.result | diff -q test1.reference -
+diff --git a/testsuite/tests/lib-threads/test4.checker b/testsuite/tests/lib-threads/test4.checker
+index ae27a0d..b8661a9 100644
+--- a/testsuite/tests/lib-threads/test4.checker
++++ b/testsuite/tests/lib-threads/test4.checker
+@@ -1 +1 @@
+-sort -u test4.result | diff -q test4.reference -
++LC_ALL=C sort -u test4.result | diff -q test4.reference -
+diff --git a/testsuite/tests/lib-threads/test5.checker b/testsuite/tests/lib-threads/test5.checker
+index 030fcc9..e991875 100644
+--- a/testsuite/tests/lib-threads/test5.checker
++++ b/testsuite/tests/lib-threads/test5.checker
+@@ -1 +1 @@
+-sort -u test5.result | diff -q test5.reference -
++LC_ALL=C sort -u test5.result | diff -q test5.reference -
+diff --git a/testsuite/tests/lib-threads/test6.checker b/testsuite/tests/lib-threads/test6.checker
+index 40ab24f..d2e9930 100644
+--- a/testsuite/tests/lib-threads/test6.checker
++++ b/testsuite/tests/lib-threads/test6.checker
+@@ -1 +1 @@
+-sort -u test6.result | diff -q test6.reference -
++LC_ALL=C sort -u test6.result | diff -q test6.reference -
+diff --git a/testsuite/tests/lib-threads/testA.checker b/testsuite/tests/lib-threads/testA.checker
+index 4c30940..9f5d00a 100644
+--- a/testsuite/tests/lib-threads/testA.checker
++++ b/testsuite/tests/lib-threads/testA.checker
+@@ -1 +1 @@
+-sort testA.result | diff -q testA.reference -
++LC_ALL=C sort testA.result | diff -q testA.reference -
+diff --git a/testsuite/tests/lib-threads/testexit.checker b/testsuite/tests/lib-threads/testexit.checker
+index 5834e5d..c1182d6 100644
+--- a/testsuite/tests/lib-threads/testexit.checker
++++ b/testsuite/tests/lib-threads/testexit.checker
+@@ -1 +1 @@
+-sort testexit.result | diff -q testexit.reference -
++LC_ALL=C sort testexit.result | diff -q testexit.reference -
+-- 
