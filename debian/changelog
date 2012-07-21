@@ -1,8 +1,9 @@
-ocaml (4.00.0~rc1-1) UNRELEASED; urgency=low
+ocaml (4.00.0~rc1-1) experimental; urgency=low
 
   * New upstream release candidate
+  * Merge changes from 3.12.1-4
 
- -- Stéphane Glondu <glondu@debian.org>  Sat, 21 Jul 2012 14:37:03 +0200
+ -- Stéphane Glondu <glondu@debian.org>  Sat, 21 Jul 2012 15:42:10 +0200
 
 ocaml (4.00.0~beta2-2) experimental; urgency=low
 
