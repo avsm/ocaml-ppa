@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_sig.mli 12511 2012-05-30 13:29:48Z lefessan $ *)
+(* $Id: odoc_sig.mli 12622 2012-06-21 05:46:28Z guesdon $ *)
 
 (** The module for analysing a signature and source code and creating modules, classes, ..., elements.*)
 
@@ -156,7 +156,7 @@ module Analyser :
 
       (** Return a module_type_kind from a Parsetree.module_type and a Types.module_type *)
       val analyse_module_type_kind :
-          Odoc_env.env -> Odoc_name.t ->
+          ?erased:Odoc_name.Set.t -> Odoc_env.env -> Odoc_name.t ->
             Parsetree.module_type -> Types.module_type ->
               Odoc_module.module_type_kind
 

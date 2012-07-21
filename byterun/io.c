@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: io.c 12149 2012-02-10 16:15:24Z doligez $ */
+/* $Id: io.c 12641 2012-06-25 12:02:16Z lefessan $ */
 
 /* Buffered input/output. */
 
@@ -279,6 +279,11 @@ CAMLexport int caml_do_read(int fd, char *p, unsigned int n)
   do {
     caml_enter_blocking_section();
     retcode = read(fd, p, n);
+#if defined(_WIN32)
+    if (retcode == -1 && errno == ENOMEM && n > 16384){
+      retcode = read(fd, p, 16384);
+    }
+#endif
     caml_leave_blocking_section();
   } while (retcode == -1 && errno == EINTR);
   if (retcode == -1) caml_sys_io_error(NO_ARG);

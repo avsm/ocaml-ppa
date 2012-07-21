@@ -11,7 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: mmap_unix.c 12326 2012-04-09 10:22:59Z xleroy $ */
+/* $Id: mmap_unix.c 12582 2012-06-07 12:17:44Z xleroy $ */
+
+/* Needed (under Linux at least) to get pwrite's prototype in unistd.h.
+   Must be defined before the first system .h is included. */
+#define _XOPEN_SOURCE 500
 
 #include <stddef.h>
 #include <string.h>

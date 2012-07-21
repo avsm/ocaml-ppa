@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: btype.ml 12534 2012-06-01 05:24:38Z garrigue $ *)
+(* $Id: btype.ml 12726 2012-07-18 03:34:36Z garrigue $ *)
 
 (* Basic operations on core types *)
 
@@ -125,6 +125,14 @@ let rec row_more row =
   match repr row.row_more with
   | {desc=Tvariant row'} -> row_more row'
   | ty -> ty
+
+let row_fixed row =
+  let row = row_repr row in
+  row.row_fixed ||
+  match (repr row.row_more).desc with
+    Tvar _ | Tnil -> false
+  | Tunivar _ | Tconstr _ -> true
+  | _ -> assert false
 
 let static_row row =
   let row = row_repr row in

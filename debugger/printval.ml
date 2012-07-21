@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printval.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: printval.ml 12689 2012-07-10 14:54:19Z doligez $ *)
 
 (* To print values *)
 
@@ -47,7 +47,7 @@ let check_depth ppf depth obj ty =
 
 module EvalPath =
   struct
-    type value = Debugcom.Remote_value.t
+    type valu = Debugcom.Remote_value.t
     exception Error
     let rec eval_path = function
       Pident id ->

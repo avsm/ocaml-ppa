@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: toploop.ml 12542 2012-06-01 14:06:31Z frisch $ *)
+(* $Id: toploop.ml 12689 2012-07-10 14:54:19Z doligez $ *)
 
 (* The interactive toplevel loop *)
 
@@ -66,7 +66,7 @@ let rec eval_path = function
 (* To print values *)
 
 module EvalPath = struct
-  type value = Obj.t
+  type valu = Obj.t
   exception Error
   let eval_path p = try eval_path p with Symtable.Error _ -> raise Error
   let same_value v1 v2 = (v1 == v2)

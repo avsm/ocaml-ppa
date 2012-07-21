@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: env.mli 12542 2012-06-01 14:06:31Z frisch $ *)
+(* $Id: env.mli 12706 2012-07-13 08:49:06Z lefessan $ *)
 
 (* Environment handling *)
 
@@ -140,6 +140,14 @@ val crc_units: Consistbl.t
    exported in debugging information. *)
 
 val summary: t -> summary
+
+(* Return an equivalent environment where all fields have been reset,
+   except the summary. The initial environment can be rebuilt from the
+   summary, using Envaux.env_of_only_summary. *)
+
+val keep_only_summary : t -> t
+val env_of_only_summary : (summary -> Subst.t -> t) -> t -> t
+
 
 (* Error report *)
 

@@ -11,7 +11,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 11156 2011-07-27 14:17:02Z doligez $
+# $Id: Makefile 12585 2012-06-08 11:35:37Z xleroy $
 
 include ../../config/Makefile
 
@@ -30,7 +30,7 @@ all: libthreads.a threads.cma
 allopt: libthreadsnat.a threads.cmxa
 
 libthreads.a: $(BYTECODE_C_OBJS)
-	$(MKLIB) -o threads $(BYTECODE_C_OBJS)
+	$(MKLIB) -o threads $(BYTECODE_C_OBJS) -lpthread
 
 st_stubs_b.o: st_stubs.c st_posix.h
 	$(BYTECC) -O -I../../byterun $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS) \

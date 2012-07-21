@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: topdirs.mli 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: topdirs.mli 12661 2012-07-07 11:41:17Z scherer $ *)
 
 (* The toplevel directives. *)
 
@@ -18,6 +18,7 @@ open Format
 
 val dir_quit : unit -> unit
 val dir_directory : string -> unit
+val dir_remove_directory : string -> unit
 val dir_cd : string -> unit
 val dir_load : formatter -> string -> unit
 val dir_use : formatter -> string -> unit

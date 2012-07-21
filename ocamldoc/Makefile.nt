@@ -9,7 +9,7 @@
 #(*                                                                     *)
 #(***********************************************************************)
 
-# $Id: Makefile.nt 12553 2012-06-04 12:39:11Z protzenk $
+# $Id: Makefile.nt 12692 2012-07-10 15:20:34Z doligez $
 
 include ../config/Makefile
 
@@ -187,7 +187,7 @@ opt.opt: exeopt libopt
 exeopt: $(OCAMLDOC_OPT)
 libopt: $(OCAMLDOC_LIBCMXA) $(OCAMLDOC_LIBCMI)
 debug:
-	make OCAMLPP=""
+	$(MAKE) OCAMLPP=""
 
 $(OCAMLDOC): $(EXECMOFILES)
 	$(OCAMLC) -o $@ -linkall unix.cma str.cma dynlink.cma $(LINKFLAGS) $(OCAMLCMOFILES) $(EXECMOFILES)

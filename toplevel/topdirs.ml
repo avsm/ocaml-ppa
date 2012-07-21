@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: topdirs.ml 12184 2012-02-23 19:54:44Z doligez $ *)
+(* $Id: topdirs.ml 12661 2012-07-07 11:41:17Z scherer $ *)
 
 (* Toplevel directives *)
 
@@ -40,6 +40,16 @@ let dir_directory s =
   Dll.add_path [d]
 
 let _ = Hashtbl.add directive_table "directory" (Directive_string dir_directory)
+
+(* To remove a directory from the load path *)
+let dir_remove_directory s =
+  let d = expand_directory Config.standard_library s in
+  Config.load_path := List.filter (fun d' -> d' <> d) !Config.load_path;
+  Dll.remove_path [d]
+
+let _ =
+  Hashtbl.add directive_table "remove_directory"
+    (Directive_string dir_remove_directory)
 
 (* To change the current directory *)
 

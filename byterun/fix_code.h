@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: fix_code.h 12227 2012-03-13 14:44:48Z xleroy $ */
+/* $Id: fix_code.h 12715 2012-07-16 10:37:03Z frisch $ */
 
 /* Handling of blocks of bytecode (endianness switch, threading). */
 
@@ -27,6 +27,7 @@ extern code_t caml_start_code;
 extern asize_t caml_code_size;
 extern unsigned char * caml_saved_code;
 
+void caml_init_code_fragments();
 void caml_load_code (int fd, asize_t len);
 void caml_fixup_endianness (code_t code, asize_t len);
 void caml_set_instruction (code_t pos, opcode_t instr);

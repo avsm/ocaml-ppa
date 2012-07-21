@@ -14,11 +14,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: cltkFile.c 11156 2011-07-27 14:17:02Z doligez $ */
-
-#ifdef __CYGWIN__
-#define _WIN32
-#endif
+/* $Id: cltkFile.c 12716 2012-07-16 20:01:36Z doligez $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
