@@ -1,23 +1,24 @@
 From: Stephane Glondu <steph@glondu.net>
-Date: Tue, 19 Jun 2012 09:57:08 +0200
+Date: Sat, 21 Jul 2012 15:40:52 +0200
 Subject: Embed bytecode in C object when using -custom
 
 This patch fixes non-strippability of bytecode executables linked with
-custom runtime. Having "c" in OCAML_COMPAT environment variable
-restores the original behaviour.
+custom runtime. The new behaviour is enabled when OCAML_CUSTOM_EMBED
+is set to "y", or when DEB_HOST_ARCH is non-empty.
 
 Forwarded: not-needed
 Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=256900
 Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=627761
+Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=678577
 Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
- bytecomp/bytelink.ml                 |   36 ++++++++++++++++++++++++++++++----
+ bytecomp/bytelink.ml                 |   42 ++++++++++++++++++++++++++++++----
  testsuite/tests/embedded/Makefile    |    3 +++
  testsuite/tests/lib-marshal/Makefile |    3 +++
- 3 files changed, 38 insertions(+), 4 deletions(-)
+ 3 files changed, 44 insertions(+), 4 deletions(-)
 
 diff --git a/bytecomp/bytelink.ml b/bytecomp/bytelink.ml
-index bb14de6..ec02825 100644
+index bb14de6..9922bf2 100644
 --- a/bytecomp/bytelink.ml
 +++ b/bytecomp/bytelink.ml
 @@ -423,7 +423,7 @@ let mlvalues_primitives = [
@@ -59,23 +60,29 @@ index bb14de6..ec02825 100644
  \n#ifdef __cplusplus\
  \n}\
  \n#endif\n";
-@@ -511,6 +524,11 @@ let fix_exec_name name =
+@@ -511,6 +524,17 @@ let fix_exec_name name =
        if String.contains name '.' then name else name ^ ".exe"
    | _ -> name
  
-+(* Legacy custom behaviour (Debian-specific) *)
++(* Debian-specific -custom behaviour:
++   - if DEB_HOST_ARCH is non-empty, it is activated by default
++   - can be enabled/disabled by setting OCAML_CUSTOM_EMBED to y/n
++*)
 +
-+let legacy_custom =
-+  try String.contains (Sys.getenv "OCAML_COMPAT") 'c' with Not_found -> false
++let custom_embed =
++  try Sys.getenv "OCAML_CUSTOM_EMBED" = "y"
++  with Not_found ->
++    try Sys.getenv "DEB_HOST_ARCH" <> ""
++    with Not_found -> false
 +
  (* Main entry point (build a custom runtime if needed) *)
  
  let link ppf objfiles output_name =
-@@ -524,6 +542,16 @@ let link ppf objfiles output_name =
+@@ -524,6 +548,16 @@ let link ppf objfiles output_name =
    Clflags.dllibs := !lib_dllibs @ !Clflags.dllibs; (* put user's DLLs first *)
    if not !Clflags.custom_runtime then
      link_bytecode ppf tolink output_name true
-+  else if not legacy_custom && not !Clflags.output_c_object && not !Clflags.make_runtime then
++  else if custom_embed && not !Clflags.output_c_object && not !Clflags.make_runtime then
 +    let c_file = Filename.temp_file "camlobj" ".c" in
 +    try
 +      link_bytecode_as_c ppf tolink c_file true;
@@ -88,7 +95,7 @@ index bb14de6..ec02825 100644
    else if not !Clflags.output_c_object then begin
      let bytecode_name = Filename.temp_file "camlcode" "" in
      let prim_name = Filename.temp_file "camlprim" ".c" in
-@@ -566,7 +594,7 @@ let link ppf objfiles output_name =
+@@ -566,7 +600,7 @@ let link ppf objfiles output_name =
      if Sys.file_exists c_file then raise(Error(File_exists c_file));
      let temps = ref [] in
      try
@@ -98,20 +105,20 @@ index bb14de6..ec02825 100644
          temps := c_file :: !temps;
          if Ccomp.compile_file c_file <> 0 then raise(Error Custom_runtime);
 diff --git a/testsuite/tests/embedded/Makefile b/testsuite/tests/embedded/Makefile
-index ed33143..0d1e4ca 100644
+index ed33143..dc4e9a1 100644
 --- a/testsuite/tests/embedded/Makefile
 +++ b/testsuite/tests/embedded/Makefile
 @@ -1,5 +1,8 @@
  BASEDIR=../..
  
 +# This test relies on the upstream behaviour of -custom
-+export OCAML_COMPAT=c
++export OCAML_CUSTOM_EMBED=n
 +
  default: compile run
  
  compile:
 diff --git a/testsuite/tests/lib-marshal/Makefile b/testsuite/tests/lib-marshal/Makefile
-index 1f78273..4878507 100644
+index 1f78273..c246469 100644
 --- a/testsuite/tests/lib-marshal/Makefile
 +++ b/testsuite/tests/lib-marshal/Makefile
 @@ -3,5 +3,8 @@ BASEDIR=../..
@@ -119,7 +126,7 @@ index 1f78273..4878507 100644
  C_FILES=intextaux
  
 +# This test relies on the upstream behaviour of -custom
-+export OCAML_COMPAT=c
++export OCAML_CUSTOM_EMBED=n
 +
  include $(BASEDIR)/makefiles/Makefile.one
  include $(BASEDIR)/makefiles/Makefile.common
