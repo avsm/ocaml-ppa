@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: genprintval.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
+(* $Id: genprintval.ml 12689 2012-07-10 14:54:19Z doligez $ *)
 
 (* To print values *)
 
@@ -33,10 +33,10 @@ module type OBJ =
 
 module type EVALPATH =
   sig
-    type value
-    val eval_path: Path.t -> value
+    type valu
+    val eval_path: Path.t -> valu
     exception Error
-    val same_value: value -> value -> bool
+    val same_value: valu -> valu -> bool
   end
 
 module type S =
@@ -52,7 +52,7 @@ module type S =
           Env.t -> t -> type_expr -> Outcometree.out_value
   end
 
-module Make(O : OBJ)(EVP : EVALPATH with type value = O.t) = struct
+module Make(O : OBJ)(EVP : EVALPATH with type valu = O.t) = struct
 
     type t = O.t
 

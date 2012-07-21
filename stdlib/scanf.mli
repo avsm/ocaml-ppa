@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: scanf.mli 12230 2012-03-13 16:10:02Z doligez $ *)
+(* $Id: scanf.mli 12571 2012-06-05 18:21:50Z doligez $ *)
 
 (** Formatted input functions. *)
 
@@ -140,7 +140,7 @@ val open_in_bin : file_name -> in_channel;;
 *)
 
 val close_in : in_channel -> unit;;
-(** Closes the [Pervasives.input_channel] associated with the given
+(** Closes the [Pervasives.in_channel] associated with the given
   [Scanning.in_channel] formatted input channel.
   @since 3.12.0
 *)

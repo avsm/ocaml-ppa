@@ -11,12 +11,13 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: envaux.mli 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: envaux.mli 12700 2012-07-11 17:23:37Z lefessan $ *)
 
 open Format
 
 (* Convert environment summaries to environments *)
 
+val env_from_summary : Env.summary -> Subst.t -> Env.t
 val env_of_event: Instruct.debug_event option -> Env.t
 
 (* Empty the environment caches. To be called when load_path changes. *)

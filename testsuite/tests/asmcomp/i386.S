@@ -10,12 +10,13 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: i386.S 11156 2011-07-27 14:17:02Z doligez $ */
+/* $Id: i386.S 12649 2012-06-27 12:29:20Z doligez $ */
 
 /* Linux with ELF binaries does not prefix identifiers with _.
    Linux with a.out binaries, FreeBSD, and NextStep do. */
 
-#ifdef SYS_linux_elf
+#if defined(SYS_linux_elf) || defined(SYS_bsd_elf) \
+ || defined(SYS_solaris) || defined(SYS_beos) || defined(SYS_gnu)
 #define G(x) x
 #define FUNCTION_ALIGN 16
 #else

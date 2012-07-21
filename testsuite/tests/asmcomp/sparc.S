@@ -10,9 +10,9 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: sparc.S 11156 2011-07-27 14:17:02Z doligez $ */
+/* $Id: sparc.S 12649 2012-06-27 12:29:20Z doligez $ */
 
-#ifndef SYS_solaris
+#if defined(SYS_solaris) || defined(SYS_elf)
 #define Call_gen_code _call_gen_code
 #define Caml_c_call _caml_c_call
 #else

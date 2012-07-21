@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: custom.c 11156 2011-07-27 14:17:02Z doligez $ */
+/* $Id: custom.c 12658 2012-07-06 16:44:24Z xleroy $ */
 
 #include <string.h>
 
@@ -83,6 +83,7 @@ struct custom_operations * caml_final_custom_operations(final_fun fn)
   ops->hash = custom_hash_default;
   ops->serialize = custom_serialize_default;
   ops->deserialize = custom_deserialize_default;
+  ops->compare_ext = custom_compare_ext_default;
   l = caml_stat_alloc(sizeof(struct custom_operations_list));
   l->ops = ops;
   l->next = custom_ops_final_table;

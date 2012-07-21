@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: symtable.ml 11306 2011-12-13 17:50:08Z frisch $ *)
+(* $Id: symtable.ml 12629 2012-06-21 15:55:03Z doligez $ *)
 
 (* To assign numbers to globals and primitives *)
 
@@ -126,7 +126,7 @@ let output_primitive_table outchan =
     fprintf outchan "  %s,\n" prim.(i)
   done;
   fprintf outchan "  (primitive) 0 };\n";
-  fprintf outchan "char * caml_names_of_builtin_cprim[] = {\n";
+  fprintf outchan "const char * caml_names_of_builtin_cprim[] = {\n";
   for i = 0 to Array.length prim - 1 do
     fprintf outchan "  \"%s\",\n" prim.(i)
   done;

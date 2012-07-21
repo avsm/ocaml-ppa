@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: dll.mli 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: dll.mli 12661 2012-07-07 11:41:17Z scherer $ *)
 
 (* Handling of dynamically-linked libraries *)
 
@@ -45,6 +45,9 @@ val synchronize_primitive: int -> dll_address -> unit
 
 (* Add the given directories at the head of the search path for DLLs *)
 val add_path: string list -> unit
+
+(* Remove the given directories from the search path for DLLs *)
+val remove_path: string list -> unit
 
 (* Initialization for separate compilation.
    Initialize the DLL search path to the directories given in the

@@ -9,7 +9,7 @@
 #(*                                                                     *)
 #(***********************************************************************)
 
-# $Id: Makefile 12511 2012-05-30 13:29:48Z lefessan $
+# $Id: Makefile 12707 2012-07-13 11:23:13Z doligez $
 
 include ../config/Makefile
 
@@ -50,7 +50,9 @@ ODOC_TEST=odoc_test.cmo
 GENERATORS_CMOS= \
 	generators/odoc_todo.cmo \
 	generators/odoc_literate.cmo
-GENERATORS_CMXS=$(GENERATORS_CMOS:.cmo=.cmxs)
+GENERATORS_CMXS_TMP1=$(GENERATORS_CMOS:.cmo=.cmxs)
+GENERATORS_CMXS_TMP2=$(NATDYNLINK:false=)
+GENERATORS_CMXS=$(GENERATORS_CMXS_TMP2:true=$(GENERATORS_CMXS_TMP1))
 
 
 # Compilation
@@ -207,7 +209,7 @@ libopt: $(OCAMLDOC_LIBCMXA) $(OCAMLDOC_LIBCMI)
 generatorsopt: $(GENERATORS_CMXS)
 
 debug:
-	make OCAMLPP=""
+	$(MAKE) OCAMLPP=""
 
 $(OCAMLDOC): $(EXECMOFILES)
 	$(OCAMLC) -o $@ -linkall unix.cma str.cma dynlink.cma $(LINKFLAGS) $(OCAMLCMOFILES) $(EXECMOFILES)
@@ -215,9 +217,9 @@ $(OCAMLDOC_OPT): $(EXECMXFILES)
 	$(OCAMLOPT) -o $@ -linkall unix.cmxa str.cmxa dynlink.cmxa $(LINKFLAGS) $(OCAMLCMXFILES) $(EXECMXFILES)
 
 $(OCAMLDOC_LIBCMA): $(LIBCMOFILES)
-	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(OCAMLCMOFILES) $(LIBCMOFILES)
+	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(OCAMLSRCDIR)/tools/depend.cmo $(LIBCMOFILES)
 $(OCAMLDOC_LIBCMXA): $(LIBCMXFILES)
-	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(OCAMLCMXFILES) $(LIBCMXFILES)
+	$(OCAMLOPT) -a -o $@ $(LINKFLAGS)	$(OCAMLSRCDIR)/tools/depend.cmx $(LIBCMXFILES)
 
 manpages: stdlib_man/Pervasives.3o
 

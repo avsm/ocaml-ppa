@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printlinear.ml 12179 2012-02-21 17:41:02Z xleroy $ *)
+(* $Id: printlinear.ml 12610 2012-06-17 08:15:25Z xleroy $ *)
 
 (* Pretty-printing of linearized machine code *)
 
@@ -65,7 +65,7 @@ let instr ppf i =
   | Lraise ->
       fprintf ppf "raise %a" reg i.arg.(0)
   end;
-  if i.dbg != Debuginfo.none then
+  if not (Debuginfo.is_none i.dbg) then
     fprintf ppf " %s" (Debuginfo.to_string i.dbg)
 
 let rec all_instr ppf i =

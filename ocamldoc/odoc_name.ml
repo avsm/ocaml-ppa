@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_name.ml 10643 2010-08-02 14:37:22Z doligez $ *)
+(* $Id: odoc_name.ml 12622 2012-06-21 05:46:28Z guesdon $ *)
 
 (** Representation of element names. *)
 
@@ -215,3 +215,9 @@ let to_path n =
   | Some p -> p
 
 let from_longident = Odoc_misc.string_of_longident
+
+module Set = Set.Make (struct
+  type z = t
+  type t = z
+  let compare = String.compare
+end)

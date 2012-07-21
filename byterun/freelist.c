@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: freelist.c 11156 2011-07-27 14:17:02Z doligez $ */
+/* $Id: freelist.c 12708 2012-07-13 12:03:26Z doligez $ */
 
 #define FREELIST_DEBUG 0
 #if FREELIST_DEBUG
@@ -532,14 +532,14 @@ void caml_set_allocation_policy (uintnat p)
   switch (p){
   case Policy_next_fit:
     fl_prev = Fl_head;
+    policy = p;
     break;
   case Policy_first_fit:
     flp_size = 0;
     beyond = NULL;
+    policy = p;
     break;
   default:
-    Assert (0);
     break;
   }
-  policy = p;
 }

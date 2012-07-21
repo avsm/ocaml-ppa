@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit.mlp 12448 2012-05-12 09:49:40Z xleroy $ *)
+(* $Id: emit.mlp 12664 2012-07-09 08:35:23Z lefessan $ *)
 
 (* Emission of x86-64 (AMD 64) assembly code *)
 
@@ -396,7 +396,9 @@ let emit_instr fallthrough i =
         if alloc then begin
           `	{load_symbol_addr s}, %rax\n`;
           `	{emit_call "caml_c_call"}\n`;
-          record_frame i.live i.dbg
+          record_frame i.live i.dbg;
+          `	{load_symbol_addr "caml_young_ptr"}, %r11\n`;
+          `	movq    (%r11), %r15\n`;
         end else begin
           `	{emit_call s}\n`
         end

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arch.ml 12187 2012-02-24 10:13:02Z xleroy $ *)
+(* $Id: arch.ml 12583 2012-06-07 12:19:23Z xleroy $ *)
 
 (* Specific operations for the PowerPC processor *)
 
@@ -48,7 +48,7 @@ let size_float = 8
 
 (* Behavior of division *)
 
-let division_crashes_on_overflow = false
+let division_crashes_on_overflow = true
 
 (* Operations on addressing modes *)
 
