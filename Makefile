@@ -10,7 +10,7 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 12692 2012-07-10 15:20:34Z doligez $
+# $Id: Makefile 12750 2012-07-20 08:06:01Z doligez $
 
 # The main Makefile
 
@@ -283,6 +283,7 @@ install:
 	cp utils/*.cmi parsing/*.cmi typing/*.cmi bytecomp/*.cmi driver/*.cmi toplevel/*.cmi $(COMPLIBDIR)
 	cp compilerlibs/ocamlcommon.cma compilerlibs/ocamlbytecomp.cma compilerlibs/ocamltoplevel.cma $(BYTESTART) $(TOPLEVELSTART) $(COMPLIBDIR)
 	cp expunge $(LIBDIR)/expunge$(EXE)
+	cp toplevel/topdirs.cmi $(LIBDIR)
 	cd tools; $(MAKE) install
 	-cd man; $(MAKE) install
 	for i in $(OTHERLIBRARIES); do \
