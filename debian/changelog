@@ -1,12 +1,13 @@
-ocaml (4.00.0-1) UNRELEASED; urgency=low
+ocaml (4.00.0-1) experimental; urgency=low
 
   * New upstream release
 
- -- Stéphane Glondu <glondu@debian.org>  Fri, 27 Jul 2012 07:25:45 +0200
+ -- Stéphane Glondu <glondu@debian.org>  Fri, 27 Jul 2012 07:30:10 +0200
 
 ocaml (4.00.0~rc1-1) experimental; urgency=low
 
   * New upstream release candidate
+    - fix linking of pthread_atfork (Closes: #682441)
   * Merge changes from 3.12.1-4
 
  -- Stéphane Glondu <glondu@debian.org>  Sat, 21 Jul 2012 15:42:10 +0200
