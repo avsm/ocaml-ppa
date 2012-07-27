@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typemod.ml 12542 2012-06-01 14:06:31Z frisch $ *)
+(* $Id: typemod.ml 12755 2012-07-21 01:19:45Z garrigue $ *)
 
 open Misc
 open Longident
@@ -203,7 +203,8 @@ let merge_constraint initial_env loc  sg lid constr =
           match !real_id with None -> assert false | Some id -> id in
         let lid =
           try match sdecl.ptype_manifest with
-          | Some {ptyp_desc = Ptyp_constr (lid, stl)} ->
+          | Some {ptyp_desc = Ptyp_constr (lid, stl)}
+            when List.length stl = List.length sdecl.ptype_params ->
               let params =
                 List.map
                   (function {ptyp_desc=Ptyp_var s} -> s | _ -> raise Exit)

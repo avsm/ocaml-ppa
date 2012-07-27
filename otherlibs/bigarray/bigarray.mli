@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bigarray.mli 12433 2012-05-06 08:23:37Z xleroy $ *)
+(* $Id: bigarray.mli 12772 2012-07-24 22:43:01Z doligez $ *)
 
 (** Large, multi-dimensional, numerical arrays.
 
@@ -27,9 +27,9 @@
    Big arrays support all the OCaml ad-hoc polymorphic operations:
    - comparisons ([=], [<>], [<=], etc, as well as {!Pervasives.compare});
    - hashing (module [Hash]);
-   - and structured input-output ({!Pervasives.output_value}
-     and {!Pervasives.input_value}, as well as the functions from the
-     {!Marshal} module).
+   - and structured input-output (the functions from the
+     {!Marshal} module, as well as {!Pervasives.output_value}
+     and {!Pervasives.input_value}).
 *)
 
 (** {6 Element kinds} *)
