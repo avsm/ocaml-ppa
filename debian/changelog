@@ -1,3 +1,9 @@
+ocaml (3.12.1-5) UNRELEASED; urgency=low
+
+  * Remove Sylvain Le Gall from uploaders
+
+ -- Sylvain Le Gall <gildor@debian.org>  Fri, 21 Sep 2012 01:20:13 +0000
+
 ocaml (3.12.1-4) unstable; urgency=low
 
   * Change the Debian-specific behaviour of -custom (Closes: #678577)
