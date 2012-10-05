@@ -14,6 +14,7 @@ OCAML_STDLIB_DIR := /usr/lib/ocaml
 OCAML_NATIVE_ARCHS := $(shell cat debian/native-archs)
 OCAML_NATDYNLINK_ARCHS := $(shell cat debian/natdynlink-archs)
 DEB_BUILD_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 OCAML_OPT_ARCH := $(findstring $(DEB_BUILD_ARCH),$(OCAML_NATIVE_ARCHS))
 OCAML_HAVE_OCAMLOPT := $(if $(OCAML_OPT_ARCH),yes,no)
 OCAML_OCAMLDOC_DESTDIR_HTML =
@@ -54,6 +55,7 @@ export OCAML_OPT_ARCH
 export OCAML_STDLIB_DIR
 
 CONFIGURE_OPTS := \
+  --host $(DEB_BUILD_GNU_TYPE)\
   --with-pthread -prefix /usr \
   -libdir $(OCAML_STDLIB_DIR) \
   -x11lib "$(shell pkg-config --variable=libdir x11)" \

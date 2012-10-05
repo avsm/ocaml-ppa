@@ -1,6 +1,11 @@
 ocaml (3.12.1-5) UNRELEASED; urgency=low
 
+  [ Sylvain Le Gall ]
   * Remove Sylvain Le Gall from uploaders
+
+  [ Mehdi Dogguy ]
+  * Use DEB_BUILD_GNU_TYPE instead of relying on "uname -m" (Closes: #689517).
+    Thanks to Konstantinos Margaritis for the patch.
 
  -- Sylvain Le Gall <gildor@debian.org>  Fri, 21 Sep 2012 01:20:13 +0000
 
