@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ctype.mli 12534 2012-06-01 05:24:38Z garrigue $ *)
+(* $Id: ctype.mli 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* Operations on core types *)
 
@@ -115,7 +115,7 @@ val instance_def: type_expr -> type_expr
 val instance_list: Env.t -> type_expr list -> type_expr list
         (* Take an instance of a list of type schemes *)
 val instance_constructor:
-        ?in_pattern:Env.t ref * int -> 
+        ?in_pattern:Env.t ref * int ->
         constructor_description -> type_expr list * type_expr
         (* Same, for a constructor *)
 val instance_parameterized_type:

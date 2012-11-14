@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_info.mli 12435 2012-05-07 10:31:18Z guesdon $ *)
+(* $Id: odoc_info.mli 12798 2012-07-30 11:53:27Z doligez $ *)
 
 (** Interface to the information collected in source files. *)
 
@@ -203,7 +203,7 @@ module Type :
         {
           vc_name : string ; (** Name of the constructor. *)
           vc_args : Types.type_expr list ; (** Arguments of the constructor. *)
-	  vc_ret : Types.type_expr option ;
+          vc_ret : Types.type_expr option ;
           mutable vc_text : text option ; (** Optional description in the associated comment. *)
         }
 

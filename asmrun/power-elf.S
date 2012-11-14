@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: power-elf.S 12160 2012-02-17 10:43:50Z xleroy $ */
+/* $Id: power-elf.S 12800 2012-07-30 18:59:07Z doligez $ */
 
 #define Addrglobal(reg,glob) \
         addis   reg, 0, glob@ha; \
@@ -29,7 +29,7 @@
 
         .globl  caml_system__code_begin
 caml_system__code_begin:
-        
+
         .globl  caml_call_gc
         .type   caml_call_gc, @function
 caml_call_gc:

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: maps.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: maps.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 module IntMap = Map.Make(struct type t = int let compare x y = x-y end)
 
@@ -25,4 +25,3 @@ let () =
   print_endline "Inter";
   show (IntMap.merge (fun _ l r -> match l, r with Some x, Some y when x = y -> Some x | _ -> None) m1 m2);
   ()
-

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: output.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: output.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* Generating a DFA as a set of mutually recursive functions *)
 
@@ -137,7 +137,7 @@ let output_state state_num = function
 
 
 (* 3- Generating the entry points *)
-          
+
 let rec output_entries = function
     [] -> failwith "output_entries"
   | (name,state_num) :: rest ->
@@ -146,7 +146,7 @@ let rec output_entries = function
       output_string !oc ("  state_" ^ string_of_int state_num ^
                         " lexbuf\n");
       match rest with
-        [] -> output_string !oc "\n"; ()
+        [] -> ()
       | _  -> output_string !oc "\nand "; output_entries rest
 
 
@@ -164,6 +164,3 @@ let output_lexdef header (initial_st, st, actions) =
     output_state i st.(i)
   done;
   output_entries initial_st
-
-
-

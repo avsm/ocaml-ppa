@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: expunge.ml 12061 2012-01-20 15:43:29Z frisch $ *)
+(* $Id: expunge.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* "Expunge" a toplevel by removing compiler modules from the global List.map.
    Usage: expunge <source file> <dest file> <names of modules to keep> *)
@@ -33,7 +33,7 @@ let to_keep = ref StringSet.empty
 
 let negate = Sys.argv.(3) = "-v"
 
-let keep = 
+let keep =
   if negate then fun name -> is_exn name || not (StringSet.mem name !to_keep)
   else fun name -> is_exn name || (StringSet.mem name !to_keep)
 

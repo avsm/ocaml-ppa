@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: command_line.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
+(* $Id: command_line.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (************************ Reading and executing commands ***************)
 
@@ -236,9 +236,9 @@ let instr_env ppf lexbuf =
   if cmdarg <> "" then
     try
       if (String.index cmdarg '=') > 0 then
-	Debugger_config.environment := cmdarg :: !Debugger_config.environment
+        Debugger_config.environment := cmdarg :: !Debugger_config.environment
       else
-	eprintf "Environment variables should not have an empty name\n%!"
+        eprintf "Environment variables should not have an empty name\n%!"
     with Not_found ->
       eprintf "Environment variables should have the \"name=value\" format\n%!"
   else

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_print.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
+(* $Id: odoc_print.ml 12796 2012-07-30 11:22:29Z doligez $ *)
 
 open Format
 
@@ -82,7 +82,7 @@ let simpl_class_type t =
     match t with
       Types.Cty_constr (p,texp_list,ct) -> t
     | Types.Cty_signature cs ->
-        (* on vire les vals et methods pour ne pas qu'elles soient imprimées
+        (* on vire les vals et methods pour ne pas qu'elles soient imprimees
            quand on affichera le type *)
         let tnil = { Types.desc = Types.Tnil ; Types.level = 0; Types.id = 0 } in
         Types.Cty_signature { Types.cty_self = { cs.Types.cty_self with

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: location.mli 12511 2012-05-30 13:29:48Z lefessan $ *)
+(* $Id: location.mli 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* Source code locations (ranges of positions), used in parsetree. *)
 
@@ -77,4 +77,3 @@ val show_filename: string -> string
 
 
 val absname: bool ref
-

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: alloc.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: alloc.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* Random allocation test *)
 
@@ -48,4 +48,3 @@ let argspecs = [
 Arg.parse argspecs (fun _ -> ()) "Usage: alloc [-c]";;
 
 main ();;
-

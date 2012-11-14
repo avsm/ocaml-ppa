@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: gram_aux.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: gram_aux.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* Auxiliaries for the parser. *)
 
@@ -44,4 +44,3 @@ let rec subtract l1 l2 =
   match l1 with
     [] -> []
   | a::l -> if List.mem a l2 then subtract l l2 else a :: subtract l l2
-

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: clflags.mli 12511 2012-05-30 13:29:48Z lefessan $ *)
+(* $Id: clflags.mli 12800 2012-07-30 18:59:07Z doligez $ *)
 
 val objfiles : string list ref
 val ccobjs : string list ref
@@ -81,4 +81,3 @@ val std_include_dir : unit -> string list
 val shared : bool ref
 val dlcode : bool ref
 val runtime_variant : string ref
-

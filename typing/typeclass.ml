@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: typeclass.ml 12616 2012-06-19 10:51:33Z garrigue $ *)
+(* $Id: typeclass.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 open Misc
 open Parsetree
@@ -1722,4 +1722,3 @@ let report_error ppf = function
         "instance variable"
   | No_overriding (kind, name) ->
       fprintf ppf "@[The %s `%s'@ has no previous definition@]" kind name
-

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arith.cmm 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: arith.cmm 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* Regression test for arithmetic instructions *)
 
@@ -217,6 +217,3 @@
       (floataset d 38 (absf f))
 
 )))))))
-
-
-

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: scan_aux.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: scan_aux.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* Auxiliaries for the lexical analyzer *)
 
@@ -57,4 +57,3 @@ let char_for_decimal_code lexbuf i =
   Char.chr(100 * (Char.code(Lexing.lexeme_char lexbuf i) - 48) +
             10 * (Char.code(Lexing.lexeme_char lexbuf (i+1)) - 48) +
                  (Char.code(Lexing.lexeme_char lexbuf (i+2)) - 48))
-

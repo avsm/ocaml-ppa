@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_man.ml 12249 2012-03-20 12:00:11Z guesdon $ *)
+(* $Id: odoc_man.ml 12798 2012-07-30 11:53:27Z doligez $ *)
 
 (** The man pages generator. *)
 open Odoc_info
@@ -492,13 +492,13 @@ class man =
                | l, None, Some r ->
                    bs b "\n.B : ";
                    self#man_of_type_expr_list ~par: false b father " * " l;
-		   bs b ".B -> ";
+                   bs b ".B -> ";
                    self#man_of_type_expr b father r;
                    bs b " "
                | l, (Some t), Some r ->
                    bs b "\n.B of ";
                    self#man_of_type_expr_list ~par: false b father " * " l;
-		   bs b ".B -> ";
+                   bs b ".B -> ";
                    self#man_of_type_expr b father r;
                    bs b ".I \"  \"\n";
                    bs b "(* ";

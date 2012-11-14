@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_global.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: odoc_global.ml 12798 2012-07-30 11:53:27Z doligez $ *)
 
 (** Global variables. *)
 
@@ -84,6 +84,3 @@ let with_trailer = ref true
 let with_toc = ref true
 
 let with_index = ref true
-
-
-

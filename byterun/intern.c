@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: intern.c 12441 2012-05-08 13:48:33Z xleroy $ */
+/* $Id: intern.c 12910 2012-09-10 09:52:09Z doligez $ */
 
 /* Structured input, compact format */
 
@@ -337,7 +337,7 @@ static void intern_rec(value *dest)
           ReadItems(&Field(v, 2), size - 2);
           /* Request freshing OID */
           PushItem();
-          sp->op = OFreshOID;                                           
+          sp->op = OFreshOID;
           sp->dest = &Field(v, 1);
           sp->arg = 1;
           /* Finally read first two block elements: method table and old OID */
@@ -463,9 +463,9 @@ static void intern_rec(value *dest)
       case CODE_INFIXPOINTER:
         ofs = read32u();
         /* Read a value to *dest, then offset *dest by ofs */
-        PushItem();                                                     
+        PushItem();
         sp->dest = dest;
-        sp->op = OShift;                                                
+        sp->op = OShift;
         sp->arg = ofs;
         ReadItems(dest, 1);
         continue;  /* with next iteration of main loop, skipping *dest = v */
@@ -489,7 +489,7 @@ static void intern_rec(value *dest)
         caml_failwith("input_value: ill-formed message");
       }
     }
-  } 
+  }
   /* end of case OReadItems */
   *dest = v;
   break;
@@ -558,7 +558,7 @@ static void intern_add_to_heap(mlsize_t whsize)
     Assert(intern_dest <= end_extra_block);
     if (intern_dest < end_extra_block){
       caml_make_free_blocks ((value *) intern_dest,
-                             end_extra_block - intern_dest, 0);
+                             end_extra_block - intern_dest, 0, Caml_white);
     }
     caml_allocated_words +=
       Wsize_bsize ((char *) intern_dest - intern_extra_block);

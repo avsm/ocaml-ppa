@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: extern.c 12394 2012-04-25 00:40:46Z meyer $ */
+/* $Id: extern.c 12800 2012-07-30 18:59:07Z doligez $ */
 
 /* Structured output */
 
@@ -823,4 +823,3 @@ static struct code_fragment * extern_find_code(char *addr)
   }
   return NULL;
 }
-

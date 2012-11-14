@@ -12,7 +12,7 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: main.c 11156 2011-07-27 14:17:02Z doligez $ */
+/* $Id: main.c 12800 2012-07-30 18:59:07Z doligez $ */
 
 #include <signal.h>
 #include <string.h>
@@ -331,7 +331,7 @@ void create_file_names(void)
     if (action_fd == -1)
         open_error(action_file_name);
     entry_fd = mkstemp(entry_file_name);
-    if (entry_fd == -1)                 
+    if (entry_fd == -1)
         open_error(entry_file_name);
     text_fd = mkstemp(text_file_name);
     if (text_fd == -1)

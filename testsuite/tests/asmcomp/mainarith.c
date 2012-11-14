@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: mainarith.c 11156 2011-07-27 14:17:02Z doligez $ */
+/* $Id: mainarith.c 12800 2012-07-30 18:59:07Z doligez $ */
 
 #include <stdio.h>
 #include <math.h>
@@ -304,4 +304,3 @@ int main(int argc, char **argv)
   }
   return 0;
 }
-

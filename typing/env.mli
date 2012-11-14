@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: env.mli 12706 2012-07-13 08:49:06Z lefessan $ *)
+(* $Id: env.mli 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* Environment handling *)
 
@@ -216,6 +216,3 @@ val fold_classs:
 val fold_cltypes:
   (string -> Path.t -> Types.class_type_declaration -> 'a -> 'a) ->
   Longident.t option -> t -> 'a -> 'a
-
-
-

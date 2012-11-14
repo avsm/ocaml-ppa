@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_text_lexer.mll 12249 2012-03-20 12:00:11Z guesdon $ *)
+(* $Id: odoc_text_lexer.mll 12796 2012-07-30 11:22:29Z doligez $ *)
 
 (** The lexer for string to build text structures. *)
 
@@ -22,10 +22,10 @@ let char_number = ref 0
 
 let string_buffer = Buffer.create 32
 
-(** Fonction de remise à zéro de la chaine de caractères tampon *)
+(** Fonction de remise a zero de la chaine de caracteres tampon *)
 let reset_string_buffer () = Buffer.reset string_buffer
 
-(** Fonction d'ajout d'un caractère dans la chaine de caractères tampon *)
+(** Fonction d'ajout d'un caractere dans la chaine de caracteres tampon *)
 let ajout_char_string = Buffer.add_char string_buffer
 
 (** Add a string to the buffer. *)
