@@ -255,6 +255,8 @@ Depends:
  ocaml-nox-${F:OCamlABI}
 Provides:
  ocaml-compiler-libs-${F:OCamlABI}
+Replaces: ocaml-base-nox (<< 4)
+Breaks: ocaml-base-nox (<< 4)
 Description: OCaml interpreter and standard libraries
  Objective (OCaml) is an implementation of the ML language, based on
  the Caml Light dialect extended with a complete class-based object system
