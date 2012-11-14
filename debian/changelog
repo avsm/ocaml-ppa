@@ -1,6 +1,14 @@
 ocaml (4.00.1-1) UNRELEASED; urgency=low
 
+  [ Stéphane Glondu ]
   * New upstream release
+
+  [ Sylvain Le Gall ]
+  * Remove Sylvain Le Gall from uploaders
+
+  [ Mehdi Dogguy ]
+  * Use DEB_BUILD_GNU_TYPE instead of relying on "uname -m" (Closes: #689517).
+    Thanks to Konstantinos Margaritis for the patch.
 
  -- Stéphane Glondu <glondu@debian.org>  Wed, 14 Nov 2012 13:07:19 +0100
 
