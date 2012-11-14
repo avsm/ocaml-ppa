@@ -105,7 +105,7 @@ index bb14de6..9922bf2 100644
          temps := c_file :: !temps;
          if Ccomp.compile_file c_file <> 0 then raise(Error Custom_runtime);
 diff --git a/testsuite/tests/embedded/Makefile b/testsuite/tests/embedded/Makefile
-index ed33143..dc4e9a1 100644
+index ec2308d..1a826aa 100644
 --- a/testsuite/tests/embedded/Makefile
 +++ b/testsuite/tests/embedded/Makefile
 @@ -1,5 +1,8 @@
