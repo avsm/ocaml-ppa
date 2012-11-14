@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: parsecmm.mly 12235 2012-03-14 09:24:19Z xleroy $ */
+/* $Id: parsecmm.mly 12800 2012-07-30 18:59:07Z doligez $ */
 
 /* A simple parser for C-- */
 
@@ -325,4 +325,3 @@ dataitem:
   | SKIP INTCONST               { Cskip $2 }
   | ALIGN INTCONST              { Calign $2 }
 ;
-

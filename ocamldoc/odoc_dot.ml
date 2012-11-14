@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_dot.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: odoc_dot.ml 12798 2012-07-30 11:53:27Z doligez $ *)
 
 (** Definition of a class which outputs a dot file showing
    top modules dependencies.*)
@@ -143,4 +143,3 @@ class dot =
 end
 
 module type Dot_generator = module type of Generator
-

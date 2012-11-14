@@ -10,7 +10,7 @@
 .\"*                                                                     *
 .\"***********************************************************************
 .\"
-.\" $Id: ocamldoc.m 11156 2011-07-27 14:17:02Z doligez $
+.\" $Id: ocamldoc.m 12800 2012-07-30 18:59:07Z doligez $
 .\"
 .TH OCAMLDOC 1
 
@@ -253,7 +253,7 @@ as the title for the generated documentation.
 .BI \-intro \ file
 Use content of
 .I file
-as 
+as
 .B ocamldoc
 text to use as introduction (HTML, LaTeX and TeXinfo only).
 For HTML, the file is used to create the whole "index.html" file.

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bytepackager.ml 12202 2012-03-07 17:50:17Z frisch $ *)
+(* $Id: bytepackager.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* "Package" a set of .cmo files into one .cmo file having the
    original compilation units as sub-modules. *)
@@ -68,7 +68,7 @@ let rename_relocation packagename objfile mapping defined base (rel, ofs) =
           (* PR#5276, as above *)
           let name = Ident.name id in
           if String.contains name '.' then
-	    Reloc_setglobal (Ident.create_persistent (packagename ^ "." ^ name))
+            Reloc_setglobal (Ident.create_persistent (packagename ^ "." ^ name))
           else
             rel
         end
@@ -235,10 +235,10 @@ let package_object_files ppf files targetfile targetname coercion =
 let package_files ppf files targetfile =
     let files =
     List.map
-	(fun f ->
+        (fun f ->
         try find_in_path !Config.load_path f
         with Not_found -> raise(Error(File_not_found f)))
-	files in
+        files in
     let prefix = chop_extensions targetfile in
     let targetcmi = prefix ^ ".cmi" in
     let targetname = String.capitalize(Filename.basename prefix) in

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tagged-integr.cmm 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: tagged-integr.cmm 12800 2012-07-30 18:59:07Z doligez $ *)
 
 ("res_square": skip 8)
 ("h": skip 8)
@@ -42,4 +42,3 @@
   (store float "low" 0.0)
   (store float "hi" 1.0)
   (load float (app "integr" "square" "low" "hi" n addr)))
-

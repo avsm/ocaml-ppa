@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printast.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
+(* $Id: printast.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 open Asttypes;;
 open Format;;
@@ -338,9 +338,9 @@ and value_description i ppf x =
 and string_option_underscore i ppf =
   function
     | Some x ->
-	string i ppf x.txt
+        string i ppf x.txt
     | None ->
-	string i ppf "_"
+        string i ppf "_"
 
 and type_declaration i ppf x =
   line i ppf "type_declaration %a\n" fmt_location x.ptype_loc;

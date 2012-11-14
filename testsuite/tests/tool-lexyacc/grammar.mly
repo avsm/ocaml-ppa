@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: grammar.mly 11156 2011-07-27 14:17:02Z doligez $ */
+/* $Id: grammar.mly 12800 2012-07-30 18:59:07Z doligez $ */
 
 /* The grammar for lexer definitions */
 
@@ -50,7 +50,7 @@ header:
 other_definitions:
     other_definitions Tand definition
         { $3::$1 }
-  |     
+  |
         { [] }
 ;
 definition:
@@ -111,4 +111,3 @@ char_class1:
 ;
 
 %%
-

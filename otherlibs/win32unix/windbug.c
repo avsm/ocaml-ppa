@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: windbug.c 11156 2011-07-27 14:17:02Z doligez $ */
+/* $Id: windbug.c 12800 2012-07-30 18:59:07Z doligez $ */
 
 #include "windbug.h"
 
@@ -26,7 +26,7 @@ int debug_test (void)
     debug = (getenv("OCAMLDEBUG") != NULL);
     debug_init = 1;
   };
-#endif 
+#endif
 
   return debug;
 }

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: md5.c 12227 2012-03-13 14:44:48Z xleroy $ */
+/* $Id: md5.c 12800 2012-07-30 18:59:07Z doligez $ */
 
 #include <string.h>
 #include "alloc.h"
@@ -68,7 +68,7 @@ CAMLprim value caml_md5_chan(value vchan, value len)
   CAMLreturn (res);
 }
 
-CAMLexport void caml_md5_block(unsigned char digest[16], 
+CAMLexport void caml_md5_block(unsigned char digest[16],
                                void * data, uintnat len)
 {
   struct MD5Context ctx;

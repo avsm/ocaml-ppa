@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parmatch.mli 12521 2012-05-31 07:57:32Z garrigue $ *)
+(* $Id: parmatch.mli 12961 2012-09-27 13:30:07Z garrigue $ *)
 
 (* Detection of partial matches and unused match cases. *)
 open Asttypes
@@ -29,6 +29,7 @@ val normalize_pat : pattern -> pattern
 val all_record_args :
     (Path.t * Longident.t loc * label_description * pattern) list ->
     (Path.t * Longident.t loc * label_description * pattern) list
+val const_compare : constant -> constant -> int
 
 val le_pat : pattern -> pattern -> bool
 val le_pats : pattern list -> pattern list -> bool

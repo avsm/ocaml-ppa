@@ -12,13 +12,14 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: skeleton.c 11156 2011-07-27 14:17:02Z doligez $ */
+/* $Id: skeleton.c 12834 2012-08-06 14:16:24Z doligez $ */
 
 #include "defs.h"
 
 char *header[] =
 {
   "open Parsing;;",
+  "let _ = parse_error;;", /* avoid warning 33 (PR#5719) */
   0
 };
 

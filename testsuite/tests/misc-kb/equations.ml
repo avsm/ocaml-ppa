@@ -10,13 +10,13 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: equations.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: equations.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (****************** Equation manipulations *************)
 
 open Terms
 
-type rule = 
+type rule =
   { number: int;
     numvars: int;
     lhs: term;
@@ -53,7 +53,7 @@ let pretty_rule rule =
 
 
 let pretty_rules rules = List.iter pretty_rule rules
- 
+
 (****************** Rewriting **************************)
 
 (* Top-level rewriting. Let eq:L=R be an equation, M be a term such that L<=M.
@@ -112,4 +112,3 @@ let rec mrewrite_all rules m =
     mrewrite_all rules (mrewrite1 rules m)
   with Failure _ ->
     m
-

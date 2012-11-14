@@ -14,7 +14,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: cltkVar.c 12149 2012-02-10 16:15:24Z doligez $ */
+/* $Id: cltkVar.c 12800 2012-07-30 18:59:07Z doligez $ */
 
 /* Alternative to tkwait variable */
 #include <string.h>
@@ -65,7 +65,7 @@ CAMLprim value camltk_setvar(value var, value contents)
 
   if (s == NULL)
     tk_error(Tcl_GetStringResult(cltclinterp));
-  else 
+  else
     return(Val_unit);
 }
 

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: memory.c 12364 2012-04-17 08:20:35Z doligez $ */
+/* $Id: memory.c 12910 2012-09-10 09:52:09Z doligez $ */
 
 #include <stdlib.h>
 #include <string.h>
@@ -318,7 +318,7 @@ static char *expand_heap (mlsize_t request)
   }
   remain = malloc_request;
   prev = hp = mem;
-  /* XXX find a way to do this with a call to caml_make_free_blocks */
+  /* FIXME find a way to do this with a call to caml_make_free_blocks */
   while (Wosize_bhsize (remain) > Max_wosize){
     Hd_hp (hp) = Make_header (Max_wosize, 0, Caml_blue);
 #ifdef DEBUG

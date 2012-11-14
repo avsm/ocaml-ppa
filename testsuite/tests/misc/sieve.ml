@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: sieve.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: sieve.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* Eratosthene's sieve *)
 
@@ -51,6 +51,6 @@ let rec do_list f = function
 
 
 let _ =
-  do_list (fun n -> print_int n; print_string " ") (sieve 50000);
+  do_list (fun n -> print_string " "; print_int n) (sieve 50000);
   print_newline();
   exit 0

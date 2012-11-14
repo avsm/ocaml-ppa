@@ -11,7 +11,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stdLabels.mli 12210 2012-03-08 19:52:03Z doligez $ *)
+(* $Id: stdLabels.mli 12823 2012-08-06 11:41:12Z doligez $ *)
 
 (** Standard labeled libraries.
 
@@ -117,6 +117,8 @@ module String :
         unit
     val concat : sep:string -> string list -> string
     val iter : f:(char -> unit) -> string -> unit
+    val iteri : f:(int -> char -> unit) -> string -> unit
+    val map : f:(char -> char) -> string -> string
     val trim : string -> string
     val escaped : string -> string
     val index : string -> char -> int

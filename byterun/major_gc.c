@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: major_gc.c 12625 2012-06-21 13:43:03Z doligez $ */
+/* $Id: major_gc.c 12910 2012-09-10 09:52:09Z doligez $ */
 
 #include <limits.h>
 
@@ -496,7 +496,7 @@ void caml_init_major_heap (asize_t heap_size)
 
   caml_fl_init_merge ();
   caml_make_free_blocks ((value *) caml_heap_start,
-                         Wsize_bsize (caml_stat_heap_size), 1);
+                         Wsize_bsize (caml_stat_heap_size), 1, Caml_white);
   caml_gc_phase = Phase_idle;
   gray_vals_size = 2048;
   gray_vals = (value *) malloc (gray_vals_size * sizeof (value));

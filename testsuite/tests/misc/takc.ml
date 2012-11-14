@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: takc.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: takc.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 let rec tak x y z =
   if x > y then tak (tak (x-1) y z) (tak (y-1) z x) (tak (z-1) x y)
@@ -20,4 +20,3 @@ let rec repeat n =
   if n <= 0 then 0 else tak 18 12 6 + repeat(n-1)
 
 let _ = print_int (repeat 2000); print_newline(); exit 0
-

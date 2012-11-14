@@ -10,7 +10,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: parser.mly 12638 2012-06-21 17:10:58Z frisch $ */
+/* $Id: parser.mly 12800 2012-07-30 18:59:07Z doligez $ */
 
 /* The parser definition */
 
@@ -1423,7 +1423,7 @@ constructor_declaration:
 
   | constr_ident generalized_constructor_arguments
       { let arg_types,ret_type = $2 in
-	(mkrhs $1 1, arg_types,ret_type, symbol_rloc()) }
+        (mkrhs $1 1, arg_types,ret_type, symbol_rloc()) }
 ;
 
 constructor_arguments:

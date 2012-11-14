@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: nat_stubs.c 11156 2011-07-27 14:17:02Z doligez $ */
+/* $Id: nat_stubs.c 12800 2012-07-30 18:59:07Z doligez $ */
 
 #include "alloc.h"
 #include "config.h"
@@ -416,4 +416,3 @@ static intnat hash_nat(value v)
   }
   return h;
 }
-

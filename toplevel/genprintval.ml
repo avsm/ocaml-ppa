@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: genprintval.ml 12689 2012-07-10 14:54:19Z doligez $ *)
+(* $Id: genprintval.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* To print values *)
 
@@ -249,15 +249,15 @@ module Make(O : OBJ)(EVP : EVALPATH with type valu = O.t) = struct
                       else Cstr_constant(O.obj obj) in
                     let (constr_name, constr_args,ret_type) =
                       Datarepr.find_constr_by_tag tag constr_list in
-		    let type_params =
-		      match ret_type with
-			Some t ->
-			  begin match (Ctype.repr t).desc with
-			    Tconstr (_,params,_) ->
-			      params
-			  | _ -> assert false end
-		      | None -> decl.type_params
-		    in
+                    let type_params =
+                      match ret_type with
+                        Some t ->
+                          begin match (Ctype.repr t).desc with
+                            Tconstr (_,params,_) ->
+                              params
+                          | _ -> assert false end
+                      | None -> decl.type_params
+                    in
                     let ty_args =
                       List.map
                         (function ty ->

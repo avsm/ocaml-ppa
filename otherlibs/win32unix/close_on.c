@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: close_on.c 11888 2011-12-20 08:59:09Z xleroy $ */
+/* $Id: close_on.c 12800 2012-07-30 18:59:07Z doligez $ */
 
 #include <mlvalues.h>
 #include <windows.h>
@@ -22,8 +22,8 @@ int win_set_inherit(value fd, BOOL inherit)
   /* According to the MSDN, SetHandleInformation may not work
      for console handles on WinNT4 and earlier versions. */
   if (! SetHandleInformation(Handle_val(fd),
-			     HANDLE_FLAG_INHERIT,
-			     inherit ? HANDLE_FLAG_INHERIT : 0)) {
+                             HANDLE_FLAG_INHERIT,
+                             inherit ? HANDLE_FLAG_INHERIT : 0)) {
     win32_maperr(GetLastError());
     return -1;
   }

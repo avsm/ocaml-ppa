@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: cmx_format.mli 12210 2012-03-08 19:52:03Z doligez $ *)
+(* $Id: cmx_format.mli 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* Format of .cmx, .cmxa and .cmxs files *)
 
@@ -60,4 +60,3 @@ type dynheader = {
   dynu_magic: string;
   dynu_units: dynunit list;
 }
-

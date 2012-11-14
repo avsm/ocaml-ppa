@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: roots.c 12149 2012-02-10 16:15:24Z doligez $ */
+/* $Id: roots.c 12800 2012-07-30 18:59:07Z doligez $ */
 
 /* To walk the memory roots for garbage collection */
 
@@ -369,5 +369,3 @@ uintnat caml_stack_usage (void)
     sz += (*caml_stack_usage_hook)();
   return sz;
 }
-
-

@@ -10,7 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: btype.ml 12726 2012-07-18 03:34:36Z garrigue $ *)
+(* $Id: btype.ml 12800 2012-07-30 18:59:07Z doligez $ *)
 
 (* Basic operations on core types *)
 
@@ -340,11 +340,11 @@ let unmark_type_decl decl =
   begin match decl.type_kind with
     Type_abstract -> ()
   | Type_variant cstrs ->
-      List.iter 
-	(fun (c, tl, ret_type_opt) -> 
-	  List.iter unmark_type tl;
-	  Misc.may unmark_type ret_type_opt)
-	cstrs
+      List.iter
+        (fun (c, tl, ret_type_opt) ->
+          List.iter unmark_type tl;
+          Misc.may unmark_type ret_type_opt)
+        cstrs
   | Type_record(lbls, rep) ->
       List.iter (fun (c, mut, t) -> unmark_type t) lbls
   end;

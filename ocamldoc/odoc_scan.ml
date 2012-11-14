@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_scan.ml 12341 2012-04-11 16:46:30Z guesdon $ *)
+(* $Id: odoc_scan.ml 12796 2012-07-30 11:22:29Z doligez $ *)
 
 (** Scanning of modules and elements.
 
@@ -56,7 +56,7 @@ class scanner =
     method scan_class_pre (c : Odoc_class.t_class) = true
 
     (** This method scan the elements of the given class.
-       A VOIR : scan des classes hÃ©ritÃ©es.*)
+       A VOIR : scan des classes heritees.*)
     method scan_class_elements c =
       List.iter
         (fun ele ->
@@ -82,7 +82,7 @@ class scanner =
     method scan_class_type_pre (ct : Odoc_class.t_class_type) = true
 
     (** This method scan the elements of the given class type.
-       A VOIR : scan des classes hÃ©ritÃ©es.*)
+       A VOIR : scan des classes heritees.*)
     method scan_class_type_elements ct =
       List.iter
         (fun ele ->

@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_env.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
+(* $Id: odoc_env.ml 12796 2012-07-30 11:22:29Z doligez $ *)
 
 (** Environment for finding complete names from relative names. *)
 
@@ -56,7 +56,7 @@ let rec add_signature env root ?rel signat =
     | Types.Sig_exception (ident, _) -> { env with env_exceptions = (rel_name ident, qualify ident) :: env.env_exceptions }
     | Types.Sig_module (ident, modtype, _) ->
         let env2 =
-          match modtype with (* A VOIR : le cas où c'est un identificateur, dans ce cas on n'a pas de signature *)
+          match modtype with (* A VOIR : le cas ou c'est un identificateur, dans ce cas on n'a pas de signature *)
             Types.Mty_signature s -> add_signature env (qualify ident) ~rel: (rel_name ident) s
           |  _ -> env
         in
@@ -68,7 +68,7 @@ let rec add_signature env root ?rel signat =
               env
           | Types.Modtype_manifest modtype ->
               match modtype with
-                 (* A VOIR : le cas où c'est un identificateur, dans ce cas on n'a pas de signature *)
+                 (* A VOIR : le cas ou c'est un identificateur, dans ce cas on n'a pas de signature *)
                 Types.Mty_signature s -> add_signature env (qualify ident) ~rel: (rel_name ident) s
               |  _ -> env
         in
@@ -246,4 +246,4 @@ let subst_class_type env t =
   in
   iter t
 
-(* eof $Id: odoc_env.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
+(* eof $Id: odoc_env.ml 12796 2012-07-30 11:22:29Z doligez $ *)

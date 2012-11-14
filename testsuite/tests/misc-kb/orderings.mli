@@ -10,11 +10,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: orderings.mli 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id: orderings.mli 12800 2012-07-30 18:59:07Z doligez $ *)
 
 open Terms
 
-type ordering = 
+type ordering =
     Greater
   | Equal
   | NotGE

@@ -12,7 +12,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: arm.S 12210 2012-03-08 19:52:03Z doligez $ */
+/* $Id: arm.S 12800 2012-07-30 18:59:07Z doligez $ */
 
 /* Asm part of the runtime system, ARM processor */
 /* Must be preprocessed by cpp */
@@ -60,7 +60,7 @@ alloc_limit     .req    r11
 
         .globl  caml_system__code_begin
 caml_system__code_begin:
-        
+
         .align  2
         .globl  caml_call_gc
         .type caml_call_gc, %function

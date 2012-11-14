@@ -9,11 +9,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_merge.mli 12341 2012-04-11 16:46:30Z guesdon $ *)
+(* $Id: odoc_merge.mli 12796 2012-07-30 11:22:29Z doligez $ *)
 
 (** Merge of information from [.ml] and [.mli] for a module.*)
 
-(** Merging \@before tags. *)
+(** Merging \@before tags. *)
 val merge_before_tags :
     (string * Odoc_types.text) list -> (string * Odoc_types.text) list
 

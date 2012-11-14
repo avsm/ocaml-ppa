@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: mmap_unix.c 12582 2012-06-07 12:17:44Z xleroy $ */
+/* $Id: mmap_unix.c 12800 2012-07-30 18:59:07Z doligez $ */
 
 /* Needed (under Linux at least) to get pwrite's prototype in unistd.h.
    Must be defined before the first system .h is included. */
@@ -70,7 +70,7 @@ static int caml_grow_file(int fd, file_offset size)
     if (p != -1) {
       c = 0;
       p = write(fd, &c, 1);
-      if (p != -1) 
+      if (p != -1)
         p = lseek(fd, currpos, SEEK_SET);
     }
   }
