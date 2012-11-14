@@ -1,7 +1,11 @@
-ocaml (4.00.1-1) UNRELEASED; urgency=low
+ocaml (4.00.1-1) experimental; urgency=low
 
   [ Stéphane Glondu ]
   * New upstream release
+  * ocaml-compiler-libs: Replaces/Breaks previous versions of
+    ocaml-base-nox (Closes: #684031)
+  * Bump Standards-Version to 3.9.4
+  * Bump debhelper compat level to 9
 
   [ Sylvain Le Gall ]
   * Remove Sylvain Le Gall from uploaders
@@ -10,7 +14,7 @@ ocaml (4.00.1-1) UNRELEASED; urgency=low
   * Use DEB_BUILD_GNU_TYPE instead of relying on "uname -m" (Closes: #689517).
     Thanks to Konstantinos Margaritis for the patch.
 
- -- Stéphane Glondu <glondu@debian.org>  Wed, 14 Nov 2012 13:07:19 +0100
+ -- Stéphane Glondu <glondu@debian.org>  Wed, 14 Nov 2012 14:17:27 +0100
 
 ocaml (4.00.0-1) experimental; urgency=low
 
