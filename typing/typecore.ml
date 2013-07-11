@@ -106,7 +106,6 @@ let rp node =
 ;;
 
 
-let fst3 (x, _, _) = x
 let snd3 (_,x,_) = x
 
 (* Upper approximation of free identifiers on the parse tree *)
@@ -1263,6 +1262,9 @@ let force_delayed_checks () =
   List.iter (fun f -> f ()) (List.rev !delayed_checks);
   reset_delayed_checks ();
   Btype.backtrack snap
+
+let fst3 (x, _, _) = x
+let snd3 (_, x, _) = x
 
 let rec final_subexpression sexp =
   match sexp.pexp_desc with

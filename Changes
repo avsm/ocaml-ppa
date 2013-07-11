@@ -1,17 +1,3 @@
-Next version:
--------------
-
-(Changes that can break existing programs are marked with a "*")
-
-Bug fixes:
-- PR#4719: Sys.executable_name is wrong if executable name contains dots (Windows)
-
-Standard library:
-- PR#4986: add List.sort_uniq and Set.of_list
-
-Features wishes:
-
-
 OCaml 4.01.0:
 -------------
 
@@ -66,10 +52,11 @@ Runtime system:
   point within the major heap.
 
 Bug fixes:
-- PR#6062: Fix a regression bug caused by commit 13047
 - PR#3679: Warning display problems
 - PR#3963: Graphics.wait_next_event in Win32 hangs if window closed
 - PR#4079: Queue.copy is now tail-recursive
+- PR#4469: emacs mode: caml-set-compile-command is annoying with ocamlbuild
+- PR#4485: Graphics: Keyboard events incorrectly delivered in native code
 - PR#4502: ocamlbuild now reliably excludes the build-dir from hygiene check
 - PR#4762: ?? is not used at all, but registered as a lexer token
 - PR#4887: input_char after close_in crashes ocaml (msvc runtime)
@@ -148,6 +135,7 @@ Bug fixes:
 - PR#5948: GADT with polymorphic variants bug
 - PR#5965: disallow auto-reference to a recursive module in its definition
 - PR#5973: Format module incorrectly parses format string
+- PR#5974: better documentation for Str.regexp
 - PR#5976: crash after recovering from two stack overflows (ocamlopt on MacOS X)
 - PR#5981: Incompatibility check assumes abstracted types are injective
 - PR#5985: Unexpected interaction between variance and GADTs
