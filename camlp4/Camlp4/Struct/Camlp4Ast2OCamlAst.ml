@@ -352,8 +352,11 @@ module Make (Ast : Sig.Camlp4Ast) = struct
     fun
     [ <:ctyp< $t1$ == $t2$ >> ->
         type_decl tl cl loc (Some (ctyp t1)) pflag t2
-    | <:ctyp< private $t$ >> ->
-        type_decl tl cl loc m True t
+    | <:ctyp@_loc< private $t$ >> ->
+        if pflag then
+          error _loc "multiple private keyword used, use only one instead"
+        else
+          type_decl tl cl loc m True t
     | <:ctyp< { $t$ } >> ->
         mktype loc tl cl
           (Ptype_record (List.map mktrecord (list_of_ctyp t []))) (mkprivate' pflag) m
@@ -860,8 +863,9 @@ value varify_constructors var_names =
     | ExWhi loc e1 el ->
         let e2 = ExSeq loc el in
         mkexp loc (Pexp_while (expr e1) (expr e2))
-    | <:expr@loc< let open $i$ in $e$ >> ->
-        mkexp loc (Pexp_open (long_uident i) (expr e))
+    | ExOpI loc i ov e ->
+        let fresh = override_flag loc ov in 
+        mkexp loc (Pexp_open fresh (long_uident i) (expr e))
     | <:expr@loc< (module $me$ : $pt$) >> ->
         mkexp loc (Pexp_constraint (mkexp loc (Pexp_pack (module_expr me)),
                     Some (mktyp loc (Ptyp_package (package_type pt))), None))
@@ -1005,7 +1009,7 @@ value varify_constructors var_names =
         in
         [mksig loc (Psig_modtype (with_loc n loc) si) :: l]
     | SgOpn loc id ->
-        [mksig loc (Psig_open (long_uident id)) :: l]
+        [mksig loc (Psig_open Fresh (long_uident id)) :: l]
     | SgTyp loc tdl -> [mksig loc (Psig_type (mktype_decl tdl [])) :: l]
     | SgVal loc n t -> [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t [])) :: l]
     | <:sig_item@loc< $anti:_$ >> -> error loc "antiquotation in sig_item" ]
@@ -1060,7 +1064,7 @@ value varify_constructors var_names =
         [mkstr loc (Pstr_exception (with_loc (conv_con s) loc)
                       (List.map ctyp (list_of_ctyp t []))) :: l ]
     | <:str_item@loc< exception $uid:s$ = $i$ >> ->
-        [mkstr loc (Pstr_exn_rebind (with_loc (conv_con s) loc) (ident i)) :: l ]
+        [mkstr loc (Pstr_exn_rebind (with_loc (conv_con s) loc) (long_uident ~conv_con i)) :: l ]
     | <:str_item@loc< exception $uid:_$ of $_$ = $_$ >> ->
         error loc "type in exception alias"
     | StExc _ _ _ -> assert False (*FIXME*)
@@ -1071,8 +1075,9 @@ value varify_constructors var_names =
     | StRecMod loc mb ->
         [mkstr loc (Pstr_recmodule (module_str_binding mb [])) :: l]
     | StMty loc n mt -> [mkstr loc (Pstr_modtype (with_loc n loc) (module_type mt)) :: l]
-    | StOpn loc id ->
-        [mkstr loc (Pstr_open (long_uident id)) :: l]
+    | StOpn loc ov id ->
+        let fresh = override_flag loc ov in
+        [mkstr loc (Pstr_open fresh (long_uident id)) :: l]
     | StTyp loc tdl -> [mkstr loc (Pstr_type (mktype_decl tdl [])) :: l]
     | StVal loc rf bi ->
         [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]

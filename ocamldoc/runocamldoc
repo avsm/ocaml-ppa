@@ -12,8 +12,6 @@
 #                                                                     #
 #######################################################################
 
-# $Id: runocamldoc 11156 2011-07-27 14:17:02Z doligez $
-
 case "$1" in
   true) shift
         exec ../boot/ocamlrun  -I ../otherlibs/unix -I ../otherlibs/str \

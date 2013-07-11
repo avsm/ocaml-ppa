@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: sets.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 module IntSet = Set.Make(struct type t = int let compare x y = x-y end)
 
 let even = List.fold_right IntSet.add [0; -2; 2; 4; 6; -10] IntSet.empty

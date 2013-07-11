@@ -10,8 +10,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: i386.S 12649 2012-06-27 12:29:20Z doligez $ */
-
 /* Linux with ELF binaries does not prefix identifiers with _.
    Linux with a.out binaries, FreeBSD, and NextStep do. */
 

@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: cmmgen.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Translation from closed lambda to C-- *)
 
 val compunit: int -> Clambda.ulambda -> Cmm.phrase list

@@ -11,8 +11,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 12511 2012-05-30 13:29:48Z lefessan $
-
 # Makefile for the dynamic link library
 
 include ../../config/Makefile
@@ -20,7 +18,7 @@ include ../../config/Makefile
 CAMLC=../../boot/ocamlrun ../../ocamlc
 CAMLOPT=../../ocamlcompopt.sh
 INCLUDES=-I ../../utils -I ../../typing -I ../../bytecomp -I ../../asmcomp
-COMPFLAGS=-warn-error A -I ../../stdlib $(INCLUDES)
+COMPFLAGS=-w +33..39 -warn-error A -I ../../stdlib $(INCLUDES)
 
 OBJS=dynlinkaux.cmo dynlink.cmo
 

@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: unixsupport.c 11223 2011-10-15 09:02:22Z xleroy $ */
-
 #include <stddef.h>
 #include <mlvalues.h>
 #include <callback.h>

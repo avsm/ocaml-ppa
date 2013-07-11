@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: checkbound.cmm 12800 2012-07-30 18:59:07Z doligez $ *)
-
 (function "checkbound2" (x: int y: int)
   (checkbound x y))
 

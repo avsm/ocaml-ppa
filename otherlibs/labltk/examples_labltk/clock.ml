@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: clock.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id$ *)
 
 (* Clock/V, a simple clock.
    Reverts every time you push the right button.

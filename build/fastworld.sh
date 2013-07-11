@@ -12,8 +12,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: fastworld.sh 11156 2011-07-27 14:17:02Z doligez $
-
 cd `dirname $0`
 set -e
 if [ -e ocamlbuild_mixed_mode ]; then

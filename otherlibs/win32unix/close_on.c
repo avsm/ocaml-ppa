@@ -11,11 +11,9 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: close_on.c 12800 2012-07-30 18:59:07Z doligez $ */
-
 #include <mlvalues.h>
-#include <windows.h>
 #include "unixsupport.h"
+#include <windows.h>
 
 int win_set_inherit(value fd, BOOL inherit)
 {

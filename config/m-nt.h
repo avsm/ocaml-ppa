@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: m-nt.h 11156 2011-07-27 14:17:02Z doligez $ */
-
 /* Machine configuration, Intel x86 processors, Win32,
    Visual C++ or Mingw compiler */
 

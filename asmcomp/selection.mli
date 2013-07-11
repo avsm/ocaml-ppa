@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Selection of pseudo-instructions, assignment of pseudo-registers,
    sequentialization. *)
 

@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asmgen.mli 12058 2012-01-20 14:23:34Z frisch $ *)
-
 (* From lambda to assembly code *)
 
 val compile_implementation :

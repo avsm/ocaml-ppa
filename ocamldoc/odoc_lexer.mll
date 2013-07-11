@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_lexer.mll 12796 2012-07-30 11:22:29Z doligez $ *)
-
 (** The lexer for special comments. *)
 
 open Lexing

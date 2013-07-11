@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: open.c 11305 2011-12-13 16:21:10Z frisch $ */
-
 #include <mlvalues.h>
 #include <alloc.h>
 #include "unixsupport.h"

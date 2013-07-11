@@ -11,8 +11,6 @@
 ;*                                                                     *
 ;***********************************************************************
 
-; $Id: i386nt.asm 12800 2012-07-30 18:59:07Z doligez $
-
 ; Asm part of the runtime system, Intel 386 processor, Intel syntax
 
         .386

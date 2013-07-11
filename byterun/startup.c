@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: startup.c 12715 2012-07-16 10:37:03Z frisch $ */
-
 /* Start-up code */
 
 #include <stdio.h>
@@ -75,7 +73,7 @@ static void init_atoms(void)
   for(i = 0; i < 256; i++) caml_atom_table[i] = Make_header(0, i, Caml_white);
   if (caml_page_table_add(In_static_data,
                           caml_atom_table, caml_atom_table + 256) != 0) {
-    caml_fatal_error("Fatal error: not enough memory for the initial page table");
+    caml_fatal_error("Fatal error: not enough memory for initial page table");
   }
 }
 
@@ -309,16 +307,20 @@ static void parse_camlrunparam(void)
   if (opt != NULL){
     while (*opt != '\0'){
       switch (*opt++){
-      case 's': scanmult (opt, &minor_heap_init); break;
-      case 'i': scanmult (opt, &heap_chunk_init); break;
+      case 'a': scanmult (opt, &p); caml_set_allocation_policy (p); break;
+      case 'b': caml_record_backtrace(Val_true); break;
       case 'h': scanmult (opt, &heap_size_init); break;
+      case 'i': scanmult (opt, &heap_chunk_init); break;
       case 'l': scanmult (opt, &max_stack_init); break;
       case 'o': scanmult (opt, &percent_free_init); break;
       case 'O': scanmult (opt, &max_percent_free_init); break;
-      case 'v': scanmult (opt, &caml_verb_gc); break;
-      case 'b': caml_record_backtrace(Val_true); break;
       case 'p': caml_parser_trace = 1; break;
-      case 'a': scanmult (opt, &p); caml_set_allocation_policy (p); break;
+      /* case 'R': see stdlib/hashtbl.mli */
+      case 's': scanmult (opt, &minor_heap_init); break;
+#ifdef DEBUG
+      case 't': caml_trace_flag = 1; break;
+#endif
+      case 'v': scanmult (opt, &caml_verb_gc); break;
       }
     }
   }
@@ -328,6 +330,13 @@ extern void caml_init_ieee_floats (void);
 
 #ifdef _WIN32
 extern void caml_signal_thread(void * lpParam);
+#endif
+
+#ifdef _MSC_VER
+
+/* PR 4887: avoid crash box of windows runtime on some system calls */
+extern void caml_install_invalid_parameter_handler();
+
 #endif
 
 /* Main entry point when loading code from a file */
@@ -340,13 +349,14 @@ CAMLexport void caml_main(char **argv)
   value res;
   char * shared_lib_path, * shared_libs, * req_prims;
   char * exe_name;
-#ifdef __linux__
   static char proc_self_exe[256];
-#endif
 
   /* Machine-dependent initialization of the floating-point hardware
      so that it behaves as much as possible as specified in IEEE */
   caml_init_ieee_floats();
+#ifdef _MSC_VER
+  caml_install_invalid_parameter_handler();
+#endif
   caml_init_custom_operations();
   caml_ext_table_init(&caml_shared_libs_path, 8);
   caml_external_raise = NULL;
@@ -356,12 +366,18 @@ CAMLexport void caml_main(char **argv)
 #endif
   parse_camlrunparam();
   pos = 0;
+
+  /* First, try argv[0] (when ocamlrun is called by a bytecode program) */
   exe_name = argv[0];
-#ifdef __linux__
-  if (caml_executable_name(proc_self_exe, sizeof(proc_self_exe)) == 0)
-    exe_name = proc_self_exe;
-#endif
   fd = caml_attempt_open(&exe_name, &trail, 0);
+
+  /* Should we really do that at all?  The current executable is ocamlrun
+     itself, it's never a bytecode program. */
+  if (fd < 0 && caml_executable_name(proc_self_exe, sizeof(proc_self_exe)) == 0) {
+    exe_name = proc_self_exe;
+    fd = caml_attempt_open(&exe_name, &trail, 0);
+  }
+
   if (fd < 0) {
     pos = parse_command_line(argv);
     if (argv[pos] == 0)
@@ -444,11 +460,12 @@ CAMLexport void caml_startup_code(
   value res;
   char* cds_file;
   char * exe_name;
-#ifdef __linux__
   static char proc_self_exe[256];
-#endif
 
   caml_init_ieee_floats();
+#ifdef _MSC_VER
+  caml_install_invalid_parameter_handler();
+#endif
   caml_init_custom_operations();
 #ifdef DEBUG
   caml_verb_gc = 63;
@@ -460,10 +477,8 @@ CAMLexport void caml_startup_code(
   }
   parse_camlrunparam();
   exe_name = argv[0];
-#ifdef __linux__
   if (caml_executable_name(proc_self_exe, sizeof(proc_self_exe)) == 0)
     exe_name = proc_self_exe;
-#endif
   caml_external_raise = NULL;
   /* Initialize the abstract machine */
   caml_init_gc (minor_heap_init, heap_size_init, heap_chunk_init,

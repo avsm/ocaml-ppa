@@ -11,14 +11,10 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: gethostname.c 11156 2011-07-27 14:17:02Z doligez $ */
-
 #include <mlvalues.h>
 #include <alloc.h>
 #include <fail.h>
-#if defined (_WIN32)
-#include <winsock.h>
-#else
+#ifndef _WIN32
 #include <sys/param.h>
 #endif
 #include "unixsupport.h"

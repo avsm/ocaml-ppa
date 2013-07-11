@@ -10,12 +10,9 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: output.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Output the DFA tables and its entry points *)
 
 open Printf
-open Syntax
 open Lexgen
 open Compact
 open Common
@@ -100,7 +97,7 @@ let output_entry sourcefile ic oc oci e =
       fprintf oc "\n")
     e.auto_actions;
   fprintf oc "  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; \
-                                __ocaml_lex_%s_rec %alexbuf __ocaml_lex_state\n\n"
+              __ocaml_lex_%s_rec %alexbuf __ocaml_lex_state\n\n"
           e.auto_name output_args e.auto_args
 
 (* Main output function *)

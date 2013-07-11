@@ -14,7 +14,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: cltkWait.c 11156 2011-07-27 14:17:02Z doligez $ */
+/* $Id$ */
 
 #include <tcl.h>
 #include <tk.h>
@@ -62,7 +62,7 @@ static void WaitVisibilityProc(clientData, eventPtr)
 CAMLprim value camltk_wait_vis(value win, value cbid)
 {
   struct WinCBData *vis =
-    (struct WinCBData *)stat_alloc(sizeof(struct WinCBData));
+    (struct WinCBData *)caml_stat_alloc(sizeof(struct WinCBData));
   vis->win = Tk_NameToWindow(cltclinterp, String_val(win), cltk_mainWindow);
   if (vis -> win == NULL) {
     stat_free((char *)vis);
@@ -89,7 +89,7 @@ static void WaitWindowProc(ClientData clientData, XEvent *eventPtr)
 CAMLprim value camltk_wait_des(value win, value cbid)
 {
   struct WinCBData *vis =
-    (struct WinCBData *)stat_alloc(sizeof(struct WinCBData));
+    (struct WinCBData *)caml_stat_alloc(sizeof(struct WinCBData));
   vis->win = Tk_NameToWindow(cltclinterp, String_val(win), cltk_mainWindow);
   if (vis -> win == NULL) {
     stat_free((char *)vis);

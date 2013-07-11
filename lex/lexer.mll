@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexer.mll 12418 2012-05-02 14:41:30Z doligez $ *)
-
 (* The lexical analyzer for lexer definitions. Bootstrapped! *)
 
 {

@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stack.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (** Last-in first-out stacks.
 
    This module implements stacks (LIFOs), with in-place modification.

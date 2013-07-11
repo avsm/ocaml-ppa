@@ -12,8 +12,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: otherlibs-targets.sh 11156 2011-07-27 14:17:02Z doligez $
-
 OTHERLIBS_BYTE=""
 OTHERLIBS_NATIVE=""
 OTHERLIBS_UNIX_NATIVE=""

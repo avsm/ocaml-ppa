@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printmach.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Pretty-printing of pseudo machine code *)
 
 open Format

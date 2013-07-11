@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printlinear.ml 12610 2012-06-17 08:15:25Z xleroy $ *)
-
 (* Pretty-printing of linearized machine code *)
 
 open Format

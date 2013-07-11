@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: str.mli 12922 2012-09-11 14:40:43Z doligez $ *)
-
 (** Regular expressions and high-level string processing *)
 
 

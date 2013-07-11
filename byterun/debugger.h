@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: debugger.h 11156 2011-07-27 14:17:02Z doligez $ */
-
 /* Interface with the debugger */
 
 #ifndef CAML_DEBUGGER_H

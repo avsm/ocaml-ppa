@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: reverse.h 11156 2011-07-27 14:17:02Z doligez $ */
-
 /* Swap byte-order in 16, 32, and 64-bit integers or floats */
 
 #ifndef CAML_REVERSE_H

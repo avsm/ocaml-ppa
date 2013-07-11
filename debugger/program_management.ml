@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: program_management.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
-
 (* Manage the loading of the program *)
 
 open Int64ops

@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: dll.ml 12661 2012-07-07 11:41:17Z scherer $ *)
-
 (* Handling of dynamically-linked libraries *)
 
 type dll_handle

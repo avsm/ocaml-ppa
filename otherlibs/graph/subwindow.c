@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: subwindow.c 11156 2011-07-27 14:17:02Z doligez $ */
-
 #include "libgraph.h"
 
 value caml_gr_open_subwindow(value vx, value vy, value width, value height)

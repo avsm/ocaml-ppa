@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: point_col.c 11156 2011-07-27 14:17:02Z doligez $ */
-
 #include "libgraph.h"
 
 value caml_gr_point_color(value vx, value vy)

@@ -11,7 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: bng_sparc.c 11156 2011-07-27 14:17:02Z doligez $ */
+/* $Id$ */
 
 /* Code specific to the SPARC (V8 and above) architecture. */
 

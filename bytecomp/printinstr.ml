@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printinstr.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Pretty-print lists of instructions *)
 
 open Format

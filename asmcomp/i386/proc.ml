@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc.ml 11319 2011-12-16 17:02:48Z xleroy $ *)
-
 (* Description of the Intel 386 processor *)
 
 open Misc
@@ -201,5 +199,5 @@ let assemble_file infile outfile =
     Ccomp.command (Config.asm ^ " -o " ^
                    Filename.quote outfile ^ " " ^ Filename.quote infile)
 
-open Clflags;;
-open Config;;
+let init () = ()
+

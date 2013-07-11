@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: camlinternalOO.ml 11930 2011-12-22 07:30:18Z garrigue $ *)
-
 open Obj
 
 (**** Object representation ****)
@@ -58,6 +56,7 @@ let initial_object_size = 2
 (**** Items ****)
 
 type item = DummyA | DummyB | DummyC of int
+let _ = [DummyA; DummyB; DummyC 0] (* to avoid warnings *)
 
 let dummy_item = (magic () : item)
 
@@ -67,6 +66,8 @@ type tag
 type label = int
 type closure = item
 type t = DummyA | DummyB | DummyC of int
+let _ = [DummyA; DummyB; DummyC 0] (* to avoid warnings *)
+
 type obj = t array
 external ret : (obj -> 'a) -> closure = "%identity"
 
@@ -86,12 +87,15 @@ let public_method_label s : tag =
 
 (**** Sparse array ****)
 
-module Vars = Map.Make(struct type t = string let compare = compare end)
+module Vars =
+  Map.Make(struct type t = string let compare (x:t) y = compare x y end)
 type vars = int Vars.t
 
-module Meths = Map.Make(struct type t = string let compare = compare end)
+module Meths =
+  Map.Make(struct type t = string let compare (x:t) y = compare x y end)
 type meths = label Meths.t
-module Labs = Map.Make(struct type t = label let compare = compare end)
+module Labs =
+  Map.Make(struct type t = label let compare (x:t) y = compare x y end)
 type labs = bool Labs.t
 
 (* The compiler assumes that the first field of this structure is [size]. *)
@@ -289,7 +293,8 @@ let add_initializer table f =
   table.initializers <- f::table.initializers
 
 (*
-module Keys = Map.Make(struct type t = tag array let compare = compare end)
+module Keys =
+  Map.Make(struct type t = tag array let compare (x:t) y = compare x y end)
 let key_map = ref Keys.empty
 let get_key tags : item =
   try magic (Keys.find tags !key_map : tag array)

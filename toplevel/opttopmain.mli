@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: opttopmain.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Start the [ocaml] toplevel loop *)
 
 val main: unit -> unit

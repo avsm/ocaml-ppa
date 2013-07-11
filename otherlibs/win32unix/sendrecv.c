@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: sendrecv.c 11896 2011-12-20 12:37:52Z xleroy $ */
-
 #include <mlvalues.h>
 #include <alloc.h>
 #include <memory.h>

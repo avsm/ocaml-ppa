@@ -10,11 +10,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit.mlp 12800 2012-07-30 18:59:07Z doligez $ *)
-
 (* Emission of Sparc assembly code *)
 
-open Location
 open Misc
 open Cmm
 open Arch

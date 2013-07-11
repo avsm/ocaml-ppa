@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: string.mli 12241 2012-03-14 14:32:07Z doligez $ *)
-
 (** String operations.
 
   Given a string [s] of length [l], we call character number in [s]

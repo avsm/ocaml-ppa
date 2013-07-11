@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: image.h 11156 2011-07-27 14:17:02Z doligez $ */
-
 struct grimage {
   int width, height;            /* Dimensions of the image */
   Pixmap data;                  /* Pixels */

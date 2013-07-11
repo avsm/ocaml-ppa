@@ -11,11 +11,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emit.mlp 12800 2012-07-30 18:59:07Z doligez $ *)
-
 (* Emission of ARM assembly code *)
 
-open Location
 open Misc
 open Cmm
 open Arch
@@ -176,12 +173,13 @@ let name_for_comparison = function
   | Iunsigned Cge -> "cs" | Iunsigned Clt -> "cc" | Iunsigned Cgt -> "hi"
 
 let name_for_int_operation = function
-    Iadd -> "add"
-  | Isub -> "sub"
-  | Imul -> "mul"
-  | Iand -> "and"
-  | Ior  -> "orr"
-  | Ixor -> "eor"
+  (* Use adds,subs,... to enable 16-bit T1 encoding *)
+    Iadd -> "adds"
+  | Isub -> "subs"
+  | Imul -> "muls"
+  | Iand -> "ands"
+  | Ior  -> "orrs"
+  | Ixor -> "eors"
   | _ -> assert false
 
 let name_for_shift_operation = function
@@ -236,8 +234,9 @@ let emit_intconst dst n =
     decompose_intconst n
       (fun bits ->
         if !first
-        then `	mov	{emit_reg dst}, #{emit_int32 bits} @ {emit_int32 n}\n`
-        else `	add	{emit_reg dst}, {emit_reg dst}, #{emit_int32 bits}\n`;
+        (* Use movs,adds here to enable 16-bit T1 encoding *)
+        then `	movs	{emit_reg dst}, #{emit_int32 bits} @ {emit_int32 n}\n`
+        else `	adds	{emit_reg dst}, {emit_reg dst}, #{emit_int32 bits}\n`;
         first := false)
   end
 
@@ -402,6 +401,10 @@ let emit_instr i =
           `	ldr	{emit_reg i.res.(1)}, {emit_label lbl} + 4\n`;
           2
         end
+    | Lop(Iconst_float f) when !fpu = VFPv2 ->
+        let lbl = float_literal f in
+        `	fldd	{emit_reg i.res.(0)}, {emit_label lbl} @ {emit_string f}\n`;
+        1
     | Lop(Iconst_float f) ->
         let encode imm =
           let sg = Int64.to_int (Int64.shift_right_logical imm 63) in
@@ -468,7 +471,7 @@ let emit_instr i =
         let ninstr = emit_stack_adjustment (-n) in
         stack_offset := !stack_offset + n;
         ninstr
-    | Lop(Iload(Single, addr)) when !fpu >= VFPv3_D16 ->
+    | Lop(Iload(Single, addr)) when !fpu >= VFPv2 ->
         `	flds	s14, {emit_addressing addr i.arg 0}\n`;
         `	fcvtds	{emit_reg i.res.(0)}, s14\n`; 2
     | Lop(Iload((Double | Double_u), addr)) when !fpu = Soft ->
@@ -502,7 +505,7 @@ let emit_instr i =
           | Double_u -> "fldd"
           | _ (* 32-bit quantities *) -> "ldr" in
         `	{emit_string instr}	{emit_reg r}, {emit_addressing addr i.arg 0}\n`; 1
-    | Lop(Istore(Single, addr)) when !fpu >= VFPv3_D16 ->
+    | Lop(Istore(Single, addr)) when !fpu >= VFPv2 ->
         `	fcvtsd	s14, {emit_reg i.arg.(0)}\n`;
         `	fsts	s14, {emit_addressing addr i.arg 1}\n`; 2
     | Lop(Istore((Double | Double_u), addr)) when !fpu = Soft ->
@@ -563,7 +566,8 @@ let emit_instr i =
         end
     | Lop(Iintop(Ilsl | Ilsr | Iasr as op)) ->
         let shift = name_for_shift_operation op in
-        `	mov	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_string shift} {emit_reg i.arg.(1)}\n`; 1
+        (* Use movs to enable 16-bit T1 encoding *)
+        `	movs	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_string shift} {emit_reg i.arg.(1)}\n`; 1
     | Lop(Iintop(Icomp cmp)) ->
         let compthen = name_for_comparison cmp in
         let compelse = name_for_comparison (negate_integer_comparison cmp) in
@@ -605,7 +609,8 @@ let emit_instr i =
           `	addlt	{emit_reg r}, {emit_reg r}, #{emit_int n}\n`;
           `	sublt	{emit_reg r}, {emit_reg r}, #1\n`
         end;
-        `	mov	{emit_reg r}, {emit_reg r}, asr #{emit_int l}\n`; 5
+        (* Use movs to enable 16-bit T1 encoding *)
+        `	movs	{emit_reg r}, {emit_reg r}, asr #{emit_int l}\n`; 5
     | Lop(Iintop_imm(Imod, n)) -> (* n is a power of 2 *)
         let l = Misc.log2 n in
         let a = i.arg.(0) in
@@ -621,7 +626,8 @@ let emit_instr i =
         `{emit_label lbl}:\n`; 7
     | Lop(Iintop_imm((Ilsl | Ilsr | Iasr as op), n)) ->
         let shift = name_for_shift_operation op in
-        `	mov	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_string shift} #{emit_int n}\n`; 1
+        (* Use movs to enable 16-bit T1 encoding *)
+        `	movs	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_string shift} #{emit_int n}\n`; 1
     | Lop(Iintop_imm(op, n)) ->
         let instr = name_for_int_operation op in
         `	{emit_string instr}     {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, #{emit_int n}\n`; 1
@@ -681,6 +687,16 @@ let emit_instr i =
                      | Imulsub -> "mls"
                      | _ -> assert false) in
         `	{emit_string instr}	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(1)}, {emit_reg i.arg.(2)}\n`; 1
+    | Lop(Ispecific(Ibswap size)) ->
+        begin match size with
+          16 ->
+            `	rev16	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}\n`;
+            `	movt	{emit_reg i.res.(0)}, #0\n`; 2
+        | 32 ->
+            `	rev	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}\n`; 1
+        | _ ->
+            assert false
+        end
     | Lreloadretaddr ->
         let n = frame_size() in
         `	ldr	lr, [sp, #{emit_int(n-4)}]\n`; 1
@@ -808,7 +824,7 @@ let rec emit_all ninstr i =
     let n = emit_instr i in
     let ninstr' = ninstr + n in
     (* fldd can address up to +/-1KB, ldr can address up to +/-4KB *)
-    let limit = (if !fpu >= VFPv3_D16 && !float_literals <> []
+    let limit = (if !fpu >= VFPv2 && !float_literals <> []
                  then 127
                  else 511) in
     let limit = limit - !num_literals in
@@ -910,6 +926,7 @@ let begin_assembly() =
   end;
   begin match !fpu with
     Soft      -> `	.fpu	softvfp\n`
+  | VFPv2     -> `	.fpu	vfpv2\n`
   | VFPv3_D16 -> `	.fpu	vfpv3-d16\n`
   | VFPv3     -> `	.fpu	vfpv3\n`
   end;

@@ -13,8 +13,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: StdlibModules 11156 2011-07-27 14:17:02Z doligez $
-
 # This file lists all standard library modules.
 # It is used in particular to know what to expunge in toplevels.
 

@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: symbols.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Handling of symbol tables (globals and events) *)
 
 open Instruct
@@ -65,7 +63,8 @@ let read_symbols' bytecode_file =
   begin try
     ignore (Bytesections.seek_section ic "CODE")
   with Not_found ->
-    (* The file contains only debugging info, loading mode is forced to "manual" *)
+    (* The file contains only debugging info,
+       loading mode is forced to "manual" *)
     set_launching_function (List.assoc "manual" loading_modes)
   end;
   close_in_noerr ic;

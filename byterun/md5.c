@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: md5.c 12800 2012-07-30 18:59:07Z doligez $ */
-
 #include <string.h>
 #include "alloc.h"
 #include "fail.h"
@@ -215,7 +213,7 @@ CAMLexport void caml_MD5Final(unsigned char *digest, struct MD5Context *ctx)
     caml_MD5Transform(ctx->buf, (uint32 *) ctx->in);
     byteReverse((unsigned char *) ctx->buf, 4);
     memcpy(digest, ctx->buf, 16);
-    memset(ctx, 0, sizeof(ctx));        /* In case it's sensitive */
+    memset(ctx, 0, sizeof(*ctx));        /* In case it's sensitive */
 }
 
 /* The four core functions - F1 is optimized somewhat */

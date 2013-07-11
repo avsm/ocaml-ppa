@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: extract_crc.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Print the digests of unit interfaces *)
 
 let load_path = ref []

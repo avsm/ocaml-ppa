@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: compact.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Compaction of an automata *)
 type lex_tables =
   { tbl_base: int array;                 (* Perform / Shift *)

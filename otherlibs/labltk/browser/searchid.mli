@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: searchid.mli 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id$ *)
 
 val start_env : Env.t ref
 val module_list : string list ref

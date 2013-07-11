@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: freelist.h 12910 2012-09-10 09:52:09Z doligez $ */
-
 /* Free lists of heap blocks. */
 
 #ifndef CAML_FREELIST_H

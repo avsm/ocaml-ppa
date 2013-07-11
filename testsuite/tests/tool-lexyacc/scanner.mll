@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: scanner.mll 12800 2012-07-30 18:59:07Z doligez $ *)
-
 (* The lexical analyzer for lexer definitions. *)
 
 {

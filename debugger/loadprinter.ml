@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: loadprinter.ml 12673 2012-07-09 12:40:51Z xclerc $ *)
-
 (* Loading and installation of user-defined printer functions *)
 
 open Misc

@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             ocamlbuild                              *)
 (*                                                                     *)
 (*  Nicolas Pouillard, Berke Durak, projet Gallium, INRIA Rocquencourt *)
@@ -39,24 +40,42 @@ let use_menhir = ref false
 let catch_errors = ref true
 let use_ocamlfind = ref false
 
-let mk_virtual_solvers =
+(* Currently only ocamlfind and menhir is defined as no-core tool,
+   perhaps later we need something better *)
+let is_core_tool = function "ocamlfind" | "menhir" -> false | _ -> true
+
+let find_tool cmd =
   let dir = Ocamlbuild_where.bindir in
+  let core_tool = is_core_tool cmd in
+  let opt = cmd ^ ".opt" in
+  let search_in_path = memo Command.search_in_path in
+  if sys_file_exists !dir then
+    let long = filename_concat !dir cmd in
+    let long_opt = long ^ ".opt" in
+      (* This defines how the command will be found *)
+    let choices =
+      [(fun () -> if file_or_exe_exists long_opt then Some long_opt else None);
+       (fun () -> if file_or_exe_exists long then Some long else None)] in
+      (* For non core tool the preference is too look at PATH first *)
+    let choices' =
+      [fun () ->
+        try let _ = search_in_path opt in Some opt
+        with Not_found -> Some cmd]
+    in
+    let choices = if core_tool then choices @ choices' else choices' @ choices in
+    try
+      match (List.find (fun choice -> not (choice () = None)) choices) () with
+        Some cmd -> cmd
+      | None -> raise Not_found
+    with Not_found -> failwith (Printf.sprintf "Can't find tool: %s" cmd)
+  else
+    try let _ = search_in_path opt in opt
+    with Not_found -> cmd
+
+let mk_virtual_solvers =
   List.iter begin fun cmd ->
-    let opt = cmd ^ ".opt" in
-    let a_opt = A opt in
-    let a_cmd = A cmd in
-    let search_in_path = memo Command.search_in_path in
     let solver () =
-      if sys_file_exists !dir then
-        let long = filename_concat !dir cmd in
-        let long_opt = long ^ ".opt" in
-        if file_or_exe_exists long_opt then A long_opt
-        else if file_or_exe_exists long then A long
-        else try let _ = search_in_path opt in a_opt
-        with Not_found -> a_cmd
-      else
-        try let _ = search_in_path opt in a_opt
-        with Not_found -> a_cmd
+      A (find_tool cmd)
     in Command.setup_virtual_command_solver (String.uppercase cmd) solver
   end
 
@@ -87,6 +106,7 @@ let targets_internal = ref []
 let ocaml_libs_internal = ref []
 let ocaml_mods_internal = ref []
 let ocaml_pkgs_internal = ref []
+let ocaml_syntax = ref None
 let ocaml_lflags_internal = ref []
 let ocaml_cflags_internal = ref []
 let ocaml_docflags_internal = ref []
@@ -140,7 +160,7 @@ let spec = ref (
    "-vnum", Unit (fun () -> print_endline Sys.ocaml_version; raise Exit_OK),
             " Display the version number";
    "-quiet", Unit (fun () -> Log.level := 0), " Make as quiet as possible";
-   "-verbose", Int (fun i -> Log.level := i + 2), "<level> Set the verbosity level";
+   "-verbose", Int (fun i -> Log.classic_display := true; Log.level := i + 2), "<level> Set the verbosity level";
    "-documentation", Set show_documentation, " Show rules and flags";
    "-log", Set_string log_file_internal, "<file> Set log file";
    "-no-log", Unit (fun () -> log_file_internal := ""), " No log file";
@@ -159,6 +179,7 @@ let spec = ref (
    "-pkg", String (add_to' ocaml_pkgs_internal), "<package> Link to this ocaml findlib package";
    "-pkgs", String (add_to ocaml_pkgs_internal), "<package,...> (idem)";
    "-package", String (add_to' ocaml_pkgs_internal), "<package> (idem)";
+   "-syntax", String (fun syntax -> ocaml_syntax := Some syntax), "<syntax> Specify syntax using ocamlfind";
    "-lflag", String (add_to' ocaml_lflags_internal), "<flag> Add to ocamlc link flags";
    "-lflags", String (add_to ocaml_lflags_internal), "<flag,...> (idem)";
    "-cflag", String (add_to' ocaml_cflags_internal), "<flag> Add to ocamlc compile flags";
@@ -200,7 +221,7 @@ let spec = ref (
    "-install-lib-dir", Set_string Ocamlbuild_where.libdir, "<path> Set the install library directory";
    "-install-bin-dir", Set_string Ocamlbuild_where.bindir, "<path> Set the install binary directory";
    "-where", Unit (fun () -> print_endline !Ocamlbuild_where.libdir; raise Exit_OK), " Display the install library directory";
-
+   "-which", String (fun cmd -> print_endline (find_tool cmd); raise Exit_OK), "<command> Display path to the tool command";
    "-ocamlc", set_cmd ocamlc, "<command> Set the OCaml bytecode compiler";
    "-ocamlopt", set_cmd ocamlopt, "<command> Set the OCaml native compiler";
    "-ocamldep", set_cmd ocamldep, "<command> Set the OCaml dependency tool";

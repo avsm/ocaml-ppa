@@ -11,8 +11,6 @@
 .\"*                                                                     *
 .\"***********************************************************************
 .\"
-.\" $Id: camlp4.1.tpl 12800 2012-07-30 18:59:07Z doligez $
-.\"
 .TH CAMLP4 1  "" "INRIA"
 .SH NAME
 camlp4 - Pre-Precessor-Pretty-Printer for OCaml

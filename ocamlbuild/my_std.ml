@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             ocamlbuild                              *)
 (*                                                                     *)
 (*  Nicolas Pouillard, Berke Durak, projet Gallium, INRIA Rocquencourt *)
@@ -61,7 +62,7 @@ module Set = struct
 
   module type S = sig
     include Set.S
-    val find : (elt -> bool) -> t -> elt
+    val find_elt : (elt -> bool) -> t -> elt
     val map : (elt -> elt) -> t -> t
     val of_list : elt list -> t
     val print : formatter -> t -> unit
@@ -70,7 +71,7 @@ module Set = struct
   module Make (M : OrderedTypePrintable) : S with type elt = M.t = struct
     include Set.Make(M)
     exception Found of elt
-    let find p set =
+    let find_elt p set =
       try
         iter begin fun elt ->
           if p elt then raise (Found elt)
@@ -194,7 +195,7 @@ module String = struct
     and n = String.length v
     in
     m <= n &&
-      let rec loop i = i = m or u.[i] = v.[i] && loop (i + 1) in
+      let rec loop i = i = m || u.[i] = v.[i] && loop (i + 1) in
       loop 0
   (* ***)
 
@@ -204,7 +205,7 @@ module String = struct
     and n = String.length v
     in
     n <= m &&
-      let rec loop i = i = n or u.[m - 1 - i] = v.[n - 1 - i] && loop (i + 1) in
+      let rec loop i = i = n || u.[m - 1 - i] = v.[n - 1 - i] && loop (i + 1) in
       loop 0
   (* ***)
 
@@ -402,3 +403,19 @@ let memo f =
     with Not_found ->
       let res = f x in
       (Hashtbl.add cache x res; res)
+
+let memo2 f =
+  let cache = Hashtbl.create 103 in
+  fun x y ->
+    try Hashtbl.find cache (x,y)
+    with Not_found ->
+      let res = f x y in
+      (Hashtbl.add cache (x,y) res; res)
+
+let memo3 f =
+  let cache = Hashtbl.create 103 in
+  fun x y z ->
+    try Hashtbl.find cache (x,y,z)
+    with Not_found ->
+      let res = f x y z in
+      (Hashtbl.add cache (x,y,z) res; res)

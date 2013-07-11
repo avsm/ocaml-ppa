@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: char.mli 12241 2012-03-14 14:32:07Z doligez $ *)
-
 (** Character operations. *)
 
 external code : char -> int = "%identity"

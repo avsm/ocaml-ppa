@@ -10,8 +10,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt 11156 2011-07-27 14:17:02Z doligez $
-
 # Makefile for the parser generator.
 
 include ../config/Makefile

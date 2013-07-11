@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: terminfo.c 11156 2011-07-27 14:17:02Z doligez $ */
-
 /* Read and output terminal commands */
 
 #include "config.h"

@@ -10,11 +10,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: schedgen.ml 12876 2012-08-24 08:14:30Z xleroy $ *)
-
 (* Instruction scheduling *)
 
-open Misc
 open Reg
 open Mach
 open Linearize

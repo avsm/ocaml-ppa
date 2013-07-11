@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: getserv.c 11156 2011-07-27 14:17:02Z doligez $ */
-
 #include <mlvalues.h>
 #include <alloc.h>
 #include <fail.h>
@@ -27,8 +25,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#else
-#include <winsock.h>
 #endif
 
 static value alloc_service_entry(struct servent *entry)

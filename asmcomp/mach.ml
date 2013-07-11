@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: mach.ml 12179 2012-02-21 17:41:02Z xleroy $ *)
-
 (* Representation of machine code by sequences of pseudoinstructions *)
 
 type integer_comparison =

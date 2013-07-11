@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: cmm.mli 12179 2012-02-21 17:41:02Z xleroy $ *)
-
 (* Second intermediate language (machine independent) *)
 
 type machtype_component =

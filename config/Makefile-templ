@@ -11,8 +11,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile-templ 12027 2012-01-16 09:05:37Z frisch $
-
 ### Compile-time configuration
 
 ########## General configuration

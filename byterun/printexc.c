@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: printexc.c 11927 2011-12-21 16:31:01Z xleroy $ */
-
 /* Print an uncaught exception and abort */
 
 #include <stdio.h>

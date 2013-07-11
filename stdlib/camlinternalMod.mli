@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: camlinternalMod.mli 12241 2012-03-14 14:32:07Z doligez $ *)
-
 (** Run-time support for recursive modules.
     All functions in this module are for system use only, not for the
     casual user. *)

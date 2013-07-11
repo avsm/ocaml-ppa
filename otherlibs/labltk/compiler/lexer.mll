@@ -14,13 +14,12 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: lexer.mll 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id$ *)
 
 {
 open StdLabels
 open Lexing
 open Parser
-open Support
 
 exception Lexical_error of string
 let current_line = ref 1

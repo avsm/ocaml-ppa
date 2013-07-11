@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: myocamlbuild.ml 12032 2012-01-17 21:47:36Z lefessan $ *)
-
 open Ocamlbuild_plugin
 open Command
 open Arch
@@ -22,7 +20,7 @@ module C = Myocamlbuild_config
 let windows = Sys.os_type = "Win32";;
 if windows then tag_any ["windows"];;
 let ccomptype = C.ccomptype
-let () = if ccomptype <> "cc" then eprintf "ccomptype: %s@." ccomptype;;
+(*let () = if ccomptype <> "cc" then eprintf "ccomptype: %s@." ccomptype;;*)
 
 let fp_cat oc f = with_input_file ~bin:true f (fun ic -> copy_chan ic oc)
 
@@ -107,9 +105,10 @@ let if_mixed_dir dir =
   if mixed then ".."/dir else dir;;
 
 let unix_dir =
-  match Sys.os_type with
-  | "Win32" -> if_mixed_dir "otherlibs/win32unix"
-  | _       -> if_mixed_dir "otherlibs/unix";;
+  if Sys.os_type = "Win32" || C.system = "mingw" then
+    if_mixed_dir "otherlibs/win32unix"
+  else
+    if_mixed_dir "otherlibs/unix";;
 
 let threads_dir    = if_mixed_dir "otherlibs/threads";;
 let systhreads_dir = if_mixed_dir "otherlibs/systhreads";;
@@ -251,7 +250,6 @@ let setup_arch arch =
 
 let camlp4_arch =
   dir "" [
-    dir "stdlib" [];
     dir "camlp4" [
       dir "build" [];
       dir_pack "Camlp4" [
@@ -268,8 +266,7 @@ setup_arch camlp4_arch;;
 
 Pathname.define_context "" ["stdlib"];;
 Pathname.define_context "utils" [Pathname.current_dir_name; "stdlib"];;
-Pathname.define_context "camlp4" ["camlp4"; "stdlib"];;
-Pathname.define_context "camlp4/boot" ["camlp4"; "stdlib"];;
+Pathname.define_context "camlp4/boot" ["camlp4"];;
 Pathname.define_context "camlp4/Camlp4Parsers" ["camlp4"; "stdlib"];;
 Pathname.define_context "camlp4/Camlp4Printers" ["camlp4"; "stdlib"];;
 Pathname.define_context "camlp4/Camlp4Filters" ["camlp4"; "stdlib"];;
@@ -285,7 +282,7 @@ Pathname.define_context "debugger" ["bytecomp"; "utils"; "typing"; "parsing"; "t
 Pathname.define_context "otherlibs/dynlink" ["otherlibs/dynlink"; "bytecomp"; "utils"; "typing"; "parsing"; "stdlib"];;
 Pathname.define_context "otherlibs/dynlink/nat" ["otherlibs/dynlink/nat"; "asmcomp"; "stdlib"];;
 Pathname.define_context "asmcomp" ["asmcomp"; "bytecomp"; "parsing"; "typing"; "utils"; "stdlib"];;
-Pathname.define_context "ocamlbuild" ["ocamlbuild"; "stdlib"; "."];;
+Pathname.define_context "ocamlbuild" ["ocamlbuild"; "."];;
 Pathname.define_context "lex" ["lex"; "stdlib"];;
 
 List.iter (fun x -> let x = "otherlibs"/x in Pathname.define_context x [x; "stdlib"])

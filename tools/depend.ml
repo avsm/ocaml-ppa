@@ -10,10 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: depend.ml 12883 2012-08-25 11:35:20Z garrigue $ *)
-
 open Asttypes
-open Format
 open Location
 open Longident
 open Parsetree
@@ -21,8 +18,6 @@ open Parsetree
 module StringSet = Set.Make(struct type t = string let compare = compare end)
 
 (* Collect free module identifiers in the a.s.t. *)
-
-let fst3 (x, _, _) = x
 
 let free_structure_names = ref StringSet.empty
 
@@ -77,7 +72,7 @@ let add_type_declaration bv td =
     (fun (ty1, ty2, _) -> add_type bv ty1; add_type bv ty2)
     td.ptype_cstrs;
   add_opt add_type bv td.ptype_manifest;
-  let rec add_tkind = function
+  let add_tkind = function
     Ptype_abstract -> ()
   | Ptype_variant cstrs ->
       List.iter (fun (c, args, rty, _) -> List.iter (add_type bv) args; Misc.may (add_type bv) rty) cstrs
@@ -179,7 +174,7 @@ let rec add_expr bv exp =
       let bv = add_pattern bv pat in List.iter (add_class_field bv) fieldl
   | Pexp_newtype (_, e) -> add_expr bv e
   | Pexp_pack m -> add_module bv m
-  | Pexp_open (m, e) -> addmodule bv m; add_expr bv e
+  | Pexp_open (_ovf, m, e) -> addmodule bv m; add_expr bv e
 
 and add_pat_expr_list bv pel =
   List.iter (fun (p, e) -> let bv = add_pattern bv p in add_expr bv e) pel
@@ -230,7 +225,7 @@ and add_sig_item bv item =
       | Pmodtype_manifest mty -> add_modtype bv mty
       end;
       bv
-  | Psig_open lid ->
+  | Psig_open (_ovf, lid) ->
       addmodule bv lid; bv
   | Psig_include mty ->
       add_modtype bv mty; bv
@@ -282,7 +277,7 @@ and add_struct_item bv item =
       bv'
   | Pstr_modtype(id, mty) ->
       add_modtype bv mty; bv
-  | Pstr_open l ->
+  | Pstr_open (_ovf, l) ->
       addmodule bv l; bv
   | Pstr_class cdl ->
       List.iter (add_class_declaration bv) cdl; bv
@@ -293,6 +288,9 @@ and add_struct_item bv item =
 
 and add_use_file bv top_phrs =
   ignore (List.fold_left add_top_phrase bv top_phrs)
+
+and add_implementation bv l =
+  ignore (add_structure bv l)
 
 and add_top_phrase bv = function
   | Ptop_def str -> add_structure bv str

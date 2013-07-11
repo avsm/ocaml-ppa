@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* $Id: odoc_env.ml 12796 2012-07-30 11:22:29Z doligez $ *)
 
 (** Environment for finding complete names from relative names. *)
 
@@ -245,5 +244,3 @@ let subst_class_type env t =
         Types.Cty_fun (l, new_texp, new_ct)
   in
   iter t
-
-(* eof $Id: odoc_env.ml 12796 2012-07-30 11:22:29Z doligez $ *)

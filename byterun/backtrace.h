@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: backtrace.h 11156 2011-07-27 14:17:02Z doligez $ */
-
 #ifndef CAML_BACKTRACE_H
 #define CAML_BACKTRACE_H
 

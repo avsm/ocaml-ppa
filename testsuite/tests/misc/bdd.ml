@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bdd.ml 12800 2012-07-30 18:59:07Z doligez $ *)
-
 (* Translated to OCaml by Xavier Leroy *)
 (* Original code written in SML by ... *)
 

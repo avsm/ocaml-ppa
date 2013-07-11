@@ -11,8 +11,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.mingw 11319 2011-12-16 17:02:48Z xleroy $
-
 # Configuration for Windows, Mingw compiler
 
 ######### General configuration
@@ -42,7 +40,10 @@ MANDIR=$(PREFIX)/man
 TOOLCHAIN=mingw
 
 ### Toolchain prefix
-TOOLPREF=x86_64-w64-mingw32-
+TARGET=x86_64-w64-mingw32
+HOST=$(TARGET)
+
+TOOLPREF=$(TARGET)-
 
 CCOMPTYPE=cc
 O=o
@@ -60,8 +61,6 @@ SHARPBANGSCRIPTS=false
 PTHREAD_LINK=
 X11_INCLUDES=
 X11_LINK=
-DBM_INCLUDES=
-DBM_LINK=
 BYTECCRPATH=
 SUPPORTS_SHARED_LIBRARIES=true
 SHAREDCCCOMPOPTS=
@@ -69,7 +68,7 @@ MKSHAREDLIBRPATH=
 NATIVECCPROFOPTS=
 NATIVECCRPATH=
 ASM=$(TOOLPREF)as
-ASPP=gcc
+ASPP=$(TOOLPREF)gcc -c
 ASPPPROFFLAGS=
 PROFILING=noprof
 DYNLINKOPTS=
@@ -147,7 +146,7 @@ NATIVECCCOMPOPTS=-O -mms-bitfields -Wall -Wno-unused
 NATIVECCLINKOPTS=
 
 ### Build partially-linked object file
-PACKLD=$(TOOLPREF)ld -r $(NATIVECCLINKOPTS) -o #there must be a space after this '-o'
+PACKLD=$(TOOLPREF)ld -r $(NATIVECCLINKOPTS) -o # must have a space after '-o'
 
 ############# Configuration for the contributed libraries
 
@@ -165,3 +164,12 @@ TK_LINK=
 
 MAKEREC=$(MAKE) -f Makefile.nt
 MAKECMD=$(MAKE)
+
+############# for the testsuite makefiles
+#ml let topdir = "" and wintopdir = "";;
+OTOPDIR=$(WINTOPDIR)
+CTOPDIR=$(TOPDIR)
+CYGPATH=cygpath -m
+DIFF=diff -q --strip-trailing-cr
+CANKILL=false
+SET_LD_PATH=PATH="$(PATH):$(LD_PATH)"

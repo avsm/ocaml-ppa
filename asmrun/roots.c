@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: roots.c 12800 2012-07-30 18:59:07Z doligez $ */
-
 /* To walk the memory roots for garbage collection */
 
 #include "finalise.h"

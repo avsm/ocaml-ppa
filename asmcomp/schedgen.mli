@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: schedgen.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Instruction scheduling *)
 
 type code_dag_node =

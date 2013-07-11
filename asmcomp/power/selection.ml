@@ -10,13 +10,9 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selection.ml 12120 2012-02-04 09:43:33Z bmeurer $ *)
-
 (* Instruction selection for the Power PC processor *)
 
-open Misc
 open Cmm
-open Reg
 open Arch
 open Mach
 

@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emitaux.mli 12448 2012-05-12 09:49:40Z xleroy $ *)
-
 (* Common functions for emitting assembly code *)
 
 val output_channel: out_channel ref

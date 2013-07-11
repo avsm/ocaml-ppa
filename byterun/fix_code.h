@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: fix_code.h 12715 2012-07-16 10:37:03Z frisch $ */
-
 /* Handling of blocks of bytecode (endianness switch, threading). */
 
 #ifndef CAML_FIX_CODE_H

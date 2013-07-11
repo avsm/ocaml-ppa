@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* $Id: odoc_search.ml 12249 2012-03-20 12:00:11Z guesdon $ *)
 
 (** Research of elements through modules. *)
 
@@ -679,5 +678,3 @@ let find_section mods regexp =
   with
     Res_section (_,t) -> t
   | _ -> assert false
-
-(* eof $Id: odoc_search.ml 12249 2012-03-20 12:00:11Z guesdon $ *)

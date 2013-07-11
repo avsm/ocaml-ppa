@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: debugger.c 12210 2012-03-08 19:52:03Z doligez $ */
-
 /* Interface with the byte-code debugger */
 
 #ifdef _WIN32

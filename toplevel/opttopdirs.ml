@@ -10,14 +10,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: opttopdirs.ml 12058 2012-01-20 14:23:34Z frisch $ *)
-
 (* Toplevel directives *)
 
 open Format
 open Misc
 open Longident
-open Path
 open Types
 open Opttoploop
 

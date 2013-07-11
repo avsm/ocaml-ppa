@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: s-templ.h 11156 2011-07-27 14:17:02Z doligez $ */
-
 /* Operating system and standard library dependencies. */
 
 /* 0. Operating system type string. */

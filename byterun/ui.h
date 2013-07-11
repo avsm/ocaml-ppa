@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: ui.h 11156 2011-07-27 14:17:02Z doligez $ */
-
 /* Function declarations for non-Unix user interfaces */
 
 #ifndef CAML_UI_H

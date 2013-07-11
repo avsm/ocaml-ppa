@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: string.ml 12210 2012-03-08 19:52:03Z doligez $ *)
-
 (* String operations *)
 
 external length : string -> int = "%string_length"

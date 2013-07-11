@@ -10,14 +10,9 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: emitaux.ml 12800 2012-07-30 18:59:07Z doligez $ *)
-
 (* Common functions for emitting assembly code *)
 
 open Debuginfo
-open Cmm
-open Reg
-open Linearize
 
 let output_channel = ref stdout
 
@@ -136,14 +131,12 @@ type emit_frame_actions =
 
 let emit_frames a =
   let filenames = Hashtbl.create 7 in
-  let lbl_filenames = ref 200000 in
   let label_filename name =
     try
       Hashtbl.find filenames name
     with Not_found ->
-      let lbl = !lbl_filenames in
+      let lbl = Linearize.new_label () in
       Hashtbl.add filenames name lbl;
-      incr lbl_filenames;
       lbl in
   let emit_frame fd =
     a.efa_label fd.fd_lbl;
@@ -227,7 +220,8 @@ let reset_debug_info () =
    display .loc for every instruction. *)
 let emit_debug_info dbg =
   if is_cfi_enabled () &&
-    !Clflags.debug && not (Debuginfo.is_none dbg) then begin
+    (!Clflags.debug || Config.with_frame_pointers)
+     && not (Debuginfo.is_none dbg) then begin
     let line = dbg.Debuginfo.dinfo_line in
     assert (line <> 0); (* clang errors out on zero line numbers *)
     let file_name = dbg.Debuginfo.dinfo_file in

@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: ia32sse2.c 11156 2011-07-27 14:17:02Z doligez $ */
-
 /* Test whether IA32 assembler supports SSE2 instructions */
 
 int main()

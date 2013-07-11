@@ -11,15 +11,13 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 12867 2012-08-21 04:39:34Z garrigue $
-
 include ../../config/Makefile
 
 CC=$(BYTECC)
 CFLAGS=-I../../byterun -O $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS) -g
 CAMLC=../../ocamlcomp.sh -I ../unix
 MKLIB=../../boot/ocamlrun ../../tools/ocamlmklib
-COMPFLAGS=-warn-error A
+COMPFLAGS=-w +33..39 -warn-error A
 
 C_OBJS=scheduler.o
 

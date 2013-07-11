@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: truncate.c 11156 2011-07-27 14:17:02Z doligez $ */
-
 #include <sys/types.h>
 #include <mlvalues.h>
 #include <fail.h>

@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arch.ml 12187 2012-02-24 10:13:02Z xleroy $ *)
-
 (* Machine-specific command-line options *)
 
 let fast_math = ref false
@@ -22,7 +20,6 @@ let command_line_options =
 
 (* Specific operations for the Intel 386 processor *)
 
-open Misc
 open Format
 
 type addressing_mode =
@@ -58,6 +55,8 @@ let big_endian = false
 let size_addr = 4
 let size_int = 4
 let size_float = 8
+
+let allow_unaligned_access = true
 
 (* Behavior of division *)
 

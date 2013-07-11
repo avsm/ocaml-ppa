@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* $Id: odoc_html.ml 12953 2012-09-25 07:50:40Z guesdon $ *)
 
 (** Generation of html documentation.*)
 
@@ -205,7 +204,10 @@ module Naming =
       f
   end
 
-module StringSet = Set.Make (struct type t = string let compare = compare end)
+module StringSet = Set.Make (struct
+  type t = string
+  let compare (x:t) y = compare x y
+end)
 
 (** A class with a method to colorize a string which represents OCaml code. *)
 class ocaml_code =

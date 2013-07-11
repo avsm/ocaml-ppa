@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* $Id: odoc_sig.ml 12798 2012-07-30 11:53:27Z doligez $ *)
 
 (** Analysis of interface files. *)
 
@@ -639,10 +638,9 @@ module Analyser =
                       ty_name = Name.concat current_module_name name.txt ;
                       ty_info = assoc_com ;
                       ty_parameters =
-                        List.map2 (fun p (co,cn,_) ->
-                                     (Odoc_env.subst_type new_env p,
-                                      co, cn)
-                                  )
+                        List.map2 (fun p v ->
+                          let (co, cn) = Types.Variance.get_upper v in
+                          (Odoc_env.subst_type new_env p,co, cn))
                         sig_type_decl.Types.type_params
                         sig_type_decl.Types.type_variance;
                       ty_kind = type_kind;
@@ -893,7 +891,7 @@ module Analyser =
                 im_info = comment_opt;
               }
             in
-            (0, env, [ Element_included_module im ]) (* A VOIR : étendre l'environnement ? avec quoi ? *)
+            (0, env, [ Element_included_module im ]) (* A VOIR : etendre l'environnement ? avec quoi ? *)
 
         | Parsetree.Psig_class class_description_list ->
             (* we start by extending the environment *)
@@ -1239,7 +1237,7 @@ module Analyser =
             )
           else
             (
-             raise (Failure "Parsetree.Pcty_fun (parse_label, _, pclass_type), labels différents")
+             raise (Failure "Parsetree.Pcty_fun (parse_label, _, pclass_type), labels differents")
             )
 
       | _ ->

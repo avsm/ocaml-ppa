@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: stack.h 12159 2012-02-17 10:12:09Z xleroy $ */
-
 /* Machine-dependent interface with the asm code */
 
 #ifndef CAML_STACK_H
@@ -37,7 +35,8 @@
 #ifdef TARGET_power
 #define Saved_return_address(sp) *((intnat *)((sp) - SIZEOF_PTR))
 #define Already_scanned(sp, retaddr) ((retaddr) & 1)
-#define Mark_scanned(sp, retaddr) (*((intnat *)((sp) - SIZEOF_PTR)) = (retaddr) | 1)
+#define Mark_scanned(sp, retaddr) \
+          (*((intnat *)((sp) - SIZEOF_PTR)) = (retaddr) | 1)
 #define Mask_already_scanned(retaddr) ((retaddr) & ~1)
 #ifdef SYS_aix
 #define Trap_frame_size 32

@@ -14,9 +14,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: protocol.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id$ *)
 
-open Support
 open Widget
 
 type callback_buffer = string list

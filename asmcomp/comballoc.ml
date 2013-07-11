@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: comballoc.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Combine heap allocations occurring in the same basic block *)
 
 open Mach

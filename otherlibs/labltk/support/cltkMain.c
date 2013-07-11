@@ -14,7 +14,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: cltkMain.c 12149 2012-02-10 16:15:24Z doligez $ */
+/* $Id$ */
 
 #include <string.h>
 #include <tcl.h>
@@ -113,7 +113,7 @@ CAMLprim value camltk_opentk(value argv)
         char **tkargv;
         char argcstr[256]; /* string of argc */
 
-        tkargv = (char**)stat_alloc(sizeof( char* ) * argc );
+        tkargv = (char**)caml_stat_alloc(sizeof( char* ) * argc );
         tmp = Field(argv, 1); /* starts from argv[1] */
         i = 0;
 
@@ -157,7 +157,7 @@ CAMLprim value camltk_opentk(value argv)
   {
     char *home = getenv("HOME");
     if (home != NULL) {
-      char *f = stat_alloc(strlen(home)+strlen(RCNAME)+2);
+      char *f = caml_stat_alloc(strlen(home)+strlen(RCNAME)+2);
       f[0]='\0';
       strcat(f, home);
       strcat(f, "/");

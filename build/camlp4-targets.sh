@@ -12,7 +12,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: camlp4-targets.sh 11156 2011-07-27 14:17:02Z doligez $
 CAMLP4_COMMON="\
   camlp4/Camlp4/Camlp4Ast.partial.ml \
   camlp4/boot/camlp4boot.byte"
