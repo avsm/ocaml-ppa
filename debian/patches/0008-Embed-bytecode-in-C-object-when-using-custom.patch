@@ -17,11 +17,9 @@ Signed-off-by: Stephane Glondu <steph@glondu.net>
  testsuite/tests/lib-marshal/Makefile |    3 +++
  3 files changed, 44 insertions(+), 4 deletions(-)
 
-diff --git a/bytecomp/bytelink.ml b/bytecomp/bytelink.ml
-index bb14de6..9922bf2 100644
 --- a/bytecomp/bytelink.ml
 +++ b/bytecomp/bytelink.ml
-@@ -423,7 +423,7 @@ let mlvalues_primitives = [
+@@ -435,7 +435,7 @@
  
  (* Output a bytecode executable as a C file *)
  
@@ -30,7 +28,7 @@ index bb14de6..9922bf2 100644
    let outchan = open_out outfile in
    begin try
      (* The bytecode *)
-@@ -465,14 +465,27 @@ let link_bytecode_as_c ppf tolink outfile =
+@@ -477,14 +477,27 @@
      (* The table of primitives *)
      Symtable.output_primitive_table outchan mlvalues_primitives;
      (* The entry point *)
@@ -60,7 +58,7 @@ index bb14de6..9922bf2 100644
  \n#ifdef __cplusplus\
  \n}\
  \n#endif\n";
-@@ -511,6 +524,17 @@ let fix_exec_name name =
+@@ -523,6 +536,17 @@
        if String.contains name '.' then name else name ^ ".exe"
    | _ -> name
  
@@ -78,7 +76,7 @@ index bb14de6..9922bf2 100644
  (* Main entry point (build a custom runtime if needed) *)
  
  let link ppf objfiles output_name =
-@@ -524,6 +548,16 @@ let link ppf objfiles output_name =
+@@ -536,6 +560,16 @@
    Clflags.dllibs := !lib_dllibs @ !Clflags.dllibs; (* put user's DLLs first *)
    if not !Clflags.custom_runtime then
      link_bytecode ppf tolink output_name true
@@ -95,7 +93,7 @@ index bb14de6..9922bf2 100644
    else if not !Clflags.output_c_object then begin
      let bytecode_name = Filename.temp_file "camlcode" "" in
      let prim_name = Filename.temp_file "camlprim" ".c" in
-@@ -566,7 +600,7 @@ let link ppf objfiles output_name =
+@@ -578,7 +612,7 @@
      if Sys.file_exists c_file then raise(Error(File_exists c_file));
      let temps = ref [] in
      try
@@ -104,24 +102,21 @@ index bb14de6..9922bf2 100644
        if not (Filename.check_suffix output_name ".c") then begin
          temps := c_file :: !temps;
          if Ccomp.compile_file c_file <> 0 then raise(Error Custom_runtime);
-diff --git a/testsuite/tests/embedded/Makefile b/testsuite/tests/embedded/Makefile
-index ec2308d..1a826aa 100644
 --- a/testsuite/tests/embedded/Makefile
 +++ b/testsuite/tests/embedded/Makefile
-@@ -1,5 +1,8 @@
+@@ -12,6 +12,9 @@
+ 
  BASEDIR=../..
  
 +# This test relies on the upstream behaviour of -custom
 +export OCAML_CUSTOM_EMBED=n
 +
+ .PHONY: default
  default: compile run
  
- compile:
-diff --git a/testsuite/tests/lib-marshal/Makefile b/testsuite/tests/lib-marshal/Makefile
-index 1f78273..c246469 100644
 --- a/testsuite/tests/lib-marshal/Makefile
 +++ b/testsuite/tests/lib-marshal/Makefile
-@@ -3,5 +3,8 @@ BASEDIR=../..
+@@ -15,5 +15,8 @@
  MAIN_MODULE=intext
  C_FILES=intextaux
  
@@ -130,4 +125,3 @@ index 1f78273..c246469 100644
 +
  include $(BASEDIR)/makefiles/Makefile.one
  include $(BASEDIR)/makefiles/Makefile.common
--- 
