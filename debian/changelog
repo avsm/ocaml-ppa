@@ -1,3 +1,9 @@
+ocaml (4.00.2+SNAPSHOT20130711-1ppa1) raring; urgency=low
+
+  * First cut at 4.01.0 snap (git 2602e82995aa75e6a4cb4a0d9efe4e7642bd598f)
+
+ -- Anil Madhavapeddy <anil@recoil.org>  Thu, 11 Jul 2013 13:34:13 +0100
+
 ocaml (4.00.1-3ppa) raring; urgency=low
 
   * Switch to PPA.
