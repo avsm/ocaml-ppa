@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: show_information.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 open Format;;
 
 (* Display information about the current event. *)

@@ -1,4 +1,5 @@
 #(***********************************************************************)
+#(*                                                                     *)
 #(*                             OCamldoc                                *)
 #(*                                                                     *)
 #(*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 #(*  under the terms of the Q Public License version 1.0.               *)
 #(*                                                                     *)
 #(***********************************************************************)
-
-# $Id: Makefile 12707 2012-07-13 11:23:13Z doligez $
 
 include ../config/Makefile
 
@@ -36,7 +35,7 @@ OCAMLDOC_OPT=$(OCAMLDOC).opt
 OCAMLDOC_LIBCMA=odoc_info.cma
 OCAMLDOC_LIBCMI=odoc_info.cmi
 OCAMLDOC_LIBCMXA=odoc_info.cmxa
-OCAMLDOC_LIBA=odoc_info.a
+OCAMLDOC_LIBA=odoc_info.$(A)
 INSTALL_LIBDIR=$(OCAMLLIB)/ocamldoc
 INSTALL_CUSTOMDIR=$(INSTALL_LIBDIR)/custom
 INSTALL_BINDIR=$(OCAMLBIN)
@@ -50,9 +49,9 @@ ODOC_TEST=odoc_test.cmo
 GENERATORS_CMOS= \
 	generators/odoc_todo.cmo \
 	generators/odoc_literate.cmo
-GENERATORS_CMXS_TMP1=$(GENERATORS_CMOS:.cmo=.cmxs)
-GENERATORS_CMXS_TMP2=$(NATDYNLINK:false=)
-GENERATORS_CMXS=$(GENERATORS_CMXS_TMP2:true=$(GENERATORS_CMXS_TMP1))
+true = $(GENERATORS_CMOS:.cmo=.cmxs)
+false =
+GENERATORS_CMXS := $($(NATDYNLINK))
 
 
 # Compilation
@@ -69,9 +68,9 @@ INCLUDES_DEP=-I $(OCAMLSRCDIR)/parsing \
 INCLUDES_NODEP=	-I $(OCAMLSRCDIR)/stdlib \
 	-I $(OCAMLSRCDIR)/otherlibs/str \
 	-I $(OCAMLSRCDIR)/otherlibs/dynlink \
-	-I $(OCAMLSRCDIR)/otherlibs/unix \
+	-I $(OCAMLSRCDIR)/otherlibs/$(UNIXLIB) \
 	-I $(OCAMLSRCDIR)/otherlibs/num \
-	-I $(OCAMLSRCDIR)/otherlibs/graph
+	-I $(OCAMLSRCDIR)/otherlibs/$(GRAPHLIB)
 
 INCLUDES=$(INCLUDES_DEP) $(INCLUDES_NODEP)
 
@@ -128,7 +127,7 @@ EXECMOFILES=$(CMOFILES) \
 	odoc_texi.cmo \
 	odoc_dot.cmo \
 	odoc_gen.cmo \
-	odoc_args.cmo\
+	odoc_args.cmo \
 	odoc.cmo
 
 EXECMXFILES= $(EXECMOFILES:.cmo=.cmx)
@@ -171,6 +170,7 @@ OCAMLCMOFILES=$(OCAMLSRCDIR)/parsing/printast.cmo \
 	$(OCAMLSRCDIR)/typing/typedtree.cmo \
 	$(OCAMLSRCDIR)/typing/parmatch.cmo \
 	$(OCAMLSRCDIR)/typing/stypes.cmo \
+	$(OCAMLSRCDIR)/typing/typedtreeMap.cmo \
 	$(OCAMLSRCDIR)/typing/cmt_format.cmo \
 	$(OCAMLSRCDIR)/typing/typecore.cmo \
 	$(OCAMLSRCDIR)/typing/includeclass.cmo \
@@ -187,12 +187,13 @@ OCAMLCMOFILES=$(OCAMLSRCDIR)/parsing/printast.cmo \
 	$(OCAMLSRCDIR)/bytecomp/translobj.cmo \
 	$(OCAMLSRCDIR)/bytecomp/translcore.cmo \
 	$(OCAMLSRCDIR)/bytecomp/translclass.cmo \
-	$(OCAMLSRCDIR)/tools/depend.cmo
+	$(OCAMLSRCDIR)/tools/depend.cmo \
+	$(OCAMLSRCDIR)/driver/pparse.cmo
 
 OCAMLCMXFILES=$(OCAMLCMOFILES:.cmo=.cmx)
 
 STDLIB_MLIS=../stdlib/*.mli \
-	../otherlibs/unix/unix.mli \
+	../otherlibs/$(UNIXLIB)/unix.mli \
 	../otherlibs/str/str.mli \
 	../otherlibs/bigarray/bigarray.mli \
 	../otherlibs/num/num.mli
@@ -306,14 +307,14 @@ test_stdlib: dummy
 	$(MKDIR) $@
 	$(OCAMLDOC_RUN) -html -colorize-code -sort -d $@ $(INCLUDES) -dump $@/stdlib.odoc -keep-code \
 	../stdlib/pervasives.ml ../stdlib/*.mli \
-	../otherlibs/unix/unix.mli \
+	../otherlibs/$(UNIXLIB)/unix.mli \
 	../otherlibs/str/str.mli
 
 test_stdlib_code: dummy
 	$(MKDIR) $@
 	$(OCAMLDOC_RUN) -html -colorize-code -sort -d $@ $(INCLUDES) -dump $@/stdlib.odoc -keep-code \
 	`ls ../stdlib/*.ml | grep -v Labels` \
-	../otherlibs/unix/unix.ml \
+	../otherlibs/$(UNIXLIB)/unix.ml \
 	../otherlibs/str/str.ml
 
 test_framed: dummy
@@ -330,7 +331,7 @@ test_latex_simple: dummy
 	-latextitle 6,subsection -latextitle 7,subsubection \
 	../stdlib/hashtbl.mli \
 	../stdlib/arg.mli \
-	../otherlibs/unix/unix.mli \
+	../otherlibs/$(UNIXLIB)/unix.mli \
 	../stdlib/map.mli
 
 test_man: dummy
@@ -352,7 +353,7 @@ autotest_stdlib: dummy
 	$(OCAMLDOC_RUN) -g autotest/odoc_test.cmo\
 	$(INCLUDES) -keep-code \
 	../stdlib/pervasives.ml ../stdlib/*.mli \
-	../otherlibs/unix/unix.mli \
+	../otherlibs/$(UNIXLIB)/unix.mli \
 	../otherlibs/str/str.mli
 
 # backup, clean and depend :
@@ -360,12 +361,12 @@ autotest_stdlib: dummy
 
 clean:: dummy
 	@rm -f *~ \#*\#
-	@rm -f $(OCAMLDOC) $(OCAMLDOC_OPT) *.cma *.cmxa *.cmo *.cmi *.cmx *.a *.o
+	@rm -f $(OCAMLDOC) $(OCAMLDOC_OPT) *.cma *.cmxa *.cmo *.cmi *.cmx *.$(A) *.$(O)
 	@rm -f odoc_parser.output odoc_text_parser.output
 	@rm -f odoc_lexer.ml odoc_text_lexer.ml odoc_see_lexer.ml odoc_ocamlhtml.ml
 	@rm -f odoc_parser.ml odoc_parser.mli odoc_text_parser.ml odoc_text_parser.mli
 	@rm -rf stdlib_man
-	@rm -f generators/*.cm[aiox] generators/*.[ao] generators/*.cmx[as]
+	@rm -f generators/*.cm[aiox] generators/*.$(A) generators/*.$(O) generators/*.cmx[as]
 
 depend::
 	$(OCAMLYACC) odoc_text_parser.mly

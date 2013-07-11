@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: nonblock.c 11223 2011-10-15 09:02:22Z xleroy $ */
-
 #include <mlvalues.h>
 #include <signals.h>
 #include "unixsupport.h"

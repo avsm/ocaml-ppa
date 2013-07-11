@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: callback.h 12149 2012-02-10 16:15:24Z doligez $ */
-
 /* Callbacks from C to OCaml */
 
 #ifndef CAML_CALLBACK_H

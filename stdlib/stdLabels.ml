@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stdLabels.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Module [StdLabels]: meta-module for labelled libraries *)
 
 module Array = ArrayLabels

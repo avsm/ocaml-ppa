@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: viewer.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
+(* $Id$ *)
 
 open StdLabels
 open Tk
@@ -63,13 +63,13 @@ let view_symbol ~kind ~env ?path id =
       let path, vd = lookup_value id env in
       view_signature_item ~path ~env [Sig_value (Ident.create name, vd)]
   | Ptype -> view_type_id id ~env
-  | Plabel -> let _,ld = lookup_label id env in
+  | Plabel -> let ld = lookup_label id env in
       begin match ld.lbl_res.desc with
         Tconstr (path, _, _) -> view_type_decl path ~env
       | _ -> ()
       end
   | Pconstructor ->
-      let _,cd = lookup_constructor id env in
+      let cd = lookup_constructor id env in
       begin match cd.cstr_res.desc with
         Tconstr (cpath, _, _) ->
         if Path.same cpath Predef.path_exn then
@@ -239,7 +239,7 @@ let view_defined ~env ?(show_all=false) modlid =
     in
     let l = iter_sign sign [] in
     let title = string_of_path path in
-    let env = open_signature path sign env in
+    let env = open_signature Asttypes.Fresh path sign env in
     !choose_symbol_ref l ~title ~signature:sign ~env ~path;
     if show_all then view_signature sign ~title ~env ~path
   | _ -> ()

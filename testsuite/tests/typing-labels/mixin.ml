@@ -1,5 +1,3 @@
-(* $Id: mixin.ml 11123 2011-07-20 09:17:07Z doligez $ *)
-
 open StdLabels
 open MoreLabels
 

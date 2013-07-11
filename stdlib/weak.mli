@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: weak.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (** Arrays of weak pointers and hash tables of weak pointers. *)
 
 

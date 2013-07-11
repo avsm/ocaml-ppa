@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: printval.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 open Format
 
 val max_printer_depth : int ref

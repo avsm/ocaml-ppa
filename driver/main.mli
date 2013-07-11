@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (*
   this "empty" file is here to speed up garbage collection in ocamlc.opt
 *)

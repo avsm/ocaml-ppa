@@ -11,11 +11,10 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: marshal.ml 12210 2012-03-08 19:52:03Z doligez $ *)
-
 type extern_flags =
     No_sharing
   | Closures
+  | Compat_32
 (* note: this type definition is used in 'byterun/debugger.c' *)
 
 external to_channel: out_channel -> 'a -> extern_flags list -> unit

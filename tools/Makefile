@@ -10,8 +10,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 11184 2011-09-07 14:28:24Z xclerc $
-
 include Makefile.shared
 
 # To make custom toplevels

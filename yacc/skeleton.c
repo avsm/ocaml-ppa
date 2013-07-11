@@ -12,8 +12,6 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: skeleton.c 12834 2012-08-06 14:16:24Z doligez $ */
-
 #include "defs.h"
 
 char *header[] =

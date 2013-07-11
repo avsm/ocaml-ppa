@@ -11,12 +11,10 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 11156 2011-07-27 14:17:02Z doligez $
-
 LIBNAME=bigarray
-EXTRACFLAGS=-I../unix -DIN_OCAML_BIGARRAY -DCAML_NAME_SPACE
-EXTRACAMLFLAGS=-I ../unix
-COBJS=bigarray_stubs.$(O) mmap_unix.$(O)
+EXTRACFLAGS=-I../$(UNIXLIB) -DIN_OCAML_BIGARRAY -DCAML_NAME_SPACE
+EXTRACAMLFLAGS=-I ../$(UNIXLIB)
+COBJS=bigarray_stubs.$(O) mmap_$(UNIX_OR_WIN32).$(O)
 CAMLOBJS=bigarray.cmo
 HEADERS=bigarray.h
 

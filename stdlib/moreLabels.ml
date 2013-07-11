@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: moreLabels.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Module [MoreLabels]: meta-module for compatibility labelled libraries *)
 
 module Hashtbl = Hashtbl

@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: event.mli 12386 2012-04-20 15:33:00Z doligez $ *)
-
 (** First-class synchronous communication.
 
    This module implements synchronous inter-thread communications over

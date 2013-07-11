@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* $Id: odoc_misc.ml 12796 2012-07-30 11:22:29Z doligez $ *)
 
 let no_blanks s =
   let len = String.length s in

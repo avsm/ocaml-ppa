@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* $Id: odoc_global.ml 12798 2012-07-30 11:53:27Z doligez $ *)
 
 (** Global variables. *)
 
@@ -46,6 +45,7 @@ let recursive_types = Clflags.recursive_types
 
 (** Optional preprocessor command. *)
 let preprocessor = Clflags.preprocessor
+let ppx = Clflags.all_ppx
 
 let sort_modules = ref false
 

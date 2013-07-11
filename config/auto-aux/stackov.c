@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: stackov.c 11156 2011-07-27 14:17:02Z doligez $ */
-
 #include <stdio.h>
 #include <signal.h>
 #include <sys/resource.h>

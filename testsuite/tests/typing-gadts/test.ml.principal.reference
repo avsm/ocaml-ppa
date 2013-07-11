@@ -50,9 +50,9 @@ module Nonexhaustive :
 #               Characters 118-119:
       let eval (D x) = x
                        ^
-Error: This expression has type ex#16 t
-       but an expression was expected of type ex#16 t
-       The type constructor ex#16 would escape its scope
+Error: This expression has type a#2 t but an expression was expected of type
+         a#2 t
+       The type constructor a#2 would escape its scope
 #                       Characters 174-175:
             C ->
             ^
@@ -62,11 +62,12 @@ Error: Recursive local constraint when unifying (s, s) t with (s, s * s) t
              ^^^^^^^^
 Error: This pattern matches values of type int t
        but a pattern was expected which matches values of type s t
-#                         Characters 224-237:
-          | `A, BoolLit _ -> ()
-            ^^^^^^^^^^^^^
-Error: This pattern matches values of type ([? `A ] as 'a) * bool t
-       but a pattern was expected which matches values of type 'a * int t
+       Type int is not compatible with type s 
+#                         module Polymorphic_variants :
+  sig
+    type _ t = IntLit : int -> int t | BoolLit : bool -> bool t
+    val eval : [ `A ] * 's t -> unit
+  end
 #                                 Characters 299-300:
       | BoolLit b -> b
                      ^
@@ -274,6 +275,7 @@ val f : 'a ty -> 'a t -> int = <fun>
                    ^^
 Error: This expression has type (a, a) eq
        but an expression was expected of type (a, b) eq
+       Type a is not compatible with type b 
 #       val f : ('a M.t * 'a, 'b M.t * 'b) eq -> ('a, 'b) eq = <fun>
 #       val f : ('a * 'a M.t, 'b * 'b M.t) eq -> ('a, 'b) eq = <fun>
 #                     type _ t = V1 : [ `A | `B ] t | V2 : [ `C | `D ] t
@@ -286,24 +288,30 @@ type _ int_bar = IB_constr : < bar : int; .. > int_bar
      ^
 Error: This expression has type t = < foo : int; .. >
        but an expression was expected of type < foo : int >
-       Type ex#20 = < bar : int; .. > is not compatible with type <  > 
+       Type ex#17 = < bar : int; .. > is not compatible with type <  > 
        The second object type has no method bar
 #         Characters 98-99:
     (x:<foo:int;bar:int>)
      ^
 Error: This expression has type t = < foo : int; .. >
        but an expression was expected of type < bar : int; foo : int >
-       Type ex#22 = < bar : int; .. > is not compatible with type
+       Type ex#19 = < bar : int; .. > is not compatible with type
          < bar : int > 
+       The first object type has an abstract row, it cannot be closed
 #         Characters 98-99:
     (x:<foo:int;bar:int;..>)
      ^
 Error: This expression has type < bar : int; foo : int; .. > as 'a
        but an expression was expected of type 'a
-       The type constructor ex#25 would escape its scope
+       The type constructor ex#22 would escape its scope
 #         val g : 'a -> 'a int_foo -> 'a int_bar -> 'a = <fun>
 #         val g : 'a -> 'a int_foo -> 'a int_bar -> 'a * int * int = <fun>
 #       type 'a ty = Int : int -> int ty
 #     val f : 'a ty -> 'a = <fun>
 #       val g : 'a ty -> 'a = <fun>
+#       module M : sig type _ t = int end
+# module M : sig type _ t = T : int t end
+# module N : sig type 'a t = 'a M.t = T : int t end
+#                     val f : ('a, 'b) eq -> ('a, int) eq -> 'a -> 'b -> unit = <fun>
+#               val f : ('a, 'b) eq -> ('b, int) eq -> 'a -> 'b -> unit = <fun>
 # 

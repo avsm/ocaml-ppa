@@ -11,19 +11,14 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: select.c 12800 2012-07-30 18:59:07Z doligez $ */
-
 #include <mlvalues.h>
 #include <alloc.h>
 #include <memory.h>
 #include <fail.h>
 #include <signals.h>
-#include <winsock2.h>
-#include <windows.h>
-#include <stdio.h>
-#include "unixsupport.h"
-#include "windbug.h"
 #include "winworker.h"
+#include <stdio.h>
+#include "windbug.h"
 #include "winlist.h"
 
 /* This constant define the maximum number of objects that

@@ -10,11 +10,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arch.ml 12187 2012-02-24 10:13:02Z xleroy $ *)
-
 (* Specific operations for the Sparc processor *)
 
-open Misc
 open Format
 
 (* SPARC V8 adds multiply and divide.
@@ -46,6 +43,8 @@ let big_endian = true
 let size_addr = 4
 let size_int = 4
 let size_float = 8
+
+let allow_unaligned_access = false
 
 (* Behavior of division *)
 

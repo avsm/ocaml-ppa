@@ -12,8 +12,6 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: main.c 12800 2012-07-30 18:59:07Z doligez $ */
-
 #include <signal.h>
 #include <string.h>
 #include "defs.h"

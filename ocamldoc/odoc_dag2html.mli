@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* $Id: odoc_dag2html.mli 9547 2010-01-22 12:48:24Z doligez $ *)
 
 (** The types and functions to create a html table representing a dag.
    Thanks to Daniel de Rauglaudre. *)

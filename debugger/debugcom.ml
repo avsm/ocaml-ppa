@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: debugcom.ml 12184 2012-02-23 19:54:44Z doligez $ *)
-
 (* Low-level communication with the debuggee *)
 
 open Int64ops

@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bytegen.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Generation of bytecode from lambda terms *)
 
 open Lambda

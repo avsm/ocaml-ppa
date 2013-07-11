@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: listLabels.mli 12212 2012-03-08 22:27:57Z doligez $ *)
-
 (** List operations.
 
    Some functions are flagged as not tail-recursive.  A tail-recursive

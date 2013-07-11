@@ -10,8 +10,6 @@
 .\"*                                                                     *
 .\"***********************************************************************
 .\"
-.\" $Id: ocamldoc.m 12800 2012-07-30 18:59:07Z doligez $
-.\"
 .TH OCAMLDOC 1
 
 \" .de Sh \" Subsection heading
@@ -237,6 +235,10 @@ options.
 .TP
 .BI \-pp \ command
 Pipe sources through preprocessor
+.IR command .
+.TP
+.BI \-ppx \ command
+Pipe abstract syntax tree through preprocessor
 .IR command .
 .TP
 .B \-sort

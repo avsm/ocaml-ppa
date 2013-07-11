@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: liveness.mli 12058 2012-01-20 14:23:34Z frisch $ *)
-
 (* Liveness analysis.
    Annotate mach code with the set of regs live at each point. *)
 

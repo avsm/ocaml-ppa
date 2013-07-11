@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: typecheck.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
+(* $Id$ *)
 
 open StdLabels
 open Tk
@@ -137,22 +137,17 @@ let f txt =
           Lexer.report_error Format.std_formatter err; l
       | Syntaxerr.Error err ->
           Syntaxerr.report_error Format.std_formatter err;
-          begin match err with
-            Syntaxerr.Unclosed(l,_,_,_) -> l
-          | Syntaxerr.Applicative_path l -> l
-          | Syntaxerr.Variable_in_scope(l,_) -> l
-          | Syntaxerr.Other l -> l
-          end
-      | Typecore.Error (l,err) ->
-          Typecore.report_error Format.std_formatter err; l
-      | Typeclass.Error (l,err) ->
-          Typeclass.report_error Format.std_formatter err; l
+          Syntaxerr.location_of_error err
+      | Typecore.Error (l, env, err) ->
+          Typecore.report_error env Format.std_formatter err; l
+      | Typeclass.Error (l, env, err) ->
+          Typeclass.report_error env Format.std_formatter err; l
       | Typedecl.Error (l, err) ->
           Typedecl.report_error Format.std_formatter err; l
-      | Typemod.Error (l,err) ->
-          Typemod.report_error Format.std_formatter err; l
-      | Typetexp.Error (l,err) ->
-          Typetexp.report_error Format.std_formatter err; l
+      | Typemod.Error (l, env, err) ->
+          Typemod.report_error env Format.std_formatter err; l
+      | Typetexp.Error (l, env, err) ->
+          Typetexp.report_error env Format.std_formatter err; l
       | Includemod.Error errl ->
           Includemod.report_error Format.std_formatter errl; Location.none
       | Env.Error err ->

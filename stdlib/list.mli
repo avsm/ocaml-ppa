@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: list.mli 12212 2012-03-08 22:27:57Z doligez $ *)
-
 (** List operations.
 
    Some functions are flagged as not tail-recursive.  A tail-recursive
@@ -279,6 +277,9 @@ val stable_sort : ('a -> 'a -> int) -> 'a list -> 'a list
 val fast_sort : ('a -> 'a -> int) -> 'a list -> 'a list
 (** Same as {!List.sort} or {!List.stable_sort}, whichever is faster
     on typical input. *)
+
+val sort_uniq : ('a -> 'a -> int) -> 'a list -> 'a list
+(** Same as {!List.sort}, but also remove duplicates. *)
 
 val merge : ('a -> 'a -> int) -> 'a list -> 'a list -> 'a list
 (** Merge two lists:

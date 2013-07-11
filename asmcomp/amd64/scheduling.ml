@@ -10,9 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: scheduling.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
-open Schedgen (* to create a dependency *)
+let _ = let module M = Schedgen in () (* to create a dependency *)
 
 (* Scheduling is turned off because the processor schedules dynamically
    much better than what we could do. *)

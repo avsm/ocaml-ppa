@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: proc.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Processor descriptions *)
 
 (* Instruction selection *)
@@ -48,3 +46,6 @@ val contains_calls: bool ref
 
 (* Calling the assembler *)
 val assemble_file: string -> string -> int
+
+(* Called before translating a fundecl. *)
+val init : unit -> unit

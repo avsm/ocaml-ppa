@@ -10,8 +10,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 12246 2012-03-16 15:53:07Z doligez $
-
 include ../config/Makefile
 
 DIR=$(MANDIR)/man$(MANEXT)

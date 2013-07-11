@@ -11,9 +11,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: socketaddr.h 11156 2011-07-27 14:17:02Z doligez $ */
-
-#include <misc.h>
+#include "misc.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>

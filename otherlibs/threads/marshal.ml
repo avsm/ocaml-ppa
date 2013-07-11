@@ -11,11 +11,10 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: marshal.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 type extern_flags =
     No_sharing
   | Closures
+  | Compat_32
 
 external to_string: 'a -> extern_flags list -> string
     = "caml_output_value_to_string"

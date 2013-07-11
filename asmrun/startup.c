@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: startup.c 12227 2012-03-13 14:44:48Z xleroy $ */
-
 /* Start-up code */
 
 #include <stdio.h>
@@ -33,7 +31,6 @@
 #include "printexc.h"
 #include "stack.h"
 #include "sys.h"
-#include "natdynlink.h"
 #ifdef HAS_UI
 #include "ui.h"
 #endif
@@ -57,7 +54,7 @@ static void init_atoms(void)
   }
   if (caml_page_table_add(In_static_data,
                           caml_atom_table, caml_atom_table + 256) != 0)
-    caml_fatal_error("Fatal error: not enough memory for the initial page table");
+    caml_fatal_error("Fatal error: not enough memory for initial page table");
 
   for (i = 0; caml_data_segments[i].begin != 0; i++) {
     /* PR#5509: we must include the zero word at end of data segment,
@@ -65,7 +62,7 @@ static void init_atoms(void)
     if (caml_page_table_add(In_static_data,
                             caml_data_segments[i].begin,
                             caml_data_segments[i].end + sizeof(value)) != 0)
-      caml_fatal_error("Fatal error: not enough memory for the initial page table");
+      caml_fatal_error("Fatal error: not enough memory for initial page table");
   }
 
   caml_code_area_start = caml_code_segments[0].begin;
@@ -150,16 +147,25 @@ extern value caml_start_program (void);
 extern void caml_init_ieee_floats (void);
 extern void caml_init_signals (void);
 
+#ifdef _MSC_VER
+
+/* PR 4887: avoid crash box of windows runtime on some system calls */
+extern void caml_install_invalid_parameter_handler();
+
+#endif
+
+
 void caml_main(char **argv)
 {
   char * exe_name;
-#ifdef __linux__
   static char proc_self_exe[256];
-#endif
   value res;
   char tos;
 
   caml_init_ieee_floats();
+#ifdef _MSC_VER
+  caml_install_invalid_parameter_handler();
+#endif
   caml_init_custom_operations();
 #ifdef DEBUG
   caml_verb_gc = 63;
@@ -173,14 +179,10 @@ void caml_main(char **argv)
   caml_debugger_init (); /* force debugger.o stub to be linked */
   exe_name = argv[0];
   if (exe_name == NULL) exe_name = "";
-#ifdef __linux__
   if (caml_executable_name(proc_self_exe, sizeof(proc_self_exe)) == 0)
     exe_name = proc_self_exe;
   else
     exe_name = caml_search_exe_in_path(exe_name);
-#else
-  exe_name = caml_search_exe_in_path(exe_name);
-#endif
   caml_sys_init(exe_name, argv);
   if (sigsetjmp(caml_termination_jmpbuf.buf, 0)) {
     if (caml_termination_hook != NULL) caml_termination_hook(NULL);

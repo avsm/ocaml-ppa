@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: threadUnix.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (** Thread-compatible system calls.
 
    @deprecated The functionality of this module has been merged back into

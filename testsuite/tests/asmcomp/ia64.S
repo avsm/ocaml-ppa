@@ -10,8 +10,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: ia64.S 12149 2012-02-10 16:15:24Z doligez $ */
-
 #define ST8OFF(a,b,d) st8 [a] = b, d
 #define LD8OFF(a,b,d) ld8 a = [b], d
 #define STFDOFF(a,b,d) stfd [a] = b, d

@@ -14,7 +14,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: cltkVar.c 12800 2012-07-30 18:59:07Z doligez $ */
+/* $Id$ */
 
 /* Alternative to tkwait variable */
 #include <string.h>

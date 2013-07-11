@@ -10,15 +10,13 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: asmpackager.mli 12058 2012-01-20 14:23:34Z frisch $ *)
-
 (* "Package" a set of .cmx/.o files into one .cmx/.o file having the
    original compilation units as sub-modules. *)
 
 val package_files: Format.formatter -> string list -> string -> unit
 
 type error =
-    Illegal_renaming of string * string
+    Illegal_renaming of string * string * string
   | Forward_reference of string * string
   | Wrong_for_pack of string * string
   | Linking_error

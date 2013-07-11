@@ -12,9 +12,6 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: lr0.c 11156 2011-07-27 14:17:02Z doligez $ */
-
-
 #include "defs.h"
 
 extern short *itemset;

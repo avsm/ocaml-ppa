@@ -14,7 +14,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: cltkMisc.c 12149 2012-02-10 16:15:24Z doligez $ */
+/* $Id$ */
 
 #include <string.h>
 #include <tcl.h>
@@ -55,7 +55,7 @@ CAMLprim value camltk_splitlist (value v)
 char *string_to_c(value s)
 {
   int l = string_length(s);
-  char *res = stat_alloc(l + 1);
+  char *res = caml_stat_alloc(l + 1);
   memmove (res, String_val (s), l);
   res[l] = '\0';
   return res;

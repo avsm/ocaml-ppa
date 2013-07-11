@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parsecmmaux.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Auxiliary functions for parsing *)
 
 val bind_ident: string -> Ident.t

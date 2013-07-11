@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: open.c 12149 2012-02-10 16:15:24Z doligez $ */
-
 #include <fcntl.h>
 #include <signal.h>
 #include "mlvalues.h"
@@ -101,6 +99,7 @@ static LRESULT CALLBACK GraphicsWndProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM 
                 // End application
         case WM_DESTROY:
                 ResetForClose(hwnd);
+		gr_check_open();
                 break;
         }
         caml_gr_handle_event(msg, wParam, lParam);

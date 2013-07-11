@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: win32.c 12686 2012-07-10 11:34:39Z scherer $ */
-
 /* Win32-specific stuff */
 
 #include <windows.h>
@@ -33,7 +31,7 @@
 #include "signals.h"
 #include "sys.h"
 
-#include "flexdll.h"
+#include <flexdll.h>
 
 #ifndef S_ISREG
 #define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
@@ -93,7 +91,7 @@ CAMLexport char * caml_search_exe_in_path(char * name)
   pathlen = strlen(name) + 1;
   if (pathlen < 256) pathlen = 256;
   while (1) {
-    fullname = stat_alloc(pathlen);
+    fullname = caml_stat_alloc(pathlen);
     retcode = SearchPath(NULL,              /* use system search path */
                          name,
                          ".exe",            /* add .exe extension if needed */
@@ -107,7 +105,7 @@ CAMLexport char * caml_search_exe_in_path(char * name)
       break;
     }
     if (retcode < pathlen) break;
-    stat_free(fullname);
+    caml_stat_free(fullname);
     pathlen = retcode + 1;
   }
   return fullname;
@@ -471,11 +469,48 @@ int caml_win32_random_seed (intnat data[16])
 {
   /* For better randomness, consider:
      http://msdn.microsoft.com/library/en-us/seccrypto/security/rtlgenrandom.asp
+     http://blogs.msdn.com/b/michael_howard/archive/2005/01/14/353379.aspx
   */
   FILETIME t;
+  LARGE_INTEGER pc;
   GetSystemTimeAsFileTime(&t);
+  QueryPerformanceCounter(&pc);  /* PR#6032 */
   data[0] = t.dwLowDateTime;
   data[1] = t.dwHighDateTime;
   data[2] = GetCurrentProcessId();
-  return 3;
+  data[3] = pc.LowPart;
+  data[4] = pc.HighPart;
+  return 5;
+}
+
+
+#ifdef _MSC_VER
+
+static void invalid_parameter_handler(const wchar_t* expression,
+   const wchar_t* function,
+   const wchar_t* file,
+   unsigned int line,
+   uintptr_t pReserved)
+{
+  /* no crash box */
+}
+
+
+void caml_install_invalid_parameter_handler()
+{
+  _set_invalid_parameter_handler(invalid_parameter_handler);
+}
+
+#endif
+
+
+/* Recover executable name  */
+
+int caml_executable_name(char * name, int name_len)
+{
+  int retcode;
+
+  int ret = GetModuleFileName(NULL, name, name_len);
+  if (0 == ret || ret >= name_len) return -1;
+  return 0;
 }

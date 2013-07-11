@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: simplif.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Elimination of useless Llet(Alias) bindings.
    Transformation of let-bound references into variables.
    Simplification over staticraise/staticcatch constructs.

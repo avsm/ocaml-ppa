@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: map.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (** Association tables over ordered types.
 
    This module implements applicative association tables, also known as

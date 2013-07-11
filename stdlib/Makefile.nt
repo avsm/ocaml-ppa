@@ -11,8 +11,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile.nt 11156 2011-07-27 14:17:02Z doligez $
-
 include Makefile.shared
 
 allopt: stdlib.cmxa std_exit.cmx

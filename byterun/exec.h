@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: exec.h 11156 2011-07-27 14:17:02Z doligez $ */
-
 /* exec.h : format of executable bytecode files */
 
 #ifndef CAML_EXEC_H

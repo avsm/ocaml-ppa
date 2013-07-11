@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: support.mli 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id$ *)
 
 val split_str : pred:(char -> bool) -> string -> string list
 val may : ('a -> 'b) -> 'a option -> 'b option

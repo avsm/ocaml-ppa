@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* $Id: odoc_analyse.ml 12862 2012-08-16 09:44:48Z guesdon $ *)
 
 (** Analysis of source files. This module is strongly inspired from
     driver/main.ml :-) *)
@@ -43,62 +42,12 @@ let initial_env () =
 
 (** Optionally preprocess a source file *)
 let preprocess sourcefile =
-  match !Clflags.preprocessor with
-    None -> sourcefile
-  | Some pp ->
-      let tmpfile = Filename.temp_file "ocamldocpp" "" in
-      let comm = Printf.sprintf "%s %s > %s" pp sourcefile tmpfile in
-      if Ccomp.command comm <> 0 then begin
-        remove_file tmpfile;
-        Printf.eprintf "Preprocessing error\n";
-        exit 2
-      end;
-      tmpfile
-
-(** Remove the input file if this file was the result of a preprocessing.*)
-let remove_preprocessed inputfile =
-  match !Clflags.preprocessor with
-    None -> ()
-  | Some _ -> remove_file inputfile
-
-let remove_preprocessed_if_ast inputfile =
-  match !Clflags.preprocessor with
-    None -> ()
-  | Some _ -> if inputfile <> !Location.input_name then remove_file inputfile
-
-exception Outdated_version
-
-(** Parse a file or get a dumped syntax tree in it *)
-let parse_file inputfile parse_fun ast_magic =
-  let ic = open_in_bin inputfile in
-  let is_ast_file =
-    try
-      let buffer = Misc.input_bytes ic (String.length ast_magic) in
-      if buffer = ast_magic then true
-      else if String.sub buffer 0 9 = String.sub ast_magic 0 9 then
-        raise Outdated_version
-      else false
-    with
-      Outdated_version ->
-        fatal_error "OCaml and preprocessor have incompatible versions"
-    | _ -> false
-  in
-  let ast =
-    try
-      if is_ast_file then begin
-        Location.input_name := input_value ic;
-        input_value ic
-      end else begin
-        seek_in ic 0;
-        Location.input_name := inputfile;
-        let lexbuf = Lexing.from_channel ic in
-        Location.init lexbuf inputfile;
-        parse_fun lexbuf
-      end
-    with x -> close_in ic; raise x
-  in
-  close_in ic;
-  ast
+  try
+    Pparse.preprocess sourcefile
+  with Pparse.Error err ->
+    Format.eprintf "Preprocessing error@.%a@."
+      Pparse.report_error err;
+    exit 2
 
 let (++) x f = f x
 
@@ -112,7 +61,7 @@ let process_implementation_file ppf sourcefile =
   let inputfile = preprocess sourcefile in
   let env = initial_env () in
   try
-    let parsetree = parse_file inputfile Parse.implementation ast_impl_magic_number in
+    let parsetree = Pparse.file Format.err_formatter inputfile Parse.implementation ast_impl_magic_number in
     let typedtree =
       Typemod.type_implementation
         sourcefile prefixname modulename env parsetree
@@ -140,7 +89,7 @@ let process_interface_file ppf sourcefile =
   let modulename = String.capitalize(Filename.basename prefixname) in
   Env.set_unit_name modulename;
   let inputfile = preprocess sourcefile in
-  let ast = parse_file inputfile Parse.interface ast_intf_magic_number in
+  let ast = Pparse.file Format.err_formatter inputfile Parse.interface ast_intf_magic_number in
   let sg = Typemod.transl_signature (initial_env()) ast in
   Warnings.check_fatal ();
   (ast, sg, inputfile)
@@ -175,24 +124,24 @@ let process_error exn =
       fprintf ppf
       "In this program,@ variant constructors@ `%s and `%s@ \
        have the same hash value." l l'
-  | Typecore.Error(loc, err) ->
-      Location.print_error ppf loc; Typecore.report_error ppf err
-  | Typetexp.Error(loc, err) ->
-      Location.print_error ppf loc; Typetexp.report_error ppf err
+  | Typecore.Error(loc, env, err) ->
+      Location.print_error ppf loc; Typecore.report_error env ppf err
+  | Typetexp.Error(loc, env, err) ->
+      Location.print_error ppf loc; Typetexp.report_error env ppf err
   | Typedecl.Error(loc, err) ->
       Location.print_error ppf loc; Typedecl.report_error ppf err
   | Includemod.Error err ->
       Location.print_error_cur_file ppf;
       Includemod.report_error ppf err
-  | Typemod.Error(loc, err) ->
-      Location.print_error ppf loc; Typemod.report_error ppf err
+  | Typemod.Error(loc, env, err) ->
+      Location.print_error ppf loc; Typemod.report_error env ppf err
   | Translcore.Error(loc, err) ->
       Location.print_error ppf loc; Translcore.report_error ppf err
   | Sys_error msg ->
       Location.print_error_cur_file ppf;
       fprintf ppf "I/O error: %s" msg
-  | Typeclass.Error(loc, err) ->
-      Location.print_error ppf loc; Typeclass.report_error ppf err
+  | Typeclass.Error(loc, env, err) ->
+      Location.print_error ppf loc; Typeclass.report_error env ppf err
   | Translclass.Error(loc, err) ->
       Location.print_error ppf loc; Translclass.report_error ppf err
   | Warnings.Errors (n) ->
@@ -238,7 +187,7 @@ let process_file ppf sourcefile =
                 print_string Odoc_messages.ok;
                 print_newline ()
                );
-             remove_preprocessed input_file;
+             Pparse.remove_preprocessed input_file;
              Some file_module
        with
        | Sys_error s
@@ -267,7 +216,7 @@ let process_file ppf sourcefile =
             print_string Odoc_messages.ok;
             print_newline ()
            );
-         remove_preprocessed input_file;
+         Pparse.remove_preprocessed input_file;
          Some file_module
        with
        | Sys_error s

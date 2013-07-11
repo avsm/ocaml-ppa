@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: instruct.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* The type of the instructions of the abstract machine *)
 
 open Lambda

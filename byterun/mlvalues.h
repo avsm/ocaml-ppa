@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: mlvalues.h 12000 2012-01-07 20:55:28Z lefessan $ */
-
 #ifndef CAML_MLVALUES_H
 #define CAML_MLVALUES_H
 

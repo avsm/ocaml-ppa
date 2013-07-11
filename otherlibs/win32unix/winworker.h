@@ -11,11 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: winworker.h 11156 2011-07-27 14:17:02Z doligez $ */
 #ifndef _WINWORKER_H
 #define _WINWORKER_H
 
 #define _WIN32_WINNT 0x0400
+#include "unixsupport.h"
 #include <windows.h>
 
 /* Pool of worker threads.

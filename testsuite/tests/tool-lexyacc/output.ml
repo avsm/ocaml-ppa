@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: output.ml 12800 2012-07-30 18:59:07Z doligez $ *)
-
 (* Generating a DFA as a set of mutually recursive functions *)
 
 open Syntax

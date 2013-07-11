@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: cmmgen.ml 12800 2012-07-30 18:59:07Z doligez $ *)
-
 (* Translation from closed lambda to C-- *)
 
 open Misc
@@ -78,7 +76,10 @@ let int_const n =
           (Nativeint.add (Nativeint.shift_left (Nativeint.of_int n) 1) 1n)
 
 let add_const c n =
-  if n = 0 then c else Cop(Caddi, [c; Cconst_int n])
+  if n = 0 then c
+  else match c with
+  | Cconst_int x when no_overflow_add x n -> Cconst_int (x + n)
+  | c -> Cop(Caddi, [c; Cconst_int n])
 
 let incr_int = function
     Cconst_int n when n < max_int -> Cconst_int(n+1)
@@ -155,9 +156,24 @@ let lsl_int c1 c2 =
       Cop(Clsl, [c1; c2])
 
 let ignore_low_bit_int = function
-    Cop(Caddi, [(Cop(Clsl, [_; Cconst_int 1]) as c); Cconst_int 1]) -> c
+    Cop(Caddi, [(Cop(Clsl, [_; Cconst_int n]) as c); Cconst_int 1]) when n > 0
+      -> c
   | Cop(Cor, [c; Cconst_int 1]) -> c
   | c -> c
+
+let lsr_int c1 c2 =
+  match c2 with
+    (Cconst_int n) when n > 0 ->
+    Cop(Clsr, [ignore_low_bit_int c1; c2])
+  | _ ->
+    Cop(Clsr, [c1; c2])
+
+let asr_int c1 c2 =
+  match c2 with
+    (Cconst_int n) when n > 0 ->
+    Cop(Casr, [ignore_low_bit_int c1; c2])
+  | _ ->
+    Cop(Casr, [c1; c2])
 
 (* Division or modulo on tagged integers.  The overflow case min_int / -1
    cannot occur, but we must guard against division by zero. *)
@@ -423,21 +439,27 @@ type rhs_kind =
   | RHS_floatblock of int
   | RHS_nonrec
 ;;
-let rec expr_size = function
+let rec expr_size env = function
+  | Uvar id ->
+      begin try Ident.find_same id env with Not_found -> RHS_nonrec end
   | Uclosure(fundecls, clos_vars) ->
       RHS_block (fundecls_size fundecls + List.length clos_vars)
   | Ulet(id, exp, body) ->
-      expr_size body
+      expr_size (Ident.add id (expr_size env exp) env) body
   | Uletrec(bindings, body) ->
-      expr_size body
+      expr_size env body
   | Uprim(Pmakeblock(tag, mut), args, _) ->
       RHS_block (List.length args)
   | Uprim(Pmakearray(Paddrarray | Pintarray), args, _) ->
       RHS_block (List.length args)
   | Uprim(Pmakearray(Pfloatarray), args, _) ->
       RHS_floatblock (List.length args)
+  | Uprim (Pduprecord (Record_regular, sz), _, _) ->
+      RHS_block sz
+  | Uprim (Pduprecord (Record_float, sz), _, _) ->
+      RHS_floatblock sz
   | Usequence(exp, exp') ->
-      expr_size exp'
+      expr_size env exp'
   | _ -> RHS_nonrec
 
 (* Record application and currying functions *)
@@ -627,7 +649,8 @@ let bigarray_get unsafe elt_kind layout b args dbg =
       Pbigarray_complex32 | Pbigarray_complex64 ->
         let kind = bigarray_word_kind elt_kind in
         let sz = bigarray_elt_size elt_kind / 2 in
-        bind "addr" (bigarray_indexing unsafe elt_kind layout b args dbg) (fun addr ->
+        bind "addr" (bigarray_indexing unsafe elt_kind layout b args dbg)
+          (fun addr ->
           box_complex
             (Cop(Cload kind, [addr]))
             (Cop(Cload kind, [Cop(Cadda, [addr; Cconst_int sz])])))
@@ -642,7 +665,8 @@ let bigarray_set unsafe elt_kind layout b args newval dbg =
         let kind = bigarray_word_kind elt_kind in
         let sz = bigarray_elt_size elt_kind / 2 in
         bind "newval" newval (fun newv ->
-        bind "addr" (bigarray_indexing unsafe elt_kind layout b args dbg) (fun addr ->
+        bind "addr" (bigarray_indexing unsafe elt_kind layout b args dbg)
+          (fun addr ->
           Csequence(
             Cop(Cstore kind, [addr; complex_re newv]),
             Cop(Cstore kind,
@@ -650,6 +674,158 @@ let bigarray_set unsafe elt_kind layout b args newval dbg =
     | _ ->
         Cop(Cstore (bigarray_word_kind elt_kind),
             [bigarray_indexing unsafe elt_kind layout b args dbg; newval]))
+
+let unaligned_load_16 ptr idx =
+  if Arch.allow_unaligned_access
+  then Cop(Cload Sixteen_unsigned, [add_int ptr idx])
+  else
+    let v1 = Cop(Cload Byte_unsigned, [add_int ptr idx]) in
+    let v2 = Cop(Cload Byte_unsigned,
+                 [add_int (add_int ptr idx) (Cconst_int 1)]) in
+    let b1, b2 = if Arch.big_endian then v1, v2 else v2, v1 in
+    Cop(Cor, [lsl_int b1 (Cconst_int 8); b2])
+
+let unaligned_set_16 ptr idx newval =
+  if Arch.allow_unaligned_access
+  then Cop(Cstore Sixteen_unsigned, [add_int ptr idx; newval])
+  else
+    let v1 = Cop(Cand, [Cop(Clsr, [newval; Cconst_int 8]); Cconst_int 0xFF]) in
+    let v2 = Cop(Cand, [newval; Cconst_int 0xFF]) in
+    let b1, b2 = if Arch.big_endian then v1, v2 else v2, v1 in
+    Csequence(
+        Cop(Cstore Byte_unsigned, [add_int ptr idx; b1]),
+        Cop(Cstore Byte_unsigned,
+            [add_int (add_int ptr idx) (Cconst_int 1); b2]))
+
+let unaligned_load_32 ptr idx =
+  if Arch.allow_unaligned_access
+  then Cop(Cload Thirtytwo_unsigned, [add_int ptr idx])
+  else
+    let v1 = Cop(Cload Byte_unsigned, [add_int ptr idx]) in
+    let v2 = Cop(Cload Byte_unsigned,
+                 [add_int (add_int ptr idx) (Cconst_int 1)]) in
+    let v3 = Cop(Cload Byte_unsigned,
+                 [add_int (add_int ptr idx) (Cconst_int 2)]) in
+    let v4 = Cop(Cload Byte_unsigned,
+                 [add_int (add_int ptr idx) (Cconst_int 3)]) in
+    let b1, b2, b3, b4 =
+      if Arch.big_endian
+      then v1, v2, v3, v4
+      else v4, v3, v2, v1 in
+    Cop(Cor,
+        [Cop(Cor, [lsl_int b1 (Cconst_int 24); lsl_int b2 (Cconst_int 16)]);
+         Cop(Cor, [lsl_int b3 (Cconst_int 8); b4])])
+
+let unaligned_set_32 ptr idx newval =
+  if Arch.allow_unaligned_access
+  then Cop(Cstore Thirtytwo_unsigned, [add_int ptr idx; newval])
+  else
+    let v1 =
+      Cop(Cand, [Cop(Clsr, [newval; Cconst_int 24]); Cconst_int 0xFF]) in
+    let v2 =
+      Cop(Cand, [Cop(Clsr, [newval; Cconst_int 16]); Cconst_int 0xFF]) in
+    let v3 =
+      Cop(Cand, [Cop(Clsr, [newval; Cconst_int 8]); Cconst_int 0xFF]) in
+    let v4 = Cop(Cand, [newval; Cconst_int 0xFF]) in
+    let b1, b2, b3, b4 =
+      if Arch.big_endian
+      then v1, v2, v3, v4
+      else v4, v3, v2, v1 in
+    Csequence(
+        Csequence(
+            Cop(Cstore Byte_unsigned, [add_int ptr idx; b1]),
+            Cop(Cstore Byte_unsigned,
+                [add_int (add_int ptr idx) (Cconst_int 1); b2])),
+        Csequence(
+            Cop(Cstore Byte_unsigned,
+                [add_int (add_int ptr idx) (Cconst_int 2); b3]),
+            Cop(Cstore Byte_unsigned,
+                [add_int (add_int ptr idx) (Cconst_int 3); b4])))
+
+let unaligned_load_64 ptr idx =
+  assert(size_int = 8);
+  if Arch.allow_unaligned_access
+  then Cop(Cload Word, [add_int ptr idx])
+  else
+    let v1 = Cop(Cload Byte_unsigned, [add_int ptr idx]) in
+    let v2 = Cop(Cload Byte_unsigned,
+                 [add_int (add_int ptr idx) (Cconst_int 1)]) in
+    let v3 = Cop(Cload Byte_unsigned,
+                 [add_int (add_int ptr idx) (Cconst_int 2)]) in
+    let v4 = Cop(Cload Byte_unsigned,
+                 [add_int (add_int ptr idx) (Cconst_int 3)]) in
+    let v5 = Cop(Cload Byte_unsigned,
+                 [add_int (add_int ptr idx) (Cconst_int 4)]) in
+    let v6 = Cop(Cload Byte_unsigned,
+                 [add_int (add_int ptr idx) (Cconst_int 5)]) in
+    let v7 = Cop(Cload Byte_unsigned,
+                 [add_int (add_int ptr idx) (Cconst_int 6)]) in
+    let v8 = Cop(Cload Byte_unsigned,
+                 [add_int (add_int ptr idx) (Cconst_int 7)]) in
+    let b1, b2, b3, b4, b5, b6, b7, b8 =
+      if Arch.big_endian
+      then v1, v2, v3, v4, v5, v6, v7, v8
+      else v8, v7, v6, v5, v4, v3, v2, v1 in
+    Cop(Cor,
+        [Cop(Cor,
+             [Cop(Cor, [lsl_int b1 (Cconst_int (8*7));
+                        lsl_int b2 (Cconst_int (8*6))]);
+              Cop(Cor, [lsl_int b3 (Cconst_int (8*5));
+                        lsl_int b4 (Cconst_int (8*4))])]);
+         Cop(Cor,
+             [Cop(Cor, [lsl_int b5 (Cconst_int (8*3));
+                        lsl_int b6 (Cconst_int (8*2))]);
+              Cop(Cor, [lsl_int b7 (Cconst_int 8);
+                        b8])])])
+
+let unaligned_set_64 ptr idx newval =
+  assert(size_int = 8);
+  if Arch.allow_unaligned_access
+  then Cop(Cstore Word, [add_int ptr idx; newval])
+  else
+    let v1 =
+      Cop(Cand, [Cop(Clsr, [newval; Cconst_int (8*7)]); Cconst_int 0xFF]) in
+    let v2 =
+      Cop(Cand, [Cop(Clsr, [newval; Cconst_int (8*6)]); Cconst_int 0xFF]) in
+    let v3 =
+      Cop(Cand, [Cop(Clsr, [newval; Cconst_int (8*5)]); Cconst_int 0xFF]) in
+    let v4 =
+      Cop(Cand, [Cop(Clsr, [newval; Cconst_int (8*4)]); Cconst_int 0xFF]) in
+    let v5 =
+      Cop(Cand, [Cop(Clsr, [newval; Cconst_int (8*3)]); Cconst_int 0xFF]) in
+    let v6 =
+      Cop(Cand, [Cop(Clsr, [newval; Cconst_int (8*2)]); Cconst_int 0xFF]) in
+    let v7 = Cop(Cand, [Cop(Clsr, [newval; Cconst_int 8]); Cconst_int 0xFF]) in
+    let v8 = Cop(Cand, [newval; Cconst_int 0xFF]) in
+    let b1, b2, b3, b4, b5, b6, b7, b8 =
+      if Arch.big_endian
+      then v1, v2, v3, v4, v5, v6, v7, v8
+      else v8, v7, v6, v5, v4, v3, v2, v1 in
+    Csequence(
+        Csequence(
+            Csequence(
+                Cop(Cstore Byte_unsigned, [add_int ptr idx; b1]),
+                Cop(Cstore Byte_unsigned,
+                    [add_int (add_int ptr idx) (Cconst_int 1); b2])),
+            Csequence(
+                Cop(Cstore Byte_unsigned,
+                    [add_int (add_int ptr idx) (Cconst_int 2); b3]),
+                Cop(Cstore Byte_unsigned,
+                    [add_int (add_int ptr idx) (Cconst_int 3); b4]))),
+        Csequence(
+            Csequence(
+                Cop(Cstore Byte_unsigned,
+                    [add_int (add_int ptr idx) (Cconst_int 4); b5]),
+                Cop(Cstore Byte_unsigned,
+                    [add_int (add_int ptr idx) (Cconst_int 5); b6])),
+            Csequence(
+                Cop(Cstore Byte_unsigned,
+                    [add_int (add_int ptr idx) (Cconst_int 6); b7]),
+                Cop(Cstore Byte_unsigned,
+                    [add_int (add_int ptr idx) (Cconst_int 7); b8]))))
+
+let check_bound unsafe dbg a1 a2 k =
+  if unsafe then k else Csequence(make_checkbound dbg [a1;a2], k)
 
 (* Simplification of some primitives into C calls *)
 
@@ -688,6 +864,11 @@ let simplif_primitive_32bits = function
       Pccall (default_prim ("caml_ba_get_" ^ string_of_int n))
   | Pbigarrayset(unsafe, n, Pbigarray_int64, layout) ->
       Pccall (default_prim ("caml_ba_set_" ^ string_of_int n))
+  | Pstring_load_64(_) -> Pccall (default_prim "caml_string_get64")
+  | Pstring_set_64(_) -> Pccall (default_prim "caml_string_set64")
+  | Pbigstring_load_64(_) -> Pccall (default_prim "caml_ba_uint8_get64")
+  | Pbigstring_set_64(_) -> Pccall (default_prim "caml_ba_uint8_set64")
+  | Pbbswap Pint64 -> Pccall (default_prim "caml_int64_bswap")
   | p -> p
 
 let simplif_primitive p =
@@ -710,8 +891,6 @@ let simplif_primitive p =
 (* constants first *)
 
 let transl_isout h arg = tag_int (Cop(Ccmpa Clt, [h ; arg]))
-
-exception Found of int
 
 let make_switch_gen arg cases acts =
   let lcases = Array.length cases in
@@ -801,7 +980,12 @@ let is_unboxed_number = function
             Boxed_float
         | Pbigarrayref(_, _, Pbigarray_int32, _) -> Boxed_integer Pint32
         | Pbigarrayref(_, _, Pbigarray_int64, _) -> Boxed_integer Pint64
-        | Pbigarrayref(_, _, Pbigarray_native_int, _) -> Boxed_integer Pnativeint
+        | Pbigarrayref(_, _, Pbigarray_native_int,_) -> Boxed_integer Pnativeint
+        | Pstring_load_32(_) -> Boxed_integer Pint32
+        | Pstring_load_64(_) -> Boxed_integer Pint64
+        | Pbigstring_load_32(_) -> Boxed_integer Pint32
+        | Pbigstring_load_64(_) -> Boxed_integer Pint64
+        | Pbbswap bi -> Boxed_integer bi
         | _ -> No_unboxing
       end
   | _ -> No_unboxing
@@ -937,7 +1121,8 @@ let rec transl = function
               (Cop(Cextcall(prim.prim_native_name, typ_float, false, dbg),
                    List.map transl_unbox_float args))
           else
-            Cop(Cextcall(Primitive.native_name prim, typ_addr, prim.prim_alloc, dbg),
+            Cop(Cextcall(Primitive.native_name prim, typ_addr, prim.prim_alloc,
+                         dbg),
                 List.map transl args)
       | (Pmakearray kind, []) ->
           transl_constant(Const_block(0, []))
@@ -979,6 +1164,9 @@ let rec transl = function
             | Pbigarray_native_int -> transl_unbox_int Pnativeint argnewval
             | _ -> untag_int (transl argnewval))
             dbg)
+      | (Pbigarraydim(n), [b]) ->
+          let dim_ofs = 4 + n in
+          tag_int (Cop(Cload Word, [field_address (transl b) dim_ofs]))
       | (p, [arg]) ->
           transl_prim_1 p arg dbg
       | (p, [arg1; arg2]) ->
@@ -1107,11 +1295,22 @@ and transl_prim_1 p arg dbg =
   (* Integer operations *)
   | Pnegint ->
       Cop(Csubi, [Cconst_int 2; transl arg])
+  | Pctconst c ->
+      let const_of_bool b = tag_int (Cconst_int (if b then 1 else 0)) in
+      begin
+        match c with
+        | Big_endian -> const_of_bool Arch.big_endian
+        | Word_size -> tag_int (Cconst_int (8*Arch.size_int))
+        | Ostype_unix -> const_of_bool (Sys.os_type = "Unix")
+        | Ostype_win32 -> const_of_bool (Sys.os_type = "Win32")
+        | Ostype_cygwin -> const_of_bool (Sys.os_type = "Cygwin")
+      end
   | Poffsetint n ->
       if no_overflow_lsl n then
         add_const (transl arg) (n lsl 1)
       else
-        transl_prim_2 Paddint arg (Uconst (Const_base(Const_int n), None)) Debuginfo.none
+        transl_prim_2 Paddint arg (Uconst (Const_base(Const_int n), None))
+                      Debuginfo.none
   | Poffsetref n ->
       return_unit
         (bind "ref" (transl arg) (fun arg ->
@@ -1162,6 +1361,18 @@ and transl_prim_1 p arg dbg =
       box_int bi2 (transl_unbox_int bi1 arg)
   | Pnegbint bi ->
       box_int bi (Cop(Csubi, [Cconst_int 0; transl_unbox_int bi arg]))
+  | Pbbswap bi ->
+      let prim = match bi with
+        | Pnativeint -> "nativeint"
+        | Pint32 -> "int32"
+        | Pint64 -> "int64" in
+      box_int bi (Cop(Cextcall(Printf.sprintf "caml_%s_direct_bswap" prim,
+                               typ_int, false, Debuginfo.none),
+                      [transl_unbox_int bi arg]))
+  | Pbswap16 ->
+      tag_int (Cop(Cextcall("caml_bswap16_direct", typ_int, false,
+                            Debuginfo.none),
+                   [untag_int (transl arg)]))
   | _ ->
       fatal_error "Cmmgen.transl_prim_1"
 
@@ -1170,7 +1381,7 @@ and transl_prim_2 p arg1 arg2 dbg =
   (* Heap operations *)
     Psetfield(n, ptr) ->
       if ptr then
-        return_unit(Cop(Cextcall("caml_modify", typ_void, false, Debuginfo.none),
+        return_unit(Cop(Cextcall("caml_modify", typ_void, false,Debuginfo.none),
                         [field_address (transl arg1) n; transl arg2]))
       else
         return_unit(set_field (transl arg1) n (transl arg2))
@@ -1199,9 +1410,11 @@ and transl_prim_2 p arg1 arg2 dbg =
   | Pmulint ->
       incr_int(Cop(Cmuli, [decr_int(transl arg1); untag_int(transl arg2)]))
   | Pdivint ->
-      tag_int(safe_divmod Cdivi (untag_int(transl arg1)) (untag_int(transl arg2)) dbg)
+      tag_int(safe_divmod Cdivi (untag_int(transl arg1))
+                          (untag_int(transl arg2)) dbg)
   | Pmodint ->
-      tag_int(safe_divmod Cmodi (untag_int(transl arg1)) (untag_int(transl arg2)) dbg)
+      tag_int(safe_divmod Cmodi (untag_int(transl arg1))
+                          (untag_int(transl arg2)) dbg)
   | Pandint ->
       Cop(Cand, [transl arg1; transl arg2])
   | Porint ->
@@ -1213,10 +1426,10 @@ and transl_prim_2 p arg1 arg2 dbg =
   | Plslint ->
       incr_int(lsl_int (decr_int(transl arg1)) (untag_int(transl arg2)))
   | Plsrint ->
-      Cop(Cor, [Cop(Clsr, [transl arg1; untag_int(transl arg2)]);
+      Cop(Cor, [lsr_int (transl arg1) (untag_int(transl arg2));
                 Cconst_int 1])
   | Pasrint ->
-      Cop(Cor, [Cop(Casr, [transl arg1; untag_int(transl arg2)]);
+      Cop(Cor, [asr_int (transl arg1) (untag_int(transl arg2));
                 Cconst_int 1])
   | Pintcomp cmp ->
       tag_int(Cop(Ccmpi(transl_comparison cmp), [transl arg1; transl arg2]))
@@ -1251,6 +1464,54 @@ and transl_prim_2 p arg1 arg2 dbg =
               make_checkbound dbg [string_length str; idx],
               Cop(Cload Byte_unsigned, [add_int str idx])))))
 
+  | Pstring_load_16(unsafe) ->
+     tag_int
+       (bind "str" (transl arg1) (fun str ->
+        bind "index" (untag_int (transl arg2)) (fun idx ->
+          check_bound unsafe dbg (sub_int (string_length str) (Cconst_int 1))
+                      idx (unaligned_load_16 str idx))))
+
+  | Pbigstring_load_16(unsafe) ->
+     tag_int
+       (bind "ba" (transl arg1) (fun ba ->
+        bind "index" (untag_int (transl arg2)) (fun idx ->
+        bind "ba_data" (Cop(Cload Word, [field_address ba 1])) (fun ba_data ->
+          check_bound unsafe dbg (sub_int (Cop(Cload Word,[field_address ba 5]))
+                                          (Cconst_int 1)) idx
+                      (unaligned_load_16 ba_data idx)))))
+
+  | Pstring_load_32(unsafe) ->
+     box_int Pint32
+       (bind "str" (transl arg1) (fun str ->
+        bind "index" (untag_int (transl arg2)) (fun idx ->
+          check_bound unsafe dbg (sub_int (string_length str) (Cconst_int 3))
+                      idx (unaligned_load_32 str idx))))
+
+  | Pbigstring_load_32(unsafe) ->
+     box_int Pint32
+       (bind "ba" (transl arg1) (fun ba ->
+        bind "index" (untag_int (transl arg2)) (fun idx ->
+        bind "ba_data" (Cop(Cload Word, [field_address ba 1])) (fun ba_data ->
+          check_bound unsafe dbg (sub_int (Cop(Cload Word,[field_address ba 5]))
+                                          (Cconst_int 3)) idx
+                      (unaligned_load_32 ba_data idx)))))
+
+  | Pstring_load_64(unsafe) ->
+     box_int Pint64
+       (bind "str" (transl arg1) (fun str ->
+        bind "index" (untag_int (transl arg2)) (fun idx ->
+          check_bound unsafe dbg (sub_int (string_length str) (Cconst_int 7))
+                      idx (unaligned_load_64 str idx))))
+
+  | Pbigstring_load_64(unsafe) ->
+     box_int Pint64
+       (bind "ba" (transl arg1) (fun ba ->
+        bind "index" (untag_int (transl arg2)) (fun idx ->
+        bind "ba_data" (Cop(Cload Word, [field_address ba 1])) (fun ba_data ->
+          check_bound unsafe dbg (sub_int (Cop(Cload Word,[field_address ba 5]))
+                                          (Cconst_int 7)) idx
+                      (unaligned_load_64 ba_data idx)))))
+
   (* Array operations *)
   | Parrayrefu kind ->
       begin match kind with
@@ -1284,15 +1545,16 @@ and transl_prim_2 p arg1 arg2 dbg =
                           float_array_ref arr idx)))))
       | Paddrarray | Pintarray ->
           bind "index" (transl arg2) (fun idx ->
-            bind "arr" (transl arg1) (fun arr ->
-              Csequence(make_checkbound dbg [addr_array_length(header arr); idx],
-                        addr_array_ref arr idx)))
+          bind "arr" (transl arg1) (fun arr ->
+            Csequence(make_checkbound dbg [addr_array_length(header arr); idx],
+                      addr_array_ref arr idx)))
       | Pfloatarray ->
           box_float(
             bind "index" (transl arg2) (fun idx ->
-              bind "arr" (transl arg1) (fun arr ->
-                Csequence(make_checkbound dbg [float_array_length(header arr); idx],
-                          unboxed_float_array_ref arr idx))))
+            bind "arr" (transl arg1) (fun arr ->
+              Csequence(make_checkbound dbg
+                                        [float_array_length(header arr); idx],
+                        unboxed_float_array_ref arr idx))))
       end
 
   (* Operations on bitvects *)
@@ -1420,6 +1682,61 @@ and transl_prim_3 p arg1 arg2 arg3 dbg =
             Csequence(make_checkbound dbg [float_array_length(header arr);idx],
                       float_array_set arr idx newval))))
       end)
+
+  | Pstring_set_16(unsafe) ->
+     return_unit
+       (bind "str" (transl arg1) (fun str ->
+        bind "index" (untag_int (transl arg2)) (fun idx ->
+        bind "newval" (untag_int (transl arg3)) (fun newval ->
+          check_bound unsafe dbg (sub_int (string_length str) (Cconst_int 1))
+                      idx (unaligned_set_16 str idx newval)))))
+
+  | Pbigstring_set_16(unsafe) ->
+     return_unit
+       (bind "ba" (transl arg1) (fun ba ->
+        bind "index" (untag_int (transl arg2)) (fun idx ->
+        bind "newval" (untag_int (transl arg3)) (fun newval ->
+        bind "ba_data" (Cop(Cload Word, [field_address ba 1])) (fun ba_data ->
+          check_bound unsafe dbg (sub_int (Cop(Cload Word,[field_address ba 5]))
+                                          (Cconst_int 1))
+                      idx (unaligned_set_16 ba_data idx newval))))))
+
+  | Pstring_set_32(unsafe) ->
+     return_unit
+       (bind "str" (transl arg1) (fun str ->
+        bind "index" (untag_int (transl arg2)) (fun idx ->
+        bind "newval" (transl_unbox_int Pint32 arg3) (fun newval ->
+          check_bound unsafe dbg (sub_int (string_length str) (Cconst_int 3))
+                      idx (unaligned_set_32 str idx newval)))))
+
+  | Pbigstring_set_32(unsafe) ->
+     return_unit
+       (bind "ba" (transl arg1) (fun ba ->
+        bind "index" (untag_int (transl arg2)) (fun idx ->
+        bind "newval" (transl_unbox_int Pint32 arg3) (fun newval ->
+        bind "ba_data" (Cop(Cload Word, [field_address ba 1])) (fun ba_data ->
+          check_bound unsafe dbg (sub_int (Cop(Cload Word,[field_address ba 5]))
+                                          (Cconst_int 3))
+                      idx (unaligned_set_32 ba_data idx newval))))))
+
+  | Pstring_set_64(unsafe) ->
+     return_unit
+       (bind "str" (transl arg1) (fun str ->
+        bind "index" (untag_int (transl arg2)) (fun idx ->
+        bind "newval" (transl_unbox_int Pint64 arg3) (fun newval ->
+          check_bound unsafe dbg (sub_int (string_length str) (Cconst_int 7))
+                      idx (unaligned_set_64 str idx newval)))))
+
+  | Pbigstring_set_64(unsafe) ->
+     return_unit
+       (bind "ba" (transl arg1) (fun ba ->
+        bind "index" (untag_int (transl arg2)) (fun idx ->
+        bind "newval" (transl_unbox_int Pint64 arg3) (fun newval ->
+        bind "ba_data" (Cop(Cload Word, [field_address ba 1])) (fun ba_data ->
+          check_bound unsafe dbg (sub_int (Cop(Cload Word,[field_address ba 5]))
+                                          (Cconst_int 7)) idx
+                      (unaligned_set_64 ba_data idx newval))))))
+
   | _ ->
     fatal_error "Cmmgen.transl_prim_3"
 
@@ -1434,7 +1751,7 @@ and transl_unbox_int bi = function
       Cconst_natint n
   | Uconst(Const_base(Const_int64 n), _) ->
       assert (size_int = 8); Cconst_natint (Int64.to_nativeint n)
-  | Uprim(Pbintofint bi', [Uconst(Const_base(Const_int i),_)], _) when bi = bi' ->
+  | Uprim(Pbintofint bi',[Uconst(Const_base(Const_int i),_)],_) when bi = bi' ->
       Cconst_int i
   | exp -> unbox_int bi (transl exp)
 
@@ -1557,7 +1874,8 @@ and transl_switch arg index cases = match Array.length cases with
           (Array.of_list !inters) actions)
 
 and transl_letrec bindings cont =
-  let bsz = List.map (fun (id, exp) -> (id, exp, expr_size exp)) bindings in
+  let bsz =
+    List.map (fun (id, exp) -> (id, exp, expr_size Ident.empty exp)) bindings in
   let op_alloc prim sz =
     Cop(Cextcall(prim, typ_addr, true, Debuginfo.none), [int_const sz]) in
   let rec init_blocks = function
@@ -1599,7 +1917,7 @@ let transl_function f =
 module StringSet =
   Set.Make(struct
     type t = string
-    let compare = compare
+    let compare (x:t) y = compare x y
   end)
 
 let rec transl_all_functions already_translated cont =
@@ -1974,14 +2292,21 @@ let tuplify_function arity =
                clos clos1.vars[1])
            (app clos.direct
                 clos1.vars[0] ... closN-2.vars[0] clos.vars[0] arg clos)))
+
     Special "shortcut" functions are also generated to handle the
     case where a partially applied function is applied to all remaining
     arguments in one go.  For instance:
       (defun caml_curry_N_1_app (arg2 ... argN clos)
         (let clos' clos.vars[1]
            (app clos'.direct clos.vars[0] arg2 ... argN clos')))
+
+    Those shortcuts may lead to a quadratic number of application
+    primitives being generated in the worst case, which resulted in
+    linking time blowup in practice (PR#5933), so we only generate and
+    use them when below a fixed arity 'max_arity_optimized'.
 *)
 
+let max_arity_optimized = 15
 let final_curry_function arity =
   let last_arg = Ident.create "arg" in
   let last_clos = Ident.create "clos" in
@@ -1991,7 +2316,7 @@ let final_curry_function arity =
           get_field (Cvar clos) 2 ::
           args @ [Cvar last_arg; Cvar clos])
     else
-      if n = arity - 1 then
+      if n = arity - 1 || arity > max_arity_optimized then
         begin
       let newclos = Ident.create "clos" in
       Clet(newclos,
@@ -2023,7 +2348,7 @@ let rec intermediate_curry_functions arity num =
      {fun_name = name2;
       fun_args = [arg, typ_addr; clos, typ_addr];
       fun_body =
-         if arity - num > 2 then
+         if arity - num > 2 && arity <= max_arity_optimized then
            Cop(Calloc,
                [alloc_closure_header 5;
                 Cconst_symbol(name1 ^ "_" ^ string_of_int (num+1));
@@ -2038,7 +2363,7 @@ let rec intermediate_curry_functions arity num =
       fun_fast = true;
       fun_dbg  = Debuginfo.none }
     ::
-      (if arity - num > 2 then
+      (if arity <= max_arity_optimized && arity - num > 2 then
           let rec iter i =
             if i <= arity then
               let arg = Ident.create (Printf.sprintf "arg%d" i) in
@@ -2079,7 +2404,7 @@ let curry_function arity =
 module IntSet = Set.Make(
   struct
     type t = int
-    let compare = compare
+    let compare (x:t) y = compare x y
   end)
 
 let default_apply = IntSet.add 2 (IntSet.add 3 IntSet.empty)

@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: quicksort.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Good test for loops. Best compiled with -unsafe. *)
 
 let rec qsort lo hi (a : int array) =

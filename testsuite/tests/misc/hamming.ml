@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: hamming.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* We cannot use bignums because we don't do custom runtimes, but
    int64 is a bit short, so we roll our own 37-digit numbers...
 *)

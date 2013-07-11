@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: times.c 11156 2011-07-27 14:17:02Z doligez $ */
-
 #include <mlvalues.h>
 #include <alloc.h>
 #include <memory.h>

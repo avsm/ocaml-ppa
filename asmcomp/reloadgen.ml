@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: reloadgen.ml 12179 2012-02-21 17:41:02Z xleroy $ *)
-
 (* Insert load/stores for pseudoregs that got assigned to stack locations. *)
 
 open Misc

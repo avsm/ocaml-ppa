@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* $Id: odoc_messages.ml 12249 2012-03-20 12:00:11Z guesdon $ *)
 
 (** The messages of the application. *)
 
@@ -35,6 +34,7 @@ let verbose_mode = "\t\tverbose mode"
 let include_dirs = "<dir>\tAdd <dir> to the list of include directories"
 let rectypes = "\tAllow arbitrary recursive types"
 let preprocess = "<command>\tPipe sources through preprocessor <command>"
+let ppx = "<command>\n\t\tPipe abstract syntax tree through preprocessor <command>"
 let option_impl ="<file>\tConsider <file> as a .ml file"
 let option_intf ="<file>\tConsider <file> as a .mli file"
 let option_text ="<file>\tConsider <file> as a .txt file"
@@ -256,7 +256,7 @@ let implicit_match_in_parameter = "Parameters contain implicit pattern matching.
 let unknown_extension f = "Unknown extension for file "^f^"."
 let two_implementations name = "There are two implementations of module "^name^"."
 let two_interfaces name = "There are two interfaces of module "^name^"."
-let too_many_module_objects name = "There are two many interfaces/implementation of module "^name^"."
+let too_many_module_objects name = "There are too many interfaces/implementation of module "^name^"."
 let exception_not_found_in_implementation exc m = "Exception "^exc^" was not found in implementation of module "^m^"."
 let type_not_found_in_implementation exc m = "Type "^exc^" was not found in implementation of module "^m^"."
 let module_not_found_in_implementation m m2 = "Module "^m^" was not found in implementation of module "^m2^"."

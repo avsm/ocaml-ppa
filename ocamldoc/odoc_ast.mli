@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* $Id: odoc_ast.mli 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 (** The module for analysing the typed abstract syntax tree and source code and creating modules, classes, ..., elements.*)
 

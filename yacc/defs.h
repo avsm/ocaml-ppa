@@ -12,8 +12,6 @@
 
 /* Based on public-domain code from Berkeley Yacc */
 
-/* $Id: defs.h 11156 2011-07-27 14:17:02Z doligez $ */
-
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>

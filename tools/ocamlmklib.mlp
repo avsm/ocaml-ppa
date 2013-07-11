@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlmklib.mlp 12723 2012-07-17 18:25:54Z doligez $ *)
-
 open Printf
 open Myocamlbuild_config
 

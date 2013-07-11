@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: arrayLabels.mli 12241 2012-03-14 14:32:07Z doligez $ *)
-
 (** Array operations. *)
 
 external length : 'a array -> int = "%array_length"

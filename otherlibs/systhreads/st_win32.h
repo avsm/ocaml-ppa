@@ -11,13 +11,11 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id$ */
-
 /* Win32 implementation of the "st" interface */
 
 #define _WIN32_WINNT 0x0400
 #include <windows.h>
-#include <WinError.h>
+#include <winerror.h>
 #include <stdio.h>
 #include <signal.h>
 

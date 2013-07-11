@@ -14,7 +14,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: tetris.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id$ *)
 
 (* A Tetris game for LablTk *)
 (* written by Jun P. Furuse *)
@@ -268,7 +268,6 @@ let init fw =
   let scorev = Textvariable.create ()
   and linev = Textvariable.create ()
   and levv = Textvariable.create ()
-  and namev = Textvariable.create ()
   in
   let f = Frame.create fw ~borderwidth: 2 in
   let c = Canvas.create f ~width: (block_size * 10)

@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: unixsupport.h 12488 2012-05-28 11:31:30Z frisch $ */
-
 #define WIN32_LEAN_AND_MEAN
 #include <wtypes.h>
 #include <winbase.h>
@@ -20,7 +18,11 @@
 #include <direct.h>
 #include <process.h>
 #include <sys/types.h>
-#include <winsock.h>
+#include <winsock2.h>
+#ifdef HAS_IPV6
+#include <ws2tcpip.h>
+#include <wspiapi.h>
+#endif
 
 struct filedescr {
   union {

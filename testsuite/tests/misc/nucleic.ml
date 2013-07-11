@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: nucleic.ml 12800 2012-07-30 18:59:07Z doligez $ *)
-
 (* Use floating-point arithmetic *)
 
 external (+) : float -> float -> float = "%addfloat"

@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stream.ml 12800 2012-07-30 18:59:07Z doligez $ *)
-
 (* The fields of type t are not mutable to preserve polymorphism of
    the empty stream. This is type safe because the empty stream is never
    patched. *)

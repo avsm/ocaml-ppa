@@ -10,8 +10,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: parser.mly 11156 2011-07-27 14:17:02Z doligez $ */
-
 /* The grammar for lexer definitions */
 
 %{
@@ -50,7 +48,8 @@ let as_cset = function
 %token <int> Tchar
 %token <string> Tstring
 %token <Syntax.location> Taction
-%token Trule Tparse Tparse_shortest Tand Tequal Tend Tor Tunderscore Teof Tlbracket Trbracket
+%token Trule Tparse Tparse_shortest Tand Tequal Tend Tor Tunderscore Teof
+       Tlbracket Trbracket
 %token Tstar Tmaybe Tplus Tlparen Trparen Tcaret Tdash Tlet Tas Tsharp
 
 %right Tas

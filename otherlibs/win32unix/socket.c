@@ -11,13 +11,17 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: socket.c 12480 2012-05-24 16:40:59Z xleroy $ */
-
 #include <mlvalues.h>
 #include "unixsupport.h"
+#include <mswsock.h>   // for SO_OPENTYPE and SO_SYNCHRONOUS_NONALERT
 
 int socket_domain_table[] = {
-  PF_UNIX, PF_INET /*, PF_INET6 */
+  PF_UNIX, PF_INET,
+#if defined(HAS_IPV6)
+  PF_INET6
+#else
+  0
+#endif
 };
 
 int socket_type_table[] = {
@@ -30,11 +34,14 @@ CAMLprim value unix_socket(domain, type, proto)
   SOCKET s;
   int oldvalue, oldvaluelen, newvalue, retcode;
 
+  #ifndef HAS_IPV6
   /* IPv6 requires WinSock2, we must raise an error on PF_INET6 */
   if (Int_val(domain) >= sizeof(socket_domain_table)/sizeof(int)) {
     win32_maperr(WSAEPFNOSUPPORT);
     uerror("socket", Nothing);
   }
+  #endif
+
   oldvaluelen = sizeof(oldvalue);
   retcode = getsockopt(INVALID_SOCKET, SOL_SOCKET, SO_OPENTYPE,
                        (char *) &oldvalue, &oldvaluelen);

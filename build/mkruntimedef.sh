@@ -12,7 +12,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: mkruntimedef.sh 11156 2011-07-27 14:17:02Z doligez $
 echo 'let builtin_exceptions = [|'; \
 sed -n -e 's|.*/\* \("[A-Za-z_]*"\) \*/$|  \1;|p' byterun/fail.h | \
 sed -e '$s/;$//'; \

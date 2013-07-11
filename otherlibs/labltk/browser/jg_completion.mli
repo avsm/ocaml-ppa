@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: jg_completion.mli 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id$ *)
 
 val lt_string : ?nocase:bool -> string -> string -> bool
 

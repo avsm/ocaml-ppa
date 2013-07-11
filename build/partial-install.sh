@@ -12,8 +12,6 @@
 #                                                                       #
 #########################################################################
 
-# $Id: partial-install.sh 12113 2012-02-03 12:03:04Z bmeurer $
-
 ######################################
 ######### Copied from build/install.sh
 ######################################
@@ -168,6 +166,8 @@ installdir \
   ocamlbuildlib.cmxa \
   ocamlbuildlib.cma \
   ocamlbuild_plugin.cmi \
+  ocamlbuild_plugin.cmo \
+  ocamlbuild_plugin.cmx \
   ocamlbuild_pack.cmi \
   ocamlbuild_unix_plugin.cmi \
   ocamlbuild_unix_plugin.cmo \

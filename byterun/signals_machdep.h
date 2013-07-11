@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: signals_machdep.h 11156 2011-07-27 14:17:02Z doligez $ */
-
 /* Processor-specific operation: atomic "read and clear" */
 
 #ifndef CAML_SIGNALS_MACHDEP_H

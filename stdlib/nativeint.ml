@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: nativeint.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Module [Nativeint]: processor-native integers *)
 
 external neg: nativeint -> nativeint = "%nativeint_neg"

@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stringLabels.mli 12241 2012-03-14 14:32:07Z doligez $ *)
-
 (** String operations. *)
 
 external length : string -> int = "%string_length"

@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* cvsid $Id: odoc_args.ml 12221 2012-03-12 17:57:46Z guesdon $ *)
 
 (** Command-line arguments. *)
 
@@ -184,6 +183,7 @@ let default_options = [
          (Misc.expand_directory Config.standard_library s) :: !Odoc_global.include_dirs),
     M.include_dirs ;
   "-pp", Arg.String (fun s -> Odoc_global.preprocessor := Some s), M.preprocess ;
+  "-ppx", Arg.String (fun s -> Odoc_global.ppx := s :: !Odoc_global.ppx), M.ppx ;
   "-impl", Arg.String (fun s ->
        Odoc_global.files := !Odoc_global.files @ [Odoc_global.Impl_file s]),
     M.option_impl ;

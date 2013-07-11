@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: spill.ml 12179 2012-02-21 17:41:02Z xleroy $ *)
-
 (* Insertion of moves to suggest possible spilling / reloading points
    before register allocation. *)
 

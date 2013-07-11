@@ -11,12 +11,10 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: link.c 11156 2011-07-27 14:17:02Z doligez $ */
-
-#include <windows.h>
 #include <mlvalues.h>
 #include <fail.h>
 #include "unixsupport.h"
+#include <windows.h>
 
 typedef
 BOOL (WINAPI *tCreateHardLink)(

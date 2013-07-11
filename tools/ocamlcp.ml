@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: ocamlcp.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
-
 open Printf
 
 let compargs = ref ([] : string list)
@@ -51,6 +49,7 @@ module Options = Main_args.Make_bytecomp_options (struct
   let _cclib s = option_with_arg "-cclib" s
   let _ccopt s = option_with_arg "-ccopt" s
   let _config = option "-config"
+  let _compat_32 = option "-compat-32"
   let _custom = option "-custom"
   let _dllib = option_with_arg "-dllib"
   let _dllpath = option_with_arg "-dllpath"
@@ -73,7 +72,9 @@ module Options = Main_args.Make_bytecomp_options (struct
   let _output_obj = option "-output-obj"
   let _pack = option "-pack"
   let _pp s = incompatible "-pp"
+  let _ppx s = incompatible "-ppx"
   let _principal = option "-principal"
+  let _short_paths = option "-short-paths"
   let _rectypes = option "-rectypes"
   let _runtime_variant s = option_with_arg "-runtime-variant" s
   let _strict_sequence = option "-strict-sequence"
@@ -91,7 +92,9 @@ module Options = Main_args.Make_bytecomp_options (struct
   let _warn_help = option "-warn-help"
   let _where = option "-where"
   let _nopervasives = option "-nopervasives"
+  let _dsource = option "-dsource"
   let _dparsetree = option "-dparsetree"
+  let _dtypedtree = option "-dtypedtree"
   let _drawlambda = option "-drawlambda"
   let _dlambda = option "-dlambda"
   let _dinstr = option "-dinstr"

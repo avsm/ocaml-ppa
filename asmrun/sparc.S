@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: sparc.S 12800 2012-07-30 18:59:07Z doligez $ */
-
 /* Asm part of the runtime system for the Sparc processor.  */
 /* Must be preprocessed by cpp */
 

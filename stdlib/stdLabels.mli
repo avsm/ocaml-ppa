@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: stdLabels.mli 12823 2012-08-06 11:41:12Z doligez $ *)
-
 (** Standard labeled libraries.
 
    This meta-module provides labelized version of the {!Array},

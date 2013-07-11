@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: reload.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Insert load/stores for pseudoregs that got assigned to stack locations. *)
 
 val fundecl: Mach.fundecl -> Mach.fundecl * bool

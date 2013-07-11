@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: libgraph.h 12149 2012-02-10 16:15:24Z doligez $ */
-
 #include <stdio.h>
 #include <windows.h>
 #include <windowsx.h>

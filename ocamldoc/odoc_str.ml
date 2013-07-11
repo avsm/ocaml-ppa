@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* $Id: odoc_str.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 (** The functions to get a string from different kinds of elements (types, modules, ...). *)
 
@@ -283,5 +282,3 @@ let string_of_method m =
   (match m.M.met_value.M.val_info with
     None -> ""
   | Some i -> Odoc_misc.string_of_info i)
-
-(* eof $Id: odoc_str.ml 12511 2012-05-30 13:29:48Z lefessan $ *)

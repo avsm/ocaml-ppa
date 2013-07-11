@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: unixsupport.c 11915 2011-12-21 13:08:48Z protzenk $ */
-
 #include <mlvalues.h>
 #include <alloc.h>
 #include <callback.h>

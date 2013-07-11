@@ -10,12 +10,9 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* The lexer generator. Command-line parsing. *)
 
 open Syntax
-open Lexgen
 
 let ml_automata = ref false
 let source_name = ref None
@@ -35,7 +32,8 @@ let print_version_num () =
 
 let specs =
   ["-ml", Arg.Set ml_automata,
-    " Output code that does not use the Lexing module built-in automata interpreter";
+    " Output code that does not use the Lexing module built-in automata \
+     interpreter";
    "-o", Arg.String (fun x -> output_name := Some x),
     " <file>  Set output file name to <file>";
    "-q", Arg.Set Common.quiet_mode, " Do not display informational messages";

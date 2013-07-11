@@ -11,14 +11,13 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: winworker.c 11156 2011-07-27 14:17:02Z doligez $ */
-
+#include <mlvalues.h>
+#include <alloc.h>
+#include <memory.h>
+#include <signals.h>
 #include "winworker.h"
 #include "winlist.h"
 #include "windbug.h"
-#include <mlvalues.h>
-#include <alloc.h>
-#include "unixsupport.h"
 
 typedef enum {
   WORKER_CMD_NONE = 0,

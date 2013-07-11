@@ -10,8 +10,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: amd64.S 12800 2012-07-30 18:59:07Z doligez $ */
-
 #ifdef SYS_macosx
 #define ALIGN 4
 #else
@@ -20,7 +18,8 @@
 
 #ifdef SYS_macosx
 #define CALL_GEN_CODE _call_gen_code
-#define CAML_C_CALL _caml_c_call
+
+	#define CAML_C_CALL _caml_c_call
 #define CAML_NEGF_MASK _caml_negf_mask
 #define CAML_ABSF_MASK _caml_absf_mask
 #else
@@ -60,6 +59,8 @@ CAML_C_CALL:
 
 #ifdef SYS_macosx
         .literal16
+#elif defined(SYS_mingw64)
+        .section        .rodata.cst8
 #else
         .section        .rodata.cst8,"aM",@progbits,8
 #endif

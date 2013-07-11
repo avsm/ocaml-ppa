@@ -11,6 +11,4 @@
 #                                                                       #
 #########################################################################
 
-# $Id: ocamlmktop.tpl 12477 2012-05-24 16:17:19Z xleroy $
-
 exec %%BINDIR%%/ocamlc -I +compiler-libs -linkall ocamlcommon.cma ocamlbytecomp.cma ocamltoplevel.cma "$@" topstart.cmo

@@ -11,12 +11,10 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: createprocess.c 11156 2011-07-27 14:17:02Z doligez $ */
-
-#include <windows.h>
 #include <mlvalues.h>
-#include <osdeps.h>
 #include "unixsupport.h"
+#include <windows.h>
+#include <osdeps.h>
 
 static int win_has_console(void);
 

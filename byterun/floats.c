@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: floats.c 12030 2012-01-16 10:23:51Z frisch $ */
-
 /* The interface of this file is in "mlvalues.h" and "alloc.h" */
 
 #include <math.h>

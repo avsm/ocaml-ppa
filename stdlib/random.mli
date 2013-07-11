@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: random.mli 12352 2012-04-13 12:43:24Z doligez $ *)
-
 (** Pseudo-random number generators (PRNG). *)
 
 (** {6 Basic functions} *)

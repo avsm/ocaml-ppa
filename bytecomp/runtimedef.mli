@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: runtimedef.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Values and functions known and/or provided by the runtime system *)
 
 val builtin_exceptions: string array

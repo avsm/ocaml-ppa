@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: maps.ml 12800 2012-07-30 18:59:07Z doligez $ *)
-
 module IntMap = Map.Make(struct type t = int let compare x y = x-y end)
 
 let m1 = IntMap.add 4 "Y" (IntMap.singleton 3 "X1")

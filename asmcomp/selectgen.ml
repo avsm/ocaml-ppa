@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: selectgen.ml 12179 2012-02-21 17:41:02Z xleroy $ *)
-
 (* Selection of pseudo-instructions, assignment of pseudo-registers,
    sequentialization. *)
 

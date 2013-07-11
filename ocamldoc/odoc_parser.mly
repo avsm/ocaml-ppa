@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: odoc_parser.mly 10480 2010-05-31 11:52:13Z guesdon $ *)
-
 open Odoc_types
 open Odoc_comments_global
 

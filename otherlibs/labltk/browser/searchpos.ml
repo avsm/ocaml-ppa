@@ -12,7 +12,7 @@
 (*                                                                       *)
 (*************************************************************************)
 
-(* $Id: searchpos.ml 12681 2012-07-10 08:33:16Z garrigue $ *)
+(* $Id$ *)
 
 open Asttypes
 open StdLabels
@@ -187,10 +187,10 @@ let rec search_pos_signature l ~pos ~env =
   List.fold_left l ~init:env ~f:
   begin fun env pt ->
     let env = match pt.psig_desc with
-      Psig_open id ->
+      Psig_open (ovf, id) ->
         let path, mt = lookup_module id.txt env in
         begin match mt with
-          Mty_signature sign -> open_signature path sign env
+          Mty_signature sign -> open_signature ovf path sign env
         | _ -> env
         end
     | sign_item ->
@@ -220,7 +220,8 @@ let rec search_pos_signature l ~pos ~env =
           List.iter l
             ~f:(fun ci -> search_pos_class_type ci.pci_expr ~pos ~env)
       (* The last cases should not happen in generated interfaces *)
-      | Psig_open lid -> add_found_sig (`Module, lid.txt) ~env ~loc:pt.psig_loc
+      | Psig_open (_, lid) ->
+        add_found_sig (`Module, lid.txt) ~env ~loc:pt.psig_loc
       | Psig_include t -> search_pos_module t ~pos ~env
       end;
     env
@@ -325,7 +326,7 @@ let dummy_item = Sig_modtype (Ident.create "dummy", Modtype_abstract)
 let rec view_signature ?title ?path ?(env = !start_env) ?(detach=false) sign =
   let env =
     match path with None -> env
-    | Some path -> Env.open_signature path sign env in
+    | Some path -> Env.open_signature Fresh path sign env in
   let title =
     match title, path with Some title, _ -> title
     | None, Some path -> string_of_path path
@@ -385,7 +386,8 @@ let rec view_signature ?title ?path ?(env = !start_env) ?(detach=false) sign =
       tl, tw, finish
   in
   Format.set_max_boxes 100;
-  Printtyp.signature Format.std_formatter sign;
+  Printtyp.wrap_printing_env env
+    (fun () -> Printtyp.signature Format.std_formatter sign);
   finish ();
   Lexical.init_tags tw;
   Lexical.tag tw;
@@ -394,13 +396,7 @@ let rec view_signature ?title ?path ?(env = !start_env) ?(detach=false) sign =
   let pt =
       try Parse.interface (Lexing.from_string text)
       with Syntaxerr.Error e ->
-        let l =
-          match e with
-            Syntaxerr.Unclosed(l,_,_,_) -> l
-          | Syntaxerr.Applicative_path l -> l
-          | Syntaxerr.Variable_in_scope(l,_) -> l
-          | Syntaxerr.Other l -> l
-        in
+        let l = Syntaxerr.location_of_error e in
         Jg_text.tag_and_see  tw ~start:(tpos l.loc_start.Lexing.pos_cnum)
           ~stop:(tpos l.loc_end.Lexing.pos_cnum) ~tag:"error"; []
       | Lexer.Error (_, l) ->
@@ -532,16 +528,18 @@ and view_decl_menu lid ~kind ~env ~parent =
     Format.set_formatter_output_functions buf#out (fun () -> ());
     Format.set_margin 60;
     Format.open_hbox ();
-    if kind = `Type then
-      Printtyp.type_declaration
-        (ident_of_path path ~default:"t")
-        Format.std_formatter
-        (find_type path env)
-    else
-      Printtyp.modtype_declaration
-        (ident_of_path path ~default:"S")
-        Format.std_formatter
-        (find_modtype path env);
+    Printtyp.wrap_printing_env env begin fun () ->
+      if kind = `Type then
+        Printtyp.type_declaration
+          (ident_of_path path ~default:"t")
+          Format.std_formatter
+          (find_type path env)
+      else
+        Printtyp.modtype_declaration
+          (ident_of_path path ~default:"S")
+          Format.std_formatter
+          (find_modtype path env)
+    end;
     Format.close_box (); Format.print_flush ();
     Format.set_formatter_output_functions fo ff;
     Format.set_margin margin;
@@ -632,7 +630,8 @@ let view_type_menu kind ~env ~parent =
       Format.open_hbox ();
       Printtyp.reset ();
       Printtyp.mark_loops ty;
-      Printtyp.type_expr Format.std_formatter ty;
+      Printtyp.wrap_printing_env env
+        (fun () -> Printtyp.type_expr Format.std_formatter ty);
       Format.close_box (); Format.print_flush ();
       Format.set_formatter_output_functions fo ff;
       Format.set_margin margin;
@@ -771,14 +770,14 @@ and search_pos_expr ~pos exp =
         search_pos_expr exp ~pos
       end
   | Texp_tuple l -> List.iter l ~f:(search_pos_expr ~pos)
-  | Texp_construct (_, _, _, l,_) -> List.iter l ~f:(search_pos_expr ~pos)
+  | Texp_construct (_, _, l,_) -> List.iter l ~f:(search_pos_expr ~pos)
   | Texp_variant (_, None) -> ()
   | Texp_variant (_, Some exp) -> search_pos_expr exp ~pos
   | Texp_record (l, opt) ->
-      List.iter l ~f:(fun (_, _, _, exp) -> search_pos_expr exp ~pos);
+      List.iter l ~f:(fun (_, _, exp) -> search_pos_expr exp ~pos);
       (match opt with None -> () | Some exp -> search_pos_expr exp ~pos)
-  | Texp_field (exp, _, _, _) -> search_pos_expr exp ~pos
-  | Texp_setfield (a, _, _, _, b) ->
+  | Texp_field (exp, _, _) -> search_pos_expr exp ~pos
+  | Texp_setfield (a, _, _, b) ->
       search_pos_expr a ~pos; search_pos_expr b ~pos
   | Texp_array l -> List.iter l ~f:(search_pos_expr ~pos)
   | Texp_ifthenelse (a, b, c) ->
@@ -836,12 +835,12 @@ and search_pos_pat ~pos ~env pat =
       add_found_str (`Exp(`Const, pat.pat_type)) ~env ~loc:pat.pat_loc
   | Tpat_tuple l ->
       List.iter l ~f:(search_pos_pat ~pos ~env)
-  | Tpat_construct (_, _, _, l, _) ->
+  | Tpat_construct (_, _, l, _) ->
       List.iter l ~f:(search_pos_pat ~pos ~env)
   | Tpat_variant (_, None, _) -> ()
   | Tpat_variant (_, Some pat, _) -> search_pos_pat pat ~pos ~env
   | Tpat_record (l, _) ->
-      List.iter l ~f:(fun (_, _, _, pat) -> search_pos_pat pat ~pos ~env)
+      List.iter l ~f:(fun (_, _, pat) -> search_pos_pat pat ~pos ~env)
   | Tpat_array l ->
       List.iter l ~f:(search_pos_pat ~pos ~env)
   | Tpat_or (a, b, None) ->

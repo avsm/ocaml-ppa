@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: scan_aux.ml 12800 2012-07-30 18:59:07Z doligez $ *)
-
 (* Auxiliaries for the lexical analyzer *)
 
 let brace_depth = ref 0

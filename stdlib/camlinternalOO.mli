@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: camlinternalOO.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (** Run-time support for objects and classes.
     All functions in this module are for system use only, not for the
     casual user. *)

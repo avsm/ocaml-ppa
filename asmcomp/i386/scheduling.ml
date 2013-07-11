@@ -10,9 +10,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: scheduling.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
-open Schedgen (* to create a dependency *)
+let () = let module M = Schedgen in () (* to create a dependency *)
 
 (* Scheduling is turned off because our model does not fit the 486
    nor the Pentium very well. In particular, it messes up with the

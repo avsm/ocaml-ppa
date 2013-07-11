@@ -1,4 +1,16 @@
-(* $Id: length.mli 11123 2011-07-20 09:17:07Z doligez $
+(***********************************************************************)
+(*                                                                     *)
+(*                                OCaml                                *)
+(*                                                                     *)
+(*             Pierre Weis, projet Cristal, INRIA Rocquencourt         *)
+(*                                                                     *)
+(*  Copyright 2007 Institut National de Recherche en Informatique et   *)
+(*  en Automatique.  All rights reserved.  This file is distributed    *)
+(*  under the terms of the Q Public License version 1.0.               *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
 
 A testbed file for private type abbreviation definitions.
 

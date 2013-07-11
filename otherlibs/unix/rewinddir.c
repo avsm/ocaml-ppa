@@ -11,8 +11,6 @@
 /*                                                                     */
 /***********************************************************************/
 
-/* $Id: rewinddir.c 11156 2011-07-27 14:17:02Z doligez $ */
-
 #include <fail.h>
 #include <mlvalues.h>
 #include "unixsupport.h"

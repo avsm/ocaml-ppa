@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: parameters.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Miscellaneous parameters *)
 
 val program_name : string ref

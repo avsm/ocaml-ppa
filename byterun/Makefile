@@ -11,14 +11,12 @@
 #                                                                       #
 #########################################################################
 
-# $Id: Makefile 12566 2012-06-04 16:33:59Z doligez $
-
 include Makefile.common
 
 CFLAGS=-DCAML_NAME_SPACE -O $(BYTECCCOMPOPTS) $(IFLEXDIR)
 DFLAGS=-DCAML_NAME_SPACE -g -DDEBUG $(BYTECCCOMPOPTS) $(IFLEXDIR)
 
-OBJS=$(COMMONOBJS) unix.o main.o
+OBJS=$(COMMONOBJS) $(UNIX_OR_WIN32).o main.o
 DOBJS=$(OBJS:.o=.d.o) instrtrace.d.o
 PICOBJS=$(OBJS:.o=.pic.o)
 

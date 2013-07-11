@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: natdynlink.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Dynamic loading of .cmx files *)
 
 type handle

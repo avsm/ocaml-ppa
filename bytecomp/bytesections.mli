@@ -10,8 +10,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: bytesections.mli 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Handling of sections in bytecode executable files *)
 
 (** Recording sections written to a bytecode executable file *)

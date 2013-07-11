@@ -14,9 +14,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: textvariable.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* $Id$ *)
 
-open Support
 open Protocol
 
 external internal_tracevar : string -> cbid -> unit

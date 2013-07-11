@@ -11,8 +11,6 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: graphicsX11.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
 (* Module [GraphicsX11]: additional graphics primitives for the X Windows system *)
 
 type window_id = string

@@ -10,8 +10,6 @@
 .\"*                                                                     *
 .\"***********************************************************************
 .\"
-.\" $Id: ocamlopt.m 12800 2012-07-30 18:59:07Z doligez $
-.\"
 .TH OCAMLOPT 1
 
 .SH NAME
@@ -156,6 +154,9 @@ options as if they had been provided on the
 command line, unless the
 .B \-noautolink
 option is given.
+.TP
+.B \-absname
+Show absolute filenames in error messages.
 .TP
 .B \-annot
 Dump detailed information about the compilation (types, bindings,
@@ -406,6 +407,10 @@ as a preprocessor for each source file. The output of
 is redirected to
 an intermediate file, which is compiled. If there are no compilation
 errors, the intermediate file is deleted afterwards.
+.TP
+.BI \-ppx \ command
+Pipe abstract syntax tree through preprocessor
+.IR command .
 .TP
 .B \-principal
 Check information path during type-checking, to make sure that all

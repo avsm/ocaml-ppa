@@ -1,4 +1,5 @@
 (***********************************************************************)
+(*                                                                     *)
 (*                             OCamldoc                                *)
 (*                                                                     *)
 (*            Maxence Guesdon, projet Cristal, INRIA Rocquencourt      *)
@@ -8,8 +9,6 @@
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
-
-(* $Id: odoc_class.ml 12796 2012-07-30 11:22:29Z doligez $ *)
 
 (** Representation and manipulation of classes and class types.*)
 
@@ -248,6 +247,3 @@ let class_type_parameter_text_by_name clt label =
       with
         Not_found ->
           None
-
-
-(* eof $Id: odoc_class.ml 12796 2012-07-30 11:22:29Z doligez $ *)

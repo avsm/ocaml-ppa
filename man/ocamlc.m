@@ -10,8 +10,6 @@
 .\"*                                                                     *
 .\"***********************************************************************
 .\"
-.\" $Id: ocamlc.m 12800 2012-07-30 18:59:07Z doligez $
-.\"
 .TH OCAMLC 1
 
 .SH NAME
@@ -194,6 +192,9 @@ options as if they had been provided on the
 command line, unless the
 .B -noautolink
 option is given.
+.TP
+.B \-absname
+Show absolute filenames in error messages.
 .TP
 .B \-annot
 Dump detailed information about the compilation (types, bindings,
@@ -440,6 +441,10 @@ errors, the intermediate file is deleted afterwards. The name of this
 file is built from the basename of the source file with the
 extension .ppi for an interface (.mli) file and .ppo for an
 implementation (.ml) file.
+.TP
+.BI \-ppx \ command
+Pipe abstract syntax tree through preprocessor
+.IR command .
 .TP
 .B \-principal
 Check information path during type-checking, to make sure that all
@@ -747,7 +752,7 @@ mentioned here corresponds to the empty set.
 
 .IP
 The default setting is
-.BR \-w\ +a\-4\-6\-9\-27\-29\-32..39 .
+.BR \-w\ +a\-4\-6\-9\-27\-29\-32..39\-42\-44-45 .
 Note that warnings
 .BR 5 \ and \ 10
 are not always triggered, depending on the internals of the type checker.
