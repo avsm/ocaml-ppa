@@ -131,14 +131,6 @@ test "SyntaxFlag"
   ~matching:[M.f "dummy.native"]
   ~targets:("dummy.native",[]) ();;
 
-test "NativeMliCmi"
-  ~description:"check that ocamlopt is used for .mli->.cmi when tag 'native' is set \
-                (part of PR#4613)"
-  ~tree:[T.f "foo.mli" ~content:"val bar : int"]
-  ~options:[`ocamlc "toto";(*using ocamlc would fail*)  `tags["native"]]
-  ~matching:[M.f "_build/foo.cmi"]
-  ~targets:("foo.cmi",[]) ();;
-
 test "NoIncludeNoHygiene1"
   ~description:"check that hygiene checks are only done in traversed directories\
                 (PR#4502)"
@@ -185,7 +177,7 @@ Error: This expression has type int but an expression was expected of type
          unit\nCommand exited with code 2."
   ~targets:("hello.byte",[]) ();;
 
-test "PrincipalFlag" 
+test "PrincipalFlag"
   ~description:"-principal tag"
   ~tree:[T.f "hello.ml" ~content:"type s={foo:int;bar:unit} type t={foo:int} let f x = x.bar;x.foo";
          T.f "_tags" ~content:"true: principal\n"]
