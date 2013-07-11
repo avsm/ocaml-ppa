@@ -1,3 +1,9 @@
+ocaml (4.00.1-3ppa) raring; urgency=low
+
+  * Switch to PPA.
+
+ -- Anil Madhavapeddy <anil@recoil.org>  Thu, 11 Jul 2013 13:16:53 +0100
+
 ocaml (4.00.1-1) experimental; urgency=low
 
   [ Stéphane Glondu ]
