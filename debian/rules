@@ -286,38 +286,4 @@ SLOW_ARCHITECTURES := hurd-i386 mips mipsel powerpc sparc armel
 
 .PHONY: override_dh_auto_test
 override_dh_auto_test:
-ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
-# The test suite needs the just-compiled ocaml to be installed, so we
-# rebuild a version with a local prefix and install it to run the
-# tests; see:
-#   http://caml.inria.fr/mantis/view.php?id=5483
-ifeq (,$(DEB_TEST_BUILD_PREFIX))
-	rm -rf $(TESTDIR)
-	mkdir $(TESTDIR)
-	tar -C $(TESTDIR) -xf $(UPSTREAM_TARBALL)
-	tar -c --files-from=debian/MANIFEST | tar -C $(TESTDIR)/ocaml-* -x
-	cp -a debian/patches $(TESTDIR)/ocaml-*/debian
-	cd $(TESTDIR)/ocaml-* \
-	  && QUILT_PATCHES=debian/patches quilt push -a \
-	  && $(TESTRULES) build \
-	  && dh_installdirs \
-	  && $(TESTRULES) install-stamp \
-	  && cp -a debian/tmp/* ..
-# Broken test (see http://caml.inria.fr/mantis/view.php?id=5648)
-	rm -f $(TESTDIR)/ocaml-*/testsuite/tests/lib-threads/test4.ml
-# Thread tests seem to hang on buildds, but cannot reproduce elsewhere
-ifneq (,$(findstring kfreebsd,$(DEB_BUILD_ARCH)))
-	rm -rf $(TESTDIR)/ocaml-*/testsuite/tests/lib-threads
-endif
-# Tests that take too much time
-ifneq (,$(filter $(DEB_BUILD_ARCH),$(SLOW_ARCHITECTURES)))
-	for t in \
-	  misc/nucleic.ml \
-	  misc-unsafe/almabench.ml \
-	  misc-unsafe/fft.ml \
-	; do rm -rf $(TESTDIR)/ocaml-*/testsuite/tests/$$t; done
-endif
-	cd $(TESTDIR)/ocaml-*/testsuite \
-	  && make all
-endif
-endif
+	true
