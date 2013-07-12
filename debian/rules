@@ -2,8 +2,8 @@
 
 PACKAGE := ocaml
 ALL_PACKAGES := $(shell dh_listpackages)
-OCAMLMAJOR := 4.00
-OCAMLMINOR := 1
+OCAMLMAJOR := 4.01
+OCAMLMINOR := 0
 
 # Build cache (for Debian debugging)
 BUILDCACHE := $(wildcard ../ocaml.cache)
