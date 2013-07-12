@@ -10,7 +10,7 @@ BUILDCACHE := $(wildcard ../ocaml.cache)
 
 # These are defined here to avoid definition of them in ocamlvars.mk
 #OCAML_ABI := $(OCAMLMAJOR).$(OCAMLMINOR)
-OCAML_ABI := "4.01.0+dev18-2013-06-13"
+OCAML_ABI := 4.01.0+dev18-2013-06-13
 OCAML_STDLIB_DIR := /usr/lib/ocaml
 OCAML_NATIVE_ARCHS := $(shell cat debian/native-archs)
 OCAML_NATDYNLINK_ARCHS := $(shell cat debian/natdynlink-archs)
