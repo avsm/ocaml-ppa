@@ -40,9 +40,12 @@ Compilers:
 - PR#5571: incorrect ordinal number in error message
 
 Standard library:
+- PR#5899: expose a way to inspect the current call stack
+  (Printexc.get_callstack)
 - PR#5986: new flag Marshal.Compat_32 for the serialization functions
   (Marshal.to_*), forcing the output to be readable on 32-bit hosts.
 - Add optimized composition operators |> and @@ in Pervasives
+
 
 Runtime system:
 * PR#6019: more efficient implementation of caml_modify() and caml_initialize().
@@ -92,6 +95,7 @@ Bug fixes:
 - PR#5752: missing dependencies at byte-code link with mlpack
 - PR#5758: Compiler bug when matching on floats
 - PR#5763: ocamlbuild does not give correct flags when running menhir
+- PR#5765: ocamllex doesn't preserve line directives
 - PR#5772: problem with marshaling of mutually-recursive functions
 - PR#5775: several bug fixes for tools/pprintast.ml
 - PR#5784: -dclambda option is ignored
@@ -117,6 +121,7 @@ Bug fixes:
 - PR#5840: improved documentation for 'Unix.lseek'
 - PR#5858: Assert failure during typing of class
 - PR#5865: assert failure when reporting undefined field label
+- PR#5872: Performance: Buffer.add_char is not inlined
 - PR#5880: 'Genlex.make_lexer' documention mentions the wrong exception
 - PR#5885: Incorrect rule for compiling C stubs when shared libraries are not
   supported.
@@ -139,6 +144,7 @@ Bug fixes:
 - PR#5976: crash after recovering from two stack overflows (ocamlopt on MacOS X)
 - PR#5981: Incompatibility check assumes abstracted types are injective
 - PR#5985: Unexpected interaction between variance and GADTs
+- PR#5988: missing from the documentation: -impl is a valid flag for ocamlopt
 - PR#5989: Assumed inequalities involving private rows
 - PR#5993: Variance of private type abbreviations not checked for modules
 - PR#5997: Non-compatibility assumed for concrete types with same constructor
