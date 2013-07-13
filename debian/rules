@@ -286,4 +286,5 @@ SLOW_ARCHITECTURES := hurd-i386 mips mipsel powerpc sparc armel
 
 .PHONY: override_dh_auto_test
 override_dh_auto_test:
-	true
+	rm -f testsuite/tests/lib-threads/testsocket.ml
+	cd testsuite && $(MAKE) all
