@@ -13,7 +13,7 @@
 open Compenv
 open Parsetree
 
-
+let ppf = Format.err_formatter
 (* Print the dependencies *)
 
 type file_kind = ML | MLI;;
@@ -283,8 +283,9 @@ let ml_file_dependencies source_file =
     end
 
 let mli_file_dependencies source_file =
-  let extracted_deps = read_parse_and_extract
-      Parse.interface Depend.add_signature Config.ast_intf_magic_number source_file
+  let extracted_deps =
+    read_parse_and_extract Parse.interface Depend.add_signature
+                           Config.ast_intf_magic_number source_file
   in
   if !sort_files then
     files := (source_file, MLI, extracted_deps) :: !files
@@ -300,7 +301,7 @@ let mli_file_dependencies source_file =
     end
 
 let file_dependencies_as kind source_file =
-  Compenv.readenv Before_compile;
+  Compenv.readenv ppf Before_compile;
   load_path := [];
   List.iter add_to_load_path (
       (!Compenv.last_include_dirs @
@@ -413,7 +414,7 @@ let print_version_num () =
 let _ =
   Clflags.classic := false;
   first_include_dirs := Filename.current_dir_name :: !first_include_dirs;
-  Compenv.readenv Before_args;
+  Compenv.readenv ppf Before_args;
   Arg.parse [
      "-absname", Arg.Set Location.absname,
         " Show absolute filenames in error messages";
@@ -448,6 +449,6 @@ let _ =
      "-vnum", Arg.Unit print_version_num,
          " Print version number and exit";
     ] file_dependencies usage;
-  Compenv.readenv Before_link;
+  Compenv.readenv ppf Before_link;
   if !sort_files then sort_files_by_dependencies !files;
   exit (if !error_occurred then 2 else 0)
