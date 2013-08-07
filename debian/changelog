@@ -1,14 +1,14 @@
-ocaml (4.00.2+SNAPSHOT20130712-1ppa4) raring; urgency=low
+ocaml (4.00.2+SNAPSHOT20130807-1ppa1~raring1) raring; urgency=low
+
+  * Update to latest 4.01 snap (git 1543207ca59f97eda692c16070dbec925265be88)
+
+ -- Anil Madhavapeddy <anil@recoil.org>  Wed, 07 Aug 2013 00:38:30 +0100
+
+ocaml (4.00.2+SNAPSHOT20130712-1ppa9~raring1) raring; urgency=low
 
   * First cut at 4.01.0 snap (git 2602e82995aa75e6a4cb4a0d9efe4e7642bd598f)
 
  -- Anil Madhavapeddy <anil@recoil.org>  Thu, 11 Jul 2013 13:34:13 +0100
-
-ocaml (4.00.1-3ppa) raring; urgency=low
-
-  * Switch to PPA.
-
- -- Anil Madhavapeddy <anil@recoil.org>  Thu, 11 Jul 2013 13:16:53 +0100
 
 ocaml (4.00.1-1) experimental; urgency=low
 
