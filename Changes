@@ -38,6 +38,7 @@ Compilers:
   - uses of the (&) and (or) operators instead of (&&) and (||)
 - Experimental OCAMLCOMPPARAM for ocamlc and ocamlopt
 - PR#5571: incorrect ordinal number in error message
+- PR#6073: add signature to Tstr_include
 
 Standard library:
 - PR#5899: expose a way to inspect the current call stack
@@ -46,6 +47,9 @@ Standard library:
   (Marshal.to_*), forcing the output to be readable on 32-bit hosts.
 - Add optimized composition operators |> and @@ in Pervasives
 
+Other libraries:
+- PR#5568: add O_CLOEXEC flag to Unix.openfile, so that the returned
+  file descriptor is created in close-on-exec mode
 
 Runtime system:
 * PR#6019: more efficient implementation of caml_modify() and caml_initialize().
@@ -54,7 +58,14 @@ Runtime system:
   major heaps, and the destination pointer of caml_initialize() must
   point within the major heap.
 
+Internals:
+- Moved debugger/envaux.ml to typing/envaux.ml to publish env_of_only_summary
+  as part of compilerlibs, to be used on bin-annot files.
+- The test suite can now be run without installing OCaml first.
+
 Bug fixes:
+- PR#3236: Document the fact that queues are not thread-safe
+- PR#3468: (part 1) Sys_error documentation
 - PR#3679: Warning display problems
 - PR#3963: Graphics.wait_next_event in Win32 hangs if window closed
 - PR#4079: Queue.copy is now tail-recursive
@@ -62,6 +73,8 @@ Bug fixes:
 - PR#4485: Graphics: Keyboard events incorrectly delivered in native code
 - PR#4502: ocamlbuild now reliably excludes the build-dir from hygiene check
 - PR#4762: ?? is not used at all, but registered as a lexer token
+- PR#4788: wrong error message when executable file is not found for backtrace
+- PR#4812: otherlibs/unix: add extern int code_of_unix_error (value error);
 - PR#4887: input_char after close_in crashes ocaml (msvc runtime)
 - PR#4994: ocaml-mode doesn't work with xemacs21
 - PR#5098: creating module values may lead to memory leaks
@@ -76,6 +89,7 @@ Bug fixes:
 - PR#5327: (Windows) Unix.select blocks if same socket listed in first and
   third arguments
 - PR#5343: ocaml -rectypes is unsound wrt module subtyping (was still unsound)
+- PR#5350: missing return code checks in the runtime system
 - PR#5468: ocamlbuild should preserve order of parametric tags
 - PR#5551: Avoid repeated lookups for missing cmi files
 - PR#5552: try to use camlp4.opt if it's possible
@@ -91,6 +105,7 @@ Bug fixes:
 - PR#5734: improved Win32 implementation of Unix.gettimeofday
 - PR#5735: %apply and %revapply not first class citizens
 - PR#5738: first class module patterns not handled by ocamldep
+- PR#5739: Printf.printf "%F" (-.nan) returns -nan
 - PR#5747: 'unused open' warning not given when compiling with -annot
 - PR#5752: missing dependencies at byte-code link with mlpack
 - PR#5758: Compiler bug when matching on floats
@@ -105,6 +120,7 @@ Bug fixes:
   incorrect
 - PR#5793: integer marshalling is inconsistent between architectures
 - PR#5798: add ARM VFPv2 support for Raspbian (ocamlopt)
+- PR#5802: Avoiding "let" as a value name
 - PR#5805: Assert failure with warning 34 on pre-processed file
 - PR#5806: ensure that backtrace tests are always run (testsuite)
 - PR#5810: error in switch printing when using -dclambda
@@ -137,6 +153,7 @@ Bug fixes:
 - PR#5930: ocamldep leaks temporary preprocessing files
 - PR#5934: integer shift by negative amount (in otherlibs/num)
 - PR#5944: Bad typing performances of big variant type declaration
+- PR#5945: Mix-up of Minor_heap_min and Minor_heap_max units
 - PR#5948: GADT with polymorphic variants bug
 - PR#5965: disallow auto-reference to a recursive module in its definition
 - PR#5973: Format module incorrectly parses format string
@@ -156,11 +173,14 @@ Bug fixes:
 - PR#6031: Camomile problem with -with-frame-pointers
 - PR#6032: better Random.self_init under Windows
 - PR#6033: Matching.inline_lazy_force needs eta-expansion (command-line flags)
+- PR#6046: testsuite picks up the wrong ocamlrun dlls
 - PR#6056: Using 'match' prevents generalization of values
 - PR#6060: ocamlbuild rules for -principal, -strict-sequence and -short-paths
-Internals:
-- Moved debugger/envaux.ml to typing/envaux.ml to publish env_of_only_summary
-  as part of compilerlibs, to be used on bin-annot files.
+- PR#6072: configure does not handle FreeBSD current (i.e. 10) correctly
+- PR#6074: Wrong error message for failing Condition.broadcast
+- PR#6084: Define caml_modify and caml_initialize as weak symbols to help
+  with Netmulticore
+- PR#6090: Module constraint + private type seems brocken in ocaml 4.01.0
 
 Feature wishes:
 - PR#5597: add instruction trace option 't' to OCAMLRUNPARAM
